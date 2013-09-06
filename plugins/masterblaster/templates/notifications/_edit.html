@@ -1,0 +1,244 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+
+
+
+
+{% if craft.request.getSegment('3') == 'new' %}
+	{% set title = "New Notification" %}
+	{% set campaignId = null %}
+{% elseif campaign is defined %}
+	{% set title = "Edit Notification" %}
+	{% set campaignId = campaign.id %}
+{% else %}
+	{% set title = "Edit Notification" %}
+	{% set campaign = craft.masterblaster.getCampaignById(campaignId) %}
+	{% set campaignId = campaign.id %}	
+{% endif %}
+
+{% set crumbs = [
+	{ label: "Master Blaster"|t, url: url('masterblaster/campaigns') },
+] %}
+
+{% set tabs = {
+    general: { 
+      label: "Notification Info"|t,
+      url: '#tab-campaign-info',
+      class: 'tab-campaign-info'
+    },
+    template:    { 
+      label: "Email Template"|t,
+      url: '#tab-email-template',
+      class: 'tab-email-template'
+    },
+    subscribers:    { 
+      label: "Recipients"|t,
+      url: '#tab-recipients',
+      class: 'tab-recipients'
+    },
+} %}
+
+{# 
+reports:    { 
+  label: "History"|t,
+  url: '#tab-history'
+} #}
+
+
+
+{% set content %}
+
+<form method="post" action="" accept-charset="UTF-8">
+	<input type="hidden" name="action" value="masterblaster/notifications/save">
+	<input type="hidden" name="redirect" value="masterblaster/notifications">
+	<input type="hidden" name="id" value="{{ campaignId }}">
+
+<div id="tab-campaign-info" class="tab-content" >
+	
+	{{ forms.textField({
+		label: "Notification Name"|t,
+		id: 'name',
+		name: 'name',
+		instructions: "Human readable notification name"|t,
+		value: (campaign is defined ? campaign.name : null),
+		autofocus: true,
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('name') : null) 	
+	}) }}
+
+	{{ forms.textField({
+		label: "Email Subject"|t,
+		id: 'subject',
+		name: 'subject',
+		instructions: "The subject line of your email"|t,
+		value: (campaign is defined ? campaign.subject : null),
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('subject') : null) 	
+	}) }}
+
+	{{ forms.textField({
+		label: "From Name"|t,
+		id: 'fromName',
+		name: 'fromName',
+		instructions: "The person or business sending the email"|t,
+		value: (campaign is defined ? campaign.fromName : null),
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('fromName') : null) 	
+	}) }}
+
+	{{ forms.textField({
+		label: "From Email"|t,
+		id: 'fromEmail',
+		name: 'fromEmail',
+		instructions: "The email address of the person or business sending the email"|t,
+		value: (campaign is defined ? campaign.fromEmail : null),
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('fromEmail') : null) 	
+	}) }}
+
+	{{ forms.textField({
+		label: "Reply To Email"|t,
+		id: 'replyToEmail',
+		name: 'replyToEmail',
+		instructions: "The email address which will be used if any recipients reply to your email"|t,
+		value: (campaign is defined ? campaign.replyToEmail : null),
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('replyToEmail') : null) 	
+	}) }}
+
+	{% set emailProviders = craft.masterblaster.getEmailProviders() %}
+
+	{{ forms.selectField({
+		label: "How would you like to send this email"|t,
+		id: 'emailProvider',
+		name: 'emailProvider',
+		instructions: "Select the platform you will use to send your campaign."|t,
+		options : emailProviders,
+		value: (campaign is defined ? campaign.emailProvider : null),
+		errors: (campaign is defined ? campaign.getErrors('emailProvider') : null) 	
+	}) }}
+	
+	{% set events = craft.masterblaster.getNotificationEvents() %}
+
+	{{ forms.selectField({
+		label: "When would you like to send this email"|t,
+		id: 'notificationEvent',
+		name: 'notificationEvent',
+		instructions: "Select the event on which you would like to send this email."|t,
+		options : events,
+		value: (campaign is defined and campaign.notificationEvent[0] is defined ? campaign.notificationEvent[0].id : null),
+		errors: (campaign is defined ? campaign.getErrors('notificationEvent') : null) 	
+	}) }}
+	
+</div>
+
+<div id="tab-email-template" class="hidden tab-content">
+
+	{#
+	{% set templateOptions = [
+		{value:1, label: 'Import the HTML/Text on your own'}, 
+		{value:2, label:'Send a simple text-based email'},
+		{value:3, label:'Create a Notification based on an Entries Section and Template'}
+	] %}
+	
+	{{ forms.radioGroup({
+		options : templateOptions,	
+		value:(campaign is defined ? campaign.templateOption : 1),
+		name: 'templateOption'
+	}) }}
+	#}
+	
+	{####### TEMPORARY - SUPPORT FOR INLINE TEXT TEMPLATES ####}
+	{% set templateOptions = [
+		{value:2, label:'Send a simple text-based email'}
+	] %}
+
+	{{ forms.radioGroup({
+		options : templateOptions,	
+		value:2,
+		name: 'templateOption'
+	}) }}
+	{##################################################################}
+
+	<hr>
+
+	<div id="tpl_html" class="tpl_options">
+	{{ forms.textareaField({
+		label: "HTML Code"|t,
+		id: 'htmlBody',
+		name: 'htmlBody',
+		instructions: "The code for your html email. Be sure to inline your CSS beforehand."|t,
+		value: (campaign is defined ? campaign.htmlBody : null),
+		errors: (campaign is defined ? campaign.getErrors('htmlBody') : null) 	
+	}) }}
+	
+	</div>
+	<div id="tpl_text" class="tpl_options">
+
+	{{ forms.textareaField({
+		label: "Plain Text"|t,
+		id: 'textBody',
+		name: 'textBody',
+		instructions: "The code for your email's text version."|t,
+		value: (campaign is defined ? campaign.textBody : null),
+		errors: (campaign is defined ? campaign.getErrors('textBody') : null) 	
+	}) }}
+
+	<hr>
+	</div>
+
+	<div id="tpl_section" class="tpl_options">
+	{{ forms.selectField({
+		label: "Email Content Section"|t,
+		id: 'sectionId',
+		name: 'sectionId',
+		instructions: "Select the Section that you will be using to create content for this email notification."|t,
+		options : craft.masterblaster.getAllSections,
+		value: (campaign is defined ? campaign.sectionId : null),
+		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
+	}) }}
+	
+	{% set templatesDirListing = craft.masterblaster.getTemplatesDirListing() %}
+	
+	{{ forms.selectField({
+		label: "HTML Template"|t,
+		id: 'htmlTemplate',
+		name: 'htmlTemplate',
+		instructions: "Select the file that will be the template for your HTML Emails in this Section/"|t,
+		options: templatesDirListing,
+		value: (campaign is defined ? campaign.htmlTemplate : null),
+		errors: (campaign is defined ? campaign.getErrors('htmlTemplate') : null) 	
+	}) }}
+
+	{{ forms.selectField({
+		label: "Text Template"|t,
+		id: 'textTemplate',
+		name: 'textTemplate',
+		options: templatesDirListing,
+		instructions: "Select the file that will be the template for your Plain Text Emails in this Section."|t,
+		value: (campaign is defined ? campaign.textTemplate : null),
+		errors: (campaign is defined ? campaign.getErrors('textTemplate') : null) 	
+	}) }}
+	</div>
+
+</div>
+
+<div id="tab-recipients" class="hidden tab-content">
+
+{% for key, val in emailProviders %}
+<div id="{{ key }}_recipients_template" class="recipient_templates" >
+	{% include "masterblaster/_email_providers/_" ~ key %}
+</div>
+{% endfor %}
+
+</div>
+
+
+<div class="buttons">
+	<input class="btn submit" type="submit" value="Save Notification">
+</div>
+
+</form>
+{% include "masterblaster/js" %}
+{% endset %}

@@ -1,0 +1,92 @@
+{% extends "masterblaster/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set body %}
+
+	
+	{# If there are Section-based Campaigns, Display them. #}
+	{% for campaign in craft.masterblaster.getSectionCampaigns() %}
+			
+		{% if loop.first %}
+		<h3>Section-Based Campaigns</h3>
+		<table id="campaigns" class="data">
+			<thead>
+				<th width="25%"></th>
+				<th width="35%"></th>
+				<th width="15%"></th>
+				<th width="20%"></th>
+				<td class="thin"></td>
+			</thead>
+		{% endif %}
+		
+			<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
+				<td>
+					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
+				</td>
+				<td> 
+					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
+						Define recipients
+					</a> | 
+					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+						Settings
+					</a>
+				</td>
+				<td>
+					<div style="color:#999;">{{ campaign.handle }} / {{ campaign.slug }}</div>
+					<a href="{{ siteUrl }}/{{campaign.htmlTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">HTML</a> 
+					or 
+					<a href="{{ siteUrl }}/{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
+					
+				</td>
+				<td>
+					<div style="color:#999;">{{ campaign.emailProvider }}</div>
+					Send 
+					| 
+					<a href="#" class="export" >Export</a>  
+					| 
+					Status
+				</td>
+				<td class="thin">
+					<a class="delete icon" title="Delete"></a>
+				</td>
+			</tr>
+
+		{% if loop.last %}
+		</table>
+		{% endif %}
+
+	{% endfor %}
+
+
+ 	
+<div class="buttons">
+	<a class="btn submit add icon" href="{{ url('masterblaster/campaigns/new') }}">New Campaign</a>
+</div>
+
+{% if brandMessageFooter is defined %}
+	{{ brandMessageFooter }}
+{% endif %}
+
+{% endset %}
+
+{% set js %}
+	new Craft.AdminTable({
+		tableSelector: '#campaigns',
+		noObjectsSelector: '#nocampaigns',
+		deleteAction: 'masterblaster/campaigns/delete'
+	});
+	
+	jQuery(document).ready(function(){
+		jQuery('.export').click(function(){
+			var query = 'entryId='+jQuery(this).closest('tr').attr('data-entry-id')
+			+ '&campaignId='+jQuery(this).closest('tr').attr('data-id')
+			+ '&action=masterblaster/campaigns/export';
+			$.post('{{ url('masterblaster/campaigns/export') }}',query, function(data){
+				alert(data);
+			})
+			return false;
+		})
+	})
+{% endset %}
+{% includeJs js %}

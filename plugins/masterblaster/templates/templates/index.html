@@ -1,0 +1,59 @@
+{% extends "masterblaster/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set body %}
+
+<style>
+a.soften {
+	/*color: #777;*/
+}
+</style>
+
+	<p>Consider outputting these as thumbs.</p>
+
+	<p>Also consider just having them as HTML files in a dedicated folder.  Metadata can be defined in HTML comments like Wordpress templates. No edit option needs to be available in the control.  Templates will be based on Sections and those sections can be linked to.</p>
+
+	{#% for fallback in craft.oneSeo.allFallbacks %#}
+	{% for form in craft.senorForm.allForms %}
+	{% if loop.first %}
+
+<table class="data">
+	<thead>
+		<th width="25%"></th>
+		<th width="70%"></th>
+		<td class="thin"></td>
+	</thead>
+
+	{% endif %}
+	<tr>
+		<td>
+			<strong>Template Name</strong>
+		</td>
+		<td>
+			<a href="{{ url('senorform/forms/edit/') }}/{{ form.id }}">
+				Edit
+			</a>
+		</td>
+		<td class="thin">
+			<a class="delete icon" title="Delete"></a>
+		</td>
+	</tr>
+	{% if loop.last %}
+</table>
+	{% endif %}
+	{% else %}
+	
+		<p>No forms have been created yet. 	<a href="{{ url('senorform/forms/new') }}">Create your first form</a>!</p>
+
+	{% endfor %}
+
+
+<div class="buttons">
+	<a class="btn submit add icon" href="{{ url('senorform/forms/new') }}">New Form</a>
+</div>
+
+{% if brandMessageFooter is defined %}
+	{{ brandMessageFooter }}
+{% endif %}
+
+{% endset %}
