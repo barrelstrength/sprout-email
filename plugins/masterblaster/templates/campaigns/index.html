@@ -3,49 +3,47 @@
 
 {% set body %}
 
+	{% set campaigns = craft.masterblaster.getSectionCampaigns() %}
 	
+	{% if not campaigns|length %}
+		<p>No Campaigns have been created yet.  <a href="{{ url('masterblaster/campaigns/new') }}">Create your first campaign</a>.</p>
+	{% endif %}
+
 	{# If there are Section-based Campaigns, Display them. #}
-	{% for campaign in craft.masterblaster.getSectionCampaigns() %}
+	{% for campaign in campaigns %}
 			
 		{% if loop.first %}
-		<h3>Section-Based Campaigns</h3>
 		<table id="campaigns" class="data">
 			<thead>
-				<th width="25%"></th>
-				<th width="35%"></th>
-				<th width="15%"></th>
-				<th width="20%"></th>
+				<th width="8%">Date</th>
+				<th width="32%">Campaign Name</th>
+				<th width="20%">Preview</th>
+				<th width="40%">Publish</th>
 				<td class="thin"></td>
 			</thead>
 		{% endif %}
 		
 			<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
+				<td style="line-height:12px;">
+					<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('d M Y') }}</span>
+				</td>
 				<td>
 					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
-					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
-				</td>
-				<td> 
-					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
-						Define recipients
-					</a> | 
-					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
-						Settings
-					</a>
 				</td>
 				<td>
-					<div style="color:#999;">{{ campaign.handle }} / {{ campaign.slug }}</div>
 					<a href="{{ siteUrl }}/{{campaign.htmlTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">HTML</a> 
-					or 
+					/ 
 					<a href="{{ siteUrl }}/{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
 					
 				</td>
 				<td>
-					<div style="color:#999;">{{ campaign.emailProvider }}</div>
 					Send 
 					| 
 					<a href="#" class="export" >Export</a>  
 					| 
 					Status
+
+					<div style="color:#fff;background-color: #bbb;display:inline-block;font-size:10px;font-weight: bold;text-transform: uppercase;padding:1px 6px;margin-left:10px;border-radius:3px;">{{ campaign.emailProvider }}</div>
 				</td>
 				<td class="thin">
 					<a class="delete icon" title="Delete"></a>
@@ -54,15 +52,18 @@
 
 		{% if loop.last %}
 		</table>
+
+		<div class="buttons">
+			<a class="btn submit add icon" href="{{ url('masterblaster/campaigns/new') }}">New Campaign</a>
+		</div>
+
 		{% endif %}
 
 	{% endfor %}
 
 
  	
-<div class="buttons">
-	<a class="btn submit add icon" href="{{ url('masterblaster/campaigns/new') }}">New Campaign</a>
-</div>
+
 
 {% if brandMessageFooter is defined %}
 	{{ brandMessageFooter }}

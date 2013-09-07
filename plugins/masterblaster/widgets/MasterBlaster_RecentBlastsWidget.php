@@ -5,7 +5,7 @@ class MasterBlaster_RecentBlastsWidget extends BaseWidget
 {
     public function getName()
     {
-        return Craft::t('Email Support');
+        return Craft::t('Recent Blasts');
     }
 
     public function getBodyHtml()
@@ -27,7 +27,7 @@ class MasterBlaster_RecentBlastsWidget extends BaseWidget
 
         // Send email:
         // $dog = craft()->email->sendEmail($user, $subject, $body, $htmlBody, $variables);
-        return craft()->templates->render('support/_widgets/email_support/body');
+        return craft()->templates->render('support/_widgets/recent_blasts/body');
 
     }
 }

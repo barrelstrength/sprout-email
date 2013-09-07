@@ -216,7 +216,7 @@ reports:    {
 
 {% for key, val in emailProviders %}
 <div id="{{ key }}_recipients_template" class="recipient_templates" >
-	{% include "masterblaster/_email_providers/_" ~ key %}
+	{% include "masterblaster/_email_providers/" ~ key %}
 </div>
 {% endfor %}
 
