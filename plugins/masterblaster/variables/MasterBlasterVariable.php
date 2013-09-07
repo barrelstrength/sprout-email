@@ -88,8 +88,8 @@ class MasterBlasterVariable
             'value' => ''
         ));
 
-        foreach ($result as $key => $section) {
-
+        foreach ($result as $key => $section) 
+        {
             array_push($options, array(
                 'label' => $section->name,
                 'value' => $section->id
@@ -97,6 +97,17 @@ class MasterBlasterVariable
         }
         
         return $options;
+    }
+    
+    public function getAllUserGroups($indexBy = null)
+    {
+    	$result = craft()->userGroups->getAllGroups($indexBy);
+    	$options = array();
+    	foreach($result as $key => $group)
+    	{
+    		$options[$group->id] = $group->name;
+    	}
+    	return $options;
     }
     
     public function getSubscriberList($provider = 'masterblaster')
@@ -121,9 +132,30 @@ class MasterBlasterVariable
     	return craft()->masterBlaster->getNotifications();
     }
     
-    public function getNotificationEvents()
+    public function getNotificationEvents($notificationEvent = null)
     {
-    	return craft()->masterBlaster->getNotificationEvents();
+    	$events = craft()->masterBlaster->getNotificationEvents($notificationEvent);
+    	
+    	$out = array();
+    	foreach($events as $event)
+    	{
+    		$out[$event->id] = $event->description;
+    	}
+    	
+    	return $out;
+    }
+    
+    public function getNotificationEventOptions()
+    {
+    	$res = craft()->masterBlaster->getNotificationEventOptions();
+    	
+    	$out = array();
+    	foreach($res as $template)
+    	{
+    		list($event, $options) = explode('/', $template);
+    		$out[$event][] = $options;
+    	}
+    	return $out;
     }
 
     public function dump($mixed)

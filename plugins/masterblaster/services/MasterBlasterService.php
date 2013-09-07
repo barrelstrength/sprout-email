@@ -20,8 +20,10 @@ class MasterBlasterService extends BaseApplicationComponent
 	}
 	
 	/**
-	 * Returns all campaignRecipeint lists
+	 * Returns campaignRecipient lists
+	 * 
 	 * @param int $campaignId
+	 * @return array
 	 */
 	public function getCampaignRecipientLists($campaignId)
 	{
@@ -59,18 +61,12 @@ class MasterBlasterService extends BaseApplicationComponent
 	/**
 	 * Gets a campaign
 	 *
-	 * @param array possible conditions: array('id' => <id>, 'handle' => <handle>, ...) as defined in $valid_keys
+	 * @param array possible conditions: array('id' => <id>, 'handle' => <handle>, ...) 
+	 * as defined in $valid_keys
 	 * @return MasterBlaster_CampaignModel|null
 	 */
 	public function getCampaign($conditions = array())
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->condition = 'campaignId=:campaignId';
-		$criteria->params = array(':campaignId' => $conditions['id']);
-		$campaignRecord = MasterBlaster_CampaignRecord::model()
-		->with('recipientList')
-		->find($criteria);
-		
+	{	
 		// we can do where clauses on these keys only
 		$valid_keys = array('id', 'handle');
 		
@@ -116,8 +112,18 @@ class MasterBlasterService extends BaseApplicationComponent
 				}
 				
 				$campaignModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
+				
+				$unserialized = array();
+				foreach($campaignRecord->campaignNotificationEvent as $event)
+				{
+					$opts = unserialize($event->options);
+					$event->options = isset($opts['options']) ? $opts['options'] : array();
+					$unserialized[] = $event;
+				}
+				
+				$campaignModel->notificationEvents = $unserialized;
 			}
-			
+
 			return $campaignModel;
 		}
 	}
@@ -127,7 +133,7 @@ class MasterBlasterService extends BaseApplicationComponent
 	 *
 	 * @param MasterBlaster_CampaignModel $campaign
 	 * @throws \Exception
-	 * @return bool
+	 * @return int CampaignRecordId
 	 */
 	public function saveCampaign(MasterBlaster_CampaignModel $campaign)
 	{
@@ -174,9 +180,10 @@ class MasterBlasterService extends BaseApplicationComponent
 	
 	/**
 	 * Function for saving campaign and template data ONLY (no recipient stuff here)
+	 * 
 	 * @param MasterBlaster_CampaignModel $campaign
 	 * @throws Exception
-	 * @return \Craft\MasterBlaster_CampaignRecord
+	 * @return MasterBlaster_CampaignRecord
 	 */
 	private function _saveCampaign(MasterBlaster_CampaignModel &$campaign)
 	{
@@ -237,9 +244,12 @@ class MasterBlasterService extends BaseApplicationComponent
 	}
 	
 	/**
+	 * Saves recipient list for campaign
+	 * 
 	 * @param MasterBlaster_CampaignModel $campaign
 	 * @param MasterBlaster_CampaignRecord $campaignRecord
 	 * @throws Exception
+	 * @return void
 	 */
 	private function _saveRecipientList(MasterBlaster_CampaignModel &$campaign, MasterBlaster_CampaignRecord &$campaignRecord)
 	{
@@ -365,6 +375,12 @@ class MasterBlasterService extends BaseApplicationComponent
 		}
 	}
 	
+	/**
+	 * Cleans up the recipient list after saving
+	 * 
+	 * @param MasterBlaster_CampaignRecord $campaignRecord
+	 * @return boolean
+	 */
 	private function _cleanUpRecipientListOrphans(&$campaignRecord)
 	{
 		// clean up recipient lists if orphaned
@@ -402,6 +418,7 @@ class MasterBlasterService extends BaseApplicationComponent
 	
 	/**
 	 * Delete recipient list
+	 * 
 	 * @param int $recipientListId
 	 * @return bool
 	 */
@@ -412,6 +429,7 @@ class MasterBlasterService extends BaseApplicationComponent
 	
 	/**
 	 * Delete campaign recipient list entry
+	 * 
 	 * @param int $recipientListId
 	 * @param int $campaignId
 	 * @return bool
@@ -476,6 +494,11 @@ class MasterBlasterService extends BaseApplicationComponent
 		return true;
 	}
 	
+	/**
+	 * Returns all available system frontend templates
+	 * 
+	 * @return array
+	 */
 	public function getTemplatesDirListing()
 	{
 		$templates_path = craft()->path->getSiteTemplatesPath();
@@ -492,23 +515,49 @@ class MasterBlasterService extends BaseApplicationComponent
 		return $select_options;
 	}
 	
+	/**
+	 * Returns all campaign notifications
+	 * 
+	 * @return array
+	 */
 	public function getNotifications()
 	{
 		return MasterBlaster_CampaignRecord::model()->getNotifications();
 	}
 	
+	/**
+	 * Returns all supported notification events
+	 * 
+	 * @return array
+	 */
 	public function getNotificationEvents()
 	{
 		$events = MasterBlaster_NotificationEventRecord::model()->findAll();
 		$events_list = array();
 		foreach($events as $event)
 		{
-			$events_list[$event->id] = $event->description;
+			$events_list[$event->id] = $event;
 		}
 		return $events_list;
 	}
 	
-
+	/**
+	 * Returns event option file names
+	 * 
+	 * @return array
+	 */
+	public function getNotificationEventOptions()
+	{
+		return $this->_scan(dirname(__FILE__) . '/../templates/notifications/_event_options');
+	}
+	
+	/**
+	 * Recursive directory scan
+	 * 
+	 * @param string $dir
+	 * @param sring $prefix
+	 * @return array
+	 */
 	private function _scan($dir, $prefix = '')
 	{
 		$dir = rtrim($dir, '\\/');
@@ -527,8 +576,7 @@ class MasterBlasterService extends BaseApplicationComponent
 					$result[] = $prefix.$f;
 				}
 			}
-		}
-	
+		}	
 		return $result;
 	}
 }

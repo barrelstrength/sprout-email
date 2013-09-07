@@ -3,12 +3,15 @@ namespace Craft;
 
 /**
  * CampaignMonitor service
+ * Abstracted CampaignMonitor wrapper
  */
 class MasterBlaster_campaign_monitorService extends MasterBlaster_EmailProviderService
 {
-	
-
-	
+	/**
+	 * Returns subscriber lists
+	 * 
+	 * @return array
+	 */
 	public function getSubscriberList()
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
@@ -30,6 +33,12 @@ class MasterBlaster_campaign_monitorService extends MasterBlaster_EmailProviderS
 		return $subscriber_lists;
 	}
 	
+	/**
+	 * Exports campaign (no send)
+	 * 
+	 * @param array $campaign
+	 * @param array $listIds
+	 */
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
@@ -66,6 +75,12 @@ class MasterBlaster_campaign_monitorService extends MasterBlaster_EmailProviderS
 		die();
 	}
 	
+	/**
+	 * Exports campaign (with send)
+	 * 
+	 * @param array $campaign
+	 * @param array $listIds
+	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
 		// TODO

@@ -9,6 +9,7 @@ class MasterBlaster_NotificationsController extends MasterBlaster_CampaignsContr
 {
 	/**
 	 * Save campaign
+	 * 
 	 * @return void
 	 */
 	public function actionSave()
@@ -16,8 +17,11 @@ class MasterBlaster_NotificationsController extends MasterBlaster_CampaignsContr
 		// first save the campaign as normally would be done
 		if($campaignId = parent::actionSave())
 		{
-			// since this is a notification, we'll make an event/campaign association
+			// since this is a notification, we'll make an event/campaign association...
 			craft()->masterBlaster_notifications->associateCampaign($campaignId, craft()->request->getPost('notificationEvent'));
+		
+			// ... and set notification options
+			craft()->masterBlaster_notifications->setCampaignNotificationEventOptions($campaignId, craft()->request->getPost());
 		}
 	}
 }

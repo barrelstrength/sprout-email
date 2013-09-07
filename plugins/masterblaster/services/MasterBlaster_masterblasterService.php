@@ -6,9 +6,11 @@ namespace Craft;
  */
 class MasterBlaster_masterblasterService extends MasterBlaster_EmailProviderService
 {
-	
-
-	
+	/**
+	 * Returns locally managed recipient lists (used by masterBlaster email provider service)
+	 * 
+	 * @return multitype:|multitype:NULL
+	 */	
 	public function getSubscriberList()
 	{
 		$subscriber_lists = array();
@@ -27,11 +29,23 @@ class MasterBlaster_masterblasterService extends MasterBlaster_EmailProviderServ
 		return $subscriber_lists;
 	}
 	
+	/**
+	 * Exports campaign (no send)
+	 *
+	 * @param array $campaign
+	 * @param array $listIds
+	 */
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
 		// TODO
 	}
 	
+	/**
+	 * Exports campaign (with send)
+	 *
+	 * @param array $campaign
+	 * @param array $listIds
+	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
 		// get recipients 

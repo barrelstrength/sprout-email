@@ -3,9 +3,15 @@ namespace Craft;
 
 /**
  * MailChimp service
+ * Abstracted MailChimp wrapper
  */
 class MasterBlaster_mail_chimpService extends MasterBlaster_EmailProviderService implements MasterBlaster_EmailProviderInterfaceService
 {	
+	/**
+	 * Returns subscriber lists
+	 *
+	 * @return array
+	 */
 	public function getSubscriberList()
 	{
 		require_once(dirname(__FILE__) . '/../libraries/mail_chimp/inc/MCAPI.class.php');
@@ -28,6 +34,12 @@ class MasterBlaster_mail_chimpService extends MasterBlaster_EmailProviderService
 		return $subscriber_lists;
 	}
 	
+	/**
+	 * Exports campaign (no send)
+	 *
+	 * @param array $campaign
+	 * @param array $listIds
+	 */
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
 		require_once(dirname(__FILE__) . '/../libraries/mail_chimp/inc/MCAPI.class.php');
@@ -86,6 +98,12 @@ class MasterBlaster_mail_chimpService extends MasterBlaster_EmailProviderService
 		die();
 	}
 	
+	/**
+	 * Exports campaign (with send)
+	 *
+	 * @param array $campaign
+	 * @param array $listIds
+	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
 		// TODO

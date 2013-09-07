@@ -5,6 +5,7 @@ class MasterBlaster_CampaignModel extends BaseModel
 {
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
+	 * 
 	 * @return array
 	 */
     public function defineAttributes()
@@ -32,6 +33,9 @@ class MasterBlaster_CampaignModel extends BaseModel
         	'recipientOption'	=> array(AttributeType::Number),
 			'emailProviderRecipientListId' => array(AttributeType::Enum),
 			'recipients'		=> array(AttributeType::String),
+        		
+        	// events
+        	'notificationEvents'=> array(AttributeType::Enum),
         );
     }
 }

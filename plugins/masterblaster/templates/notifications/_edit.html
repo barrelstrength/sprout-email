@@ -17,6 +17,8 @@
 	{% set campaignId = campaign.id %}	
 {% endif %}
 
+
+
 {% set crumbs = [
 	{ label: "Master Blaster"|t, url: url('masterblaster/campaigns') },
 ] %}
@@ -109,6 +111,7 @@ reports:    {
 
 	{% set emailProviders = craft.masterblaster.getEmailProviders() %}
 
+	<div style="display:none;" >
 	{{ forms.selectField({
 		label: "How would you like to send this email"|t,
 		id: 'emailProvider',
@@ -118,6 +121,7 @@ reports:    {
 		value: (campaign is defined ? campaign.emailProvider : null),
 		errors: (campaign is defined ? campaign.getErrors('emailProvider') : null) 	
 	}) }}
+	</div>
 	
 	{% set events = craft.masterblaster.getNotificationEvents() %}
 
@@ -130,6 +134,19 @@ reports:    {
 		value: (campaign is defined and campaign.notificationEvent[0] is defined ? campaign.notificationEvent[0].id : null),
 		errors: (campaign is defined ? campaign.getErrors('notificationEvent') : null) 	
 	}) }}
+	
+	{% set eventOptions = craft.masterblaster.getNotificationEventOptions() %}
+	
+	
+	
+	{% for key, val in eventOptions %}
+		{% for key2, val2 in val %}
+			<div class="event_options {{ key }}" >
+				{% include "masterblaster/notifications/_event_options/" ~ key ~ "/" ~  val2 %}
+			</div>
+		{% endfor %}
+	{% endfor %}
+	
 	
 </div>
 

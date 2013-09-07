@@ -1,4 +1,15 @@
 
+Let's require Users for List Integration.  If people don't have users they can just use Campaign Monitor or some other service.
+
+------------------------------------------------------------
+
+
+Consider replacing: HTML or  Text	 Send | Export | Status
+With a "Preview" option that works like Live Preview but also has:
+	Two tabs:  HTML, Text
+	Buttons for Send | Export or other actions.
+
+
 Wrap <pre> or <code> tags around the textarea for the Plain text version of the email.
 
 Should allow people without Users Addon to create a list.

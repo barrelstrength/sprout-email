@@ -45,4 +45,23 @@ class MasterBlaster_NotificationEventRecord extends BaseRecord
     			),
     	);
     }
+    
+    /**
+     * Return event notifications
+     * @param string $event
+     */
+    public function getEventNotifications($event = null)
+    {
+    	$criteria = new \CDbCriteria();
+    	
+    	if($event)
+    	{
+	    	$criteria->condition = 'event=:event';
+	    	$criteria->params = array(':event' => $event);
+    	}
+    	
+    	return MasterBlaster_NotificationEventRecord::model()
+    	->with('campaign','campaign.recipientList')
+    	->findAll($criteria);
+    }
 }

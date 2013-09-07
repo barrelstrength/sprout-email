@@ -7,7 +7,11 @@ namespace Craft;
  */
 class MasterBlaster_CampaignsController extends BaseController
 {
-	
+	/**
+	 * Export campaign
+	 * 
+	 * @return void
+	 */
 	public function actionExport()
 	{
 		craft()->masterBlaster_emailProvider->exportCampaign(
@@ -16,6 +20,7 @@ class MasterBlaster_CampaignsController extends BaseController
 
 	/**
 	 * Save campaign
+	 * 
 	 * @return void
 	 */
 	public function actionSave()
@@ -48,6 +53,7 @@ class MasterBlaster_CampaignsController extends BaseController
 	
 	/**
 	 * Deletes a campaign
+	 * 
 	 * @return void
 	 */
 	public function actionDelete()

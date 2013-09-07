@@ -91,13 +91,22 @@ class MasterBlasterPlugin extends BasePlugin
     {
     	$events = array(
     			array(
-    					'event' => 'content.saveContent',
-    					'description' => 'when content is saved'
+    					'event' => 'entries.saveEntry.new',
+    					'description' => 'when a new entry is created'
+    			),    			
+    			array(
+    					'event' => 'entries.saveEntry',
+    					'description' => 'when an existing entry is updated'
     			),
     			array(
-    					'event' => 'users.beforeSaveProfile',
+    					'event' => 'users.saveUser',
+    					'description' => 'when user is saved'
+    			),
+				array(
+    					'event' => 'users.saveProfile',
     					'description' => 'when user profile is saved'
     			),
+
     	);
     
     	foreach ($events as $event) 
@@ -152,6 +161,7 @@ class MasterBlasterPlugin extends BasePlugin
     
     public function init()
     {
+    	// events fired by $this->raiseEvent 
         craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
         craft()->on('users.saveUser', array($this, 'onSaveUser'));
         craft()->on('users.saveProfile', array($this, 'onSaveProfile'));
@@ -160,42 +170,87 @@ class MasterBlasterPlugin extends BasePlugin
         craft()->on('content.saveContent', array($this, 'onSaveContent'));
     }
 
+    /**
+     * Available variables:
+     * all entries in 'craft_content' table
+     * to access: entry.id, entry.body, entry.locale, etc.
+     * @param Event $event
+     */
     public function onSaveEntry(Event $event)
-    {
-		$this->_processEvent('entries.saveEntry', $event);
+    {    	
+    	switch($event->params['isNewEntry'])
+    	{
+    		case true:
+    			$event_type = 'entries.saveEntry.new';
+    			break;
+    		default:
+    			$event_type = 'entries.saveEntry';
+    			break;
+    	}
+		$this->_processEvent($event_type, $event->params['entry']);
     }
 
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
     public function onSaveUser(Event $event)
     {
-        $user = $event->params['user'];
+        $this->_processEvent('users.saveUser', $event->params['user']);
     }
 
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
     public function onSaveProfile(Event $event)
     {
-        $user = $event->params['user'];
+    	$this->_processEvent('users.saveProfile', $event->params['user']);
     }
 
+    // not implemented
     public function onSaveGlobalContent(Event $event)
     {
-        $globalSet = $event->params['globalSet'];
+    	
+        $this->_processEvent('globals.saveGlobalContent', $event->params['globalSet']);
     }
 
+    // not implemented
     public function onSaveFileContent(Event $event)
     {
-        $file = $event->params['file'];
+        $this->_processEvent('assets.saveFileContent', $event->params['file']);
     }
 
+    /**
+     * Available variables:
+     * all entries in 'craft_content' table
+     * to access: entry.id, entry.body, entry.locale, etc.
+     * @param Event $event
+     */
     public function onSaveContent(Event $event)
     {
-        $content = $event->params['content'];
+    	switch($event->params['isNewContent'])
+    	{
+    		case true:
+    			$event_type = 'content.saveContent.new';
+    			break;
+    		default:
+    			$event_type = 'content.saveContent';
+    			break;
+    	}
+        $this->_processEvent($event_type, $event->params['content']);
     }
     
-    private function _processEvent($eventType, $event)
+    private function _processEvent($eventType, $entry)
     {
     	// get registered entries
-    	if($res = craft()->masterBlaster_notifications->getEventNotifications($eventType))
+    	if($res = craft()->masterBlaster_notifications->getEventNotifications($eventType, $entry))
     	{
-    		foreach($res[0]->campaign as $campaign)
+    		foreach($res as $campaign)
     		{
     			if( ! $campaign->recipientList)
     			{
@@ -204,7 +259,7 @@ class MasterBlasterPlugin extends BasePlugin
     			 
     			try
     			{
-    				$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $event->params['entry']));
+    				$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entry));
     			}
     			catch (\Exception $e)
     			{

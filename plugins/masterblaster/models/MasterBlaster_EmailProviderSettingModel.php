@@ -6,6 +6,7 @@ class MasterBlaster_EmailProviderSettingModel extends BaseModel
 
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
+	 * 
 	 * @return array
 	 */
     public function defineAttributes()

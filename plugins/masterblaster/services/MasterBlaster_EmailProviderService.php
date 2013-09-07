@@ -29,6 +29,12 @@ class MasterBlaster_EmailProviderService extends BaseApplicationComponent
 		return $select_options;
 	}
 	
+	/**
+	 * Base function for exporting section based emails
+	 * 
+	 * @param int $entryId
+	 * @param int $campaignId
+	 */
 	public function exportCampaign($entryId, $campaignId)
 	{
 		if( ! $campaign = craft()->masterBlaster->getSectionBasedCampaignByEntryAndCampaignId($entryId, $campaignId))

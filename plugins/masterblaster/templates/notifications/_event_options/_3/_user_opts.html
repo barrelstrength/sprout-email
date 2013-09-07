@@ -1,0 +1,18 @@
+<hr>
+<h2>Please select options for "when user is saved" event:</h2>
+
+{% if campaign.notificationEvents[0].options.userGroupIds is defined %}
+{% set userProfileSavedAssignedGroups = campaign.notificationEvents[0].options.userGroupIds %}
+{% endif %}
+
+
+	{{ forms.field({
+		label: "User Groups"|t,
+		instructions: "Select one or more user groups."|t,
+		errors: (campaign is defined ? campaign.getErrors('sectionIds') : null) ,
+	}, forms.checkboxGroup({
+		name: 'userProfileSavedGroupIds',
+		options : craft.masterblaster.getAllUserGroups(),
+		values: userProfileSavedAssignedGroups is defined ? userProfileSavedAssignedGroups : null
+	})) }}
+<hr>
