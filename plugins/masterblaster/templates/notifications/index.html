@@ -1,6 +1,10 @@
 {% extends "masterblaster/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
+{% set extraPageHeaderHtml %}
+  <a class="btn settings icon" href="{{ url('masterblaster/settings') }}" title="{{ 'Settings'|t }}"></a>
+{% endset %}
+
 {% set body %}
 
 	

@@ -1,0 +1,27 @@
+{% extends "masterblaster/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set body %}
+
+	<h2>{{ "Configuration"|t }}</h2>
+
+	<ul class="icons">
+		<li><a href="{{ url('settings/fields') }}" data-icon="field">{{ "Fields"|t }}</a></li>
+		<li><a href="{{ url('settings/sections') }}" data-icon="section">{{ "Sections"|t }}</a></li>
+		<li><a href="{{ url('masterblaster/settings/integrations') }}" data-icon="plugin">{{ "Integrations"|t }}</a></li>
+	</ul>
+
+	<hr>
+
+	<h2>{{ "Related Craft Settings"|t }}</h2>
+
+	<ul class="icons">
+		{% if craft.config.siteRoutesSource != 'file' %}
+			<li><a href="{{ url('settings/routes') }}" data-icon="routes">{{ "Routes"|t }}</a></li>
+		{% endif %}
+		<li><a href="{{ url('settings/email') }}" data-icon="mail">{{ "Email"|t }}</a></li>
+		<li><a href="{{ url('settings/plugins') }}" data-icon="plugin">{{ "Plugins"|t }}</a></li>
+	</ul>
+	
+{% endset %}
+

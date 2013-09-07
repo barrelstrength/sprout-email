@@ -1,17 +1,32 @@
 {% extends "_layouts/cp" %}
 
-{% set title = craft.MasterBlaster.name %}
+{% if craft.request.getSegment(2) == "settings" %}
 
-{% set tabs = {
-    campaigns:  { 
-      label: "Campaigns"|t, 
-      url: url('masterblaster/campaigns') 
-    },
-    notifications:  { 
-      label: "Notifications"|t, 
-      url: url('masterblaster/notifications') 
-    }
-} %}
+  {% set title = "Settings" %}
+
+  {% set crumbs = [
+    { label: "Master Blaster"|t, url: url('masterblaster/campaigns') },
+    { label: "Settings"|t, url: url('masterblaster/settings') }
+  ] %}
+
+{% else %}
+
+  {% set title = craft.MasterBlaster.name %}
+
+  {% set tabs = {
+      campaigns:  { 
+        label: "Campaigns"|t, 
+        url: url('masterblaster/campaigns') 
+      },
+      notifications:  { 
+        label: "Notifications"|t, 
+        url: url('masterblaster/notifications') 
+      }
+  } %}
+  
+{% endif %} 
+
+
 
 {# 
 subscribers: { 
