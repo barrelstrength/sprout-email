@@ -100,13 +100,19 @@ class MasterBlasterVariable
     }
     
     public function getAllUserGroups($indexBy = null)
-    {
-    	$result = craft()->userGroups->getAllGroups($indexBy);
-    	$options = array();
-    	foreach($result as $key => $group)
-    	{
-    		$options[$group->id] = $group->name;
-    	}
+    {   
+        $options = array();
+
+        if (Craft::hasPackage(CraftPackage::Users))
+        {
+        	$result = craft()->userGroups->getAllGroups($indexBy);
+            
+        	foreach($result as $key => $group)
+        	{
+        		$options[$group->id] = $group->name;
+        	}
+        }
+
     	return $options;
     }
     
