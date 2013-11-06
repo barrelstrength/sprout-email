@@ -1,0 +1,16 @@
+
+	
+	{{ forms.textareaField({
+		label: "Add Recipients"|t,
+		id: 'recipients',
+		name: 'recipients',
+		instructions: "Add each email address on a separate line"|t,
+		value: (campaign is defined ? campaign.recipients : null),
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('recipients') : null) 	
+	}) }}
+
+	<hr>
+
+
+	

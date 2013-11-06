@@ -80,27 +80,27 @@ class MasterBlaster_CampaignNotificationEventRecord extends BaseRecord
     	{
     		$notificationCampaignIds[$key] = $campaignNotification->campaignId; // assume it's a match
     		if($opts = unserialize($campaignNotification->options)) // get options, if any
-    		{    				
-    			foreach($opts as $option) // process each option set associated with the campagin
+    		{    			
+    			foreach($opts['options'] as $option_key => $option) // process each option set associated with the campagin
     			{
-	    			switch(key($option))
+    				if( ! is_array($option))
+    				{
+    					continue;
+    				}
+
+	    			switch($option_key)
 				    {
 				    	case 'userGroupIds':
 				    		
 				    		// process 'on user save' type events
 				    		if($entry->elementType == 'User')
-				    		{
-				    			if( ! $option['userGroupIds'])
-				    			{
-				    				continue;
-				    			}
-				    			
+				    		{				    			
 				    			$groups_arr = array();				    			
 				    			if($groups = craft()->userGroups->getGroupsByUserId($entry->id))
 				    			{
 					    			foreach($groups as $group)
 					    			{
-					    				if( ! in_array($group->id, $option['userGroupIds']))
+					    				if( ! in_array($group->id, $option))
 					    				{
 					    					unset($notificationCampaignIds[$key]);
 					    					continue;
@@ -113,18 +113,24 @@ class MasterBlaster_CampaignNotificationEventRecord extends BaseRecord
 				    				continue;
 				    			}
 				    		}
+				    		
+				    		// process 'on content save' type events
+				    		else if(strpos(get_class($entry), 'EntryModel') !== false)
+				    		{
+				    		
+				    			if( ! in_array($entry->sectionId, $option))
+				    			{
+				    				unset($notificationCampaignIds[$key]);
+				    				continue;
+				    			}
+				    		}
 				    		break;
 				    	case 'sectionIds':
-				    		
+
 				    		// process 'on content save' type events
 				    		if(strpos(get_class($entry), 'EntryModel') !== false)
 				    		{
-				    			if( ! $option['sectionIds'])
-				    			{
-				    				continue;
-				    			}
-
-				    			if( ! in_array($entry->sectionId, $option['sectionIds']))
+				    			if( ! in_array($entry->sectionId, $option))
 				    			{
 				    				unset($notificationCampaignIds[$key]);
 				    				continue;
@@ -157,26 +163,29 @@ class MasterBlaster_CampaignNotificationEventRecord extends BaseRecord
     	{
     		case 1: // entries.saveEntry
     			$options = array('options' => array(
-						'sectionIds' => $data['entrySavedSectionIds']
+						'sectionIds' => $data['entriesSaveEntryNewSectionIds'],
+						'userGroupIds' => $data['entriesSaveEntryNewUseroptIds']
 				));
     			break;
-    		case 4: // users.saveUser
+    		case 4: // users.saveProfile
     			$options = array('options' => array(
-						'userGroupIds' => $data['userSavedGroupIds']
+    					
+						'userGroupIds' => $data['usersSaveProfileUseroptIds']
 				));
     			break;
-    		case 3: // users.saveProfile
+    		case 3: // users.saveUser
     			$options = array('options' => array(
-						'userGroupIds' => $data['userProfileSavedGroupIds']
+						'userGroupIds' => $data['usersSaveUserUseroptIds']
 				));
     			break;
     		case 2: // content.saveContent
     			$options = array('options' => array(
-						'sectionIds' => $data['contentSavedSectionIds']
+						'sectionIds' => $data['entriesSaveEntrySectionIds'],
+						'userGroupIds' => $data['entriesSaveEntryUseroptIds']
 				));
     			break;
     		default:
-    			$options = array('options' => array());
+    			$options = array('options' => $data['options'] ? $data['options'] : array());
     			break;
     	}
 

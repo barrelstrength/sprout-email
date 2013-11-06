@@ -127,6 +127,47 @@ class MasterBlasterService extends BaseApplicationComponent
 			return $campaignModel;
 		}
 	}
+	
+	public function saveEvent(MasterBlaster_NotificationEventModel &$event)
+	{
+		if (isset($event->id) && $event->id)
+		{
+			$eventRecord = MasterBlaster_NotificationEventRecord::model()->findById($event->id);
+		
+			if ( ! $eventRecord)
+			{
+				throw new Exception(Craft::t('No event exists with the ID “{id}”', array('id' => $event->id)));
+			}
+		}
+		else
+		{
+			$eventRecord = new MasterBlaster_NotificationEventRecord();
+		}
+
+		$eventRecord->registrar = $event->registrar;
+		$eventRecord->event = $event->event;
+		$eventRecord->description = $event->description;
+		
+		$eventRecord->validate();
+		$event->addErrors($eventRecord->getErrors());
+		
+		if( ! $eventRecord->hasErrors())
+		{
+			try 
+			{
+				craft()->plugins->call($event->registrar,array($event->event, function($event, BaseModel $entity, $success = TRUE){}));
+			}
+			catch (\Exception $e)
+			{
+				$event->addError('event', $e->getMessage());
+				return $event;
+			}
+			
+			$eventRecord->save(false);
+		}
+		
+		return $eventRecord;
+	}
 
 	/**
 	 * Process the 'save campaign' action.
@@ -187,7 +228,7 @@ class MasterBlasterService extends BaseApplicationComponent
 	 */
 	private function _saveCampaign(MasterBlaster_CampaignModel &$campaign)
 	{
-		if (isset($campaign->id) && $campaign->id)
+		if (isset($campaign->id) && $campaign->id) // this will be an edit
 		{
 			$campaignRecord = MasterBlaster_CampaignRecord::model()->findById($campaign->id);
 		
@@ -243,6 +284,35 @@ class MasterBlasterService extends BaseApplicationComponent
 		return $campaignRecord;
 	}
 	
+	private function _saveMasterBlasterRecipientList(&$campaign, &$campaignRecord)
+	{
+		$recipientIds = array();
+			
+		// parse and create individual recipients as needed
+		if( ! $recipients = array_filter(explode("\r\n", $campaign->recipients)))
+		{
+			$campaign->addError('recipients', 'You must add at least one valid email.');
+			return false;
+		}
+
+		// validate emails
+		foreach($recipients as $email)
+		{
+			$recipientRecord = new MasterBlaster_RecipientRecord();
+		
+			$recipientRecord->email = $email;
+			$recipientRecord->validate();
+			if($recipientRecord->hasErrors())
+			{
+				$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
+				return false;
+			}
+		}
+		
+		$campaignRecord->recipients = implode("\r\n", $recipients);
+		$campaignRecord->save();
+	}
+	
 	/**
 	 * Saves recipient list for campaign
 	 * 
@@ -259,57 +329,16 @@ class MasterBlasterService extends BaseApplicationComponent
 			$campaign->addError('emailProvider', 'Unsupported email provider.');
 		}
 		
-		// if a new recipient list is passed in, handle that first
-		if($campaign->recipientOption == 2)
+		if($campaign->emailProvider == 'masterblaster')
 		{
-			
-			$recipientIds = array();
-			
-			// parse and create individual recipients as needed
-			if( ! $recipients = explode("\r\n", $campaign->recipients))
-			{
-				$campaign->addError('recipients', 'You must add at least one valid email.');
-				return false;
-			}
-			foreach($recipients as $email)
-			{
-				$recipientRecord = new MasterBlaster_RecipientRecord();
-				
-				// first let's check if the email already exists
-				$recipientRecord->find('email=:email', array(':email' => $email));
-
-				if($recipientRecord->id)
-				{
-					$recipientIds[] = $recipientRecord->id;
-					continue;
-				}
-				
-				$recipientRecord->email = $email;
-				$recipientRecord->save(false);
-				if($recipientRecord->hasErrors())
-				{
-					$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
-					return false;
-				}
-				
-				$recipientIds[] = $recipientRecord->id;				
-			}
-			
-			// create a new local recipient list
-			$localRecipientList = new MasterBlaster_LocalRecipientListRecord();
-			$localRecipientList->name = 'Auto-generated ' . date('m.d.Y G:i');
-			$localRecipientList->save(false);			
-			
-			foreach($recipientIds as $recipientId)
-			{
-				$localRecipientListAssignment = new MasterBlaster_LocalRecipientListAssignmentRecord();
-				$localRecipientListAssignment->localRecipientListId = $localRecipientList->id;
-				$localRecipientListAssignment->recipientId = $recipientId;
-				$localRecipientListAssignment->save(false);
-			}
-			
-			$campaign->emailProviderRecipientListId = $localRecipientList->id;
-			
+			return $this->_saveMasterBlasterRecipientList($campaign, $campaignRecord);
+		}
+		
+		// if a new recipient list is passed in, handle that first
+		// this code is for the old system
+		if($campaign->recipientOption == 2)
+		{			
+			// $this->__saveMasterBlasterRecipientList();			
 		}
 
 		// at least one recipient list is required
@@ -494,6 +523,16 @@ class MasterBlasterService extends BaseApplicationComponent
 		return true;
 	}
 	
+	public function deleteEvent($id)
+	{
+		if( ! craft()->db->createCommand()->delete('masterblaster_notification_events', array('id' => $id)))
+		{
+			$transaction->rollback();
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * Returns all available system frontend templates
 	 * 
@@ -530,8 +569,14 @@ class MasterBlasterService extends BaseApplicationComponent
 	 * 
 	 * @return array
 	 */
-	public function getNotificationEvents()
+	public function getNotificationEvents($event = null)
 	{
+		if($event)
+		{
+			$criteria = new \CDbCriteria();
+			$criteria->condition = 'event!=:event';
+			$criteria->params = array(':event' => 'craft');
+		}
 		$events = MasterBlaster_NotificationEventRecord::model()->findAll();
 		$events_list = array();
 		foreach($events as $event)
@@ -542,13 +587,34 @@ class MasterBlasterService extends BaseApplicationComponent
 	}
 	
 	/**
+	 * Returns single notification event
+	 *
+	 * @return array
+	 */
+	public function getNotificationEventById($id = null)
+	{
+		return MasterBlaster_NotificationEventRecord::model()->findByPk($id);
+	}
+	
+	/**
 	 * Returns event option file names
 	 * 
 	 * @return array
 	 */
 	public function getNotificationEventOptions()
 	{
-		return $this->_scan(dirname(__FILE__) . '/../templates/notifications/_event_options');
+		$options = $this->_scan(dirname(__FILE__) . '/../templates/notifications/_event_options');
+		
+		$criteria = new \CDbCriteria();
+		$criteria->condition = 'registrar!=:registrar';
+		$criteria->params = array(':registrar' => 'craft');
+		$events = MasterBlaster_NotificationEventRecord::model()->findAll($criteria);
+		foreach($events as $event)
+		{
+			$options['plugin_options'][$event->id] = $event->options;;
+		}
+		
+		return $options;
 	}
 	
 	/**
@@ -578,5 +644,59 @@ class MasterBlasterService extends BaseApplicationComponent
 			}
 		}	
 		return $result;
+	}
+	
+	/**
+	 * Old recipient list save system
+	 * @return boolean
+	 */
+	private function __saveMasterBlasterRecipientList()
+	{
+		$recipientIds = array();
+			
+		// parse and create individual recipients as needed
+		if( ! $recipients = explode("\r\n", $campaign->recipients))
+		{
+			$campaign->addError('recipients', 'You must add at least one valid email.');
+			return false;
+		}
+		foreach($recipients as $email)
+		{
+			$recipientRecord = new MasterBlaster_RecipientRecord();
+	
+			// first let's check if the email already exists
+			$recipientRecord->find('email=:email', array(':email' => $email));
+	
+			if($recipientRecord->id)
+			{
+				$recipientIds[] = $recipientRecord->id;
+				continue;
+			}
+	
+			$recipientRecord->email = $email;
+			$recipientRecord->save(false);
+			if($recipientRecord->hasErrors())
+			{
+				$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
+				return false;
+			}
+	
+			$recipientIds[] = $recipientRecord->id;
+		}
+			
+		// create a new local recipient list
+		$localRecipientList = new MasterBlaster_LocalRecipientListRecord();
+		$localRecipientList->name = 'Auto-generated ' . date('m.d.Y G:i');
+		$localRecipientList->save(false);
+			
+		foreach($recipientIds as $recipientId)
+		{
+			$localRecipientListAssignment = new MasterBlaster_LocalRecipientListAssignmentRecord();
+			$localRecipientListAssignment->localRecipientListId = $localRecipientList->id;
+			$localRecipientListAssignment->recipientId = $recipientId;
+			$localRecipientListAssignment->save(false);
+		}
+			
+		$campaign->emailProviderRecipientListId = $localRecipientList->id;
 	}
 }

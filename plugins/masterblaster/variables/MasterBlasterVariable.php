@@ -3,6 +3,7 @@ namespace Craft;
 
 class MasterBlasterVariable
 {
+	
     /**
      * Plugin Name
      * Make your plugin name available as a variable
@@ -100,19 +101,13 @@ class MasterBlasterVariable
     }
     
     public function getAllUserGroups($indexBy = null)
-    {   
-        $options = array();
-
-        if (Craft::hasPackage(CraftPackage::Users))
-        {
-        	$result = craft()->userGroups->getAllGroups($indexBy);
-            
-        	foreach($result as $key => $group)
-        	{
-        		$options[$group->id] = $group->name;
-        	}
-        }
-
+    {
+    	$result = craft()->userGroups->getAllGroups($indexBy);
+    	$options = array();
+    	foreach($result as $key => $group)
+    	{
+    		$options[$group->id] = $group->name;
+    	}
     	return $options;
     }
     
@@ -138,29 +133,70 @@ class MasterBlasterVariable
     	return craft()->masterBlaster->getNotifications();
     }
     
-    public function getNotificationEvents($notificationEvent = null)
+    public function getNotificationEvents($notificationEvent = null, $return_full_objects = false)
     {
+    	// we'll use this opportunity to clean up and register plugin registration events;
+    	// although this is more of an 'install' type script, doing it here limits
+    	// its execution and keeps the events fresh
+    	craft()->masterBlaster_integration->registerEvents();
+    	
     	$events = craft()->masterBlaster->getNotificationEvents($notificationEvent);
+
+    	if($return_full_objects)
+    	{
+    		return $events;
+    	}
     	
     	$out = array();
     	foreach($events as $event)
     	{
-    		$out[$event->id] = $event->description;
+    		if($event->registrar == 'craft')
+    		{
+    			$out[str_replace('.', '---', $event->event)] = $event->description;
+    		}
+    		else 
+    		{
+    			$out[$event->id] = $event->description;
+    		}
     	}
     	
     	return $out;
     }
     
-    public function getNotificationEventOptions()
+    public function getNotificationEventById($id)
     {
+    	return craft()->masterBlaster->getNotificationEventById($id);
+    }
+    
+    public function getNotificationEventOptions()
+    {    	
     	$res = craft()->masterBlaster->getNotificationEventOptions();
     	
     	$out = array();
-    	foreach($res as $template)
+    	foreach($res as $key => $template)
     	{
+    		if($key == 'plugin_options') continue;
     		list($event, $options) = explode('/', $template);
-    		$out[$event][] = $options;
+    		$out['system_options'][$event][] = $options;
     	}
+
+    	if(isset($res['plugin_options']))
+    	{    	
+    		foreach($res['plugin_options'] as $k=>$v)
+    		{
+    			$decoded = json_decode($v);
+    			if(empty($decoded)) continue;
+    			
+    			$out['plugin_options'][$k] = (array) json_decode($v);
+    		}	
+    	}
+    	
+    	// parse html
+    	foreach($out['plugin_options'] as $k=>$v)
+    	{
+    		$out['plugin_options'][$k] = $v;
+    	}
+
     	return $out;
     }
 

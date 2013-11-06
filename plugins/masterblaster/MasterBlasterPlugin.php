@@ -3,6 +3,11 @@ namespace Craft;
 
 class MasterBlasterPlugin extends BasePlugin
 {
+	
+	public function __construct()
+	{
+		
+	}
     public function getName() 
     {
         $pluginName = Craft::t('Master Blaster');
@@ -22,7 +27,7 @@ class MasterBlasterPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '1.0';
+        return '0.3.1';
     }
 
     public function getDeveloper()
@@ -71,6 +76,12 @@ class MasterBlasterPlugin extends BasePlugin
         		
         	'masterblaster\/notifications\/edit\/(?P<campaignId>\d+)' =>
         	'masterblaster/notifications/_edit',
+        		
+        	'masterblaster\/events\/new' =>
+        	'masterblaster/events/_edit',
+        		
+        	'masterblaster\/events\/edit\/(?P<eventId>\d+)' =>
+        	'masterblaster/events/_edit',
         );
     }
 
@@ -85,28 +96,36 @@ class MasterBlasterPlugin extends BasePlugin
     }
     
     /**
-     * Add default ingredients after plugin is installed
+     * Add default events after plugin is installed
      */
     public function onAfterInstall()
     {
     	$events = array(
     			array(
+    					'registrar' => 'craft',
     					'event' => 'entries.saveEntry.new',
     					'description' => 'when a new entry is created'
     			),    			
     			array(
+    					'registrar' => 'craft',
     					'event' => 'entries.saveEntry',
     					'description' => 'when an existing entry is updated'
     			),
     			array(
+    					'registrar' => 'craft',
     					'event' => 'users.saveUser',
     					'description' => 'when user is saved'
     			),
 				array(
+						'registrar' => 'craft',
     					'event' => 'users.saveProfile',
     					'description' => 'when user profile is saved'
     			),
-
+    			array(
+    					'registrar' => 'commerceAddEventListener',
+    					'event' => 'checkoutEnd',
+    					'description' => 'Commerce: when an order is submitted'
+    			),
     	);
     
     	foreach ($events as $event) 
@@ -161,6 +180,8 @@ class MasterBlasterPlugin extends BasePlugin
     
     public function init()
     {
+    	parent::init();
+
     	// events fired by $this->raiseEvent 
         craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
         craft()->on('users.saveUser', array($this, 'onSaveUser'));
@@ -168,6 +189,120 @@ class MasterBlasterPlugin extends BasePlugin
         craft()->on('globals.saveGlobalContent', array($this, 'onSaveGlobalContent'));
         craft()->on('assets.saveFileContent', array($this, 'onSaveFileContent'));
         craft()->on('content.saveContent', array($this, 'onSaveContent'));
+
+        $criteria = new \CDbCriteria();
+        $criteria->condition = 'registrar!=:registrar';
+        $criteria->params = array(':registrar' => 'craft');
+        if( $events = MasterBlaster_NotificationEventRecord::model()->findAll($criteria))
+        {
+        	foreach($events as $event)
+        	{
+        		try 
+        		{
+        			craft()->plugins->call($event->registrar,array($event->event, $this->_get_closure()));
+        		}
+        		catch (\Exception $e)
+        		{
+        			die($e->getMessage());
+        		}
+        	}
+        }
+        
+
+    }
+    
+    private function _get_closure()
+    {
+    	/**
+    	 * Event handler closure
+    	 * @var String [required] - event fired
+    	 * @var BaseModel [required] - the entity to be used for data extraction
+    	 * @var Bool [optional] - event status; if passed, the function will exit on false and process on true; defaults to true
+    	 */
+    	return function($event, $entity, $success = TRUE)
+    	{
+    		// if ! $success, return
+    		if( ! $success)
+    		{
+    			return false;
+    		}
+
+    		// validate
+    		$criteria = new \CDbCriteria();
+    		$criteria->condition = 'event=:event';
+    		$criteria->params = array(':event' => (string) $event);     	 	
+
+    		if( ! $event_notification = MasterBlaster_NotificationEventRecord::model()->find($criteria))
+    		{
+    			return false;
+    		}
+    		    	
+    		// process $entity
+    		// get registered entries
+    		if($res = craft()->masterBlaster_notifications->getEventNotifications( (string) $event, $entity))
+    		{
+    	
+    			foreach($res as $campaign)
+    			{    				
+    				if( ! $campaign->recipientList)
+    				{
+    					return false;
+    				}
+
+    				// set $_POST vars
+    				$post = (object) $_POST;
+    				 
+    				$opts = json_decode($event_notification->options);
+    				 
+    				if($opts && $opts->handler)
+    				{
+    					list($class, $function) = explode('::', $opts->handler);
+
+    					$options = unserialize($campaign->campaignNotificationEvent[0]->options);
+
+    					$base_classes = json_decode($opts->handler_base_classes);
+
+						if($base_classes && ! empty($base_classes))
+						{
+							foreach($base_classes as $base)
+							{
+								require_once($base);
+							}
+						}
+
+						require_once($opts->handler_location);
+						
+    					$obj = new $class();    					
+    					if( ! method_exists($obj, $function))
+    					{
+    						return false;
+    					}
+    					
+    					if( ! $obj->$function($event, $entity, $options))
+    					{
+    						return true;
+    					}
+    				}
+
+    				try
+    				{
+    					$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('item' => $entity, '_post' => $post));
+    				}
+    				catch (\Exception $e)
+    				{
+    					return false; // fail silently for now; something is wrong with the tpl
+    				}
+    				 
+    				$recipientLists = array();
+    				foreach($campaign->recipientList as $list)
+    				{
+    					$recipientLists[] = $list->emailProviderRecipientListId;
+    				}
+    				$service = 'masterBlaster_' . $campaign->emailProvider;
+    				craft()->{$service}->sendCampaign($campaign, $recipientLists);
+    			}
+    		}
+    	};
     }
 
     /**

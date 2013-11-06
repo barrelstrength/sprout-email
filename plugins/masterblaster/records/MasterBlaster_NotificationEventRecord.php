@@ -19,8 +19,10 @@ class MasterBlaster_NotificationEventRecord extends BaseRecord
     public function defineAttributes()
     {
         return array(
+        	'registrar' => array(AttributeType::String),
         	'event' => array(AttributeType::String),
         	'description' => array(AttributeType::String),
+        	'options' => array(AttributeType::String, 'column' => ColumnType::Text),
             'dateCreated' => array(AttributeType::DateTime),
         	'dateUpdated' => array(AttributeType::DateTime),
         );

@@ -16,6 +16,7 @@ class MasterBlasterTwigExtension extends Twig_Extension
     {
         return array(
             'wordwrap' => new Twig_Filter_Method($this, 'wordwrapFilter'),
+        	'jsonDecode' => new Twig_Filter_Method($this, 'jsonDecodeFilter'),
         );
     }
 
@@ -45,5 +46,10 @@ class MasterBlasterTwigExtension extends Twig_Extension
         }
 
         return implode($separator, $sentences);
+    }
+    
+    public function jsonDecodeFilter($string)
+    {
+    	return json_decode($string);
     }
 }

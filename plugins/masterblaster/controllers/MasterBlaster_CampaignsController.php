@@ -24,15 +24,14 @@ class MasterBlaster_CampaignsController extends BaseController
 	 * @return void
 	 */
 	public function actionSave()
-	{	
-		//$_POST['id'] = null;		
+	{		
 		$this->requirePostRequest();
-		
-		// mass assignment to form model		
-		$campaign_model = MasterBlaster_CampaignModel::populateModel(craft()->request->getPost());
+
+		$campaign_model = MasterBlaster_CampaignModel::populateModel($_POST);
 
 		if($campaignId = craft()->masterBlaster->saveCampaign($campaign_model))
 		{
+			// if this was called by the child (Notifications), return the new pk
 			if(get_class($this) == 'Craft\MasterBlaster_NotificationsController')
 			{
 				return $campaignId;

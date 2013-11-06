@@ -14,13 +14,16 @@ class MasterBlaster_EmailProviderService extends BaseApplicationComponent
 	public function getEmailProviders()
 	{
 		$plugins_path = rtrim(craft()->path->getPluginsPath(), '\\/');
-		$files = preg_grep('/^([^.])/', scandir($plugins_path . '/masterblaster/libraries'));
+		$files = scandir($plugins_path . '/masterblaster/libraries');
 		$select_options = array('masterblaster' => 'Master Blaster');
 			
 		// set <select> values and text to be the same
 		foreach($files as $file)
 		{
-			$select_options[$file] = ucwords(str_replace('_', ' ', $file));
+			if ($file !== '.' && $file !== '..')
+			{
+				$select_options[$file] = ucwords(str_replace('_', ' ', $file));
+			}
 		}
 	
 		return $select_options;

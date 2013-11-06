@@ -36,6 +36,8 @@ class MasterBlaster_CampaignRecord extends BaseRecord
             'htmlTemplate'    => array(AttributeType::String),
             'textTemplate'    => array(AttributeType::String),
         		
+        	'recipients'      => array(AttributeType::String),
+        		
             'dateCreated'     => array(AttributeType::DateTime),
             'dateUpdated'     => array(AttributeType::DateTime),
         );

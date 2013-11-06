@@ -38,6 +38,7 @@ class MasterBlaster_masterblasterService extends MasterBlaster_EmailProviderServ
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
 		// TODO
+		die('Not supported for this provider.');
 	}
 	
 	/**
@@ -60,6 +61,8 @@ class MasterBlaster_masterblasterService extends MasterBlaster_EmailProviderServ
 				'body'              => $campaign->textBody,
 				'htmlBody'          => $campaign->textBody
 		);
+		$recipients = explode("\r\n", $campaign->recipients);
+		Craft::dump($recipients);die();
 		$emailModel = EmailModel::populateModel($emailData);
 		
 		foreach($recipients as $recipient)
