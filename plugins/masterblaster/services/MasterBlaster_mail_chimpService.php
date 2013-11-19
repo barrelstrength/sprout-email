@@ -106,6 +106,6 @@ class MasterBlaster_mail_chimpService extends MasterBlaster_EmailProviderService
 	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
-		// TODO
+		// future feature
 	}
 }

@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Main MasterBlaster controller
+ * Campaigns controller
  *
  */
 class MasterBlaster_CampaignsController extends BaseController
@@ -51,7 +51,7 @@ class MasterBlaster_CampaignsController extends BaseController
 	}
 	
 	/**
-	 * Deletes a campaign
+	 * Delete campaign
 	 * 
 	 * @return void
 	 */

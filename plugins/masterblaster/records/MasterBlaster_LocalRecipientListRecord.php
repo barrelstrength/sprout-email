@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Local recipient list record
+ *
+ */
 class MasterBlaster_LocalRecipientListRecord extends BaseRecord
 {	
 	/**

@@ -1,12 +1,19 @@
 <?php
 namespace Craft;
 
-
+/**
+ * Service for plugin integration
+ *
+ */
 class MasterBlaster_IntegrationService extends BaseApplicationComponent
 {
 	private $plugin_events;
 	private $existing_events;
 	
+	/**
+	 * Register plugin events with MasterBlaster
+	 * @return void
+	 */
 	public function registerEvents()
 	{
 		// get plugin events
@@ -26,6 +33,10 @@ class MasterBlaster_IntegrationService extends BaseApplicationComponent
 		$this->_cleanUpEvents();
 	}
 	
+	/**
+	 * Delete stale events
+	 * @return void
+	 */
 	private function _cleanUpEvents()
 	{
 		// compile list of events from parsed classes for easy comparison
@@ -35,8 +46,7 @@ class MasterBlaster_IntegrationService extends BaseApplicationComponent
 			foreach($events as $event)
 			{
 				$plugin_events[$event->getHook()][$event->getEvent()] = true;
-			}
-			
+			}			
 		}
 
 		// go through each existing event and check if there is a corresponding fresh event; if not, delete
@@ -54,6 +64,10 @@ class MasterBlaster_IntegrationService extends BaseApplicationComponent
 		}
 	}
 
+	/**
+	 * Register plugin events
+	 * @return void
+	 */
 	private function _setAllPluginEvents()
 	{
 		if( ! $plugins = craft()->plugins->getPlugins())
@@ -73,6 +87,10 @@ class MasterBlaster_IntegrationService extends BaseApplicationComponent
 		$this->plugin_events = $events;
 	}
 	
+	/**
+	 * Set existing events 
+	 * @return void
+	 */
 	private function _setExistingEvents()
 	{
 		// get registered plugin events
@@ -82,6 +100,11 @@ class MasterBlaster_IntegrationService extends BaseApplicationComponent
 		$this->existing_events = MasterBlaster_NotificationEventRecord::model()->findAll($criteria);
 	}
 	
+	/**
+	 * Register event
+	 * @param object $event
+	 * @return void
+	 */
 	private function _registerEvent($event)
 	{
 		// check if event already exists
@@ -177,6 +200,11 @@ class MasterBlaster_IntegrationService extends BaseApplicationComponent
 		return $plugin_objects;
 	}
 	
+	/**
+	 * Return plugin directory path
+	 * @param string $plugin
+	 * @return boolean|string directory path
+	 */
 	private function _getPluginDirectory($plugin)
 	{
 		$name = end(explode('\\', get_class($plugin)));

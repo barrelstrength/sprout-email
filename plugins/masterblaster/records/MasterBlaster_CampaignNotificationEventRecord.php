@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Campaign notification event record
+ *
+ */
 class MasterBlaster_CampaignNotificationEventRecord extends BaseRecord
 {	
 	/**
@@ -155,6 +159,13 @@ class MasterBlaster_CampaignNotificationEventRecord extends BaseRecord
     	return $notificationCampaigns;
     }
     
+    /**
+     * Sets an event and event options for specified campaign
+     *
+     * @param int $campaignId
+     * @param array $data
+     * @return bool
+     */
     public function setCampaignNotificationEventOptions($campaignId, $data)
     {
     	// handle options

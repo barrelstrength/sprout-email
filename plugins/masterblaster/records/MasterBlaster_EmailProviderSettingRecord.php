@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Email provider settings record
+ *
+ */
 class MasterBlaster_EmailProviderSettingRecord extends BaseRecord
 {
 	/**

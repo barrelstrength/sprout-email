@@ -128,6 +128,12 @@ class MasterBlasterService extends BaseApplicationComponent
 		}
 	}
 	
+	/**
+	 * Save event
+	 * @param MasterBlaster_NotificationEventModel $event
+	 * @throws Exception
+	 * @return MasterBlaster_NotificationEventModel|\Craft\MasterBlaster_NotificationEventRecord
+	 */
 	public function saveEvent(MasterBlaster_NotificationEventModel &$event)
 	{
 		if (isset($event->id) && $event->id)
@@ -217,8 +223,6 @@ class MasterBlasterService extends BaseApplicationComponent
 		return $campaignRecord->id;
 	}
 	
-
-	
 	/**
 	 * Function for saving campaign and template data ONLY (no recipient stuff here)
 	 * 
@@ -284,6 +288,12 @@ class MasterBlasterService extends BaseApplicationComponent
 		return $campaignRecord;
 	}
 	
+	/**
+	 * Save local recipient list
+	 * @param object $campaign
+	 * @param object $campaignRecord
+	 * @return boolean
+	 */
 	private function _saveMasterBlasterRecipientList(&$campaign, &$campaignRecord)
 	{
 		$recipientIds = array();
@@ -523,6 +533,11 @@ class MasterBlasterService extends BaseApplicationComponent
 		return true;
 	}
 	
+	/**
+	 * Delete notification event
+	 * @param int $id
+	 * @return boolean
+	 */
 	public function deleteEvent($id)
 	{
 		if( ! craft()->db->createCommand()->delete('masterblaster_notification_events', array('id' => $id)))

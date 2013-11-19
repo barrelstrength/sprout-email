@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Notification event model
+ *
+ */
 class MasterBlaster_NotificationEventModel extends BaseModel
 {
 	/**

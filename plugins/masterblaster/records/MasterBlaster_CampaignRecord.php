@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Campaign record
+ *
+ */
 class MasterBlaster_CampaignRecord extends BaseRecord
 {
 	public $rules = array();
@@ -117,6 +121,11 @@ class MasterBlaster_CampaignRecord extends BaseRecord
 		}
 	}
 	
+	/**
+	 * Return section based campaign(s)
+	 * @param int $campaign_id
+	 * @return array Campaigns
+	 */
 	public function getSectionBasedCampaigns($campaign_id = false)
 	{
 		$where_binds = 'templateOption=:templateOption';
@@ -142,6 +151,12 @@ class MasterBlaster_CampaignRecord extends BaseRecord
 		->queryAll();
 	}
 	
+	/**
+	 * Return section based campaign(s) given entry id and campaign id
+	 * @param int $entryId
+	 * @param int $campaignId
+	 * @return array Campaigns
+	 */
 	public function getSectionBasedCampaignByEntryAndCampaignId($entryId, $campaignId)
 	{
 		$where_binds = 'mc.templateOption=:templateOption AND e.entryId=:entryId AND mc.id=:campaignId';
@@ -161,6 +176,10 @@ class MasterBlaster_CampaignRecord extends BaseRecord
 		return $res;
 	}
 	
+	/**
+	 * Returns notifications
+	 * @return array
+	 */
 	public function getNotifications()
 	{
 		$res = craft()->db->createCommand()

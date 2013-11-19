@@ -3,11 +3,6 @@ namespace Craft;
 
 class MasterBlasterPlugin extends BasePlugin
 {
-	
-	public function __construct()
-	{
-		
-	}
     public function getName() 
     {
         $pluginName = Craft::t('Master Blaster');
@@ -27,7 +22,7 @@ class MasterBlasterPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '0.3.1';
+        return '0.3.2';
     }
 
     public function getDeveloper()
@@ -84,16 +79,6 @@ class MasterBlasterPlugin extends BasePlugin
         	'masterblaster/events/_edit',
         );
     }
-
-    /**
-     * Register twig extension
-     */
-    public function addTwigExtension()
-    {
-        Craft::import('plugins.masterblaster.twigextensions.MasterBlasterTwigExtension');
-
-        return new MasterBlasterTwigExtension();
-    }
     
     /**
      * Add default events after plugin is installed
@@ -133,51 +118,11 @@ class MasterBlasterPlugin extends BasePlugin
     		craft()->db->createCommand()->insert('masterblaster_notification_events', $event);
     	}
     }
-
-    /**
-     * Perform some action after plugin validates and saves
-     * data to the database.
-     *
-     * @return [type] [description]
-     */
-    public function senorFormAfterSaveAction($formData)
-    {
-        $service = $formData['subscribeData']['service'];
-
-        $response = "";
-
-        switch ($service) {
-            case 'CampaignMonitor':
-
-                $response = "someday";
-                break;
-
-            case 'MailChimp':
-
-                $response = "someday";
-                break;
-
-            case 'MasterBlaster':
-
-                $response = "someday";
-                break;
-
-            case 'CraftUsers':
-                $response = "someday";
-                // die('Check Craft subscribe setup and run Craft Subscribe Script!');
-                break;
-
-            default:
-                $response = "sosameday";
-                // die('No service selected, return blank or throw error');
-
-                break;
-        }
-
-        return $response;
-
-    }
     
+    /**
+     * Initialize
+     * @return void
+     */
     public function init()
     {
     	parent::init();
@@ -211,6 +156,10 @@ class MasterBlasterPlugin extends BasePlugin
 
     }
     
+    /**
+     * Anonymous function for plugin integration
+     * @return function
+     */
     private function _get_closure()
     {
     	/**
@@ -380,6 +329,12 @@ class MasterBlasterPlugin extends BasePlugin
         $this->_processEvent($event_type, $event->params['content']);
     }
     
+    /**
+     * Handle system event
+     * @param string $eventType
+     * @param obj $entry
+     * @return boolean
+     */
     private function _processEvent($eventType, $entry)
     {
     	// get registered entries
@@ -398,7 +353,7 @@ class MasterBlasterPlugin extends BasePlugin
     			}
     			catch (\Exception $e)
     			{
-    				return false; // fail silently for now; something is wrong with the tpl
+    				return false; // something is wrong with the tpl
     			}
     			 
     			$recipientLists = array();

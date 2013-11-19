@@ -1,10 +1,6 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-
-
-
-
 {% if craft.request.getSegment('3') == 'new' %}
 	{% set title = "New Notification" %}
 	{% set campaignId = null %}
@@ -16,8 +12,6 @@
 	{% set campaign = craft.masterblaster.getCampaignById(campaignId) %}
 	{% set campaignId = campaign.id %}	
 {% endif %}
-
-
 
 {% set crumbs = [
 	{ label: "Master Blaster"|t, url: url('masterblaster/campaigns') },
@@ -41,23 +35,13 @@
     },
 } %}
 
-{# 
-reports:    { 
-  label: "History"|t,
-  url: '#tab-history'
-} #}
-
-
-
 {% set content %}
-
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="MasterBlaster/notifications/save">
-	<input type="hidden" name="redirect" value="MasterBlaster/notifications">
-	<input type="hidden" name="id" value="{{ campaignId }}">
+<input type="hidden" name="action" value="MasterBlaster/notifications/save">
+<input type="hidden" name="redirect" value="MasterBlaster/notifications">
+<input type="hidden" name="id" value="{{ campaignId }}">
 
-<div id="tab-campaign-info" class="tab-content" >
-	
+<div id="tab-campaign-info" class="tab-content" >	
 	{{ forms.textField({
 		label: "Notification Name"|t,
 		id: 'name',
@@ -137,9 +121,6 @@ reports:    {
 	
 	{% set eventOptions = craft.masterblaster.getNotificationEventOptions() %}
 	
-	{# set t = campaign.notificationEvents[0].options #}
-
-	
 	{% for key, val in eventOptions.system_options %}
 		{% for key2, val2 in val %}
 			<div class="event_options {{ key | replace({'.':'---'}) }}" >
@@ -148,32 +129,14 @@ reports:    {
 		{% endfor %}
 	{% endfor %}
 	
-	
 	{% for key, val in eventOptions.plugin_options %}
 			<div class="event_options {{ key }}" >
 				{{ include(template_from_string(val.html))  }}
 			</div>
-	{% endfor %}
-	
-	
+	{% endfor %}	
 </div>
 
 <div id="tab-email-template" class="hidden tab-content">
-
-	{#
-	{% set templateOptions = [
-		{value:1, label: 'Import the HTML/Text on your own'}, 
-		{value:2, label:'Send a simple text-based email'},
-		{value:3, label:'Create a Notification based on an Entries Section and Template'}
-	] %}
-	
-	{{ forms.radioGroup({
-		options : templateOptions,	
-		value:(campaign is defined ? campaign.templateOption : 1),
-		name: 'templateOption'
-	}) }}
-	#}
-	
 	{####### TEMPORARY - SUPPORT FOR INLINE TEXT TEMPLATES ####}
 	{% set templateOptions = [
 		{value:2, label:'Send a simple text-based email'}
@@ -185,9 +148,8 @@ reports:    {
 		name: 'templateOption'
 	}) }}
 	{##################################################################}
-
 	<hr>
-
+	
 	<div id="tpl_html" class="tpl_options">
 	{{ forms.textareaField({
 		label: "HTML Code"|t,
@@ -196,11 +158,10 @@ reports:    {
 		instructions: "The code for your html email. Be sure to inline your CSS beforehand."|t,
 		value: (campaign is defined ? campaign.htmlBody : null),
 		errors: (campaign is defined ? campaign.getErrors('htmlBody') : null) 	
-	}) }}
-	
+	}) }}	
 	</div>
+	
 	<div id="tpl_text" class="tpl_options">
-
 	{{ forms.textareaField({
 		label: "Plain Text"|t,
 		id: 'textBody',
@@ -209,11 +170,10 @@ reports:    {
 		value: (campaign is defined ? campaign.textBody : null),
 		errors: (campaign is defined ? campaign.getErrors('textBody') : null) 	
 	}) }}
-
 	<hr>
 	</div>
 
-	<div id="tpl_section" class="tpl_options">
+	<div id="tpl_section" class="tpl_options">	
 	{{ forms.selectField({
 		label: "Email Content Section"|t,
 		id: 'sectionId',
@@ -246,19 +206,15 @@ reports:    {
 		errors: (campaign is defined ? campaign.getErrors('textTemplate') : null) 	
 	}) }}
 	</div>
-
 </div>
 
 <div id="tab-recipients" class="hidden tab-content">
-
-{% for key, val in emailProviders %}
-<div id="{{ key }}_recipients_template" class="recipient_templates" >
-	{% include "masterblaster/_email_providers/_" ~ key %}
+	{% for key, val in emailProviders %}
+	<div id="{{ key }}_recipients_template" class="recipient_templates" >
+		{% include "masterblaster/_email_providers/_" ~ key %}
+	</div>
+	{% endfor %}
 </div>
-{% endfor %}
-
-</div>
-
 
 <div class="buttons">
 	<input class="btn submit" type="submit" value="Save Notification">

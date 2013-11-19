@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Notification event record
+ *
+ */
 class MasterBlaster_NotificationEventRecord extends BaseRecord
 {	
 	/**

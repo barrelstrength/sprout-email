@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Email provider settings
+ *
+ */
 class MasterBlaster_EmailProviderSettingModel extends BaseModel
 {
 

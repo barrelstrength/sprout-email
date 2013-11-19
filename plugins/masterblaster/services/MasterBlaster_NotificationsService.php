@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Main MasterBlaster service
+ * Notifications service
  */
 class MasterBlaster_NotificationsService extends BaseApplicationComponent
 {

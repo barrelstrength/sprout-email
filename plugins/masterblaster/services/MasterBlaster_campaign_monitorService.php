@@ -83,6 +83,6 @@ class MasterBlaster_campaign_monitorService extends MasterBlaster_EmailProviderS
 	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
-		// TODO
+		// Future feature
 	}
 }

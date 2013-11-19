@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Main MasterBlaster variable interface
+ *
+ */
 class MasterBlasterVariable
 {
 	
@@ -16,24 +20,6 @@ class MasterBlasterVariable
         $plugin = craft()->plugins->getPlugin('masterblaster');
 
         return $plugin->getName();
-    }
-
-    public function createTriggerArray($formData = null)
-    {
-        $craftTriggers = array(
-            'userSave' => 'When a user profile is saved'
-        );
-
-        $thirdPartyTriggers = craft()->plugins->callHook('masterBlasterTrigger', array($formData));
-
-        $thirdPartyTriggerArray = array();
-        foreach ($thirdPartyTriggers as $key => $triggers) {
-            foreach ($triggers['hooks'] as $_key => $hook) {
-                $thirdPartyTriggerArray[$hook['hook']] = $hook['name'];
-            }
-        }
-
-        return array_merge($craftTriggers, $thirdPartyTriggerArray);
     }
 
     /**
@@ -64,8 +50,7 @@ class MasterBlasterVariable
     }
 
     /**
-     * Get a Campaign by id
-     *
+     * Get a Campaign by id     *
      * @param  int    $campaignId
      * @return object campaign record
      */
@@ -75,10 +60,9 @@ class MasterBlasterVariable
     }
 
     /**
-     * Get All Sections for Options dropdown
-     * 
-     * @param  [type] $indexBy [description]
-     * @return [type]          [description]
+     * Get All Sections for Options dropdown     * 
+     * @param  string $indexBy 
+     * @return array
      */
     public function getAllSections($indexBy = null)
     {
@@ -100,6 +84,11 @@ class MasterBlasterVariable
         return $options;
     }
     
+    /**
+     * Get all user groups
+     * @param string $indexBy
+     * @return array
+     */
     public function getAllUserGroups($indexBy = null)
     {
     	$result = craft()->userGroups->getAllGroups($indexBy);
@@ -111,28 +100,50 @@ class MasterBlasterVariable
     	return $options;
     }
     
+    /**
+     * Get subscriber list for specified provider
+     * @param string $provider
+     * @return array
+     */
     public function getSubscriberList($provider = 'masterblaster')
     {
     	$service = 'masterBlaster_' . $provider;
     	return craft()->{$service}->getSubscriberList();
     }
 
-
+	/**
+	 * Get templates
+	 * @return array
+	 */
     public function getTemplatesDirListing()
     {
 		return craft()->masterBlaster->getTemplatesDirListing();
     }
     
+    /**
+     * Get email providers
+     * @return array
+     */
     public function getEmailProviders()
     {
 		return craft()->masterBlaster_emailProvider->getEmailProviders();
     }
 
+    /** 
+     * Get notifications
+     * @return array
+     */
     public function getNotifications()
     {
     	return craft()->masterBlaster->getNotifications();
     }
     
+    /**
+     * Get notification events
+     * @param string $notificationEvent
+     * @param bool $return_full_objects
+     * @return array
+     */
     public function getNotificationEvents($notificationEvent = null, $return_full_objects = false)
     {
     	// we'll use this opportunity to clean up and register plugin registration events;
@@ -163,11 +174,20 @@ class MasterBlasterVariable
     	return $out;
     }
     
+    /**
+     * Get notification event for specified id
+     * @param int $id
+     * @return obj
+     */
     public function getNotificationEventById($id)
     {
     	return craft()->masterBlaster->getNotificationEventById($id);
     }
     
+    /**
+     * Get notification event options
+     * @return array
+     */
     public function getNotificationEventOptions()
     {    	
     	$res = craft()->masterBlaster->getNotificationEventOptions();
@@ -200,13 +220,12 @@ class MasterBlasterVariable
     	return $out;
     }
 
+    /**
+     * Twig helper for dumping data
+     * @param mixed $mixed
+     */
     public function dump($mixed)
     {
     	Craft::dump($mixed);die();
-    }
-    
-    public function test()
-    {
-    	craft()->masterBlaster->deleteCampaign(10);
     }
 }

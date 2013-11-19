@@ -37,7 +37,6 @@ class MasterBlaster_masterblasterService extends MasterBlaster_EmailProviderServ
 	 */
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
-		// TODO
 		die('Not supported for this provider.');
 	}
 	

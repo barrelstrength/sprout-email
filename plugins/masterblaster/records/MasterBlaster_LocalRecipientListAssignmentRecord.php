@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Local recipient list assignment (to campaigns) record
+ *
+ */
 class MasterBlaster_LocalRecipientListAssignmentRecord extends BaseRecord
 {	
 	/**

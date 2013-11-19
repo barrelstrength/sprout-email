@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+/**
+ * Campaign model
+ *
+ */
 class MasterBlaster_CampaignModel extends BaseModel
 {
 	/**
@@ -11,6 +15,7 @@ class MasterBlaster_CampaignModel extends BaseModel
     public function defineAttributes()
     {
         return array(
+        		
         	// campaign info
         	'id'				=> array(AttributeType::Number),
 			'name'				=> array(AttributeType::String),
