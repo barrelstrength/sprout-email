@@ -212,10 +212,13 @@ class MasterBlasterVariable
     	}
     	
     	// parse html
-    	foreach($out['plugin_options'] as $k=>$v)
-    	{
-    		$out['plugin_options'][$k] = $v;
-    	}
+        if(isset($out['plugin_options']))
+        {
+        	foreach($out['plugin_options'] as $k=>$v)
+        	{
+        		$out['plugin_options'][$k] = $v;
+        	}
+        }
 
     	return $out;
     }

@@ -121,25 +121,32 @@
 	
 	{% set eventOptions = craft.masterblaster.getNotificationEventOptions() %}
 	
-	{% for key, val in eventOptions.system_options %}
-		{% for key2, val2 in val %}
-			<div class="event_options {{ key | replace({'.':'---'}) }}" >
-				{% include "masterblaster/notifications/_event_options/" ~ key ~ "/" ~  val2 %}
-			</div>
+	{% if eventOptions.system_options is defined %}
+		{% for key, val in eventOptions.system_options %}
+			{% for key2, val2 in val %}
+				<div class="event_options {{ key | replace({'.':'---'}) }}" >
+					{% include "masterblaster/notifications/_event_options/" ~ key ~ "/" ~  val2 %}
+				</div>
+			{% endfor %}
 		{% endfor %}
-	{% endfor %}
-	
-	{% for key, val in eventOptions.plugin_options %}
-			<div class="event_options {{ key }}" >
-				{{ include(template_from_string(val.html))  }}
-			</div>
-	{% endfor %}	
+	{% endif %}
+
+	{% if eventOptions.plugin_options is defined %}
+		{% for key, val in eventOptions.plugin_options %}
+				<div class="event_options {{ key }}" >
+					{{ include(template_from_string(val.html))  }}
+				</div>
+		{% endfor %}	
+	{% endif %}
 </div>
 
 <div id="tab-email-template" class="hidden tab-content">
 	{####### TEMPORARY - SUPPORT FOR INLINE TEXT TEMPLATES ####}
 	{% set templateOptions = [
-		{value:2, label:'Send a simple text-based email'}
+		{ 
+			value: 2, 
+			label:'Send a simple text-based email'
+		}
 	] %}
 
 	{{ forms.radioGroup({
