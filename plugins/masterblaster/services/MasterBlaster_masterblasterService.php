@@ -43,12 +43,12 @@ class MasterBlaster_masterblasterService extends MasterBlaster_EmailProviderServ
 				'htmlBody'          => $campaign->textBody
 		);
 		$recipients = explode("\r\n", $campaign->recipients);
-		Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 64 in ' . __FILE__);
+		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 46 in ' . __FILE__);
 		$emailModel = EmailModel::populateModel($emailData);
 		
 		foreach($recipients as $recipient)
 		{
-			$emailModel->toEmail = $recipient->email;
+			$emailModel->toEmail = $recipient;
 			craft()->email->sendEmail($emailModel);
 		}
 	}
