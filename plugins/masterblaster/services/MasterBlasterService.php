@@ -102,6 +102,17 @@ class MasterBlasterService extends BaseApplicationComponent
 			// now we need to populate the model
 			$campaignModel = MasterBlaster_CampaignModel::populateModel($campaignRecord);
 			
+			$unserialized = array();
+			foreach($campaignRecord->campaignNotificationEvent as $event)
+			{
+				$opts = unserialize($event->options);
+				$event->options = isset($opts['options']) ? $opts['options'] : array();
+				$unserialized[] = $event;
+			}
+			
+			$campaignModel->notificationEvents = $unserialized;
+			
+
 			// now for the recipient related data
 			if(count($campaignRecord->recipientList) > 0)
 			{
@@ -110,18 +121,8 @@ class MasterBlasterService extends BaseApplicationComponent
 				{
 					$emailProviderRecipientListIdArr[$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
 				}
-				
+			
 				$campaignModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
-				
-				$unserialized = array();
-				foreach($campaignRecord->campaignNotificationEvent as $event)
-				{
-					$opts = unserialize($event->options);
-					$event->options = isset($opts['options']) ? $opts['options'] : array();
-					$unserialized[] = $event;
-				}
-				
-				$campaignModel->notificationEvents = $unserialized;
 			}
 
 			return $campaignModel;
@@ -202,23 +203,15 @@ class MasterBlasterService extends BaseApplicationComponent
 			throw new Exception(Craft::t('Error: Campaign could not be saved.'));
 		}		
 				
-		try // save & associate the recipient list
+		// save & associate the recipient list
+		$service = 'masterBlaster_' . $campaignRecord->emailProvider;
+		if( ! craft()->{$service}->saveRecipientList($campaign, $campaignRecord))
 		{
-			$this->_saveRecipientList($campaign, $campaignRecord); // we're passing the model by reference, so need to return anything
-			if($campaign->hasErrors()) // no good
-			{				
-				$transaction->rollBack();
-				return false;
-			}
-		}
-		catch (\Exception $e)
-		{
-			throw new Exception(Craft::t('Error: Email recipient list could not be saved.'));
+			$transaction->rollback();
+			return false;
 		}
 		
 		$transaction->commit();
-		
-		$this->_cleanUpRecipientListOrphans($campaignRecord);
 
 		return $campaignRecord->id;
 	}
@@ -289,184 +282,6 @@ class MasterBlasterService extends BaseApplicationComponent
 	}
 	
 	/**
-	 * Save local recipient list
-	 * @param object $campaign
-	 * @param object $campaignRecord
-	 * @return boolean
-	 */
-	private function _saveMasterBlasterRecipientList(&$campaign, &$campaignRecord)
-	{
-		$recipientIds = array();
-			
-		// parse and create individual recipients as needed
-		if( ! $recipients = array_filter(explode("\r\n", $campaign->recipients)))
-		{
-			$campaign->addError('recipients', 'You must add at least one valid email.');
-			return false;
-		}
-
-		// validate emails
-		foreach($recipients as $email)
-		{
-			$recipientRecord = new MasterBlaster_RecipientRecord();
-		
-			$recipientRecord->email = $email;
-			$recipientRecord->validate();
-			if($recipientRecord->hasErrors())
-			{
-				$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
-				return false;
-			}
-		}
-		
-		$campaignRecord->recipients = implode("\r\n", $recipients);
-		$campaignRecord->save();
-	}
-	
-	/**
-	 * Saves recipient list for campaign
-	 * 
-	 * @param MasterBlaster_CampaignModel $campaign
-	 * @param MasterBlaster_CampaignRecord $campaignRecord
-	 * @throws Exception
-	 * @return void
-	 */
-	private function _saveRecipientList(MasterBlaster_CampaignModel &$campaign, MasterBlaster_CampaignRecord &$campaignRecord)
-	{
-		// an email provider is required
-		if( ! isset($campaign->emailProvider) || ! $campaign->emailProvider)
-		{
-			$campaign->addError('emailProvider', 'Unsupported email provider.');
-		}
-		
-		if($campaign->emailProvider == 'masterblaster')
-		{
-			return $this->_saveMasterBlasterRecipientList($campaign, $campaignRecord);
-		}
-		
-		// if a new recipient list is passed in, handle that first
-		// this code is for the old system
-		if($campaign->recipientOption == 2)
-		{			
-			// $this->__saveMasterBlasterRecipientList();			
-		}
-
-		// at least one recipient list is required
-		if( ! isset($campaign->emailProviderRecipientListId) || ! $campaign->emailProviderRecipientListId)
-		{
-			$campaign->addError('emailProviderRecipientListId', 'You must select at least one recipient list.');
-		}
-	
-		// if we have what we need up to this point,
-		// get the recipient list(s) by emailProvider and emailProviderRecipientListId
-		if ( ! $campaign->hasErrors())
-		{
-			$criteria = new \CDbCriteria();
-			$criteria->condition = 'emailProvider=:emailProvider';
-			$criteria->params = array(':emailProvider' => $campaign->emailProvider);
-			
-			$recipeintListIds = (array) $campaign->emailProviderRecipientListId;
-	
-			// process each recipient listCampaigns
-			foreach($recipeintListIds as $list_id)
-			{
-				$criteria->condition = 'emailProviderRecipientListId=:emailProviderRecipientListId';
-				$criteria->params = array(':emailProviderRecipientListId' => $list_id);
-				$recipientListRecord = MasterBlaster_RecipientListRecord::model()->find($criteria);
-	
-				if( ! $recipientListRecord) // doesn't exist yet, so we need to create
-				{
-					// TODO: for now, we'll assume that the email provider's recipient list id is valid,
-					// but ideally, we'd want to check with the api to make sure that it is in fact valid
-	
-					// save record
-					$recipientListRecord = new MasterBlaster_RecipientListRecord();
-					$recipientListRecord->emailProviderRecipientListId = $list_id;
-					$recipientListRecord->emailProvider = $campaign->emailProvider;
-				}
-	
-				// we already did our validation, so just save
-				if( $recipientListRecord->save())
-				{
-					// associate with campaign, if not already done so
-					if( MasterBlaster_CampaignRecipientListRecord::model()
-					->count('recipientListId=:recipientListId AND campaignId=:campaignId', array(
-									':recipientListId' => $recipientListRecord->id,
-									':campaignId' => $campaignRecord->id)) == 0)
-					{
-						$campaignRecipientListRecord = new MasterBlaster_CampaignRecipientListRecord();
-						$campaignRecipientListRecord->recipientListId = $recipientListRecord->id;
-						$campaignRecipientListRecord->campaignId = $campaignRecord->id;
-						$campaignRecipientListRecord->save(false);
-					}
-				}
-			}
-	
-			// now we need to disassociate recipient lists as needed
-			foreach($campaignRecord->recipientList as $list)
-			{
-				// was part of campaign, but now isn't
-				if( ! in_array($list->emailProviderRecipientListId, $recipeintListIds))
-				{
-					craft()->masterBlaster->deleteCampaignRecipientList($list->id, $campaignRecord->id);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Cleans up the recipient list after saving
-	 * 
-	 * @param MasterBlaster_CampaignRecord $campaignRecord
-	 * @return boolean
-	 */
-	private function _cleanUpRecipientListOrphans(&$campaignRecord)
-	{
-		// clean up recipient lists if orphaned
-		if( ! empty($campaignRecord->recipientList))
-		{
-			// first let's prep our data
-			$recipientListIds = array();
-			foreach($campaignRecord->recipientList as $list)
-			{
-				$recipientListIds[] = $list->id;
-			}
-		
-			// now check if there are any orphans
-			$criteria = new \CDbCriteria();
-			$criteria->addInCondition('t.id', $recipientListIds);
-			$criteria->condition = 'campaign.id is null';
-		
-			$orphans = MasterBlaster_RecipientListRecord::model()
-			->with('campaign')
-			->findAll($criteria);
-		
-			if($orphans)
-			{
-				foreach($orphans as $recipientList)
-				{
-					if( ! $this->deleteRecipientList($recipientList->id))
-					{						
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Delete recipient list
-	 * 
-	 * @param int $recipientListId
-	 * @return bool
-	 */
-	public function deleteRecipientList($recipientListId)
-	{
-		return craft()->db->createCommand()->delete('masterblaster_recipient_lists', array('id' => $recipientListId));
-	}
-	
-	/**
 	 * Delete campaign recipient list entry
 	 * 
 	 * @param int $recipientListId
@@ -494,14 +309,8 @@ class MasterBlasterService extends BaseApplicationComponent
 		
 		try
 		{
-			// get associated recipient lists so we can use them for cleaning up later
-			$criteria = new \CDbCriteria();
-			$criteria->condition = 'campaignId=:campaignId';
-			$criteria->params = array(':campaignId' => $campaignId);
-			$campaignRecord = MasterBlaster_CampaignRecord::model()
-			->with('recipientList')
-			->find($criteria);			
-			
+			$campaignRecord = MasterBlaster_CampaignRecord::model()->findByPk($campaignId);			
+
 			// delete campaign
 			if( ! craft()->db->createCommand()->delete('masterblaster_campaigns', array('id' => $campaignId)))
 			{
@@ -509,19 +318,13 @@ class MasterBlasterService extends BaseApplicationComponent
 				return false;
 			}
 			
-			// delete associated recipient lists
-			if( ! craft()->db->createCommand()->delete('masterblaster_campaign_recipient_lists', array('campaignId' => $campaignId)))
+			// delete associated recipients
+			$service = 'masterBlaster_' . $campaignRecord->emailProvider;
+			if( ! craft()->{$service}->deleteRecipients($campaignRecord))
 			{
 				$transaction->rollback();
 				return false;
-			}
-		
-			if( ! $this->_cleanUpRecipientListOrphans($campaignRecord))
-			{
-				$transaction->rollback();
-				return false;
-			}
-			
+			}			
 		}
 		catch (\Exception $e)
 		{
@@ -659,59 +462,5 @@ class MasterBlasterService extends BaseApplicationComponent
 			}
 		}	
 		return $result;
-	}
-	
-	/**
-	 * Old recipient list save system
-	 * @return boolean
-	 */
-	private function __saveMasterBlasterRecipientList()
-	{
-		$recipientIds = array();
-			
-		// parse and create individual recipients as needed
-		if( ! $recipients = explode("\r\n", $campaign->recipients))
-		{
-			$campaign->addError('recipients', 'You must add at least one valid email.');
-			return false;
-		}
-		foreach($recipients as $email)
-		{
-			$recipientRecord = new MasterBlaster_RecipientRecord();
-	
-			// first let's check if the email already exists
-			$recipientRecord->find('email=:email', array(':email' => $email));
-	
-			if($recipientRecord->id)
-			{
-				$recipientIds[] = $recipientRecord->id;
-				continue;
-			}
-	
-			$recipientRecord->email = $email;
-			$recipientRecord->save(false);
-			if($recipientRecord->hasErrors())
-			{
-				$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
-				return false;
-			}
-	
-			$recipientIds[] = $recipientRecord->id;
-		}
-			
-		// create a new local recipient list
-		$localRecipientList = new MasterBlaster_LocalRecipientListRecord();
-		$localRecipientList->name = 'Auto-generated ' . date('m.d.Y G:i');
-		$localRecipientList->save(false);
-			
-		foreach($recipientIds as $recipientId)
-		{
-			$localRecipientListAssignment = new MasterBlaster_LocalRecipientListAssignmentRecord();
-			$localRecipientListAssignment->localRecipientListId = $localRecipientList->id;
-			$localRecipientListAssignment->recipientId = $recipientId;
-			$localRecipientListAssignment->save(false);
-		}
-			
-		$campaign->emailProviderRecipientListId = $localRecipientList->id;
 	}
 }

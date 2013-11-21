@@ -46,11 +46,7 @@ class MasterBlaster_RecipientListRecord extends BaseRecord
     					'MasterBlaster_CampaignRecord',
     					'campaignId',
     					'through' => 'campaignRecipientList'
-    			),
-    			'localRecipientList' => array(
-    					self::HAS_ONE,
-    					'MasterBlaster_LocalRecipientListRecord',
-    					'emailProviderRecipientListId'),
+    			)
     	);
     }
 }

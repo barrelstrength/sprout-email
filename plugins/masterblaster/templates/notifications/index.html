@@ -3,12 +3,10 @@
 
 {% set body %}
 
-	
-	{# If there are Section-based Campaigns, Display them. #}
 	{% for campaign in craft.masterblaster.getNotifications() %}
 			
 		{% if loop.first %}
-		<h3>Section-Based Campaigns</h3>
+		<h3>Notifications</h3>
 		<table id="campaigns" class="data">
 			<thead>
 				<th width="25%"></th>

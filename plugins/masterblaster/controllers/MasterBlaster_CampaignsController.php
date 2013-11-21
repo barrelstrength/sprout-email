@@ -27,26 +27,27 @@ class MasterBlaster_CampaignsController extends BaseController
 	{		
 		$this->requirePostRequest();
 
-		$campaign_model = MasterBlaster_CampaignModel::populateModel($_POST);
+		$campaignModel = MasterBlaster_CampaignModel::populateModel($_POST);
 
-		if($campaignId = craft()->masterBlaster->saveCampaign($campaign_model))
+		if($campaignId = craft()->masterBlaster->saveCampaign($campaignModel))
 		{
 			// if this was called by the child (Notifications), return the new pk
 			if(get_class($this) == 'Craft\MasterBlaster_NotificationsController')
 			{
-				return $campaignId;
+				$campaignModel->id = $campaignId;
+				return $campaignModel;
 			}
-			craft()->userSession->setNotice(Craft::t('Campaign saved.'));			
-			$this->redirectToPostedUrl(array($campaign_model));
+			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));			
+			$this->redirectToPostedUrl(array($campaignModel));
 		}
 		else  // problem
 		{
-			craft()->userSession->setError(Craft::t('Couldn’t save form.'));
+			craft()->userSession->setError(Craft::t('Please correct the errors below.'));
 		}
 		
 		// Send the field back to the template
 		craft()->urlManager->setRouteVariables(array(
-			'campaign' => $campaign_model
+			'campaign' => $campaignModel
 		));
 	}
 	

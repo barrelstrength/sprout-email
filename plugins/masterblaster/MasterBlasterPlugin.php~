@@ -22,7 +22,7 @@ class MasterBlasterPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '0.4.0';
+        return '0.3.2';
     }
 
     public function getDeveloper()

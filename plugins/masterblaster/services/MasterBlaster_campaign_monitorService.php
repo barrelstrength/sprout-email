@@ -5,7 +5,7 @@ namespace Craft;
  * CampaignMonitor service
  * Abstracted CampaignMonitor wrapper
  */
-class MasterBlaster_campaign_monitorService extends MasterBlaster_EmailProviderService
+class MasterBlaster_campaign_monitorService extends MasterBlaster_EmailProviderService implements MasterBlaster_EmailProviderInterfaceService
 {
 	/**
 	 * Returns subscriber lists

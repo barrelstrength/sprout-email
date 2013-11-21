@@ -1,10 +1,6 @@
 <?php
 namespace Craft;
 
-/**
- * Recipient record
- *
- */
 class MasterBlaster_RecipientRecord extends BaseRecord
 {	
 	/**
@@ -28,26 +24,6 @@ class MasterBlaster_RecipientRecord extends BaseRecord
             'dateCreated' => array(AttributeType::DateTime),
             'dateUpdated' => array(AttributeType::DateTime),
         );
-    }
-
-    /**
-     * Record relationships
-     * @return array
-     */
-    public function defineRelations()
-    {
-    	return array(
-    			'localRecipientListAssignment' => array(
-    					self::HAS_MANY,
-    					'MasterBlaster_LocalRecipientListAssignmentRecord',
-    					'recipientId'),
-    			'localRecipientList' => array(
-    					self::HAS_MANY,
-    					'MasterBlaster_LocalRecipientListRecord',
-    					'localRecipientListId',
-    					'through' => 'localRecipientListAssignment'
-    			)
-    	);
     }
     
     /**

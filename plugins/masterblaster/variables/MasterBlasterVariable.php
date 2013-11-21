@@ -195,7 +195,7 @@ class MasterBlasterVariable
     	$out = array();
     	foreach($res as $key => $template)
     	{
-    		if($key == 'plugin_options') continue;
+    		if($key === 'plugin_options') continue;
     		list($event, $options) = explode('/', $template);
     		$out['system_options'][$event][] = $options;
     	}
