@@ -2,3 +2,7 @@
 masterblaster_notification_events; so if the options change in the MasterBlaster_<plugin>.php file,
 the entries must first be deleted in the db for the changes to take effect;  it would be better to 
 auto-check this and process accordingly
+
+
+
+Can't use a twig variable in replyTo field settings because the database validates that field to 'Email'.  Might want to relax that to be more flexible for customizing the replyTo field {{ entry.author.email }}

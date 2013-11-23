@@ -339,14 +339,39 @@ class MasterBlasterPlugin extends BasePlugin
     {
     	// get registered entries
     	if($res = craft()->masterBlaster_notifications->getEventNotifications($eventType, $entry))
-    	{
+    	{   
     		foreach($res as $campaign)
     		{
     			if( ! $campaign->recipients)
     			{
     				return false;
     			}
-    			 
+
+                // @TODO - probably want to tighten up this code.  Would it 
+                // be better to switch to do a string replace and only make
+                // key variables available here? 
+                // entry.author, entry.author.email, entry.title
+                //
+                // Add ReplyTo Email
+    			
+                try
+                {
+                    $campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entry));
+                }
+                catch (\Exception $e)
+                {
+                    return false; // something is wrong with the subject line
+                }
+
+                try
+                {
+                    $campaign->fromName = craft()->templates->renderString($campaign->fromName, array('entry' => $entry));
+                }
+                catch (\Exception $e)
+                {
+                    return false; // something is wrong with the subject line
+                }
+
     			try
     			{
     				$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entry));
@@ -355,6 +380,7 @@ class MasterBlasterPlugin extends BasePlugin
     			{
     				return false; // something is wrong with the tpl
     			}
+
     			$service = 'masterBlaster_' . $campaign->emailProvider;
     			craft()->{$service}->sendCampaign($campaign);
     		}
