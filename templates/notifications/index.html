@@ -3,7 +3,9 @@
 
 {% set body %}
 
-	{% for campaign in craft.masterblaster.getNotifications() %}
+	{% set notifications = craft.masterblaster.getNotifications() %}
+	
+	{% for campaign in notifications %}
 			
 		{% if loop.first %}
 		<h3>Notifications</h3>
@@ -40,10 +42,29 @@
 	{% endfor %}
 
 
- 	
-<div class="buttons">
+	{% if notifications|length %}
+	 	
+		<div class="buttons">
 	<a class="btn submit add icon" href="{{ url('masterblaster/notifications/new') }}">New Notification</a>
 </div>
+
+	{% else %}
+	 	
+	 	<div style="width:40%;">
+
+		 	<h2>Create your first Notification</h2>
+
+		 	<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on top of user generated content, keep an eye on publish workflows, or be in the know when something happens on your website.</p>
+
+		 	<div class="buttons">
+				<a class="btn submit icon" href="{{ url('masterblaster/notifications/new') }}">Create a Notification &raquo;</a>
+			</div>
+
+		</div>
+
+	{% endif %}
+ 	
+
 
 {% if brandMessageFooter is defined %}
 	{{ brandMessageFooter }}

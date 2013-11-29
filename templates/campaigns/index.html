@@ -3,10 +3,11 @@
 
 {% set body %}
 
-	
+	{% set campaigns = craft.masterblaster.getSectionCampaigns() %}
+
 	{# If there are Section-based Campaigns, Display them. #}
-	{% for campaign in craft.masterblaster.getSectionCampaigns() %}
-			
+	{% for campaign in campaigns %}
+		
 		{% if loop.first %}
 		<h3>Section-Based Campaigns</h3>
 		<table id="campaigns" class="data">
@@ -59,14 +60,28 @@
 	{% endfor %}
 
 
- 	
-<div class="buttons">
-	<a class="btn submit add icon" href="{{ url('masterblaster/campaigns/new') }}">New Campaign</a>
-</div>
+	{% if campaigns|length %}
+	 	
+		<div class="buttons">
+			<a class="btn submit add icon" href="{{ url('masterblaster/campaigns/new') }}">New Campaign</a>
+		</div>
 
-{% if brandMessageFooter is defined %}
-	{{ brandMessageFooter }}
-{% endif %}
+	{% else %}
+	 	
+	 	<div style="width:40%;">
+
+		 	<h2>Create your first Campaign</h2>
+
+		 	<p>Section-based Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
+
+		 	<div class="buttons">
+				<a class="btn submit icon" href="{{ url('masterblaster/campaigns/new') }}">Create a Campaign &raquo;</a>
+			</div>
+
+		</div>
+
+	{% endif %}
+
 
 {% endset %}
 

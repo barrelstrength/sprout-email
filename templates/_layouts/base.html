@@ -3,6 +3,10 @@
 {% set title = craft.MasterBlaster.name %}
 
 {% set tabs = {
+    overview:  { 
+      label: "Overview"|t, 
+      url: url('masterblaster') 
+    },
     campaigns:  { 
       label: "Campaigns"|t, 
       url: url('masterblaster/campaigns') 
@@ -28,7 +32,7 @@ templates: {
 }, 
 #}
 
-{% set selectedTab = craft.request.segment(2) %}
+{% set selectedTab = craft.request.segment(2) ? craft.request.segment(2) : 'overview' %}
 
 {% set content %}
   

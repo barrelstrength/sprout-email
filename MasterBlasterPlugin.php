@@ -22,7 +22,7 @@ class MasterBlasterPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '0.4.0';
+        return '0.4.1';
     }
 
     public function getDeveloper()
@@ -89,28 +89,23 @@ class MasterBlasterPlugin extends BasePlugin
     			array(
     					'registrar' => 'craft',
     					'event' => 'entries.saveEntry.new',
-    					'description' => 'when a new entry is created'
+    					'description' => 'Craft: When a new entry is created'
     			),    			
     			array(
     					'registrar' => 'craft',
     					'event' => 'entries.saveEntry',
-    					'description' => 'when an existing entry is updated'
+    					'description' => 'Craft: When an existing entry is updated'
     			),
     			array(
     					'registrar' => 'craft',
     					'event' => 'users.saveUser',
-    					'description' => 'when user is saved'
+    					'description' => 'Craft: When a user is saved'
     			),
 				array(
 						'registrar' => 'craft',
     					'event' => 'users.saveProfile',
-    					'description' => 'when user profile is saved'
-    			),
-    			array(
-    					'registrar' => 'commerceAddEventListener',
-    					'event' => 'checkoutEnd',
-    					'description' => 'Commerce: when an order is submitted'
-    			),
+    					'description' => 'Craft: When a user profile is saved'
+    			)
     	);
     
     	foreach ($events as $event) 
