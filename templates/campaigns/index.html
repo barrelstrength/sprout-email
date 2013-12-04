@@ -1,9 +1,9 @@
-{% extends "masterblaster/_layouts/base" %}
+{% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
 {% set body %}
 
-	{% set campaigns = craft.masterblaster.getSectionCampaigns() %}
+	{% set campaigns = craft.sproutemail.getSectionCampaigns() %}
 
 	{# If there are Section-based Campaigns, Display them. #}
 	{% for campaign in campaigns %}
@@ -22,14 +22,14 @@
 		
 			<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 				<td>
-					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+					<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td> 
-					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
+					<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
 						Define recipients
 					</a> | 
-					<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+					<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
 						Settings
 					</a>
 				</td>
@@ -63,7 +63,7 @@
 	{% if campaigns|length %}
 	 	
 		<div class="buttons">
-			<a class="btn submit add icon" href="{{ url('masterblaster/campaigns/new') }}">New Campaign</a>
+			<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign</a>
 		</div>
 
 	{% else %}
@@ -75,7 +75,7 @@
 		 	<p>Section-based Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
 
 		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('masterblaster/campaigns/new') }}">Create a Campaign &raquo;</a>
+				<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create a Campaign &raquo;</a>
 			</div>
 
 		</div>
@@ -89,15 +89,15 @@
 	new Craft.AdminTable({
 		tableSelector: '#campaigns',
 		noObjectsSelector: '#nocampaigns',
-		deleteAction: 'MasterBlaster/campaigns/delete'
+		deleteAction: 'SproutEmail/campaigns/delete'
 	});
 	
 	jQuery(document).ready(function(){
 		jQuery('.export').click(function(){
 			var query = 'entryId='+jQuery(this).closest('tr').attr('data-entry-id')
 			+ '&campaignId='+jQuery(this).closest('tr').attr('data-id')
-			+ '&action=MasterBlaster/campaigns/export';
-			$.post('{{ url('MasterBlaster/campaigns/export') }}',query, function(data){
+			+ '&action=SproutEmail/campaigns/export';
+			$.post('{{ url('SproutEmail/campaigns/export') }}',query, function(data){
 				alert(data);
 			})
 			return false;

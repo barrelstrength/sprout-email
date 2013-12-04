@@ -9,12 +9,12 @@
 	{% set campaignId = campaign.id %}
 {% else %}
 	{% set title = "Edit Notification" %}
-	{% set campaign = craft.masterblaster.getCampaignById(campaignId) %}
+	{% set campaign = craft.sproutemail.getCampaignById(campaignId) %}
 	{% set campaignId = campaign.id %}	
 {% endif %}
 
 {% set crumbs = [
-	{ label: "Master Blaster"|t, url: url('masterblaster/campaigns') },
+	{ label: "Sprout Email"|t, url: url('sproutemail/campaigns') },
 ] %}
 
 {% set tabs = {
@@ -37,8 +37,8 @@
 
 {% set content %}
 <form method="post" action="" accept-charset="UTF-8">
-<input type="hidden" name="action" value="MasterBlaster/notifications/save">
-<input type="hidden" name="redirect" value="MasterBlaster/notifications">
+<input type="hidden" name="action" value="SproutEmail/notifications/save">
+<input type="hidden" name="redirect" value="SproutEmail/notifications">
 <input type="hidden" name="id" value="{{ campaignId }}">
 
 <div id="tab-campaign-info" class="tab-content" >	
@@ -93,7 +93,7 @@
 		errors: (campaign is defined ? campaign.getErrors('replyToEmail') : null) 	
 	}) }}
 
-	{% set emailProviders = craft.masterblaster.getEmailProviders() %}
+	{% set emailProviders = craft.sproutemail.getEmailProviders() %}
 
 	<div style="display:none;" >
 	{{ forms.selectField({
@@ -107,7 +107,7 @@
 	}) }}
 	</div>
 	
-	{% set events = craft.masterblaster.getNotificationEvents() %}
+	{% set events = craft.sproutemail.getNotificationEvents() %}
 
 	{{ forms.selectField({
 		label: "When would you like to send this email"|t,
@@ -119,13 +119,13 @@
 		errors: (campaign is defined ? campaign.getErrors('notificationEvent') : null) 	
 	}) }}
 	
-	{% set eventOptions = craft.masterblaster.getNotificationEventOptions() %}
+	{% set eventOptions = craft.sproutemail.getNotificationEventOptions() %}
 	
 	{% if eventOptions.system_options is defined %}
 		{% for key, val in eventOptions.system_options %}
 			{% for key2, val2 in val %}
 				<div class="event_options {{ key | replace({'.':'---'}) }}" >
-					{% include "masterblaster/notifications/_event_options/" ~ key ~ "/" ~  val2 %}
+					{% include "sproutemail/notifications/_event_options/" ~ key ~ "/" ~  val2 %}
 				</div>
 			{% endfor %}
 		{% endfor %}
@@ -186,12 +186,12 @@
 		id: 'sectionId',
 		name: 'sectionId',
 		instructions: "Select the Section that you will be using to create content for this email notification."|t,
-		options : craft.masterblaster.getAllSections,
+		options : craft.sproutemail.getAllSections,
 		value: (campaign is defined ? campaign.sectionId : null),
 		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
 	}) }}
 	
-	{% set templatesDirListing = craft.masterblaster.getTemplatesDirListing() %}
+	{% set templatesDirListing = craft.sproutemail.getTemplatesDirListing() %}
 	
 	{{ forms.selectField({
 		label: "HTML Template"|t,
@@ -218,7 +218,7 @@
 <div id="tab-recipients" class="hidden tab-content">
 	{% for key, val in emailProviders %}
 	<div id="{{ key }}_recipients_template" class="recipient_templates" >
-		{% include "masterblaster/_email_providers/_" ~ key %}
+		{% include "sproutemail/_email_providers/_" ~ key %}
 	</div>
 	{% endfor %}
 </div>
@@ -228,5 +228,5 @@
 </div>
 
 </form>
-{% include "masterblaster/js" %}
+{% include "sproutemail/js" %}
 {% endset %}

@@ -11,7 +11,7 @@
 		errors: (campaign is defined ? campaign.getErrors('sectionIds') : null) ,
 	}, forms.checkboxGroup({
 		name: 'entriesSaveEntryUseroptIds',
-		options : craft.masterblaster.getAllUserGroups(),
+		options : craft.sproutemail.getAllUserGroups(),
 		values: userSavedAssignedGroups is defined ? userSavedAssignedGroups : null
 	})) }}
 <hr>

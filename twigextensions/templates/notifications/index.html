@@ -1,11 +1,11 @@
-{% extends "masterblaster/_layouts/base" %}
+{% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
 {% set body %}
 
 	
 	{# If there are Section-based Campaigns, Display them. #}
-	{% for campaign in craft.masterblaster.getNotifications() %}
+	{% for campaign in craft.sproutemail.getNotifications() %}
 			
 		{% if loop.first %}
 		<h3>Section-Based Campaigns</h3>
@@ -19,14 +19,14 @@
 		
 			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 				<td>
-					<a href="{{ url('masterblaster/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td> 
-					<a href="{{ url('masterblaster/notifications/edit/') }}/{{ campaign.id }}#tab-recipients">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-recipients">
 						Define recipients
 					</a> | 
-					<a href="{{ url('masterblaster/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
 						Settings
 					</a>
 				</td>
@@ -44,7 +44,7 @@
 
  	
 <div class="buttons">
-	<a class="btn submit add icon" href="{{ url('masterblaster/notifications/new') }}">New Notification</a>
+	<a class="btn submit add icon" href="{{ url('sproutemail/notifications/new') }}">New Notification</a>
 </div>
 
 {% if brandMessageFooter is defined %}
@@ -57,7 +57,7 @@
 	new Craft.AdminTable({
 		tableSelector: '#campaigns',
 		noObjectsSelector: '#nocampaigns',
-		deleteAction: 'MasterBlaster/campaigns/delete'
+		deleteAction: 'SproutEmail/campaigns/delete'
 	});
 {% endset %}
 {% includeJs js %}

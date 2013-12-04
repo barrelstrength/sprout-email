@@ -10,12 +10,12 @@
 	{% set campaignId = campaign.id %}
 {% else %}
 	{% set title = "Edit Campaign" %}
-	{% set campaign = craft.masterblaster.getCampaignById(campaignId) %}
+	{% set campaign = craft.sproutemail.getCampaignById(campaignId) %}
 	{% set campaignId = campaign.id %}	
 {% endif %}
 
 {% set crumbs = [
-	{ label: "Master Blaster"|t, url: url('masterblaster/campaigns') },
+	{ label: "Sprout Email"|t, url: url('sproutemail/campaigns') },
 ] %}
 
 {% set tabs = {
@@ -48,8 +48,8 @@ reports:    {
 
 
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="MasterBlaster/campaigns/save">
-	<input type="hidden" name="redirect" value="MasterBlaster/campaigns">
+	<input type="hidden" name="action" value="SproutEmail/campaigns/save">
+	<input type="hidden" name="redirect" value="SproutEmail/campaigns">
 	<input type="hidden" name="id" value="{{ campaignId }}">
 
 <div id="tab-campaign-info" class="tab-content" >
@@ -107,7 +107,7 @@ reports:    {
 	
 	
 
-	{% set emailProviders = craft.masterblaster.getEmailProviders() %}
+	{% set emailProviders = craft.sproutemail.getEmailProviders() %}
 
 	{{ forms.selectField({
 		label: "How would you like to send this email"|t,
@@ -182,12 +182,12 @@ reports:    {
 		id: 'sectionId',
 		name: 'sectionId',
 		instructions: "Select the Section that you will be using to create content for this email campaign."|t,
-		options : craft.masterblaster.getAllSections,
+		options : craft.sproutemail.getAllSections,
 		value: (campaign is defined ? campaign.sectionId : null),
 		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
 	}) }}
 	
-	{% set templatesDirListing = craft.masterblaster.getTemplatesDirListing() %}
+	{% set templatesDirListing = craft.sproutemail.getTemplatesDirListing() %}
 	
 	{{ forms.selectField({
 		label: "HTML Template"|t,
@@ -216,7 +216,7 @@ reports:    {
 
 {% for key, val in emailProviders %}
 <div id="{{ key }}_recipients_template" class="recipient_templates" >
-	{% include "masterblaster/_email_providers/_" ~ key %}
+	{% include "sproutemail/_email_providers/_" ~ key %}
 </div>
 {% endfor %}
 
@@ -229,5 +229,5 @@ reports:    {
 </div>
 
 </form>
-{% include "masterblaster/js" %}
+{% include "sproutemail/js" %}
 {% endset %}

@@ -1,9 +1,9 @@
-{% extends "masterblaster/_layouts/base" %}
+{% extends "sproutemail/_layouts/base" %}
 
 {% set body %}
 	
-	{% set campaigns = craft.masterblaster.getSectionCampaigns({ 'limit': 3 }) %}
-	{% set notifications = craft.masterblaster.getNotifications({ 'limit': 3 }) %}
+	{% set campaigns = craft.sproutemail.getSectionCampaigns({ 'limit': 3 }) %}
+	{% set notifications = craft.sproutemail.getNotifications({ 'limit': 3 }) %}
 
 	{% if campaigns|length %}
 	 	
@@ -24,14 +24,14 @@
 			
 				<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 					<td>
-						<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
 						&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 					</td>
 					<td> 
-						<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
+						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
 							Define recipients
 						</a> | 
-						<a href="{{ url('masterblaster/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
 							Settings
 						</a>
 					</td>
@@ -82,14 +82,14 @@
 			
 				<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 					<td>
-						<a href="{{ url('masterblaster/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
 						&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 					</td>
 					<td> 
-						<a href="{{ url('masterblaster/notifications/edit/') }}/{{ campaign.id }}#tab-recipients">
+						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-recipients">
 							Define recipients
 						</a> | 
-						<a href="{{ url('masterblaster/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
 							Settings
 						</a>
 					</td>
@@ -118,7 +118,7 @@
 		 	<p>Section-based Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
 
 		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('masterblaster/campaigns/new') }}">Create a Campaign &raquo;</a>
+				<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create a Campaign &raquo;</a>
 			</div>
 
 		</div>
@@ -136,7 +136,7 @@
 		 	<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on top of user generated content, keep an eye on publish workflows, or be in the know when something happens on your website.</p>
 
 		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('masterblaster/notifications/new') }}">Create a Notification &raquo;</a>
+				<a class="btn submit icon" href="{{ url('sproutemail/notifications/new') }}">Create a Notification &raquo;</a>
 			</div>
 
 		</div>

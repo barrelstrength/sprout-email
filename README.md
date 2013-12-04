@@ -1,8 +1,8 @@
 Requirements:
 
-- Integration file must be placed inside the plugins/<plugin>/integrations/masterblaster directory
-- Integration file must be named MasterBlaster_<pluginName>.php
-- Integration class must be named MasterBlaster_<pluginName>
+- Integration file must be placed inside the plugins/<plugin>/integrations/sproutemail directory
+- Integration file must be named SproutEmail_<pluginName>.php
+- Integration class must be named SproutEmail_<pluginName>
 - Integration class must implement the getHooks() method returning the following array:
 		array(
 			'commerceAddEventListener' => array( // plugin's hook to be called
@@ -26,7 +26,7 @@ Requirements:
 								autofocus: true,
 							}) }}
 							<hr>', // if html provided, will be used regardless of optionsTemplate
-						'optionsHandler' => 'commerce_masterBlaster::testIt' // can be a function in main plugin file or a service
+						'optionsHandler' => 'commerce_sproutEmail::testIt' // can be a function in main plugin file or a service
 					),
 				)
 			)
