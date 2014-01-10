@@ -91,6 +91,13 @@ class SproutEmailVariable
      */
     public function getAllUserGroups($indexBy = null)
     {
+        if( ! craft()->hasPackage(CraftPackage::Users))
+        {
+            $parts = explode('/', craft()->request->requestUri);
+            array_pop($parts);            
+            craft()->userSession->setError(Craft::t('In order to use this feature, you must install the ' . CraftPackage::Users . ' package.'));
+            craft()->request->redirect(implode('/', $parts));
+        }
     	$result = craft()->userGroups->getAllGroups($indexBy);
     	$options = array();
     	foreach($result as $key => $group)
