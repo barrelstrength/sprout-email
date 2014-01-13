@@ -48,6 +48,21 @@ class SproutEmail_sproutemailService extends SproutEmail_EmailProviderService im
 		
 		foreach($recipients as $recipient)
 		{
+			// this is a special case
+		    if(substr($recipient, 0, 6) == 'entry.')
+		    {
+		        list($entry, $field) = explode('.', $recipient);
+		        $posted = craft()->request->getPost($field);
+		        if($posted)
+		        {
+		            $recipient = $posted;
+		        }
+		        else 
+		       {
+		            continue;
+		        }
+		    }
+		    
 			$emailModel->toEmail = $recipient;
 			craft()->email->sendEmail($emailModel);
 		}
@@ -73,6 +88,12 @@ class SproutEmail_sproutemailService extends SproutEmail_EmailProviderService im
 		// validate emails
 		foreach($recipients as $email)
 		{
+		    // this is a special case
+		    if(substr($email, 0, 6) == 'entry.')
+		    {
+		        continue;
+		    }
+		    
 			$recipientRecord = new SproutEmail_RecipientRecord();
 	
 			$recipientRecord->email = $email;
