@@ -147,8 +147,6 @@ class SproutEmailPlugin extends BasePlugin
         		}
         	}
         }
-        
-
     }
     
     /**
@@ -163,29 +161,44 @@ class SproutEmailPlugin extends BasePlugin
     	 * @var BaseModel [required] - the entity to be used for data extraction
     	 * @var Bool [optional] - event status; if passed, the function will exit on false and process on true; defaults to true
     	 */
-    	return function($event, $entity, $success = TRUE)
+    	return function($event, $entity = null, $success = TRUE)
     	{
     		// if ! $success, return
     		if( ! $success)
     		{
     			return false;
     		}
+    		
+    		// an event can be either an Event object or a string
+    		if($event instanceof Event)
+    		{
+    		    $event_name = $event->params['event'];
+    		} 
+    		else 
+    		{
+    		    $event_name = (string) $event;
+    		}
+    		
+    		// check if entity is passed in as an event param
+    		if( ! $entity && isset($event->params['entity']))
+    		{
+    		    $entity = $event->params['entity'];
+    		}
 
     		// validate
     		$criteria = new \CDbCriteria();
     		$criteria->condition = 'event=:event';
-    		$criteria->params = array(':event' => (string) $event);     	 	
+    		$criteria->params = array(':event' => $event_name);     	 	
 
     		if( ! $event_notification = SproutEmail_NotificationEventRecord::model()->find($criteria))
     		{
     			return false;
     		}
-    		    	
+    		    		    	
     		// process $entity
     		// get registered entries
-    		if($res = craft()->sproutEmail_notifications->getEventNotifications( (string) $event, $entity))
+    		if($res = craft()->sproutEmail_notifications->getEventNotifications($event_name, $entity))
     		{
-    	
     			foreach($res as $campaign)
     			{    				
     				if( ! $campaign->recipients)
@@ -222,7 +235,7 @@ class SproutEmailPlugin extends BasePlugin
     						return false;
     					}
     					
-    					if( ! $obj->$function($event, $entity, $options))
+    					if( ! $obj->$function($event_name, $entity, $options))
     					{
     						return true;
     					}
@@ -236,7 +249,7 @@ class SproutEmailPlugin extends BasePlugin
     				{
     					return false; // fail silently for now; something is wrong with the tpl
     				}
-    				 
+
     				$recipientLists = array();
     				foreach($campaign->recipientList as $list)
     				{
