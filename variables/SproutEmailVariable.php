@@ -112,9 +112,9 @@ class SproutEmailVariable
      * @param string $provider
      * @return array
      */
-    public function getSubscriberList($provider = 'sproutemail')
+    public function getSubscriberList($provider = 'SproutEmail')
     {
-    	$service = 'sproutEmail_' . $provider;
+    	$service = 'sproutEmail_' . lcfirst($provider);
     	return craft()->{$service}->getSubscriberList();
     }
 

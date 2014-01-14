@@ -5,7 +5,7 @@ namespace Craft;
  * CampaignMonitor service
  * Abstracted CampaignMonitor wrapper
  */
-class SproutEmail_campaign_monitorService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
+class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	/**
 	 * Returns subscriber lists
@@ -15,7 +15,7 @@ class SproutEmail_campaign_monitorService extends SproutEmail_EmailProviderServi
 	public function getSubscriberList()
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
-		require_once(dirname(__FILE__) . '/../libraries/campaign_monitor/csrest_clients.php');
+		require_once(dirname(__FILE__) . '/../libraries/CampaignMonitor/csrest_clients.php');
 		$subscriber_lists = array();
 	
 		$wrap = new \CS_REST_Clients('e2da5a2cc2c2040857eb2f8add0726c1', '718251f99548f57c6a278d0439da2c51cc5fd5696194282f');
@@ -42,7 +42,7 @@ class SproutEmail_campaign_monitorService extends SproutEmail_EmailProviderServi
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
-		require_once(dirname(__FILE__) . '/../libraries/campaign_monitor/csrest_campaigns.php');
+		require_once(dirname(__FILE__) . '/../libraries/CampaignMonitor/csrest_campaigns.php');
 		$wrap = new \CS_REST_Campaigns(NULL, '718251f99548f57c6a278d0439da2c51cc5fd5696194282f');
 
 		$result = $wrap->create('e2da5a2cc2c2040857eb2f8add0726c1', array(

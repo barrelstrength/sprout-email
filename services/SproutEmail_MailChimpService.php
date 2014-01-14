@@ -5,7 +5,7 @@ namespace Craft;
  * MailChimp service
  * Abstracted MailChimp wrapper
  */
-class SproutEmail_mail_chimpService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
+class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {	
 	/**
 	 * Returns subscriber lists
@@ -14,8 +14,8 @@ class SproutEmail_mail_chimpService extends SproutEmail_EmailProviderService imp
 	 */
 	public function getSubscriberList()
 	{
-		require_once(dirname(__FILE__) . '/../libraries/mail_chimp/inc/MCAPI.class.php');
-		require_once(dirname(__FILE__) . '/../libraries/mail_chimp/inc/config.inc.php'); //contains apikey
+		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/MCAPI.class.php');
+		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/config.inc.php'); //contains apikey
 		$subscriber_lists = array();
 		
 		$api = new \MCAPI($apikey);
@@ -42,8 +42,8 @@ class SproutEmail_mail_chimpService extends SproutEmail_EmailProviderService imp
 	 */
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
-		require_once(dirname(__FILE__) . '/../libraries/mail_chimp/inc/MCAPI.class.php');
-		require_once(dirname(__FILE__) . '/../libraries/mail_chimp/inc/config.inc.php'); //contains apikey
+		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/MCAPI.class.php');
+		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/config.inc.php'); //contains apikey
 
 		$api = new \MCAPI($apikey);
 		

@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * SproutEmail service
  */
-class SproutEmail_sproutemailService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
+class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	/**
 	 * N/A

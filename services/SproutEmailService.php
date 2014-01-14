@@ -204,7 +204,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}		
 				
 		// save & associate the recipient list
-		$service = 'sproutEmail_' . $campaignRecord->emailProvider;
+		$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
 		if( ! craft()->{$service}->saveRecipientList($campaign, $campaignRecord))
 		{
 			$transaction->rollback();

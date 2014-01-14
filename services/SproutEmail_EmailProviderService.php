@@ -15,7 +15,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	{
 		$plugins_path = rtrim(craft()->path->getPluginsPath(), '\\/');
 		$files = scandir($plugins_path . '/sproutemail/libraries');
-		$select_options = array('sproutemail' => 'Sprout Email');
+		$select_options = array('SproutEmail' => 'Sprout Email');
 			
 		// set <select> values and text to be the same
 		foreach($files as $file)
@@ -63,7 +63,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		
 		foreach($listProviders as $provider)
 		{
-			$provider_service = 'sproutEmail_' . $provider;
+			$provider_service = 'sproutEmail_' . lcfirst($provider);
 			craft()->{$provider_service}->exportCampaign($campaign, $listIds[$provider]);
 		}
 		die();
