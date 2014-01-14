@@ -211,10 +211,9 @@ class SproutEmailVariable
     	{    	
     		foreach($res['plugin_options'] as $k=>$v)
     		{
-    			$decoded = json_decode($v);
-    			if(empty($decoded)) continue;
+    			if(empty($v)) continue;
     			
-    			$out['plugin_options'][$k] = (array) json_decode($v);
+    			$out['plugin_options'][$k] = $v;
     		}	
     	}
     	

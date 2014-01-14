@@ -26,7 +26,7 @@ class SproutEmail_NotificationEventRecord extends BaseRecord
         	'registrar' => array(AttributeType::String),
         	'event' => array(AttributeType::String),
         	'description' => array(AttributeType::String),
-        	'options' => array(AttributeType::String, 'column' => ColumnType::Text),
+        	'options' => array(AttributeType::Mixed),
             'dateCreated' => array(AttributeType::DateTime),
         	'dateUpdated' => array(AttributeType::DateTime),
         );

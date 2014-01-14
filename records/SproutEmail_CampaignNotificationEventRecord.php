@@ -27,7 +27,7 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
         return array(
         	'notificationEventId' => array(AttributeType::Number),
         	'campaignId' => array(AttributeType::Number),    
-        	'options' => array(AttributeType::String, 'column' => ColumnType::Text),   	
+        	'options' => array(AttributeType::Mixed),   	
 			'dateCreated' => array(AttributeType::DateTime),
         	'dateUpdated' => array(AttributeType::DateTime),
         );
