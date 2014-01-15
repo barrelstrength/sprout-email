@@ -209,13 +209,13 @@ class SproutEmailPlugin extends BasePlugin
     				// set $_POST vars
     				$post = (object) $_POST;
     				 
-    				$opts = json_decode($event_notification->options);
+    				$opts = json_decode(json_encode($event_notification->options, false));
     				 
     				if($opts && $opts->handler)
     				{
     					list($class, $function) = explode('::', $opts->handler);
 
-    					$options = unserialize($campaign->campaignNotificationEvent[0]->options);
+    					$options = $campaign->campaignNotificationEvent[0]->options;
 
     					$base_classes = json_decode($opts->handler_base_classes);
 
@@ -255,7 +255,7 @@ class SproutEmailPlugin extends BasePlugin
     				{
     					$recipientLists[] = $list->emailProviderRecipientListId;
     				}
-    				$service = 'sproutEmail_' . $campaign->emailProvider;
+    				$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
     				craft()->{$service}->sendCampaign($campaign, $recipientLists);
     			}
     		}
