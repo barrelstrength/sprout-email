@@ -83,7 +83,7 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
     	foreach($res->campaignNotificationEvent as $key => $campaignNotification)
     	{
     		$notificationCampaignIds[$key] = $campaignNotification->campaignId; // assume it's a match
-    		if($opts = unserialize($campaignNotification->options)) // get options, if any
+    		if($opts = $campaignNotification->options) // get options, if any
     		{    			
     			foreach($opts['options'] as $option_key => $option) // process each option set associated with the campagin
     			{
@@ -174,8 +174,7 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
     	{
     		case 1: // entries.saveEntry
     			$options = array('options' => array(
-						'sectionIds' => $data['entriesSaveEntryNewSectionIds'],
-						'userGroupIds' => $data['entriesSaveEntryNewUseroptIds']
+						'sectionIds' => $data['entriesSaveEntryNewSectionIds']
 				));
     			break;
     		case 4: // users.saveProfile
@@ -191,8 +190,7 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
     			break;
     		case 2: // content.saveContent
     			$options = array('options' => array(
-						'sectionIds' => $data['entriesSaveEntrySectionIds'],
-						'userGroupIds' => $data['entriesSaveEntryUseroptIds']
+						'sectionIds' => $data['entriesSaveEntrySectionIds']
 				));
     			break;
     		default:
@@ -208,7 +206,7 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
     		return false;
     	}
     	
-    	$campaignNotification->options = serialize($options);
+    	$campaignNotification->options = $options;
     	return $campaignNotification->save(false);
     }
 }

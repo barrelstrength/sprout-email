@@ -389,7 +389,7 @@ class SproutEmailPlugin extends BasePlugin
     				return false; // something is wrong with the tpl
     			}
 
-    			$service = 'sproutEmail_' . $campaign->emailProvider;
+    			$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
     			craft()->{$service}->sendCampaign($campaign);
     		}
     	}

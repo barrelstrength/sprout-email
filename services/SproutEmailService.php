@@ -105,7 +105,7 @@ class SproutEmailService extends BaseApplicationComponent
 			$unserialized = array();
 			foreach($campaignRecord->campaignNotificationEvent as $event)
 			{
-				$opts = unserialize($event->options);
+				$opts = $event->options;
 				$event->options = isset($opts['options']) ? $opts['options'] : array();
 				$unserialized[] = $event;
 			}
