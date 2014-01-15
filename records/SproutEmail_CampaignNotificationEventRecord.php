@@ -194,7 +194,7 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
 				));
     			break;
     		default:
-    			$options = array('options' => $data['options'] ? $data['options'] : array());
+    			$options = array('options' => isset($data['options']) && $data['options'] ? $data['options'] : array());
     			break;
     	}
 
