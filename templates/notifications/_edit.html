@@ -141,21 +141,12 @@
 </div>
 
 <div id="tab-email-template" class="hidden tab-content">
-	{####### TEMPORARY - SUPPORT FOR INLINE TEXT TEMPLATES ####}
-	{% set templateOptions = [
-		{ 
-			value: 2, 
-			label:'Send a simple text-based email'
-		}
-	] %}
-
-	{{ forms.radioGroup({
-		options : templateOptions,	
-		value:2,
-		name: 'templateOption'
-	}) }}
-	{##################################################################}
-	<hr>
+	
+	<style type="text/css">
+	textarea.text {
+		min-height: 300px;
+	}
+	</style>
 	
 	<div id="tpl_html" class="tpl_options">
 	{{ forms.textareaField({
@@ -167,7 +158,8 @@
 		errors: (campaign is defined ? campaign.getErrors('htmlBody') : null) 	
 	}) }}	
 	</div>
-	
+	<br/>
+
 	<div id="tpl_text" class="tpl_options">
 	{{ forms.textareaField({
 		label: "Plain Text"|t,
@@ -177,50 +169,22 @@
 		value: (campaign is defined ? campaign.textBody : null),
 		errors: (campaign is defined ? campaign.getErrors('textBody') : null) 	
 	}) }}
-	<hr>
 	</div>
 
-	<div id="tpl_section" class="tpl_options">	
-	{{ forms.selectField({
-		label: "Email Content Section"|t,
-		id: 'sectionId',
-		name: 'sectionId',
-		instructions: "Select the Section that you will be using to create content for this email notification."|t,
-		options : craft.sproutemail.getAllSections,
-		value: (campaign is defined ? campaign.sectionId : null),
-		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
-	}) }}
-	
-	{% set templatesDirListing = craft.sproutemail.getTemplatesDirListing() %}
-	
-	{{ forms.selectField({
-		label: "HTML Template"|t,
-		id: 'htmlTemplate',
-		name: 'htmlTemplate',
-		instructions: "Select the file that will be the template for your HTML Emails in this Section/"|t,
-		options: templatesDirListing,
-		value: (campaign is defined ? campaign.htmlTemplate : null),
-		errors: (campaign is defined ? campaign.getErrors('htmlTemplate') : null) 	
-	}) }}
-
-	{{ forms.selectField({
-		label: "Text Template"|t,
-		id: 'textTemplate',
-		name: 'textTemplate',
-		options: templatesDirListing,
-		instructions: "Select the file that will be the template for your Plain Text Emails in this Section."|t,
-		value: (campaign is defined ? campaign.textTemplate : null),
-		errors: (campaign is defined ? campaign.getErrors('textTemplate') : null) 	
-	}) }}
-	</div>
 </div>
 
 <div id="tab-recipients" class="hidden tab-content">
-	{% for key, val in emailProviders %}
-	<div id="{{ key }}_recipients_template" class="recipient_templates" >
-		{% include "sproutemail/_email_providers/_" ~ key %}
-	</div>
-	{% endfor %}
+	
+	{{ forms.textareaField({
+		label: "Add Recipients"|t,
+		id: 'recipients',
+		name: 'recipients',
+		instructions: "Add each email address on a separate line"|t,
+		value: (campaign is defined ? campaign.recipients : null),
+		required: true,
+		errors: (campaign is defined ? campaign.getErrors('recipients') : null) 	
+	}) }}
+	
 </div>
 
 <div class="buttons">
@@ -228,5 +192,7 @@
 </div>
 
 </form>
-{% include "sproutemail/js" %}
 {% endset %}
+
+{% includeJsResource "sproutemail/js/sproutemail.js" %}
+
