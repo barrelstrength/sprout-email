@@ -42,6 +42,13 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 				'body'              => $campaign->textBody,
 				'htmlBody'          => $campaign->textBody
 		);
+		
+		// since we're allowing unchecked variables as replyTo, let's make sure it's a valid email before adding
+		if($campaign->replyToEmail && preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $campaign->replyToEmail))
+		{
+		    $emailData['replyTo'] = $campaign->replyToEmail;
+		}
+		
 		$recipients = explode("\r\n", $campaign->recipients);
 		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 46 in ' . __FILE__);
 		$emailModel = EmailModel::populateModel($emailData);

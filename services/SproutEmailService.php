@@ -270,6 +270,14 @@ class SproutEmailService extends BaseApplicationComponent
 				break;
 		}
 		
+		// if this is a notification and replyToEmail does NOT contain a twig variable
+		// OR this is not a notification, set email rule
+		if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $campaignRecord->replyToEmail))
+		        || ! $campaignRecord->notificationEvent)
+		{
+		    $campaignRecord->addRules(array('replyToEmail', 'email'));
+		}
+		
 		$campaignRecord->validate();
 		$campaign->addErrors($campaignRecord->getErrors());
 		
