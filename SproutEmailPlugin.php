@@ -3,6 +3,8 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
+    private $version = '0.6.1';
+    
     public function getName() 
     {
         $pluginName = Craft::t('Sprout Email');
@@ -22,7 +24,7 @@ class SproutEmailPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '0.4.1';
+        return $this->version;
     }
 
     public function getDeveloper()
@@ -137,12 +139,9 @@ class SproutEmailPlugin extends BasePlugin
         {
         	foreach($events as $event)
         	{
-        		try 
-        		{
+        		try {
         			craft()->plugins->call($event->registrar,array($event->event, $this->_get_closure()));
-        		}
-        		catch (\Exception $e)
-        		{
+        		} catch (\Exception $e) {
         			die($e->getMessage());
         		}
         	}
@@ -207,7 +206,20 @@ class SproutEmailPlugin extends BasePlugin
     				}
 
     				// set $_POST vars
-    				$post = (object) $_POST;
+    			    if($post = craft()->request->getPost())
+    			    {
+    			        foreach($post as $key => $val)
+    			        {
+    			            if(is_object($entity))
+    			            {
+    			                $entity->{$key} = $val;
+    			            }
+    			            else if (is_array($entity))
+    			            {
+    			                $entity[$key] = $val;
+    			            }
+    			        }
+    			    }
     				 
     				$opts = json_decode(json_encode($event_notification->options, false));
     				 
@@ -241,20 +253,32 @@ class SproutEmailPlugin extends BasePlugin
     					}
     				}
 
-    				try
-    				{
-    					$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('item' => $entity, '_post' => $post));
+    				try {
+    				    $campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entity));
+    			    } catch (\Exception $e) {
+    					$campaign->subject = str_replace('{{', '', $campaign->subject);
+    					$campaign->subject = str_replace('}}', '', $campaign->subject);
     				}
-    				catch (\Exception $e)
-    				{
-    					return false; // fail silently for now; something is wrong with the tpl
+    				
+    				try {
+    				    $campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entity));
+    				} catch (\Exception $e) {
+    				    $campaign->textBody = str_replace('{{', '', $campaign->textBody);
+    				    $campaign->textBody = str_replace('}}', '', $campaign->textBody);
     				}
-
+    				
+    				try {
+    				    $campaign->replyToEmail = craft()->templates->renderString($campaign->replyToEmail, array('entry' => $entity));
+    				} catch (\Exception $e) {
+    				    $campaign->replyToEmail = null;
+    				}
+    				
     				$recipientLists = array();
     				foreach($campaign->recipientList as $list)
     				{
     					$recipientLists[] = $list->emailProviderRecipientListId;
     				}
+
     				$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
     				craft()->{$service}->sendCampaign($campaign, $recipientLists);
     			}
@@ -359,34 +383,32 @@ class SproutEmailPlugin extends BasePlugin
                 // be better to switch to do a string replace and only make
                 // key variables available here? 
                 // entry.author, entry.author.email, entry.title
-                //
-                // Add ReplyTo Email
     			
-                try
-                {
+                try {
                     $campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entry));
-                }
-                catch (\Exception $e)
-                {
-                    return false; // something is wrong with the subject line
-                }
-
-                try
-                {
-                    $campaign->fromName = craft()->templates->renderString($campaign->fromName, array('entry' => $entry));
-                }
-                catch (\Exception $e)
-                {
-                    return false; // something is wrong with the subject line
-                }
-
-    			try
-    			{
-    				$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entry));
+                } catch (\Exception $e) {
+    				$campaign->subject = str_replace('{{', '', $campaign->subject);
+    				$campaign->subject = str_replace('}}', '', $campaign->subject);
     			}
-    			catch (\Exception $e)
-    			{
-    				return false; // something is wrong with the tpl
+    			
+    			try {
+    			    $campaign->fromName = craft()->templates->renderString($campaign->fromName, array('entry' => $entry));
+    			} catch (\Exception $e) {
+    			    $campaign->fromName = str_replace('{{', '', $campaign->fromName);
+    			    $campaign->fromName = str_replace('}}', '', $campaign->fromName);
+    			}
+    			
+    			try {
+    			    $campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entry));
+    			} catch (\Exception $e) {
+    			    $campaign->textBody = str_replace('{{', '', $campaign->textBody);
+    			    $campaign->textBody = str_replace('}}', '', $campaign->textBody);
+    			}
+    			
+    			try {
+    			    $campaign->replyToEmail = craft()->templates->renderString($campaign->replyToEmail, array('entry' => $entry));
+    			} catch (\Exception $e) {
+    			    $campaign->replyToEmail = null;
     			}
 
     			$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);

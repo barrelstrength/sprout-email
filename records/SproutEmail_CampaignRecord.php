@@ -100,7 +100,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     	$rules = array(
     		//array('sectionId', 'exist'), // if section is passed, it must be a valid record
     		array('name,subject,fromName,fromEmail,replyToEmail,templateOption', 'required'), // required fields
-    		array('fromEmail,replyToEmail', 'email'), // must be valid emails
+    		array('fromEmail', 'email'), // must be valid emails
     		array('emailProvider', 'validEmailProvider') // custom
     	);
     	    	
