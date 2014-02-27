@@ -53,25 +53,15 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 46 in ' . __FILE__);
 		$emailModel = EmailModel::populateModel($emailData);
 		
+		$post = craft()->request->getPost();
 		foreach($recipients as $recipient)
 		{
-			// this is a special case
-		    if(substr($recipient, 0, 6) == 'entry.')
-		    {
-		        list($entry, $field) = explode('.', $recipient);
-		        $posted = craft()->request->getPost($field);
-		        if($posted)
-		        {
-		            $recipient = $posted;
-		        }
-		        else 
-		       {
-		            continue;
-		        }
+		    try {
+    			$emailModel->toEmail = craft()->templates->renderString($recipient, array('entry' => $post));
+    			craft()->email->sendEmail($emailModel);
+		    } catch (\Exception $e) {
+		        // do nothing
 		    }
-		    
-			$emailModel->toEmail = $recipient;
-			craft()->email->sendEmail($emailModel);
 		}
 	}
 
@@ -94,21 +84,18 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	
 		// validate emails
 		foreach($recipients as $email)
-		{
-		    // this is a special case
-		    if(substr($email, 0, 6) == 'entry.')
-		    {
-		        continue;
-		    }
-		    
-			$recipientRecord = new SproutEmail_RecipientRecord();
-	
+		{		    
+			$recipientRecord = new SproutEmail_RecipientRecord();	
 			$recipientRecord->email = $email;
-			$recipientRecord->validate();
-			if($recipientRecord->hasErrors())
+			
+			if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $email)) || ! $campaignRecord->notificationEvent)
 			{
-				$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
-				return false;
+				$recipientRecord->validate();
+    			if($recipientRecord->hasErrors())
+    			{
+    				$campaign->addError('recipients', 'Once or more of listed emails are not valid.');
+    				return false;
+    			};
 			}
 		}
 	
