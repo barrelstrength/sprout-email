@@ -123,59 +123,6 @@ reports:    {
 
 <div id="tab-email-template" class="hidden tab-content">
 
-	{#
-	{% set templateOptions = [
-		{value:1, label: 'Import the HTML/Text on your own'}, 
-		{value:2, label:'Send a simple text-based email'},
-		{value:3, label:'Create a Campaign based on an Entries Section and Template'}
-	] %}
-	
-	{{ forms.radioGroup({
-		options : templateOptions,	
-		value:(campaign is defined ? campaign.templateOption : 1),
-		name: 'templateOption'
-	}) }}
-	#}
-	
-	{####### TEMPORARY - SUPPORT FOR SECTION BASED CAMPAIGNS ONLY ####}
-	{% set templateOptions = [
-		{value:3, label:'Create a Campaign based on an Entries Section and Template'}
-	] %}
-
-	{{ forms.radioGroup({
-		options : templateOptions,	
-		value:3,
-		name: 'templateOption'
-	}) }}
-	{##################################################################}
-
-	<hr>
-
-	<div id="tpl_html" class="tpl_options">
-	{{ forms.textareaField({
-		label: "HTML Code"|t,
-		id: 'htmlBody',
-		name: 'htmlBody',
-		instructions: "The code for your html email. Be sure to inline your CSS beforehand."|t,
-		value: (campaign is defined ? campaign.htmlBody : null),
-		errors: (campaign is defined ? campaign.getErrors('htmlBody') : null) 	
-	}) }}
-	
-	</div>
-	<div id="tpl_text" class="tpl_options">
-
-	{{ forms.textareaField({
-		label: "Plain Text"|t,
-		id: 'textBody',
-		name: 'textBody',
-		instructions: "The code for your email's text version."|t,
-		value: (campaign is defined ? campaign.textBody : null),
-		errors: (campaign is defined ? campaign.getErrors('textBody') : null) 	
-	}) }}
-
-	<hr>
-	</div>
-
 	<div id="tpl_section" class="tpl_options">
 	{{ forms.selectField({
 		label: "Email Content Section"|t,
@@ -214,11 +161,12 @@ reports:    {
 
 <div id="tab-recipients" class="hidden tab-content">
 
-{% for key, val in emailProviders %}
-<div id="{{ key }}_recipients_template" class="recipient_templates" >
-	{% include "sproutemail/_email_providers/_" ~ key %}
-</div>
-{% endfor %}
+	{% for key, val in emailProviders %}
+		<div id="{{ key }}_recipients_template" class="recipient_templates" >
+			{% include "sproutemail/_email_providers/_" ~ key %}
+		</div>
+		<br/>
+	{% endfor %}
 
 </div>
 
@@ -229,5 +177,6 @@ reports:    {
 </div>
 
 </form>
-{% include "sproutemail/js" %}
 {% endset %}
+
+{% includeJsResource "sproutemail/js/sproutemail.js" %}

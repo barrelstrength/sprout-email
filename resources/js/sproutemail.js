@@ -1,10 +1,5 @@
-{% set js %}
-
 jQuery(document).ready(function(){
 	mb.init();
-	jQuery('#tab-email-template').find('input[type=radio]').change(function(){
-		mb.select_email_tpl();
-	});	
 	jQuery('#emailProvider').change(function(){
 		mb.select_email_provider();
 	});
@@ -29,24 +24,6 @@ var mb = {
 		jQuery('.recipient_templates').hide();
 		jQuery('#'+jQuery('#emailProvider').val()+'_recipients_template').find('input').attr('disabled',false);
 		jQuery('#'+jQuery('#emailProvider').val()+'_recipients_template').show();
-	},
-	select_email_tpl: function(){
-		jQuery('.tpl_options').hide();
-
-		switch(jQuery('input[name="templateOption"]:checked').val())
-		{
-			case '1':
-				jQuery('#tpl_html, #tpl_text').show();
-				break;
-			case '2':
-				jQuery('#tpl_text').show();
-				break;
-			case '3':
-				jQuery('#tpl_section').show();
-				break;
-			default:
-			break;
-		}
 	},
 	select_recipients: function(){
 		jQuery('.recipient_options').hide();
@@ -77,6 +54,3 @@ var mb = {
 		jQuery('.'+event).show();
 	}
 }
-	
-{% endset %}
-{% includeJs js %}
