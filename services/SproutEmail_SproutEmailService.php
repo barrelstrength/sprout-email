@@ -40,9 +40,13 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 				'fromName'          => $campaign->fromName,
 				'subject'           => $campaign->subject,
 				'body'              => $campaign->textBody,
-				'htmlBody'          => $campaign->textBody
 		);
 		
+		if($campaign->htmlBody)
+		{
+		    $emailData['htmlBody'] = $campaign->htmlBody;
+		}
+
 		// since we're allowing unchecked variables as replyTo, let's make sure it's a valid email before adding
 		if($campaign->replyToEmail && preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $campaign->replyToEmail))
 		{

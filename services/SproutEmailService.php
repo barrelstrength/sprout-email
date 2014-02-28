@@ -258,9 +258,10 @@ class SproutEmailService extends BaseApplicationComponent
 				$campaignRecord->textBody	= $campaign->textBody;
 				$campaignRecord->addRules(array('htmlBody,textBody', 'required'));
 				break;
-			case 2: // Send a simple text-based email
-				$campaignRecord->textBody	= $campaign->textBody;
-				$campaignRecord->addRules(array('textBody', 'required'));
+			case 2: // Send a text-based & html email
+			    $campaignRecord->htmlBody	= $campaign->htmlBody;
+			    $campaignRecord->textBody	= $campaign->textBody;
+			    $campaignRecord->addRules(array('textBody', 'required'));
 				break;
 			case 3: // Create a Campaign based on an Entries Section and Template
 				$campaignRecord->sectionId		= $campaign->sectionId;
@@ -268,8 +269,9 @@ class SproutEmailService extends BaseApplicationComponent
 				$campaignRecord->textTemplate	= $campaign->textTemplate;
 				$campaignRecord->addRules(array('sectionId,htmlTemplate,textTemplate', 'required'));
 				break;
+
 		}
-		
+
 		// if this is a notification and replyToEmail does NOT contain a twig variable
 		// OR this is not a notification, set email rule
 		if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $campaignRecord->replyToEmail))

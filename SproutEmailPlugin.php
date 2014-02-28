@@ -268,6 +268,13 @@ class SproutEmailPlugin extends BasePlugin
     				}
     				
     				try {
+    				    $campaign->htmlBody = craft()->templates->renderString($campaign->htmlBody, array('entry' => $entity));
+    				} catch (\Exception $e) {
+    				    $campaign->htmlBody = str_replace('{{', '', $campaign->htmlBody);
+    				    $campaign->htmlBody = str_replace('}}', '', $campaign->htmlBody);
+    				}
+    				
+    				try {
     				    $campaign->replyToEmail = craft()->templates->renderString($campaign->replyToEmail, array('entry' => $entity));
     				} catch (\Exception $e) {
     				    $campaign->replyToEmail = null;
@@ -403,6 +410,13 @@ class SproutEmailPlugin extends BasePlugin
     			} catch (\Exception $e) {
     			    $campaign->textBody = str_replace('{{', '', $campaign->textBody);
     			    $campaign->textBody = str_replace('}}', '', $campaign->textBody);
+    			}
+    			
+    			try {
+    			    $campaign->htmlBody = craft()->templates->renderString($campaign->htmlBody, array('entry' => $entry));
+    			} catch (\Exception $e) {
+    			    $campaign->htmlBody = str_replace('{{', '', $campaign->htmlBody);
+    			    $campaign->htmlBody = str_replace('}}', '', $campaign->htmlBody);
     			}
     			
     			try {
