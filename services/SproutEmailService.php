@@ -329,7 +329,7 @@ class SproutEmailService extends BaseApplicationComponent
 			}
 			
 			// delete associated recipients
-			$service = 'sproutEmail_' . $campaignRecord->emailProvider;
+			$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
 			if( ! craft()->{$service}->deleteRecipients($campaignRecord))
 			{
 				$transaction->rollback();

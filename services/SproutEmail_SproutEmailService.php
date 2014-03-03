@@ -92,7 +92,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 			$recipientRecord = new SproutEmail_RecipientRecord();	
 			$recipientRecord->email = $email;
 			
-			if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $email)) || ! $campaignRecord->notificationEvent)
+			if(($campaign->notificationEvent && ! preg_match('/{{(.*?)}}/', $email)) || ! $campaign->notificationEvent)
 			{
 				$recipientRecord->validate();
     			if($recipientRecord->hasErrors())
