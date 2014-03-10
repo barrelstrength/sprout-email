@@ -12,4 +12,6 @@ interface SproutEmail_EmailProviderInterfaceService
 	public function sendCampaign($campaign, $listIds);
 	public function saveRecipientList(SproutEmail_CampaignModel &$campaign, SproutEmail_CampaignRecord &$campaignRecord);
 	public function cleanUpRecipientListOrphans(&$campaignRecord);
+	public function getSettings();
+	public function saveSettings($settings = array());
 }

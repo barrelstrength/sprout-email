@@ -131,9 +131,28 @@ class SproutEmailVariable
      * Get email providers
      * @return array
      */
-    public function getEmailProviders()
+    public function getEmailProviders($excludeWithoutApiSettings = false)
     {
-		return craft()->sproutEmail_emailProvider->getEmailProviders();
+		$providers = craft()->sproutEmail_emailProvider->getEmailProviders();
+		if($excludeWithoutApiSettings)
+		{
+		    foreach($providers as $key => $provider)
+		    {
+		        $settings = $this->getEmailProviderSettings($provider);
+		        if( ! $settings->valid)
+		        {
+		            unset($providers[$key]);
+		        }
+		    }
+		}
+
+		return $providers;
+    }
+    
+    public function getEmailProviderSettings($provider)
+    {
+        $service = 'sproutEmail_' . lcfirst($provider);
+        return craft()->$service->getSettings();
     }
 
     /** 

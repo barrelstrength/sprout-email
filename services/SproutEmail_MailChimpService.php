@@ -7,6 +7,25 @@ namespace Craft;
  */
 class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {	
+    protected $apiSettings;
+    
+    protected $client_key;
+    
+    protected $api_key;
+    
+    public function __construct()
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->condition = 'emailProvider=:emailProvider';
+        $criteria->params = array(':emailProvider' => 'MailChimp');
+    
+        $res = SproutEmail_EmailProviderSettingRecord::model()->find($criteria);
+        $this->apiSettings = json_decode($res->apiSettings);
+    
+        $this->api_key = isset($this->apiSettings->api_key) ? $this->apiSettings->api_key : '';
+    
+    }
+    
 	/**
 	 * Returns subscriber lists
 	 *
@@ -15,10 +34,9 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 	public function getSubscriberList()
 	{
 		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/MCAPI.class.php');
-		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/config.inc.php'); //contains apikey
 		$subscriber_lists = array();
 		
-		$api = new \MCAPI($apikey);
+		$api = new \MCAPI($this->api_key);
 		$res = $api->lists();
 		
 		if ($api->errorCode)
@@ -43,15 +61,15 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
 		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/MCAPI.class.php');
-		require_once(dirname(__FILE__) . '/../libraries/MailChimp/inc/config.inc.php'); //contains apikey
 
-		$api = new \MCAPI($apikey);
+		$api = new \MCAPI($this->api_key);
 		
 		$type = 'regular';		
 		$opts = array(
 				'subject' => $campaign['subject'],
 				'title' => $campaign['name'],
 				'from_name' => $campaign['fromName'],
+	
 				'from_email' => $campaign['fromEmail'],
 				
 				// need to look into this
@@ -97,7 +115,31 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 
 		die();
 	}
+
 	
+	public function saveSettings($settings = array())
+	{
+	    $criteria = new \CDbCriteria();
+	    $criteria->condition = 'emailProvider=:emailProvider';
+	    $criteria->params = array(':emailProvider' => 'MailChimp');
+	    
+	    $record = SproutEmail_EmailProviderSettingRecord::model()->find($criteria);
+	    $record->apiSettings = json_encode($settings);
+	    return $record->save();
+	}
+
+	public function getSettings()
+	{
+	    if($this->api_key)
+	    {
+	        $this->apiSettings->valid = true;
+	    }
+	    else
+	   {
+	        $this->apiSettings->valid = false;
+	    }
+	    return $this->apiSettings;
+	}
 	/**
 	 * Exports campaign (with send)
 	 *

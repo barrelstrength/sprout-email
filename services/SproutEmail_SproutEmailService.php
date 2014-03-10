@@ -129,4 +129,14 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		// no external recipient list for this service
 		return true;
 	}
+	
+	public function getSettings()
+	{
+	    //
+	}
+	
+	public function saveSettings($settings = array())
+	{
+	    //
+	}
 }

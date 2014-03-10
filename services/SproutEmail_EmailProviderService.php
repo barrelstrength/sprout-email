@@ -230,4 +230,6 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		}
 		return true;
 	}
+
+	
 }

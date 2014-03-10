@@ -1,0 +1,19 @@
+{#
+CampaignMonitor specific api settings.
+#}
+<h3>CampaignMonitor</h3>
+{% set settings = craft.sproutemail.getEmailProviderSettings('CampaignMonitor') %}
+
+{{ forms.textField({
+	label: "Client ID"|t,
+	name: 'settings[CampaignMonitor][client_id]',
+	instructions: "Client ID"|t,
+	value: (settings.client_id is defined ? settings.client_id : null)	
+}) }}
+
+{{ forms.textField({
+	label: "API Key"|t,
+	name: 'settings[CampaignMonitor][api_key]',
+	instructions: "API Key"|t,
+	value: (settings.api_key is defined ? settings.api_key : null)
+}) }}

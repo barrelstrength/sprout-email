@@ -1,0 +1,29 @@
+{% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set emailProviders = craft.sproutemail.getEmailProviders() %}
+
+{% set body %}
+
+<form method="post" action="" accept-charset="UTF-8">
+<input type="hidden" name="action" value="SproutEmail/campaigns/saveSettings">
+<input type="hidden" name="redirect" value="SproutEmail/settings">
+
+<div id="tab-campaign-info" class="tab-content" >	
+	{% for key, val in emailProviders %}
+		<div id="{{ key }}_recipients_template" class="recipient_templates" >
+			{% include "sproutemail/_email_provider_settings/_" ~ key %}
+			<hr/>
+		</div>
+		<br/>
+	{% endfor %}
+</div>
+
+<div class="buttons">
+	<input class="btn submit" type="submit" value="Save Settings">
+</div>
+
+</form>
+
+
+{% endset %}

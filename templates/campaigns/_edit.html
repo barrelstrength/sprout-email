@@ -107,8 +107,9 @@ reports:    {
 	
 	
 
-	{% set emailProviders = craft.sproutemail.getEmailProviders() %}
+	{% set emailProviders = craft.sproutemail.getEmailProviders(true) %}
 
+	{% if emailProviders %}
 	{{ forms.selectField({
 		label: "How would you like to send this email"|t,
 		id: 'emailProvider',
@@ -118,6 +119,10 @@ reports:    {
 		value: (campaign is defined ? campaign.emailProvider : null),
 		errors: (campaign is defined ? campaign.getErrors('emailProvider') : null) 	
 	}) }}
+	{% else %}
+	<p>You must first provide valid MailChimp and/or CampaignMonitor API settings.
+	<a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
+	{% endif %}
 	
 </div>
 

@@ -64,4 +64,23 @@ class SproutEmail_CampaignsController extends BaseController
 		$this->returnJson(array(
 				'success' => craft()->sproutEmail->deleteCampaign(craft()->request->getRequiredPost('id'))));
 	}
+	
+	/**
+	 * Save settings
+	 *
+	 * @return void
+	 */
+	public function actionSaveSettings()
+	{
+	    $this->requirePostRequest();
+	    
+	    foreach(craft()->request->getPost('settings') as $provider => $settings)
+	    {
+	        $service = 'sproutEmail_' . lcfirst($provider);
+	        craft()->$service->saveSettings($settings);
+	    }
+	
+	    craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
+	    $this->redirectToPostedUrl();
+	}
 }
