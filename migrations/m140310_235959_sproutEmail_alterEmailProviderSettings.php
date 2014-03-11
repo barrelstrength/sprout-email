@@ -53,6 +53,22 @@ class m140310_235959_sproutEmail_alterEmailProviderSettings extends BaseMigratio
 			{
 			    Craft::log('Error Dropping `' . $tableName . '.' . $field . '`.  Column does not exist.', LogLevel::Warning);
 			}
+
+		    Craft::log('Inserting into `' . $tableName, LogLevel::Info, true);
+		    
+		    $data = array(
+		            'emailProvider' => 'CampaignMonitor',
+		            'apiSettings' => '{"client_id":"","api_key":""}',
+		            'dateCreated' => '2014-03-10 21:00:00'
+		    );		    	
+		    $this->insert($tableName, $data);
+		    
+		    $data = array(
+		            'emailProvider' => 'MailChimp',
+		            'apiSettings' => '{"api_key":""}',
+		            'dateCreated' => '2014-03-10 21:00:00'
+		    );
+		    $this->insert($tableName, $data);
 		}
 		else
 		{

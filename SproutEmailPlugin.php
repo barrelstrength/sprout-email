@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-    private $version = '0.6.5';
+    private $version = '0.6.6';
     
     public function getName() 
     {
@@ -113,6 +113,24 @@ class SproutEmailPlugin extends BasePlugin
     	foreach ($events as $event) 
     	{
     		craft()->db->createCommand()->insert('sproutemail_notification_events', $event);
+    	}
+    	
+    	$providers = array(
+    	    array(
+    	        'emailProvider' => 'CampaignMonitor',
+    	        'apiSettings' => '{"client_id":"","api_key":""}',
+    	        'dateCreated' => '2014-03-10 21:00:00'
+    	    ),
+    	        array(
+    	        'emailProvider' => 'MailChimp',
+    	        'apiSettings' => '{"api_key":""}',
+    	        'dateCreated' => '2014-03-10 21:00:00'
+    	    )
+    	);
+    	
+    	foreach ($providers as $provider)
+    	{
+    	    craft()->db->createCommand()->insert('sproutemail_email_provider_settings', $provider);
     	}
     }
     
