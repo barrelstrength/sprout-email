@@ -63,16 +63,28 @@ class SproutEmailPlugin extends BasePlugin
     {
         return array(
             'sproutemail\/campaigns\/new' =>
-            'sproutemail/campaigns/_edit',
+            'sproutemail/campaigns/_create',
 
             'sproutemail\/campaigns\/edit\/(?P<campaignId>\d+)' =>
             'sproutemail/campaigns/_edit',
+                
+            'sproutemail\/campaigns\/edit\/(?P<campaignId>\d+)/template' =>
+            'sproutemail/campaigns/_edit',
+            
+            'sproutemail\/campaigns\/edit\/(?P<campaignId>\d+)/recipients' =>
+            'sproutemail/campaigns/_edit',
         		
         	'sproutemail\/notifications\/new' =>
-        	'sproutemail/notifications/_edit',
+        	'sproutemail/notifications/_create',
         		
         	'sproutemail\/notifications\/edit\/(?P<campaignId>\d+)' =>
         	'sproutemail/notifications/_edit',
+                
+            'sproutemail\/notifications\/edit\/(?P<campaignId>\d+)/template' =>
+            'sproutemail/notifications/_edit',
+            
+            'sproutemail\/notifications\/edit\/(?P<campaignId>\d+)/recipients' =>
+            'sproutemail/notifications/_edit',
         		
         	'sproutemail\/events\/new' =>
         	'sproutemail/events/_edit',

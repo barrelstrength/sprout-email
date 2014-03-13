@@ -183,112 +183,166 @@ class SproutEmailService extends BaseApplicationComponent
 	 * @throws \Exception
 	 * @return int CampaignRecordId
 	 */
-	public function saveCampaign(SproutEmail_CampaignModel $campaign)
+	public function saveCampaign(SproutEmail_CampaignModel $campaign, $tab = 'info')
 	{
 		// since we have to perform saves on multiple entities, 
 		// it's all or nothing using sql transactions
 		$transaction = craft()->db->beginTransaction();
 		
-		try // save the campaign
+		switch ($tab)
 		{
-			$campaignRecord = $this->_saveCampaign($campaign);
-			if($campaignRecord->hasErrors()) // no good
-			{
-				$transaction->rollBack();
-				return false;
-			}
+		    case 'template':
+		        try
+		        {
+		            $campaignRecord = $this->_saveCampaignTemplates($campaign);
+		            if($campaignRecord->hasErrors()) // no good
+		            {
+		                $transaction->rollBack();
+		                return false;
+		            }
+		        }
+		        catch (\Exception $e)
+		        {
+		            throw new Exception(Craft::t('Error: Campaign could not be saved.'));
+		        }
+		        break;
+		    case 'recipients':   // save & associate the recipient list	
+		        $campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
+		        $campaign->emailProvider = $campaignRecord->emailProvider;
+        		$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
+        		if( ! craft()->{$service}->saveRecipientList($campaign, $campaignRecord))
+        		{
+        		    $transaction->rollback();
+        		    return false;
+        		}
+		        break;
+		    default: // save the campaign
+		        try 
+		        {    
+		            $campaignRecord = $this->_saveCampaignInfo($campaign);
+		            if($campaignRecord->hasErrors()) // no good
+		            {
+		                $transaction->rollBack();
+		                return false;
+		            }
+		        }
+		        catch (\Exception $e)
+		        {
+		            throw new Exception(Craft::t('Error: Campaign could not be saved.'));
+		        }
+		        break;
 		}
-		catch (\Exception $e)
-		{
-			throw new Exception(Craft::t('Error: Campaign could not be saved.'));
-		}		
-				
-		// save & associate the recipient list
-		$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
-		if( ! craft()->{$service}->saveRecipientList($campaign, $campaignRecord))
-		{
-			$transaction->rollback();
-			return false;
-		}
-		
+
 		$transaction->commit();
 
 		return $campaignRecord->id;
 	}
 	
-	/**
-	 * Function for saving campaign and template data ONLY (no recipient stuff here)
-	 * 
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @throws Exception
-	 * @return SproutEmail_CampaignRecord
-	 */
-	private function _saveCampaign(SproutEmail_CampaignModel &$campaign)
+	private function _saveCampaignInfo(SproutEmail_CampaignModel &$campaign)
 	{
-		if (isset($campaign->id) && $campaign->id) // this will be an edit
-		{
-			$campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
-		
-			if ( ! $campaignRecord)
-			{
-				throw new Exception(Craft::t('No campaign exists with the ID “{id}”', array('id' => $campaign->id)));
-			}
-		
-			$oldCampaignName = $campaignRecord->name;
-		}
-		else
-		{
-			$campaignRecord = new SproutEmail_CampaignRecord();
-		}
-		
-		// Set common attributes
-		$campaignRecord->name			= $campaign->name;
-		$campaignRecord->subject		= $campaign->subject;
-		$campaignRecord->fromEmail		= $campaign->fromEmail;
-		$campaignRecord->fromName		= $campaign->fromName;
-		$campaignRecord->replyToEmail	= $campaign->replyToEmail;
-		$campaignRecord->emailProvider	= $campaign->emailProvider;
-		$campaignRecord->templateOption	= $campaign->templateOption;
-		
-		// template specific attributes & validation
-		switch($campaign->templateOption)
-		{
-			case 1: // Import the HTML/Text on your own
-				$campaignRecord->htmlBody	= $campaign->htmlBody;
-				$campaignRecord->textBody	= $campaign->textBody;
-				$campaignRecord->addRules(array('htmlBody,textBody', 'required'));
-				break;
-			case 2: // Send a text-based & html email
-			    $campaignRecord->htmlBody	= $campaign->htmlBody;
-			    $campaignRecord->textBody	= $campaign->textBody;
-			    $campaignRecord->addRules(array('textBody', 'required'));
-				break;
-			case 3: // Create a Campaign based on an Entries Section and Template
-				$campaignRecord->sectionId		= $campaign->sectionId;
-				$campaignRecord->htmlTemplate	= $campaign->htmlTemplate;
-				$campaignRecord->textTemplate	= $campaign->textTemplate;
-				$campaignRecord->addRules(array('sectionId,htmlTemplate,textTemplate', 'required'));
-				break;
+	    $oldCampaignEmailProvider = null;
+	    
+	    if (isset($campaign->id) && $campaign->id) // this will be an edit
+	    {
+	        $campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
+	
+	        if ( ! $campaignRecord)
+	        {
+	            throw new Exception(Craft::t('No campaign exists with the ID “{id}”', array('id' => $campaign->id)));
+	        }
+	
+	        $oldCampaignEmailProvider = $campaignRecord->emailProvider;
+	    }
+	    else
+	    {
+	        $campaignRecord = new SproutEmail_CampaignRecord();
+	    }
+	
+	    // Set common attributes
+	    $campaignRecord->name			= $campaign->name;
+	    $campaignRecord->subject		= $campaign->subject;
+	    $campaignRecord->fromEmail		= $campaign->fromEmail;
+	    $campaignRecord->fromName		= $campaign->fromName;
+	    $campaignRecord->replyToEmail	= $campaign->replyToEmail;
+	    $campaignRecord->emailProvider	= $campaign->emailProvider;
+	    $campaignRecord->templateOption = 3;
+	
+	    // if this is a notification and replyToEmail does NOT contain a twig variable
+	    // OR this is not a notification, set email rule
+	    if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $campaignRecord->replyToEmail))
+	            || ! $campaignRecord->notificationEvent)
+	    {
+	        $campaignRecord->addRules(array('replyToEmail', 'email'));
+	    }
+	
+	    $campaignRecord->validate();
+	    $campaign->addErrors($campaignRecord->getErrors());
+	
+	    if( ! $campaignRecord->hasErrors())
+	    {
+	        $campaignRecord->save(false);
+	    }
+	    
+	    // if emailProvider has changed, let's get rid of the old recipient list since it's no longer valid
+	    if($campaignRecord->emailProvider != $oldCampaignEmailProvider)
+	    {
+	        if($recipientLists = $this->getCampaignRecipientLists($campaignRecord->id))
+	        {	    
+        	    foreach($recipientLists as $list)
+        	    {
+        	        $this->deleteCampaignRecipientList($list->id, $campaignRecord->id);
+        	    }
+	        }
+	    }
+	
+	    return $campaignRecord;
+	}
+	
+	private function _saveCampaignTemplates(SproutEmail_CampaignModel &$campaign)
+	{
+	    $campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
+	
+        if ( ! $campaignRecord)
+        {
+            throw new Exception(Craft::t('No campaign exists with the ID “{id}”', array('id' => $campaign->id)));
+        }
+	
+	    $oldCampaignName = $campaignRecord->name;
 
-		}
+	    $campaignRecord->templateOption	= $campaign->templateOption;
+	
+	    // template specific attributes & validation
+	    switch($campaign->templateOption)
+	    {
+	        case 1: // Import the HTML/Text on your own
+	            $campaignRecord->htmlBody	= $campaign->htmlBody;
+	            $campaignRecord->textBody	= $campaign->textBody;
+	            $campaignRecord->addRules(array('htmlBody,textBody', 'required'));
+	            break;
+	        case 2: // Send a text-based & html email
+	            $campaignRecord->htmlBody	= $campaign->htmlBody;
+	            $campaignRecord->textBody	= $campaign->textBody;
+	            $campaignRecord->addRules(array('textBody', 'required'));
+	            break;
+	        case 3: // Create a Campaign based on an Entries Section and Template
+	            $campaignRecord->sectionId		= $campaign->sectionId;
+	            $campaignRecord->htmlTemplate	= $campaign->htmlTemplate;
+	            $campaignRecord->textTemplate	= $campaign->textTemplate;
+	            $campaignRecord->addRules(array('sectionId,htmlTemplate,textTemplate', 'required'));
+	            break;
+	
+	    }
 
-		// if this is a notification and replyToEmail does NOT contain a twig variable
-		// OR this is not a notification, set email rule
-		if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $campaignRecord->replyToEmail))
-		        || ! $campaignRecord->notificationEvent)
-		{
-		    $campaignRecord->addRules(array('replyToEmail', 'email'));
-		}
-		
-		$campaignRecord->validate();
-		$campaign->addErrors($campaignRecord->getErrors());
-		
-		if( ! $campaignRecord->hasErrors())
-		{
-			$campaignRecord->save(false);
-		}
-		
-		return $campaignRecord;
+	
+	    $campaignRecord->validate();
+	    $campaign->addErrors($campaignRecord->getErrors());
+	
+	    if( ! $campaignRecord->hasErrors())
+	    {
+	        $campaignRecord->save(false);
+	    }
+	
+	    return $campaignRecord;
 	}
 	
 	/**
@@ -330,11 +384,7 @@ class SproutEmailService extends BaseApplicationComponent
 			
 			// delete associated recipients
 			$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
-			if( ! craft()->{$service}->deleteRecipients($campaignRecord))
-			{
-				$transaction->rollback();
-				return false;
-			}			
+			craft()->{$service}->deleteRecipients($campaignRecord);		
 		}
 		catch (\Exception $e)
 		{

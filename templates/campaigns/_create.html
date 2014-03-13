@@ -1,0 +1,49 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+
+{% if craft.request.getSegment('3') == 'new' %}
+	{% set title = "New Campaign" %}
+	{% set campaignId = null %}
+{% elseif campaign is defined %}
+	{% set title = "Edit Campaign" %}
+	{% set campaignId = campaign.id %}
+{% else %}
+	{% set title = "Edit Campaign" %}
+	{% set campaign = craft.sproutemail.getCampaignById(campaignId) %}
+	{% set campaignId = campaign.id %}	
+{% endif %}
+
+{% set crumbs = [
+	{ label: "Sprout Email"|t, url: url('sproutemail/campaigns') },
+] %}
+
+{% set tabs = {
+    general: { 
+      label: "Campaign Info"|t,
+      url: '#',
+      class: 'tab-campaign-info'
+    },
+    template:    { 
+      label: "Email Template"|t,
+      url: '#',
+      class: 'tab-email-template disabled'
+    },
+    subscribers:    { 
+      label: "Recipients"|t,
+      url: '#',
+      class: 'tab-recipients disabled'
+    },
+} %}
+
+
+
+
+
+{% set content %}
+
+{% include "sproutemail/campaigns/_info" %}
+
+{% endset %}
+
+{% includeJsResource "sproutemail/js/sproutemail.js" %}

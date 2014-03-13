@@ -144,8 +144,8 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				e.entryId as entryId,
 				s.id as sectionId')
 		->from('sproutemail_campaigns mc')
-		->join('sections s', 'mc.sectionId=s.id')
-		->join('entries_i18n e', 's.id=e.sectionId')
+		->leftJoin('sections s', 'mc.sectionId=s.id')
+		->leftJoin('entries_i18n e', 's.id=e.sectionId')
 		->where($where_binds, $where_params)
 		->order('mc.dateCreated desc, e.slug asc')
 		->queryAll();
