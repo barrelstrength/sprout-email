@@ -1,0 +1,43 @@
+<style type="text/css">
+textarea.text { min-height: 300px; }
+</style>
+<form method="post" action="" accept-charset="UTF-8">
+    <input type="hidden" name="action" value="SproutEmail/notifications/save">
+    <input type="hidden" name="redirect" value="SproutEmail/notifications">
+    <input type="hidden" name="id" value="{{ campaignId }}">
+    <input type="hidden" name="continue" value="false">
+    <input type="hidden" name="templateOption" value="2" />
+    <input type="hidden" name="tab" value="template">
+
+	<div id="tab-email-template" class="tab-content">
+		
+		<div id="tpl_html" class="tpl_options">
+		{{ forms.textareaField({
+			label: "HTML Code"|t,
+			id: 'htmlBody',
+			name: 'htmlBody',
+			instructions: "The code for your html email. Be sure to inline your CSS beforehand."|t,
+			value: (campaign is defined ? campaign.htmlBody : null),
+			errors: (campaign is defined ? campaign.getErrors('htmlBody') : null) 	
+		}) }}	
+		</div>
+		<br/>
+
+		<div id="tpl_text" class="tpl_options">
+		{{ forms.textareaField({
+			label: "Plain Text"|t,
+			id: 'textBody',
+			name: 'textBody',
+			instructions: "The code for your email's text version."|t,
+			value: (campaign is defined ? campaign.textBody : null),
+			errors: (campaign is defined ? campaign.getErrors('textBody') : null) 	
+		}) }}
+		</div>
+
+	</div>
+
+    <div class="buttons">
+    	<input class="btn submit" type="submit" value="Save Campaign Template">
+    	<input class="btn submit save-and-continue" id="template" type="submit" value="Save Campaign Template & Continue">
+    </div>
+</form>

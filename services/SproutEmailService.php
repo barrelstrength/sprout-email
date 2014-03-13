@@ -265,7 +265,7 @@ class SproutEmailService extends BaseApplicationComponent
 	    $campaignRecord->fromName		= $campaign->fromName;
 	    $campaignRecord->replyToEmail	= $campaign->replyToEmail;
 	    $campaignRecord->emailProvider	= $campaign->emailProvider;
-	    $campaignRecord->templateOption = 3;
+	    $campaignRecord->templateOption = $campaign->templateOption;
 	
 	    // if this is a notification and replyToEmail does NOT contain a twig variable
 	    // OR this is not a notification, set email rule
@@ -281,17 +281,17 @@ class SproutEmailService extends BaseApplicationComponent
 	    if( ! $campaignRecord->hasErrors())
 	    {
 	        $campaignRecord->save(false);
-	    }
-	    
-	    // if emailProvider has changed, let's get rid of the old recipient list since it's no longer valid
-	    if($campaignRecord->emailProvider != $oldCampaignEmailProvider)
-	    {
-	        if($recipientLists = $this->getCampaignRecipientLists($campaignRecord->id))
-	        {	    
-        	    foreach($recipientLists as $list)
-        	    {
-        	        $this->deleteCampaignRecipientList($list->id, $campaignRecord->id);
-        	    }
+	        
+	        // if emailProvider has changed, let's get rid of the old recipient list since it's no longer valid
+	        if($campaignRecord->emailProvider != $oldCampaignEmailProvider)
+	        {
+	            if($recipientLists = $this->getCampaignRecipientLists($campaignRecord->id))
+	            {
+	                foreach($recipientLists as $list)
+	                {
+	                    $this->deleteCampaignRecipientList($list->id, $campaignRecord->id);
+	                }
+	            }
 	        }
 	    }
 	

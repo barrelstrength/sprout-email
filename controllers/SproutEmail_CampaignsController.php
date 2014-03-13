@@ -31,7 +31,7 @@ class SproutEmail_CampaignsController extends BaseController
 
 		if($campaignId = craft()->sproutEmail->saveCampaign($campaignModel, craft()->request->getPost('tab')))
 		{
-			// if this was called by the child (Notifications), return the new pk
+			// if this was called by the child (Notifications), return the model
 			if(get_class($this) == 'Craft\SproutEmail_NotificationsController')
 			{
 				$campaignModel->id = $campaignId;
@@ -54,7 +54,13 @@ class SproutEmail_CampaignsController extends BaseController
 		}
 		else  // problem
 		{
-			craft()->userSession->setError(Craft::t('Please correct the errors below.'));
+		    craft()->userSession->setError(Craft::t('Please correct the errors below.'));
+		    
+		    // if this was called by the child (Notifications), return the model
+		    if(get_class($this) == 'Craft\SproutEmail_NotificationsController')
+		    {
+		        return $campaignModel;
+		    }			
 		}
 		
 		// Send the field back to the template

@@ -1,7 +1,6 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-
 {% if craft.request.getSegment('3') == 'new' %}
 	{% set title = "New Campaign" %}
 	{% set campaignId = null %}
@@ -36,14 +35,8 @@
     },
 } %}
 
-
-
-
-
 {% set content %}
-
-{% include "sproutemail/campaigns/_info" %}
-
+    {% include "sproutemail/campaigns/tabs/_info" %}
 {% endset %}
 
 {% includeJsResource "sproutemail/js/sproutemail.js" %}

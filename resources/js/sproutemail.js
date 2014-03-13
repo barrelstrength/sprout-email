@@ -4,6 +4,9 @@ jQuery(document).ready(function(){
 
 var mb = {
 	init: function(){
+		jQuery('select[name=notificationEvent]').change(function(){
+			mb.select_notification_event();
+		});
 		jQuery('#tab-email-template').find('input[type=radio]').change(function(){
 			mb.select_email_tpl();
 		});
@@ -11,6 +14,7 @@ var mb = {
 			jQuery(this).closest('form').find('input[name=continue]').val(jQuery(this).attr('id'));
 			jQuery(this).closest('form').submit();
 		});
+		mb.select_notification_event();
 	},
 	select_email_tpl: function(){
 		jQuery('.tpl_options').hide();
@@ -29,5 +33,10 @@ var mb = {
 			default:
 			break;
 		}
+	},
+	select_notification_event: function(){
+		jQuery('.event_options').hide();
+		var event = jQuery('select[name=notificationEvent]').val();
+		jQuery('.'+event).show();
 	}
 }

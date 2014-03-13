@@ -19,14 +19,14 @@
 		
 			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 				<td>
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}"><strong>{{ campaign.name }}</strong></a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td> 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-recipients">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}/recipients">
 						Define recipients
 					</a> | 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">
 						Settings
 					</a>
 				</td>

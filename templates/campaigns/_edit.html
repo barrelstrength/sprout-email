@@ -41,11 +41,11 @@
 {% set content %}
 
 {% if craft.request.getSegment('5') == 'template' %}
-    {% include "sproutemail/campaigns/_template" %}
+    {% include "sproutemail/campaigns/tabs/_template" %}
 {% elseif craft.request.getSegment('5') == 'recipients' %} 
-    {% include "sproutemail/campaigns/_recipients" %}
+    {% include "sproutemail/campaigns/tabs/_recipients" %}
 {% else %}
-    {% include "sproutemail/campaigns/_info" %}
+    {% include "sproutemail/campaigns/tabs/_info" %}
 {% endif %}
 
 {% endset %}
