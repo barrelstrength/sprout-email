@@ -139,15 +139,16 @@ class SproutEmail_CampaignRecord extends BaseRecord
 		
 		return craft()->db->createCommand()
 		->select('mc.*,
-				e.slug as slug,
+				el.slug as slug,
 				s.handle,
-				e.entryId as entryId,
+				e.id as entryId,
 				s.id as sectionId')
 		->from('sproutemail_campaigns mc')
-		->leftJoin('sections s', 'mc.sectionId=s.id')
-		->leftJoin('entries_i18n e', 's.id=e.sectionId')
+		->join('sections s', 'mc.sectionId=s.id')
+		->join('entries e', 's.id = e.sectionId')
+		->join('elements_i18n el', 'e.id = el.elementId')
 		->where($where_binds, $where_params)
-		->order('mc.dateCreated desc, e.slug asc')
+		->order('mc.dateCreated desc, el.slug asc')
 		->queryAll();
 	}
 	
@@ -164,13 +165,14 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	
 		$res = craft()->db->createCommand()
 		->select('mc.*,
-				e.slug as slug,
+				el.slug as slug,
 				s.handle,
-				e.entryId as entryId,
+				e.id as entryId,
 				s.id as sectionId')
 		->from('sproutemail_campaigns mc')
 		->join('sections s', 'mc.sectionId=s.id')
-		->join('entries_i18n e', 's.id=e.sectionId')
+		->join('entries e', 's.id = e.sectionId')
+		->join('elements_i18n el', 'e.id = el.elementId')
 		->where($where_binds, $where_params)
 		->queryRow();
 		return $res;
