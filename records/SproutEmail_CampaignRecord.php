@@ -115,7 +115,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
      */
 	public function validEmailProvider($attr, $params)
 	{
-		if( ! array_key_exists($this->{$attr}, craft()->sproutEmail_emailProvider->getEmailProviders()))
+		if($this->{$attr} != 'SproutEmail' && ! array_key_exists($this->{$attr}, craft()->sproutEmail_emailProvider->getEmailProviders()))
 		{
 			$this->addError($attr, 'Invalid email provider.');
 		}
@@ -144,8 +144,8 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				e.entryId as entryId,
 				s.id as sectionId')
 		->from('sproutemail_campaigns mc')
-		->join('sections s', 'mc.sectionId=s.id')
-		->join('entries_i18n e', 's.id=e.sectionId')
+		->leftJoin('sections s', 'mc.sectionId=s.id')
+		->leftJoin('entries_i18n e', 's.id=e.sectionId')
 		->where($where_binds, $where_params)
 		->order('mc.dateCreated desc, e.slug asc')
 		->queryAll();

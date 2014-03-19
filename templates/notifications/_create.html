@@ -1,8 +1,10 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-
-{% if campaign is defined %}
+{% if craft.request.getSegment('3') == 'new' %}
+	{% set title = "New Notification" %}
+	{% set campaignId = null %}
+{% elseif campaign is defined %}
 	{% set title = "Edit Notification" %}
 	{% set campaignId = campaign.id %}
 {% else %}
@@ -18,36 +20,23 @@
 {% set tabs = {
     general: { 
       label: "Notification Info"|t,
-      url: url('sproutemail/notifications/edit/' ~ campaignId),
-      class: 'info'
+      url: '#',
+      class: 'tab-campaign-info'
     },
     template:    { 
       label: "Email Template"|t,
-      url: url('sproutemail/notifications/edit/' ~ campaignId ~ '/template'),
-      class: 'template'
+      url: '#',
+      class: 'tab-email-template disabled'
     },
-    recipients:    { 
+    subscribers:    { 
       label: "Recipients"|t,
-      url: url('sproutemail/notifications/edit/' ~ campaignId ~ '/recipients'),
-      class: 'recipients'
+      url: '#',
+      class: 'tab-recipients disabled'
     },
 } %}
 
-{% if craft.request.getSegment('5') %}
-    {% set selectedTab = craft.request.getSegment('5') %}
-{% endif %}
-
-
 {% set content %}
-
-{% if craft.request.getSegment('5') == 'template' %}
-    {% include "sproutemail/notifications/tabs/_template" %}
-{% elseif craft.request.getSegment('5') == 'recipients' %} 
-    {% include "sproutemail/notifications/tabs/_recipients" %}
-{% else %}
     {% include "sproutemail/notifications/tabs/_info" %}
-{% endif %}
-
 {% endset %}
 
 {% includeJsResource "sproutemail/js/sproutemail.js" %}

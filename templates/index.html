@@ -24,32 +24,40 @@
 			
 				<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 					<td>
-						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}"><strong>{{ campaign.name }}</strong></a>
 						&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 					</td>
-					<td> 
-						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-recipients">
-							Define recipients
-						</a> | 
-						<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
-							Settings
-						</a>
-					</td>
-					<td>
-						<div style="color:#999;">{{ campaign.handle }} / {{ campaign.slug }}</div>
-						<a href="{{ siteUrl }}/{{campaign.htmlTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">HTML</a> 
-						or 
-						<a href="{{ siteUrl }}/{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
-						
-					</td>
-					<td>
-						<div style="color:#999;">{{ campaign.emailProvider }}</div>
-						Send 
-						| 
-						<a href="#" class="export" >Export</a>  
-						| 
-						Status
-					</td>
+    				<td> 
+    					<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/recipients">
+    						Define recipients
+    					</a> | 
+    					<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/template">
+    						Define template
+    					</a> |
+    					<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">
+    						Settings
+    					</a>
+    				</td>
+    				{% if campaign.sectionId and campaign.entryId and campaign.textTemplate and campaign.emailProvider %}
+    				<td>				    
+    					<div style="color:#999;">{{ campaign.handle }} / {{ campaign.slug }}</div>
+    					<a href="{{ siteUrl }}/{{campaign.htmlTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">HTML</a> 
+    					or 
+    					<a href="{{ siteUrl }}/{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
+    				</td>
+    				<td>
+    					<div style="color:#999;">{{ campaign.emailProvider }}</div>
+    					Send 
+    					| 
+    					<a href="#" class="export" >Export</a>  
+    					| 
+    					Status
+    				</td>
+    				{% else %}
+    				<td colspan=2">
+    				<i>This campaign is incomplete.</i>
+    				</td>
+    				{% endif %}
 					<td class="thin">
 						<a class="delete icon" title="Delete"></a>
 					</td>
@@ -82,14 +90,14 @@
 			
 				<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 					<td>
-						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-info"><strong>{{ campaign.name }}</strong></a>
+						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}"><strong>{{ campaign.name }}</strong></a>
 						&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 					</td>
 					<td> 
-						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-recipients">
+						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}/recipients">
 							Define recipients
 						</a> | 
-						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}#tab-campaign-settings">
+						<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">
 							Settings
 						</a>
 					</td>

@@ -27,22 +27,40 @@ class SproutEmail_CampaignsController extends BaseController
 	{		
 		$this->requirePostRequest();
 
-		$campaignModel = SproutEmail_CampaignModel::populateModel($_POST);
+		$campaignModel = SproutEmail_CampaignModel::populateModel(craft()->request->getPost());
 
-		if($campaignId = craft()->sproutEmail->saveCampaign($campaignModel))
+		if($campaignId = craft()->sproutEmail->saveCampaign($campaignModel, craft()->request->getPost('tab')))
 		{
-			// if this was called by the child (Notifications), return the new pk
+			// if this was called by the child (Notifications), return the model
 			if(get_class($this) == 'Craft\SproutEmail_NotificationsController')
 			{
 				$campaignModel->id = $campaignId;
 				return $campaignModel;
 			}
-			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));			
-			$this->redirectToPostedUrl(array($campaignModel));
+			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));	
+			
+			switch (craft()->request->getPost('continue'))
+			{
+			    case 'info':
+			        $this->redirect('sproutemail/campaigns/edit/' . $campaignId . '/template');
+			        break;
+			    case 'template':
+			        $this->redirect('sproutemail/campaigns/edit/' . $campaignId . '/recipients');
+			        break;
+			    default:
+			        $this->redirectToPostedUrl(array($campaignModel));
+			        break;
+			}
 		}
 		else  // problem
 		{
-			craft()->userSession->setError(Craft::t('Please correct the errors below.'));
+		    craft()->userSession->setError(Craft::t('Please correct the errors below.'));
+		    
+		    // if this was called by the child (Notifications), return the model
+		    if(get_class($this) == 'Craft\SproutEmail_NotificationsController')
+		    {
+		        return $campaignModel;
+		    }			
 		}
 		
 		// Send the field back to the template
