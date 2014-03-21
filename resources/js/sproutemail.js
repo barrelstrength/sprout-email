@@ -15,6 +15,12 @@ var mb = {
 			jQuery(this).closest('form').submit();
 		});
 		mb.select_notification_event();
+		mb.set_recipient_btns();
+	},
+	set_recipient_btns: function(){
+		if(jQuery('.recipients-not-defined').length == 0){
+			jQuery('#recipient-btns').removeClass('hidden');
+		}
 	},
 	select_email_tpl: function(){
 		jQuery('.tpl_options').hide();
