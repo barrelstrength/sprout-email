@@ -1,0 +1,51 @@
+{% if loop.first %}
+<h3>Section-Based Campaigns</h3>
+<table id="campaigns" class="data">
+	<thead>
+		<th width="25%"></th>
+		<th width="35%"></th>
+		<th width="15%"></th>
+		<th width="20%"></th>
+		<td class="thin"></td>
+	</thead>
+{% endif %}
+
+	<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
+		<td>
+			<strong>{{ campaign.title }}</strong>
+			&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
+		</td>
+		<td>
+			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">
+				{{ campaign.name }} Campaign Info
+			</a> / 
+			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/template">
+				Templates
+			</a> /
+			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/recipients">
+				Recipients
+			</a>
+		</td>
+		
+		{% if campaign.sectionId and campaign.entryId and campaign.textTemplate and campaign.emailProvider %}
+		<td>				    
+			<a href="{{ siteUrl }}{{campaign.htmlTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">HTML</a> 
+			/ 
+			<a href="{{ siteUrl }}{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
+		</td>
+		<td>
+			<a href="#" class="export" >Export to {{ campaign.emailProvider }}</a> 
+		</td>
+		{% else %}
+		<td colspan=2">
+		<i>This campaign is incomplete.</i>
+		</td>
+		{% endif %}
+		<td class="thin">
+			<a class="delete icon" title="Delete"></a>
+		</td>
+	</tr>
+
+{% if loop.last %}
+</table>
+{% endif %}
