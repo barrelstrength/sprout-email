@@ -23,96 +23,96 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 * These have to be explicitly defined in order for the plugin to install
 	 * @return multitype:multitype:string  multitype:boolean string
 	 */
-    public function defineAttributes()
-    {
-        return array(
-        	'sectionId'       => array(AttributeType::Number),
-        	'emailProvider'   => array(AttributeType::String),
-            'name'            => array(AttributeType::String),
-            'subject'         => array(AttributeType::String),
-            'fromName'        => array(AttributeType::String),
-            'fromEmail'       => array(AttributeType::Email),
-            'replyToEmail'    => array(AttributeType::Email),
-        		
-        	'templateOption'  => array(AttributeType::Number),
-            'htmlBody'        => array(AttributeType::String),
-            'textBody'        => array(AttributeType::String),
-            'htmlTemplate'    => array(AttributeType::String),
-            'textTemplate'    => array(AttributeType::String),
-        		
-        	'recipients'      => array(AttributeType::String),
-        		
-            'dateCreated'     => array(AttributeType::DateTime),
-            'dateUpdated'     => array(AttributeType::DateTime),
-        );
-    }
+		public function defineAttributes()
+		{
+				return array(
+					'sectionId'       => array(AttributeType::Number),
+					'emailProvider'   => array(AttributeType::String),
+						'name'            => array(AttributeType::String),
+						'subject'         => array(AttributeType::String),
+						'fromName'        => array(AttributeType::String),
+						'fromEmail'       => array(AttributeType::Email),
+						'replyToEmail'    => array(AttributeType::Email),
+						
+					'templateOption'  => array(AttributeType::Number),
+						'htmlBody'        => array(AttributeType::String),
+						'textBody'        => array(AttributeType::String),
+						'htmlTemplate'    => array(AttributeType::String),
+						'textTemplate'    => array(AttributeType::String),
+						
+					'recipients'      => array(AttributeType::String),
+						
+						'dateCreated'     => array(AttributeType::DateTime),
+						'dateUpdated'     => array(AttributeType::DateTime),
+				);
+		}
 
-    /**
-     * Record relationships
-     * @return array
-     */
-    public function defineRelations()
-    {
-    	return array(
-    			'section' => array(self::BELONGS_TO, 'SectionRecord', 'sectionId'),
-    			'campaignRecipientList' => array(
-    					self::HAS_MANY,
-    					'SproutEmail_CampaignRecipientListRecord',
-    					'campaignId'),
-    			'recipientList' => array(
-    					self::HAS_MANY,
-    					'SproutEmail_RecipientListRecord',
-    					'recipientListId',
-    					'through' => 'campaignRecipientList'
-    			),
-    			'campaignNotificationEvent' => array(
-    					self::HAS_MANY,
-    					'SproutEmail_CampaignNotificationEventRecord',
-    					'campaignId'
-    			),
-    			'notificationEvent' => array(
-    					self::HAS_MANY,
-    					'SproutEmail_NotificationEventRecord',
-    					'notificationEventId',
-    					'through' => 'campaignNotificationEvent'
-    			)
-    	);
-    }
-    
-    /**
-     * Function for adding rules
-     * @param array $rules
-     * @return void
-     */
-    public function addRules($rules = array())
-    {
-    	$this->rules[] = $rules;
-    }
-    
-    /**
-     * Yii style validation rules;
-     * These are the 'base' rules but specific ones are added in the service based on
-     * the scenario
-     * @return array
-     */
-    public function rules()
-    {
-    	$rules = array(
-    		//array('sectionId', 'exist'), // if section is passed, it must be a valid record
-    		array('name,subject,fromName,fromEmail,replyToEmail,templateOption', 'required'), // required fields
-    		array('fromEmail', 'email'), // must be valid emails
-    		array('emailProvider', 'validEmailProvider') // custom
-    	);
-    	    	
-    	return array_merge($rules, $this->rules);
-    }
-    
-    /**
-     * Custom email provider validator
-     * @param string $attr
-     * @param array $params
-     * @return void
-     */
+		/**
+		 * Record relationships
+		 * @return array
+		 */
+		public function defineRelations()
+		{
+			return array(
+				'section' => array(self::BELONGS_TO, 'SectionRecord', 'sectionId'),
+				'campaignRecipientList' => array(
+					self::HAS_MANY,
+					'SproutEmail_CampaignRecipientListRecord',
+					'campaignId'),
+				'recipientList' => array(
+					self::HAS_MANY,
+					'SproutEmail_RecipientListRecord',
+					'recipientListId',
+					'through' => 'campaignRecipientList'
+				),
+				'campaignNotificationEvent' => array(
+					self::HAS_MANY,
+					'SproutEmail_CampaignNotificationEventRecord',
+					'campaignId'
+				),
+				'notificationEvent' => array(
+					self::HAS_MANY,
+					'SproutEmail_NotificationEventRecord',
+					'notificationEventId',
+					'through' => 'campaignNotificationEvent'
+				)
+			);
+		}
+		
+		/**
+		 * Function for adding rules
+		 * @param array $rules
+		 * @return void
+		 */
+		public function addRules($rules = array())
+		{
+			$this->rules[] = $rules;
+		}
+		
+		/**
+		 * Yii style validation rules;
+		 * These are the 'base' rules but specific ones are added in the service based on
+		 * the scenario
+		 * @return array
+		 */
+		public function rules()
+		{
+			$rules = array(
+				//array('sectionId', 'exist'), // if section is passed, it must be a valid record
+				array('name,subject,fromName,fromEmail,replyToEmail,templateOption', 'required'), // required fields
+				array('fromEmail', 'email'), // must be valid emails
+				array('emailProvider', 'validEmailProvider') // custom
+			);
+						
+			return array_merge($rules, $this->rules);
+		}
+		
+		/**
+		 * Custom email provider validator
+		 * @param string $attr
+		 * @param array $params
+		 * @return void
+		 */
 	public function validEmailProvider($attr, $params)
 	{
 		if($this->{$attr} != 'SproutEmail' && ! array_key_exists($this->{$attr}, craft()->sproutEmail_emailProvider->getEmailProviders()))
