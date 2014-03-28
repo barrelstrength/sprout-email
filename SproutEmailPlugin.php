@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-    private $version = '0.6.8';
+    private $version = '0.6.9';
     
     public function getName() 
     {
@@ -119,6 +119,16 @@ class SproutEmailPlugin extends BasePlugin
 						'registrar' => 'craft',
     					'event' => 'users.saveProfile',
     					'description' => 'Craft: When a user profile is saved'
+    			),
+				array(
+						'registrar' => 'craft',
+    					'event' => 'userSession.beforeLogin',
+    					'description' => 'Craft: Before a user logs in'
+    			),
+				array(
+						'registrar' => 'craft',
+    					'event' => 'userSession.login',
+    					'description' => 'Craft: When a user logs in'
     			)
     	);
     
@@ -158,6 +168,8 @@ class SproutEmailPlugin extends BasePlugin
         craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
         craft()->on('users.saveUser', array($this, 'onSaveUser'));
         craft()->on('users.saveProfile', array($this, 'onSaveProfile'));
+        craft()->on('userSession.beforeLogin', array($this, 'onBeforeLogin'));
+        craft()->on('userSession.login', array($this, 'onLogin'));
         craft()->on('globals.saveGlobalContent', array($this, 'onSaveGlobalContent'));
         craft()->on('assets.saveFileContent', array($this, 'onSaveFileContent'));
         craft()->on('content.saveContent', array($this, 'onSaveContent'));
@@ -364,6 +376,28 @@ class SproutEmailPlugin extends BasePlugin
     {
     	$this->_processEvent('users.saveProfile', $event->params['user']);
     }
+    
+    /**
+     * Available variables:
+     * username
+     * to access: entry.username
+     * @param Event $event
+     */
+    public function onBeforeLogin(Event $event)
+    {
+        $this->_processEvent('userSession.beforeLogin', array('username' => $event->params['username']));
+    }
+    
+    /**
+     * Available variables:
+     * username
+     * to access: entry.username
+     * @param Event $event
+     */
+    public function onLogin(Event $event)
+    {
+        $this->_processEvent('userSession.login', array('username' => $event->params['username']));
+    }
 
     // not implemented
     public function onSaveGlobalContent(Event $event)
@@ -420,7 +454,7 @@ class SproutEmailPlugin extends BasePlugin
                 // be better to switch to do a string replace and only make
                 // key variables available here? 
                 // entry.author, entry.author.email, entry.title
-    			
+    	
                 try {
                     $campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entry));
                 } catch (\Exception $e) {
