@@ -99,7 +99,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     {
     	$rules = array(
     		//array('sectionId', 'exist'), // if section is passed, it must be a valid record
-    		array('name,subject,fromName,fromEmail,replyToEmail,templateOption', 'required'), // required fields
+    		array('name,fromName,fromEmail,replyToEmail,templateOption', 'required'), // required fields
     		array('fromEmail', 'email'), // must be valid emails
     		array('emailProvider', 'validEmailProvider') // custom
     	);
@@ -162,19 +162,21 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 */
 	public function getSectionBasedCampaignByEntryAndCampaignId($entryId, $campaignId)
 	{
-		$where_binds = 'mc.templateOption=:templateOption AND e.entryId=:entryId AND mc.id=:campaignId';
+		$where_binds = 'mc.templateOption=:templateOption AND e.id=:entryId AND mc.id=:campaignId';
 		$where_params = array(':templateOption' => 3, ':entryId' => $entryId, ':campaignId' => $campaignId);
-	
+
 		$res = craft()->db->createCommand()
 		->select('mc.*,
 				el.slug as slug,
 				s.handle,
+		        c.title,
 				e.id as entryId,
 				s.id as sectionId')
 		->from('sproutemail_campaigns mc')
 		->join('sections s', 'mc.sectionId=s.id')
-		->join('entries e', 's.id = e.sectionId')
+		->join('entries e', 's.id = e.sectionId')		
 		->join('elements_i18n el', 'e.id = el.elementId')
+		->join('content c', 'el.elementId=c.elementId')
 		->where($where_binds, $where_params)
 		->queryRow();
 		return $res;

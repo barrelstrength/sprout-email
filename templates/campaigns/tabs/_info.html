@@ -25,16 +25,6 @@
     	}) }}
     
     	{{ forms.textField({
-    		label: "Email Subject"|t,
-    		id: 'subject',
-    		name: 'subject',
-    		instructions: "The subject line of your email"|t,
-    		value: (campaign is defined ? campaign.subject : null),
-    		required: true,
-    		errors: (campaign is defined ? campaign.getErrors('subject') : null) 	
-    	}) }}
-    
-    	{{ forms.textField({
     		label: "From Name"|t,
     		id: 'fromName',
     		name: 'fromName',
