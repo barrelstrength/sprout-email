@@ -21,18 +21,62 @@ class m140327_235959_sproutEmail_insertSproutemailNotifiationEvents extends Base
 		    Craft::log('Inserting into `' . $tableName, LogLevel::Info, true);
 		    
 		    $data = array(
+		       array(
 		            'registrar' => 'craft',
 		            'event' => 'userSession.beforeLogin',
 		            'description' => 'Craft: Before a user logs in'
-		    );		    	
-		    $this->insert($tableName, $data);
-		    
-		    $data = array(
+		        ),
+		        array(
 		            'registrar' => 'craft',
 		            'event' => 'userSession.login',
 		            'description' => 'Craft: When a user logs in'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeActivateUser',
+		            'description' => 'Craft: Before a user is activated'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.activateUser',
+		            'description' => 'Craft: When a user is activated'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeUnlockUser',
+		            'description' => 'Craft: Before a user is unlocked'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.unlockUser',
+		            'description' => 'Craft: When a user is unlocked'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeSuspendUser',
+		            'description' => 'Craft: Before a user is suspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.suspendUser',
+		            'description' => 'Craft: When a user is suspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeUnsuspendUser',
+		            'description' => 'Craft: Before a user is unsuspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.unsuspendUser',
+		            'description' => 'Craft: When a user is unsuspended'
+		        )     
 		    );	
-		    $this->insert($tableName, $data);
+		    
+		    foreach($data as $entry)
+		    {
+		        $this->insert($tableName, $entry);
+		    }
 		}
 		else
 		{

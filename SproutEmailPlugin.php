@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-    private $version = '0.6.9';
+    private $version = '0.6.10';
     
     public function getName() 
     {
@@ -120,6 +120,46 @@ class SproutEmailPlugin extends BasePlugin
     					'event' => 'users.saveProfile',
     					'description' => 'Craft: When a user profile is saved'
     			),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeActivateUser',
+		            'description' => 'Craft: Before a user is activated'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.activateUser',
+		            'description' => 'Craft: When a user is activated'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeUnlockUser',
+		            'description' => 'Craft: Before a user is unlocked'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.unlockUser',
+		            'description' => 'Craft: When a user is unlocked'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeSuspendUser',
+		            'description' => 'Craft: Before a user is suspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.suspendUser',
+		            'description' => 'Craft: When a user is suspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeUnsuspendUser',
+		            'description' => 'Craft: Before a user is unsuspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.unsuspendUser',
+		            'description' => 'Craft: When a user is unsuspended'
+		        ),
 				array(
 						'registrar' => 'craft',
     					'event' => 'userSession.beforeLogin',
@@ -164,15 +204,25 @@ class SproutEmailPlugin extends BasePlugin
     {
     	parent::init();
 
-    	// events fired by $this->raiseEvent 
-        craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
+    	// events fired by $this->raiseEvent         
         craft()->on('users.saveUser', array($this, 'onSaveUser'));
-        craft()->on('users.saveProfile', array($this, 'onSaveProfile'));
+        craft()->on('users.saveProfile', array($this, 'onSaveProfile'));        
+        craft()->on('users.beforeActivateUser', array($this, 'onBeforeActivateUser'));
+        craft()->on('users.activateUser', array($this, 'onActivateUser'));
+        craft()->on('users.beforeUnlockUser', array($this, 'onBeforeUnlockUser'));
+        craft()->on('users.unlockUser', array($this, 'onUnlockUser'));
+        craft()->on('users.beforeSuspendUser', array($this, 'onBeforeSuspendUser'));
+        craft()->on('users.suspendUser', array($this, 'onSuspendUser'));
+        craft()->on('users.beforeUnsuspendUser', array($this, 'onBeforeUnsuspendUser'));
+        craft()->on('users.unsuspendUser', array($this, 'onUnsuspendUser'));
+        
         craft()->on('userSession.beforeLogin', array($this, 'onBeforeLogin'));
         craft()->on('userSession.login', array($this, 'onLogin'));
+        
         craft()->on('globals.saveGlobalContent', array($this, 'onSaveGlobalContent'));
         craft()->on('assets.saveFileContent', array($this, 'onSaveFileContent'));
         craft()->on('content.saveContent', array($this, 'onSaveContent'));
+        craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
 
         $criteria = new \CDbCriteria();
         $criteria->condition = 'registrar!=:registrar';
@@ -364,6 +414,94 @@ class SproutEmailPlugin extends BasePlugin
     public function onSaveUser(Event $event)
     {
         $this->_processEvent('users.saveUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeUnlockUser(Event $event)
+    {
+        $this->_processEvent('users.beforeUnlockUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onUnlockUser(Event $event)
+    {
+        $this->_processEvent('users.unlockUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeUnsuspendUser(Event $event)
+    {
+        $this->_processEvent('users.beforeUnsuspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onUnsuspendUser(Event $event)
+    {
+        $this->_processEvent('users.unsuspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeSuspendUser(Event $event)
+    {
+        $this->_processEvent('users.beforeSuspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onSuspendUser(Event $event)
+    {
+        $this->_processEvent('users.suspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeActivateUser(Event $event)
+    {
+        $this->_processEvent('users.beforeActivateUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onActivateUser(Event $event)
+    {
+        $this->_processEvent('users.activateUser', $event->params['user']);
     }
 
     /**
