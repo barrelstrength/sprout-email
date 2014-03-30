@@ -70,7 +70,67 @@ class m140327_235959_sproutEmail_insertSproutemailNotifiationEvents extends Base
 		            'registrar' => 'craft',
 		            'event' => 'users.unsuspendUser',
 		            'description' => 'Craft: When a user is unsuspended'
-		        )     
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'assets.saveFileContent',
+		            'description' => 'Craft: When file content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'assets.saveContent',
+		            'description' => 'Craft: When content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'globals.saveGlobalContent',
+		            'description' => 'Craft: When global content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'plugins.loadPlugins',
+		            'description' => 'Craft: When plugins are loaded'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'tags.saveTag',
+		            'description' => 'Craft: When a tag is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'tags.saveTagContent',
+		            'description' => 'Craft: When tag content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'updates.beginUpdate',
+		            'description' => 'Craft: When an update is started'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'updates.endUpdate',
+		            'description' => 'Craft: When an update is finished'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeDeleteUser',
+		            'description' => 'Craft: Before a user is deleted'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.deleteUser',
+		            'description' => 'Craft: When a user is deleted'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeVerifyUser',
+		            'description' => 'Craft: Before a user is verified'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeSaveUser',
+		            'description' => 'Craft: Before a user is saved'
+		        )
 		    );	
 		    
 		    foreach($data as $entry)
