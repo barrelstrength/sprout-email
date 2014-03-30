@@ -808,6 +808,12 @@ class SproutEmailPlugin extends BasePlugin
     			} catch (\Exception $e) {
     			    $campaign->replyToEmail = null;
     			}
+    			
+    			try {
+    			    $campaign->recipients = craft()->templates->renderString($campaign->recipients, array('entry' => $entry));
+    			} catch (\Exception $e) {
+    			    $campaign->recipients = null;
+    			}
 
     			$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
     			craft()->{$service}->sendCampaign($campaign);

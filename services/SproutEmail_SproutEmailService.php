@@ -53,8 +53,8 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		    $emailData['replyTo'] = $campaign->replyToEmail;
 		}
 		
-		$recipients = explode("\r\n", $campaign->recipients);
-		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 46 in ' . __FILE__);
+		$recipients = explode(",", $campaign->recipients);
+		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 57 in ' . __FILE__);
 		$emailModel = EmailModel::populateModel($emailData);
 		
 		$post = craft()->request->getPost();
@@ -80,19 +80,21 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		$recipientIds = array();
 			
 		// parse and create individual recipients as needed
-		if( ! $recipients = array_filter(explode("\r\n", $campaign->recipients)))
+		if( ! $recipients = array_filter(explode(",", $campaign->recipients)))
 		{
 			$campaign->addError('recipients', 'You must add at least one valid email.');
 			return false;
 		}
 	
 		// validate emails
+		$trimmed_recipient_list = array();
 		foreach($recipients as $email)
 		{		    
+		    $email = trim($email);
 			$recipientRecord = new SproutEmail_RecipientRecord();	
 			$recipientRecord->email = $email;
-			
-			if(($campaign->notificationEvent && ! preg_match('/{{(.*?)}}/', $email)) || ! $campaign->notificationEvent)
+
+			if(! preg_match('/{{(.*?)}}/', $email))
 			{
 				$recipientRecord->validate();
     			if($recipientRecord->hasErrors())
@@ -101,9 +103,11 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
     				return false;
     			};
 			}
+			
+			$trimmed_recipient_list[] = $email;
 		}
 	
-		$campaignRecord->recipients = implode("\r\n", $recipients);
+		$campaignRecord->recipients = implode(",", $trimmed_recipient_list);
 		$campaignRecord->save();
 		
 		$this->cleanUpRecipientListOrphans($campaignRecord);
