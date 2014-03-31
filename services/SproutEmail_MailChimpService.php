@@ -66,7 +66,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		
 		$type = 'regular';		
 		$opts = array(
-				'subject' => $campaign['subject'],
+				'subject' => $campaign['title'],
 				'title' => $campaign['name'],
 				'from_name' => $campaign['fromName'],
 	

@@ -65,7 +65,7 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 		$wrap = new \CS_REST_Campaigns(NULL, $this->api_key);
 
 		$result = $wrap->create($this->client_id, array(
-				'Subject' => $campaign['subject'],
+				'Subject' => $campaign['title'],
 				'Name' => $campaign['name'],
 				'FromName' => $campaign['fromName'],
 				'FromEmail' => $campaign['fromEmail'],

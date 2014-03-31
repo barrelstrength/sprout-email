@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-    private $version = '0.7.0';
+    private $version = '0.6.11';
     
     public function getName() 
     {
@@ -101,25 +101,135 @@ class SproutEmailPlugin extends BasePlugin
     {
     	$events = array(
     			array(
-    					'registrar' => 'craft',
-    					'event' => 'entries.saveEntry.new',
-    					'description' => 'Craft: When a new entry is created'
+					'registrar' => 'craft',
+					'event' => 'entries.saveEntry.new',
+					'description' => 'Craft: When a new entry is created'
     			),    			
     			array(
-    					'registrar' => 'craft',
-    					'event' => 'entries.saveEntry',
-    					'description' => 'Craft: When an existing entry is updated'
+					'registrar' => 'craft',
+					'event' => 'entries.saveEntry',
+					'description' => 'Craft: When an existing entry is updated'
     			),
     			array(
-    					'registrar' => 'craft',
-    					'event' => 'users.saveUser',
-    					'description' => 'Craft: When a user is saved'
+					'registrar' => 'craft',
+					'event' => 'users.saveUser',
+					'description' => 'Craft: When a user is saved'
     			),
 				array(
-						'registrar' => 'craft',
-    					'event' => 'users.saveProfile',
-    					'description' => 'Craft: When a user profile is saved'
-    			)
+					'registrar' => 'craft',
+					'event' => 'users.saveProfile',
+					'description' => 'Craft: When a user profile is saved'
+    			),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeActivateUser',
+		            'description' => 'Craft: Before a user is activated'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.activateUser',
+		            'description' => 'Craft: When a user is activated'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeUnlockUser',
+		            'description' => 'Craft: Before a user is unlocked'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.unlockUser',
+		            'description' => 'Craft: When a user is unlocked'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeSuspendUser',
+		            'description' => 'Craft: Before a user is suspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.suspendUser',
+		            'description' => 'Craft: When a user is suspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeUnsuspendUser',
+		            'description' => 'Craft: Before a user is unsuspended'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.unsuspendUser',
+		            'description' => 'Craft: When a user is unsuspended'
+		        ),
+				array(
+					'registrar' => 'craft',
+					'event' => 'userSession.beforeLogin',
+					'description' => 'Craft: Before a user logs in'
+    			),
+				array(
+					'registrar' => 'craft',
+					'event' => 'userSession.login',
+					'description' => 'Craft: When a user logs in'
+    			),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'assets.saveFileContent',
+		            'description' => 'Craft: When file content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'assets.saveContent',
+		            'description' => 'Craft: When content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'globals.saveGlobalContent',
+		            'description' => 'Craft: When global content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'plugins.loadPlugins',
+		            'description' => 'Craft: When plugins are loaded'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'tags.saveTag',
+		            'description' => 'Craft: When a tag is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'tags.saveTagContent',
+		            'description' => 'Craft: When tag content is saved'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'updates.beginUpdate',
+		            'description' => 'Craft: When an update is started'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'updates.endUpdate',
+		            'description' => 'Craft: When an update is finished'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeDeleteUser',
+		            'description' => 'Craft: Before a user is deleted'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.deleteUser',
+		            'description' => 'Craft: When a user is deleted'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeVerifyUser',
+		            'description' => 'Craft: Before a user is verified'
+		        ),
+		        array(
+		            'registrar' => 'craft',
+		            'event' => 'users.beforeSaveUser',
+		            'description' => 'Craft: Before a user is saved'
+		        )
     	);
     
     	foreach ($events as $event) 
@@ -154,13 +264,40 @@ class SproutEmailPlugin extends BasePlugin
     {
     	parent::init();
 
-    	// events fired by $this->raiseEvent 
-        craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
+    	// events fired by $this->raiseEvent        
+    	craft()->on('users.beforeSaveUser', array($this, 'onBeforeSaveUser'));
         craft()->on('users.saveUser', array($this, 'onSaveUser'));
-        craft()->on('users.saveProfile', array($this, 'onSaveProfile'));
+        craft()->on('users.saveProfile', array($this, 'onSaveProfile'));        
+        craft()->on('users.beforeActivateUser', array($this, 'onBeforeActivateUser'));
+        craft()->on('users.activateUser', array($this, 'onActivateUser'));
+        craft()->on('users.beforeUnlockUser', array($this, 'onBeforeUnlockUser'));
+        craft()->on('users.unlockUser', array($this, 'onUnlockUser'));
+        craft()->on('users.beforeSuspendUser', array($this, 'onBeforeSuspendUser'));
+        craft()->on('users.suspendUser', array($this, 'onSuspendUser'));
+        craft()->on('users.beforeUnsuspendUser', array($this, 'onBeforeUnsuspendUser'));
+        craft()->on('users.unsuspendUser', array($this, 'onUnsuspendUser'));
+        craft()->on('users.beforeDeleteUser', array($this, 'onBeforeDeleteUser'));
+        craft()->on('users.deleteUser', array($this, 'onDeleteUser'));
+        craft()->on('users.beforeVerifyUser', array($this, 'onBeforeVerifyUser'));
+        
+        craft()->on('userSession.beforeLogin', array($this, 'onBeforeLogin'));
+        craft()->on('userSession.login', array($this, 'onLogin'));
+        
         craft()->on('globals.saveGlobalContent', array($this, 'onSaveGlobalContent'));
+        
         craft()->on('assets.saveFileContent', array($this, 'onSaveFileContent'));
+        
         craft()->on('content.saveContent', array($this, 'onSaveContent'));
+        
+        craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
+        
+        craft()->on('plugins.loadPlugins', array($this, 'onLoadPlugins'));
+        
+        craft()->on('tags.saveTag', array($this, 'onSaveTag'));
+        craft()->on('tags.saveTagContent', array($this, 'onSaveTagContent'));
+        
+        craft()->on('updates.beginUpdate', array($this, 'onBeginUpdate'));
+        craft()->on('updates.endUpdate', array($this, 'onEndUpdate'));
 
         $criteria = new \CDbCriteria();
         $criteria->condition = 'registrar!=:registrar';
@@ -342,6 +479,17 @@ class SproutEmailPlugin extends BasePlugin
     	}
 		$this->_processEvent($event_type, $event->params['entry']);
     }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeSaveUser(Event $event)
+    {
+        $this->_processEvent('users.beforeSaveUser', $event->params['user']);
+    }
 
     /**
      * Available variables:
@@ -352,6 +500,127 @@ class SproutEmailPlugin extends BasePlugin
     public function onSaveUser(Event $event)
     {
         $this->_processEvent('users.saveUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeUnlockUser(Event $event)
+    {
+        $this->_processEvent('users.beforeUnlockUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onUnlockUser(Event $event)
+    {
+        $this->_processEvent('users.unlockUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeUnsuspendUser(Event $event)
+    {
+        $this->_processEvent('users.beforeUnsuspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onUnsuspendUser(Event $event)
+    {
+        $this->_processEvent('users.unsuspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeSuspendUser(Event $event)
+    {
+        $this->_processEvent('users.beforeSuspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onSuspendUser(Event $event)
+    {
+        $this->_processEvent('users.suspendUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeDeleteUser(Event $event)
+    {
+        $this->_processEvent('users.beforeDeleteUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onDeleteUser(Event $event)
+    {
+        $this->_processEvent('users.deleteUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeVerifyUser(Event $event)
+    {
+        $this->_processEvent('users.beforeVerifyUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onBeforeActivateUser(Event $event)
+    {
+        $this->_processEvent('users.beforeActivateUser', $event->params['user']);
+    }
+    
+    /**
+     * Available variables:
+     * all entries in 'craft_users' table
+     * to access: entry.id, entry.firstName, etc.
+     * @param Event $event
+     */
+    public function onActivateUser(Event $event)
+    {
+        $this->_processEvent('users.activateUser', $event->params['user']);
     }
 
     /**
@@ -364,18 +633,103 @@ class SproutEmailPlugin extends BasePlugin
     {
     	$this->_processEvent('users.saveProfile', $event->params['user']);
     }
-
-    // not implemented
-    public function onSaveGlobalContent(Event $event)
+    
+    /**
+     * Available variables:
+     * username
+     * to access: entry.username
+     * @param Event $event
+     */
+    public function onBeforeLogin(Event $event)
     {
-    	
+        $this->_processEvent('userSession.beforeLogin', array('username' => $event->params['username']));
+    }
+    
+    /**
+     * Available variables:
+     * username
+     * to access: entry.username
+     * @param Event $event
+     */
+    public function onLogin(Event $event)
+    {
+        $this->_processEvent('userSession.login', array('username' => $event->params['username']));
+    }
+
+    /**
+     * Available variables:
+     * all properties of Craft\GlobalSetModel
+     * to access: entry.id
+     * @param Event $event
+     */
+    public function onSaveGlobalContent(Event $event)
+    {    	
         $this->_processEvent('globals.saveGlobalContent', $event->params['globalSet']);
     }
 
-    // not implemented
+    /**
+     * Available variables:
+     * all properties of Craft\AssetFileRecord
+     * to access: entry.filename
+     * @param Event $event
+     */
     public function onSaveFileContent(Event $event)
     {
         $this->_processEvent('assets.saveFileContent', $event->params['file']);
+    }
+    
+    /**
+     * Available variables:
+     * all properties of Craft\TagRecord
+     * to access: entry.id
+     * @param Event $event
+     */
+    public function onSaveTag(Event $event)
+    {
+        $this->_processEvent('tags.saveTag', $event->params['tag']);
+    }    
+
+    /**
+     * Available variables:
+     * all properties of Craft\TagRecord
+     * to access: entry.id
+     * @param Event $event
+     */
+    public function onSaveTagContent(Event $event)
+    {
+        $this->_processEvent('tags.saveTagContent', $event->params['tag']);
+    }
+    
+    /**
+     * Available variables:
+     * type (manual or auto)
+     * to access: entry.type
+     * @param Event $event
+     */
+    public function onBeginUpdate(Event $event)
+    {
+        $this->_processEvent('updates.beginUpdate', $event->params['type']);
+    }
+    
+    /**
+     * Available variables:
+     * success (bool)
+     * to access: entry.success
+     * @param Event $event
+     */
+    public function onEndUpdate(Event $event)
+    {
+        $this->_processEvent('updates.endUpdate', $event->params['success']);
+    }
+    
+    /**
+     * Available variables:
+     * none
+     * @param Event $event
+     */
+    public function onLoadPlugins(Event $event)
+    {
+        $this->_processEvent('plugins.loadPlugins', null);
     }
 
     /**
@@ -420,7 +774,7 @@ class SproutEmailPlugin extends BasePlugin
                 // be better to switch to do a string replace and only make
                 // key variables available here? 
                 // entry.author, entry.author.email, entry.title
-    			
+    	
                 try {
                     $campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entry));
                 } catch (\Exception $e) {
@@ -453,6 +807,12 @@ class SproutEmailPlugin extends BasePlugin
     			    $campaign->replyToEmail = craft()->templates->renderString($campaign->replyToEmail, array('entry' => $entry));
     			} catch (\Exception $e) {
     			    $campaign->replyToEmail = null;
+    			}
+    			
+    			try {
+    			    $campaign->recipients = craft()->templates->renderString($campaign->recipients, array('entry' => $entry));
+    			} catch (\Exception $e) {
+    			    $campaign->recipients = null;
     			}
 
     			$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
