@@ -2,10 +2,10 @@
 <h3>Section-Based Campaigns</h3>
 <table id="campaigns" class="data">
 	<thead>
-		<th width="25%"></th>
-		<th width="35%"></th>
-		<th width="15%"></th>
+		<th width="40%"></th>
 		<th width="20%"></th>
+		<th width="10%"></th>
+		<th width="15%"></th>
 		<td class="thin"></td>
 	</thead>
 {% endif %}
@@ -17,7 +17,7 @@
 		</td>
 		<td>
 			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">
-				{{ campaign.name }} Campaign Info
+				Campaign Info
 			</a> / 
 			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/template">
 				Templates
@@ -34,7 +34,7 @@
 			<a href="{{ siteUrl }}{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
 		</td>
 		<td>
-			<a href="#" class="export" >Export to {{ campaign.emailProvider }}</a> 
+			<a href="#" class="export" >Export to {{ campaign.emailProvider }} &rsaquo;&rsaquo;</a> 
 		</td>
 		{% else %}
 		<td colspan=2">
