@@ -2,26 +2,75 @@
 {% import "_includes/forms" as forms %}
 
 {% set emailProviders = craft.sproutemail.getEmailProviders() %}
+{% set campaigns = craft.sproutEmail.getAllCampaignInfo() %}
 
 {% set body %}
 
-<form method="post" action="" accept-charset="UTF-8">
-<input type="hidden" name="action" value="sproutEmail/campaigns/saveSettings">
-<input type="hidden" name="redirect" value="sproutemail/settings">
+{% if campaigns|length %}
+	
+	<h3>Campaign Settings</h3>
 
-<div id="tab-campaign-info" class="tab-content" >	
-	{% for key, val in emailProviders %}
-		<div id="{{ key }}_recipients_template" class="recipient_templates" >
-			{% include "sproutemail/_email_provider_settings/_" ~ key %}
-			<hr/>
-		</div>
-		<br/>
+	{% for campaign in campaigns %}
+		{% if loop.first %}
+
+		<table id="campaigns" class="data fullwidth">
+			<thead>
+				<th width="40%"></th>
+				<th width="20%"></th>
+				<th width="10%"></th>
+				<th width="15%"></th>
+			</thead>
+		{% endif %}
+			<tr>
+				<td><a href="{{ url('sproutemail/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		{% if loop.last %}
+		</table>
+		{% endif %}
+
 	{% endfor %}
-</div>
+ 	
+	<div class="buttons">
+		<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign</a>
+	</div>
 
-<div class="buttons">
-	<input class="btn submit" type="submit" value="Save Settings">
-</div>
+{% else %}
+ 	
+ 	<div style="width:40%;">
+
+	 	<h2>Create your first Campaign</h2>
+
+	 	<p>Section-based Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
+
+	 	<div class="buttons">
+			<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create a Campaign &raquo;</a>
+		</div>
+
+	</div>
+
+{% endif %}
+
+<hr>
+
+<form method="post" action="" accept-charset="UTF-8">
+	<input type="hidden" name="action" value="sproutEmail/campaigns/saveSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings">
+
+	<div id="tab-campaign-info" class="tab-content" >	
+		{% for key, val in emailProviders %}
+			<div id="{{ key }}_recipients_template" class="recipient_templates" >
+				{% include "sproutemail/_email_provider_settings/_" ~ key %}
+				<hr/>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="Save API Settings">
+	</div>
 
 </form>
 

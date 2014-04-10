@@ -11,13 +11,7 @@
 	{% endfor %}
 
 
-	{% if campaigns|length %}
-	 	
-		<div class="buttons">
-			<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign</a>
-		</div>
-
-	{% else %}
+	{% if not campaigns|length %}
 	 	
 	 	<div style="width:40%;">
 
