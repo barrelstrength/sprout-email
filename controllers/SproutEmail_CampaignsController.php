@@ -75,12 +75,14 @@ class SproutEmail_CampaignsController extends BaseController
 	 * @return void
 	 */
 	public function actionDelete()
-	{
+	{	
 		$this->requirePostRequest();
-		$this->requireAjaxRequest();
 		 
-		$this->returnJson(array(
-				'success' => craft()->sproutEmail->deleteCampaign(craft()->request->getRequiredPost('id'))));
+		// @TODO - add more robust checks
+		craft()->sproutEmail->deleteCampaign(craft()->request->getRequiredPost('id'));
+
+		craft()->userSession->setNotice(Craft::t('Campaign successfully deleted.'));
+		$this->redirectToPostedUrl();
 	}
 	
 	/**
