@@ -1,19 +1,18 @@
 {% if loop.first %}
-<h3>Section-Based Campaigns</h3>
+
 <table id="campaigns" class="data">
 	<thead>
 		<th width="40%"></th>
 		<th width="20%"></th>
 		<th width="10%"></th>
 		<th width="15%"></th>
-		<td class="thin"></td>
 	</thead>
 {% endif %}
 
 	<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 		<td>
-			<strong>{{ campaign.title }}</strong>
-			&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
+			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">{{ campaign.title }}</a><br/>
+			<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.name }} <span style="color:#121212;">/</span> {{ campaign.dateUpdated|date('F d, Y') }}</span>
 		</td>
 		<td>
 			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">
@@ -37,15 +36,15 @@
 			<a href="#" class="export" >Export to {{ campaign.emailProvider }} &rsaquo;&rsaquo;</a> 
 		</td>
 		{% else %}
-		<td colspan=2">
+		<td colspan="2">
 		<i>This campaign is incomplete.</i>
 		</td>
 		{% endif %}
-		<td class="thin">
-			<a class="delete icon" title="Delete"></a>
-		</td>
 	</tr>
 
 {% if loop.last %}
 </table>
+<br/>
+<br/>
+
 {% endif %}
