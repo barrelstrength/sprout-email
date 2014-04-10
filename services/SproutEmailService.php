@@ -20,6 +20,19 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 	
 	/**
+	 * Returns all Campaign Info (just settings, not related entries).
+	 * @return object campaign table records
+	 */
+	public function getAllCampaignInfo()
+	{
+		$query = craft()->db->createCommand()
+		    ->from('sproutemail_campaigns')
+		    ->queryAll();
+
+		return $query;
+	}
+
+	/**
 	 * Returns campaignRecipient lists
 	 * 
 	 * @param int $campaignId
@@ -217,8 +230,9 @@ class SproutEmailService extends BaseApplicationComponent
         		}
 		        break;
 		    default: // save the campaign
+		    
 		        try 
-		        {    
+		        {
 		            $campaignRecord = $this->_saveCampaignInfo($campaign);
 		            if($campaignRecord->hasErrors()) // no good
 		            {
