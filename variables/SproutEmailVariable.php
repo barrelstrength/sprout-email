@@ -18,8 +18,18 @@ class SproutEmailVariable
     public function getName()
     {
         $plugin = craft()->plugins->getPlugin('sproutemail');
-
         return $plugin->getName();
+    }
+
+    /**
+     * Get plugin version
+     * 
+     * @return string
+     */
+    public function getVersion()
+    {
+        $plugin = craft()->plugins->getPlugin('sproutemail');
+        return $plugin->getVersion();
     }
 
     /**
@@ -57,6 +67,15 @@ class SproutEmailVariable
     public function getCampaignById($campaignId)
     {
         return craft()->sproutEmail->getCampaign(array('id' => $campaignId));
+    }
+
+    /**
+     * Get all Campaign Info (only settings, no related Section Campaigns)
+     * @return object campaign table records
+     */
+    public function getAllCampaignInfo()
+    {
+        return craft()->sproutEmail->getAllCampaignInfo();
     }
 
     /**
