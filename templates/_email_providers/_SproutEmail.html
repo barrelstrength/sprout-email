@@ -1,10 +1,9 @@
 
-	
-	{{ forms.textareaField({
+	{{ forms.textField({
 		label: "Add Recipients"|t,
 		id: 'recipients',
 		name: 'recipients',
-		instructions: "Add each email address on a separate line"|t,
+		instructions: "Separate multiple email addresses with a comma"|t,
 		value: (campaign is defined ? campaign.recipients : null),
 		required: true,
 		errors: (campaign is defined ? campaign.getErrors('recipients') : null) 	
