@@ -6,9 +6,8 @@
 
 <table id="campaigns" class="data">
 	<thead>
-		<th width="40%"></th>
-		<th width="20%"></th>
-		<th width="10%"></th>
+		<th width="65%"></th>
+		<th width="15%"></th>
 		<th width="15%"></th>
 	</thead>
 {% endif %}
@@ -17,17 +16,6 @@
 		<td>
 			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">{{ campaign.title }}</a><br/>
 			<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.name }} <span style="color:#121212;">/</span> {{ campaign.dateUpdated|date('F d, Y') }}</span>
-		</td>
-		<td>
-			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">
-				Campaign Info
-			</a> / 
-			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/template">
-				Templates
-			</a> /
-			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}/recipients">
-				Recipients
-			</a>
 		</td>
 		
 		{% if campaign.sectionId and campaign.entryId and campaign.textTemplate and campaign.emailProvider %}
