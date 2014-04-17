@@ -22,11 +22,16 @@ class SproutEmailService extends BaseApplicationComponent
 	/**
 	 * Returns all Campaign Info (just settings, not related entries).
 	 * @return object campaign table records
+	 *
+	 * @todo - Need a better way to identify between Campaigns
+	 * and Notifications: This is not clear and won't be true 
+	 * when we have native Campaigns: where('emailProvider != "SproutEmail"')
 	 */
 	public function getAllCampaignInfo()
 	{
 		$query = craft()->db->createCommand()
 		    ->from('sproutemail_campaigns')
+		    ->where('emailProvider != "SproutEmail"')
 		    ->queryAll();
 
 		return $query;
