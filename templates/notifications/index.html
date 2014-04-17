@@ -11,8 +11,8 @@
 		<h3>Notifications</h3>
 		<table id="campaigns" class="data">
 			<thead>
-				<th width="25%"></th>
-				<th width="35%"></th>
+				<th width="65%"></th>
+				<th width="30%"></th>
 				<td class="thin"></td>
 			</thead>
 		{% endif %}
@@ -22,12 +22,15 @@
 					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}"><strong>{{ campaign.name }}</strong></a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
-				<td> 
+				<td>
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">
+						Notification Info
+					</a> | 
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}/templates">
+						Templates
+					</a> | 
 					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}/recipients">
 						Define recipients
-					</a> | 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">
-						Settings
 					</a>
 				</td>
 				<td class="thin">
