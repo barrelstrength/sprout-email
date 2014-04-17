@@ -9,7 +9,7 @@
 			
 		{% if loop.first %}
 		<h3>Notifications</h3>
-		<table id="campaigns" class="data">
+		<table id="campaigns" class="data fullwidth">
 			<thead>
 				<th width="65%"></th>
 				<th width="30%"></th>
@@ -19,7 +19,7 @@
 		
 			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 				<td>
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}"><strong>{{ campaign.name }}</strong></a>
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">{{ campaign.name }}</a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td>
