@@ -18,7 +18,8 @@
                 <exclude name="${pluginName}/composer.json" />
                 <exclude name="${pluginName}/README.md" />
                 <exclude name="${pluginName}/phpunit.xml" />
-                <exclude name="${pluginName}/tests" />
+                <exclude name="${pluginName}/updates/" />
+                <exclude name="${pluginName}/tests/" />
             </fileset>
         </zip>
         <echo msg="Release for (${pluginName}) has been created!" />
