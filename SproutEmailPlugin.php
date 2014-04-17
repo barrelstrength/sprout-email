@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-	private $version = '0.6.11';
+	private $version = '0.7.0';
 	
 	public function getName() 
 	{
@@ -136,12 +136,6 @@ class SproutEmailPlugin extends BasePlugin
 					'description' => 'Craft: When tag content is saved'
 				),
 
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'tags.saveTag',
-				// 	'description' => 'Craft: When a tag is saved'
-				// ),
-
 				// Users
 				array(
 					'registrar' => 'craft',
@@ -239,6 +233,13 @@ class SproutEmailPlugin extends BasePlugin
 				// 	'event' => 'plugins.loadPlugins',
 				// 	'description' => 'Craft: When plugins are loaded'
 				// ),
+				// 
+				// 
+				// array(
+				// 	'registrar' => 'craft',
+				// 	'event' => 'tags.saveTag',
+				// 	'description' => 'Craft: When a tag is saved'
+				// ),
 
 				
 				
@@ -279,37 +280,29 @@ class SproutEmailPlugin extends BasePlugin
 		// events fired by $this->raiseEvent        
 		craft()->on('users.beforeSaveUser', array($this, 'onBeforeSaveUser'));
 		craft()->on('users.saveUser', array($this, 'onSaveUser'));
-		        
-		// craft()->on('users.beforeActivateUser', array($this, 'onBeforeActivateUser'));
 		craft()->on('users.activateUser', array($this, 'onActivateUser'));
-		// craft()->on('users.beforeUnlockUser', array($this, 'onBeforeUnlockUser'));
 		craft()->on('users.unlockUser', array($this, 'onUnlockUser'));
-		// craft()->on('users.beforeSuspendUser', array($this, 'onBeforeSuspendUser'));
 		craft()->on('users.suspendUser', array($this, 'onSuspendUser'));
-		// craft()->on('users.beforeUnsuspendUser', array($this, 'onBeforeUnsuspendUser'));
 		craft()->on('users.unsuspendUser', array($this, 'onUnsuspendUser'));
-		// craft()->on('users.beforeDeleteUser', array($this, 'onBeforeDeleteUser'));
 		craft()->on('users.deleteUser', array($this, 'onDeleteUser'));
-		// craft()->on('users.beforeVerifyUser', array($this, 'onBeforeVerifyUser'));
-		
-		// craft()->on('userSession.beforeLogin', array($this, 'onBeforeLogin'));
 		craft()->on('userSession.login', array($this, 'onLogin'));
-		
 		craft()->on('globals.saveGlobalContent', array($this, 'onSaveGlobalContent'));
-		
 		craft()->on('assets.saveAsset', array($this, 'onSaveAsset'));
-		
-		craft()->on('content.saveContent', array($this, 'onSaveContent'));
-		
+		craft()->on('content.saveContent', array($this, 'onSaveContent'));	
 		craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
-		
-		// craft()->on('plugins.loadPlugins', array($this, 'onLoadPlugins'));
-		
-		// craft()->on('tags.saveTag', array($this, 'onSaveTag'));
 		craft()->on('tags.saveTagContent', array($this, 'onSaveTagContent'));
-		
 		craft()->on('updates.beginUpdate', array($this, 'onBeginUpdate'));
 		craft()->on('updates.endUpdate', array($this, 'onEndUpdate'));
+
+		// craft()->on('users.beforeActivateUser', array($this, 'onBeforeActivateUser'));
+		// craft()->on('users.beforeUnlockUser', array($this, 'onBeforeUnlockUser'));
+		// craft()->on('users.beforeSuspendUser', array($this, 'onBeforeSuspendUser'));
+		// craft()->on('users.beforeUnsuspendUser', array($this, 'onBeforeUnsuspendUser'));
+		// craft()->on('users.beforeDeleteUser', array($this, 'onBeforeDeleteUser'));
+		// craft()->on('users.beforeVerifyUser', array($this, 'onBeforeVerifyUser'));
+		// craft()->on('userSession.beforeLogin', array($this, 'onBeforeLogin'));
+		// craft()->on('plugins.loadPlugins', array($this, 'onLoadPlugins'));
+		// craft()->on('tags.saveTag', array($this, 'onSaveTag'));
 
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'registrar!=:registrar';
