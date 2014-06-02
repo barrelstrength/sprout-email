@@ -71,7 +71,7 @@
     		errors: (campaign is defined ? campaign.getErrors('notificationEvent') : null) 	
     	}) }}
     	
-    	{% set eventOptions = craft.sproutemail.getNotificationEventOptions() %}
+    	{% set eventOptions = craft.sproutEmail.getNotificationEventOptions() %}
     	
     	{% if eventOptions.system_options is defined %}
     		{% for key, val in eventOptions.system_options %}
