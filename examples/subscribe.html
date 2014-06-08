@@ -1,0 +1,52 @@
+
+{# Check if a logged in user is subscribed to an Element 
+	 Set our action to whether we want to subscribe or unsubscribe a user #}
+{% if craft.sproutEmail.isSubscribed(currentUser.id, 2) %}
+	{% set action = 'unsubscribe' %}
+{% else %}
+	{% set action = 'subscribe' %}
+{% endif %}
+
+{# Hide the option which we don't want below #}
+<style type="text/css">.hidden { display: none!important; }</style>
+
+<div class="btn-subscribe">
+
+	{# Unsubscribe a user from the element referenced by the data-elementid  #}
+	<a href="sproutEmail/lists/unsubscribe" data-action="unsubscribe" data-elementid="80" class="{% if action != 'unsubscribe' %}hidden{% endif %}">
+		Unsubscribe
+	</a>
+
+	{# Subscribe a user to the element referenced by the data-elementid  #}
+	<a href="sproutEmail/lists/subscribe" data-action="subscribe" data-elementid="80" class="{% if action != 'subscribe' %}hidden{% endif %}">
+		Subscribe
+	</a>
+
+</div>
+
+
+{# Ajax to subscribe/unsubscribe a user with the links above  #}
+<script>
+	$(function() {
+
+		// Use event delegation so our listeners maintain state
+	  $('.btn-subscribe').delegate('a', 'click', function(event) {
+
+	    var $link = $(this);
+	    var action = $link.data('action');
+	    var nextAction = (action == 'subscribe') ? 'unsubscribe' : 'subscribe';
+	    var $nextLink = $('.btn-subscribe a[data-action="'+nextAction+'"]');
+
+	    // The /actions url is hardcoded here, @todo - make dynamic
+	    $.ajax({
+	      type: 'post',
+	      url: '/actions/' + $link.attr('href'),
+	      data: "elementId=" + $link.data('elementid')
+	    }).done(function() {
+	      $link.addClass('hidden');
+	      $nextLink.removeClass('hidden');
+	    });
+	    event.preventDefault();
+	  });
+	});
+</script>
