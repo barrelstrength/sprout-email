@@ -28,6 +28,8 @@ class SproutEmail_CampaignsController extends BaseController
 		$this->requirePostRequest();
 
 		$campaignModel = SproutEmail_CampaignModel::populateModel(craft()->request->getPost());
+		
+		$campaignModel->useRecipientLists = craft()->request->getPost('useRecipientLists') ? 1 : 0;
 
 		if($campaignId = craft()->sproutEmail->saveCampaign($campaignModel, craft()->request->getPost('tab')))
 		{

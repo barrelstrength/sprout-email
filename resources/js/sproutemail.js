@@ -14,8 +14,21 @@ var mb = {
 			jQuery(this).closest('form').find('input[name=continue]').val(jQuery(this).attr('id'));
 			jQuery(this).closest('form').submit();
 		});
+		jQuery('input[name=useRecipientLists]').change(function(){
+			mb.toggle_recipient_list();
+		});
 		mb.select_notification_event();
 		mb.set_recipient_btns();
+		mb.toggle_recipient_list();
+	},
+	toggle_recipient_list: function(){
+		var check_box = jQuery('input[name=useRecipientLists]');
+		if(check_box.is(':checked')){
+			check_box.closest('div').find('.field').show();
+		}else{
+			check_box.closest('div').find('input[type=checkbox]').attr('checked', false);
+			check_box.closest('div').find('.field').hide();
+		}
 	},
 	set_recipient_btns: function(){
 		if(jQuery('.recipients-not-defined').length == 0){
