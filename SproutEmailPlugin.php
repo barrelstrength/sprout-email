@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-	private $version = '0.7.1';
+	private $version = '0.7.2';
 	
 	public function getName() 
 	{
@@ -761,7 +761,7 @@ class SproutEmailPlugin extends BasePlugin
 		{   
 			foreach($res as $campaign)
 			{
-				if( ! $campaign->recipients)
+				if( ! $campaign->recipients && ! $campaign->recipientList)
 				{
 					return false;
 				}
