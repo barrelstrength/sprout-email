@@ -15,8 +15,8 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	{
 		$plugins_path = rtrim(craft()->path->getPluginsPath(), '\\/');
 		$files = scandir($plugins_path . '/sproutemail/libraries');
-// 		$select_options = array('SproutEmail' => 'Sprout Email');
-		$select_options = array();
+		$select_options = array('SproutEmail' => 'SproutEmail');
+		//$select_options = array();
 			
 		// set <select> values and text to be the same
 		foreach($files as $file)

@@ -30,23 +30,4 @@
 
 {% endset %}
 
-{% set js %}
-	new Craft.AdminTable({
-		tableSelector: '#campaigns',
-		noObjectsSelector: '#nocampaigns',
-		deleteAction: 'SproutEmail/campaigns/delete'
-	});
-	
-	jQuery(document).ready(function(){
-		jQuery('.export').click(function(){
-			var query = 'entryId='+jQuery(this).closest('tr').attr('data-entry-id')
-			+ '&campaignId='+jQuery(this).closest('tr').attr('data-id')
-			+ '&action=SproutEmail/campaigns/export';
-			$.post('{{ url('SproutEmail/campaigns/export') }}',query, function(data){
-				alert(data);
-			})
-			return false;
-		})
-	})
-{% endset %}
-{% includeJs js %}
+

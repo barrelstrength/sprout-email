@@ -13,7 +13,17 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	 */	
 	public function getSubscriberList()
 	{
-		return array();
+        if( ! $reports = craft()->plugins->getPlugin('sproutreports')) {
+            return false;
+        }
+        
+        $options = array();
+        if( $list = craft()->sproutReports_reports->getAllReportsByAttributes(array('isEmailList' => 1))) {
+            foreach($list as $report) {
+                $options[$report->id] = $report->name;
+            }
+        }
+        return $options;
 	}
 	
 	/**
@@ -24,7 +34,11 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	 */
 	public function exportCampaign($campaign = array(), $listIds = array())
 	{
-		die('Not supported for this provider.');
+	    $campaignModel = craft()->sproutEmail->getCampaign(array('id' => $campaign['id']));
+	    if($this->sendCampaign($campaignModel, $listIds) === false) {
+	        die('Your campaign can not be sent at this time.');
+	    }
+		die('Campaign successfully sent.');
 	}
 	
 	/**
@@ -52,9 +66,35 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		{
 		    $emailData['replyTo'] = $campaign->replyToEmail;
 		}
-		
+	
 		$recipients = explode(",", $campaign->recipients);
-		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 57 in ' . __FILE__);
+		
+		if($recipientLists = craft()->sproutEmail->getCampaignRecipientLists($campaign['id']))
+		{
+		    // make sure SproutReports is installed
+		    if($reports = craft()->plugins->getPlugin('sproutreports')) 
+		    {
+		        foreach($recipientLists as $recipientList)
+		        {
+                    if( $report = craft()->sproutReports_reports->getReportById($recipientList->emailProviderRecipientListId)) 
+                    {
+                         $results = craft()->sproutReports_reports->runReport($report['customQuery']);
+                         foreach($results as $row)
+                         {
+                             if(isset($row['email']))
+                             {
+                                 $recipients[] = $row['email'];
+                             }
+                         }
+                    }
+		        }
+		    }
+		}
+		
+		// remove duplicates & blanks
+		$recipients = array_unique(array_filter($recipients));
+		
+		//Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 57 in ' . __FILE__);
 		$emailModel = EmailModel::populateModel($emailData);
 		
 		$post = craft()->request->getPost();
@@ -65,6 +105,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
     			craft()->email->sendEmail($emailModel);
 		    } catch (\Exception $e) {
 		        // do nothing
+		        return false;
 		    }
 		}
 	}
@@ -77,13 +118,83 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	 */
 	public function saveRecipientList(SproutEmail_CampaignModel &$campaign, SproutEmail_CampaignRecord &$campaignRecord)
 	{
+		// an email provider is required
+		if( ! isset($campaign->emailProvider) || ! $campaign->emailProvider)
+		{
+			$campaign->addError('emailProvider', 'Unsupported email provider.');
+			return false;
+		}
+            
+            // if we have what we need up to this point,
+            // get the recipient list(s) by emailProvider and emailProviderRecipientListId
+        $criteria = new \CDbCriteria ();
+        $criteria->condition = 'emailProvider=:emailProvider';
+        $criteria->params = array (
+                ':emailProvider' => $campaign->emailProvider 
+        );
+        
+        if ($recipientListIds = array_filter ( ( array ) $campaign->emailProviderRecipientListId )) 
+        {            
+            // process each recipient listCampaigns
+            foreach ( $recipientListIds as $list_id ) 
+            {
+                $criteria->condition = 'emailProviderRecipientListId=:emailProviderRecipientListId';
+                $criteria->params = array (
+                        ':emailProviderRecipientListId' => $list_id 
+                );
+                $recipientListRecord = SproutEmail_RecipientListRecord::model ()->find ( $criteria );
+                
+                if (! $recipientListRecord)                 // doesn't exist yet, so we need to create
+                {
+                    // save record
+                    $recipientListRecord = new SproutEmail_RecipientListRecord ();
+                    $recipientListRecord->emailProviderRecipientListId = $list_id;
+                    $recipientListRecord->emailProvider = $campaign->emailProvider;
+                }
+                
+                // we already did our validation, so just save
+                if ($recipientListRecord->save ()) 
+                {
+                    // associate with campaign, if not already done so
+                    if (SproutEmail_CampaignRecipientListRecord::model ()->count ( 'recipientListId=:recipientListId AND campaignId=:campaignId', array (
+                            ':recipientListId' => $recipientListRecord->id,
+                            ':campaignId' => $campaignRecord->id 
+                    ) ) == 0) 
+                    {
+                        $campaignRecipientListRecord = new SproutEmail_CampaignRecipientListRecord ();
+                        $campaignRecipientListRecord->recipientListId = $recipientListRecord->id;
+                        $campaignRecipientListRecord->campaignId = $campaignRecord->id;
+                        $campaignRecipientListRecord->save ( false );
+                    }
+                }
+            }
+        }
+        
+        // now we need to disassociate recipient lists as needed
+        foreach ( $campaignRecord->recipientList as $list ) 
+        {
+            // was part of campaign, but now isn't
+            if (! in_array ( $list->emailProviderRecipientListId, $recipientListIds )) 
+            {
+                craft ()->sproutEmail->deleteCampaignRecipientList ( $list->id, $campaignRecord->id );
+            }
+        }
+
+	    
 		$recipientIds = array();
 			
 		// parse and create individual recipients as needed
-		if( ! $recipients = array_filter(explode(",", $campaign->recipients)))
+		$recipients = array_filter(explode(",", $campaign->recipients));
+		if( ! $campaign->useRecipientLists && ! $recipients)
 		{
 			$campaign->addError('recipients', 'You must add at least one valid email.');
 			return false;
+		}
+		
+		if($campaign->useRecipientLists && ! $recipientListIds)
+		{
+		    $campaign->addError('recipients', 'You must add at least one valid email or select an email list.');
+		    return false;
 		}
 	
 		// validate emails
@@ -115,13 +226,6 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		return true;
 	}
 	
-	public function cleanUpRecipientListOrphans(&$campaignRecord)
-	{
-		// since sproutemail service does not maintain recipient lists, all lists for this 
-		// campaign are considered to be orphans
-		return craft()->db->createCommand()->delete('sproutemail_campaign_recipient_lists', array('campaignId' => $campaignRecord->id));
-	}
-	
 	/**
 	 * Deletes recipients for specified campaign
 	 * 
@@ -136,7 +240,9 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	
 	public function getSettings()
 	{
-	    //
+	    $obj = new \StdClass();
+	    $obj->valid = true;
+	    return $obj;
 	}
 	
 	public function saveSettings($settings = array())

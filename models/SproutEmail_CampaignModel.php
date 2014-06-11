@@ -38,6 +38,7 @@ class SproutEmail_CampaignModel extends BaseModel
         	'recipientOption'	=> array(AttributeType::Number),
 			'emailProviderRecipientListId' => array(AttributeType::Enum),
 			'recipients'		=> array(AttributeType::String),
+            'useRecipientLists'	=> array(AttributeType::Number),
         		
         	// events
         	'notificationEvents'=> array(AttributeType::Enum),
