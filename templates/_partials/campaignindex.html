@@ -14,7 +14,7 @@
 
 	<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 		<td>
-			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">{{ campaign.title }}</a><br/>
+			<a href="{{ url('sproutemail/campaigns/edit/') }}/{{ campaign.id }}">{{ campaign.title ? campaign.title : 'New Campaign' }}</a><br/>
 			<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.name }} <span style="color:#121212;">/</span> {{ campaign.dateUpdated|date('F d, Y') }}</span>
 		</td>
 		
