@@ -25,7 +25,14 @@
 			<a href="{{ siteUrl }}{{campaign.textTemplate}}?sectionId={{campaign.sectionId}}&handle={{campaign.handle}}&entryId={{campaign.entryId}}&slug={{campaign.slug}}" target="_blank">Text</a> 
 		</td>
 		<td>
-			<a href="#" class="export" >Export to {{ campaign.emailProvider }} &rsaquo;&rsaquo;</a> 
+			<a href="#" class="export" >
+			     {% if campaign.emailProvider == 'SproutEmail' %}
+			         Send campaign
+			     {% else %}
+			         Export to {{ campaign.emailProvider }} 
+			     {% endif %}
+			&rsaquo;&rsaquo;
+			</a> 
 		</td>
 		{% else %}
 		<td colspan="2">

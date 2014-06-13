@@ -9,9 +9,14 @@
 	{% for campaign in campaigns %}
 		{% include 'sproutemail/_partials/campaignindex' %}
 	{% endfor %}
+	
+	{% if campaigns|length %}
+        
+            <div class="buttons">
+                <a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign &raquo;</a>
+            </div>
 
-
-	{% if not campaigns|length %}
+    {% else %}
 	 	
 	 	<div style="width:40%;">
 
