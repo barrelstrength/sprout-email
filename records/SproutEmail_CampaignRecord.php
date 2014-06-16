@@ -54,10 +54,10 @@ class SproutEmail_CampaignRecord extends BaseRecord
                         AttributeType::Number 
                 ),
                 'htmlBody' => array (
-                        AttributeType::String 
+                        AttributeType::Mixed 
                 ),
                 'textBody' => array (
-                        AttributeType::String 
+                        AttributeType::Mixed 
                 ),
                 'htmlTemplate' => array (
                         AttributeType::String 
@@ -67,7 +67,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
                 ),
                 
                 'recipients' => array (
-                        AttributeType::String 
+                        AttributeType::Mixed 
                 ),
                 
                 'dateCreated' => array (
