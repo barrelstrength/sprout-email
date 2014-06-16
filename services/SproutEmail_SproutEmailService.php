@@ -8,27 +8,39 @@ namespace Craft;
 class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
     /**
-     * N/A
+     * The SproutEmail service supports two types of subscriber lists:
+     * Craft groups
+     * SproutReports
      *
      * @return multitype: multitype:NULL
      */
     public function getSubscriberList()
     {
-        if ( ! $reports = craft()->plugins->getPlugin( 'sproutreports' ) )
-        {
-            return false;
-        }
-        
         $options = array ();
-        if ( $list = craft()->sproutReports_reports->getAllReportsByAttributes( array (
-                'isEmailList' => 1 
-        ) ) )
+        
+        // Craft groups
+        if ( $userGroups = craft()->userGroups->getAllGroups() )
         {
-            foreach ( $list as $report )
+            foreach ( $userGroups as $userGroup )
             {
-                $options [$report->id] = $report->name;
+                $options [$userGroup->id . '-' . 'UserGroup'] = $userGroup->name . Craft::t(' [Craft user group]');
             }
         }
+        
+        // SproutReports
+        if ( $reports = craft()->plugins->getPlugin( 'sproutreports' ) )
+        {
+            if ( $list = craft()->sproutReports_reports->getAllReportsByAttributes( array (
+                    'isEmailList' => 1 
+            ) ) )
+            {
+                foreach ( $list as $report )
+                {
+                    $options [$report->id . '-' . 'SproutReport'] = $report->name . Craft::t(' [SproutReport]');
+                }
+            }
+        }
+        
         return $options;
     }
     
@@ -86,28 +98,53 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
         
         $recipients = explode( ",", $campaign->recipients );
         
-        if ( $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
+        // stash our user groups for easy referencing
+        $userGroupsArr = array();
+        if ( $userGroups = craft()->userGroups->getAllGroups() )
         {
-            // make sure SproutReports is installed
-            if ( $reports = craft()->plugins->getPlugin( 'sproutreports' ) )
+            foreach ( $userGroups as $userGroup )
             {
-                foreach ( $recipientLists as $recipientList )
-                {
-                    if ( $report = craft()->sproutReports_reports->getReportById( $recipientList->emailProviderRecipientListId ) )
-                    {
-                        $results = craft()->sproutReports_reports->runReport( $report ['customQuery'] );
-                        foreach ( $results as $row )
-                        {
-                            if ( isset( $row ['email'] ) )
-                            {
-                                $recipients [] = $row ['email'];
-                            }
-                        }
-                    }
-                }
+                $userGroupsArr [$userGroup->id] = $userGroup;
             }
         }
         
+        if ( $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
+        {
+            foreach ( $recipientLists as $recipientList )
+            {
+                list($id, $type) = explode('-', $recipientList->emailProviderRecipientListId);
+                
+                switch($type)
+                {
+                	case 'UserGroup':
+                	    $criteria = craft()->elements->getCriteria('User');
+                	    $criteria->groupId = $userGroupsArr[$id]->id;
+                	    if( $results = craft()->elements->findElements($criteria))
+                	    {
+                	        foreach ( $results as $row )
+                	        {
+                	             $recipients [] = $row->email;
+                	        }
+                	    }
+                	    break;
+                	case 'SproutReport':
+                	    if ( $report = craft()->sproutReports_reports->getReportById( $recipientList->emailProviderRecipientListId ) )
+                	    {
+                	        $results = craft()->sproutReports_reports->runReport( $report ['customQuery'] );
+                	        foreach ( $results as $row )
+                	        {
+                	            if ( isset( $row ['email'] ) )
+                	            {
+                	                $recipients [] = $row ['email'];
+                	            }
+                	        }
+                	    }
+                	    break;
+                }
+
+            }
+        }
+
         // remove duplicates & blanks
         $recipients = array_unique( array_filter( $recipients ) );
         
