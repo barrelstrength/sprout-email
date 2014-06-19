@@ -31,7 +31,7 @@ class SproutEmailService extends BaseApplicationComponent
      */
     public function getAllCampaignInfo()
     {
-        $query = craft()->db->createCommand()->from( 'sproutemail_campaigns' )->where( 'emailProvider != "SproutEmail"' )->queryAll();
+        $query = craft()->db->createCommand()->from( 'sproutemail_campaigns' )->queryAll();
         
         return $query;
     }
