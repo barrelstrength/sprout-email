@@ -8,7 +8,21 @@
 
 {% if campaigns|length %}
 	
-	<h3>Campaign Settings</h3>
+	<h3>
+		Campaign Types
+		<span class="info">
+			<p>You can create multiple Campaign Types by:</p>
+
+			<ol>
+				<li>Adding information about your campaign emails</li>
+				<li>Selecting a target Section and email templates</li>
+				<li>Selecting one or more target recipient lists</li>
+			</ol>
+
+			<p>Once you have created a new Campaign Type, all entries in your target section will be listed as Campaigns on the Campaigns tab.</p>
+
+		</span>
+	</h3>
 
 	{% for campaign in campaigns %}
 		{% if loop.first %}
@@ -34,7 +48,7 @@
 	{% endfor %}
  	
 	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign</a>
+		<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign Type</a>
 	</div>
 
 {% else %}
@@ -51,9 +65,9 @@
 
 	</div>
 
+	<hr>
+	
 {% endif %}
-
-<hr>
 
 <form method="post" action="" accept-charset="UTF-8">
 	<input type="hidden" name="action" value="sproutEmail/campaigns/saveSettings">
