@@ -11,27 +11,27 @@
 
 	<hr>
 	
-
-	{% set subscriber_lists = craft.sproutemail.getSubscriberList('SproutEmail') %}
+	{% set subscriberLists = craft.sproutEmail.getSubscriberList() %}
 	
-	{% if(subscriber_lists|length > 0) %}
+	{% if (subscriberLists|length > 0) %}
 	<div>
-	   {{ forms.checkbox({
-	        name: 'useRecipientLists',
-	        label: 'Use email lists',
-	        value: 1,
-	        checked: campaign is defined and campaign.emailProviderRecipientListId ? true : false
-	    }) }}
-    
-	    {{ forms.field({
-	        label: "Email Lists"|t,
-	        instructions: "Select one or more email lists to send your campaign."|t,
-	        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
-	    }, forms.checkboxGroup({
-	        name: 'emailProviderRecipientListId',
-	        options : subscriber_lists,
-	        values: campaign is defined ? campaign.emailProviderRecipientListId : null
-	    })) }}
+			{{ forms.checkbox({
+					name: 'useRecipientLists',
+					label: 'Use email lists',
+					value: 1,
+					checked: campaign is defined and campaign.emailProviderRecipientListId ? true : false
+			}) }}
+
+			{{ forms.field({
+					label: "Sprout Reports Email Lists"|t,
+					instructions: "Select one or more email lists to send your campaign."|t,
+					errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
+			}, forms.checkboxGroup({
+					name: 'emailProviderRecipientListId',
+					options : subscriberLists,
+					values: campaign is defined ? campaign.emailProviderRecipientListId : null
+			})) }}
+
 	</div>
 	{% endif %}
 	
