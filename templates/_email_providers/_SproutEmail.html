@@ -11,9 +11,8 @@
 
 	<hr>
 	
+	{% set subscriberLists = craft.sproutEmail.getSubscriberList() %}
 
-	{% set subscriber_lists = craft.sproutemail.getSubscriberList('SproutEmail') %}
-	
 	{% if(subscriber_lists|length > 0) %}
 	
 		<div>
@@ -40,8 +39,6 @@
 		    {% endfor %}
 		    
 		</div>
-		
-		
-	
+
 	{% endif %}
 	
