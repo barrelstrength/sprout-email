@@ -23,7 +23,7 @@
 		        checked: campaign is defined and campaign.emailProviderRecipientListId ? true : false
 		    }) }}
 		    
-		    {% for key, subscriber_list in subscriber_lists %}
+		    {% for key, subscriber_list in subscriberLists %}
 
 		    {{ forms.field({
 		        label: key|t,
