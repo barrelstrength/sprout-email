@@ -10,12 +10,41 @@
     "event": "test",
     "suite": "acceptance",
     "test": "create a notification, verify successful creation, and delete (CreateCampaignCept)",
-    "status": "pass",
-    "time": 6.417366027832,
+    "status": "fail",
+    "time": 4.5035150051117,
     "trace": [
-
+        {
+            "file": "\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/tests\/acceptance\/AcceptanceTester.php",
+            "line": 1041,
+            "function": "runStep",
+            "class": "Codeception\\Scenario",
+            "type": "->",
+            "args": [
+                {
+                    "executed": true
+                }
+            ]
+        },
+        {
+            "file": "\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/tests\/acceptance\/CreateCampaignCept.php",
+            "line": 41,
+            "function": "checkOption",
+            "class": "AcceptanceTester",
+            "type": "->",
+            "args": [
+                "input[type=checkbox]:nth-child(1)"
+            ]
+        },
+        {
+            "file": "\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/codecept.phar",
+            "line": 7,
+            "args": [
+                "phar:\/\/\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/codecept.phar\/codecept"
+            ],
+            "function": "require_once"
+        }
     ],
-    "message": "",
+    "message": "Checkbox or Radio by Label or CSS or XPath 'input[type=checkbox]:nth-child(1)' was not found on page.",
     "output": ""
 }{
     "event": "testStart",
@@ -25,11 +54,40 @@
     "event": "test",
     "suite": "acceptance",
     "test": "create a notification, verify successful creation, and delete (CreateNotificationCept)",
-    "status": "pass",
-    "time": 5.5922060012817,
+    "status": "fail",
+    "time": 4.6456849575043,
     "trace": [
-
+        {
+            "file": "\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/tests\/acceptance\/AcceptanceTester.php",
+            "line": 1041,
+            "function": "runStep",
+            "class": "Codeception\\Scenario",
+            "type": "->",
+            "args": [
+                {
+                    "executed": true
+                }
+            ]
+        },
+        {
+            "file": "\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/tests\/acceptance\/CreateNotificationCept.php",
+            "line": 41,
+            "function": "checkOption",
+            "class": "AcceptanceTester",
+            "type": "->",
+            "args": [
+                "input[type=checkbox]:nth-child(1)"
+            ]
+        },
+        {
+            "file": "\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/codecept.phar",
+            "line": 7,
+            "args": [
+                "phar:\/\/\/home\/zig\/www\/craft\/2.1\/craft\/plugins\/sproutemail\/tests\/codecept.phar\/codecept"
+            ],
+            "function": "require_once"
+        }
     ],
-    "message": "",
+    "message": "Checkbox or Radio by Label or CSS or XPath 'input[type=checkbox]:nth-child(1)' was not found on page.",
     "output": ""
 }
