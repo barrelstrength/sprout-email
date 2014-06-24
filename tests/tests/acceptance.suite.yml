@@ -1,0 +1,17 @@
+# Codeception Test Suite Configuration
+
+# suite for acceptance tests.
+# perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+class_name: AcceptanceTester
+modules:
+   enabled: [WebDriver]
+   config:
+      WebDriver:
+         url: 'http://craft.dev/'
+         browser: firefox
+         window_size: 1024x768
+         wait: 0
+         capabilities:
+             unexpectedAlertBehaviour: 'accept'

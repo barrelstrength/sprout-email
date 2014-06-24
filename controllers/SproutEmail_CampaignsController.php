@@ -25,23 +25,24 @@ class SproutEmail_CampaignsController extends BaseController
         }
         else
         {
-            craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
-                    'campaignId' => craft()->request->getPost( 'campaignId' ),
-                    'entryId' => craft()->request->getPost( 'entryId' ) 
-            ) );
+            craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
+//             craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
+//                     'campaignId' => craft()->request->getPost( 'campaignId' ),
+//                     'entryId' => craft()->request->getPost( 'entryId' ) 
+//             ) );
             
-            // Apparently not. Is there a pending task?
-            $task = craft()->tasks->getNextPendingTask();
+//             // Apparently not. Is there a pending task?
+//             $task = craft()->tasks->getNextPendingTask();
             
-            if ( $task )
-            {
-                // Return info about the next pending task without stopping PHP execution
-                JsonHelper::sendJsonHeaders();
-                craft()->request->close( JsonHelper::encode( 'Campaign successfully scheduled.' ) );
+//             if ( $task )
+//             {
+//                 // Return info about the next pending task without stopping PHP execution
+//                 JsonHelper::sendJsonHeaders();
+//                 craft()->request->close( JsonHelper::encode( 'Campaign successfully scheduled.' ) );
                 
-                // Start running tasks
-                craft()->tasks->runPendingTasks();
-            }
+//                 // Start running tasks
+//                 craft()->tasks->runPendingTasks();
+//             }
         }
     }
     
@@ -108,12 +109,11 @@ class SproutEmail_CampaignsController extends BaseController
     public function actionDelete()
     {
         $this->requirePostRequest();
+        $this->requireAjaxRequest();
         
-        // @TODO - add more robust checks
-        craft()->sproutEmail->deleteCampaign( craft()->request->getRequiredPost( 'id' ) );
-        
-        craft()->userSession->setNotice( Craft::t( 'Campaign successfully deleted.' ) );
-        $this->redirectToPostedUrl();
+        $this->returnJson( array (
+                'success' => craft()->sproutEmail->deleteCampaign( craft()->request->getRequiredPost( 'id' ) ) 
+        ) );
     }
     
     /**

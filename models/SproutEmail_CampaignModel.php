@@ -82,4 +82,23 @@ class SproutEmail_CampaignModel extends BaseModel
                 ) 
         );
     }
+    
+    /**
+     * Check if specified list is set in this model instance
+     *
+     * @param SproutEmail_RecipientListRecord $list            
+     */
+    public function hasRecipientList(SproutEmail_RecipientListRecord $list)
+    {
+        if ( ! isset( $this->emailProviderRecipientListId [$list->type] ) || ! $this->emailProviderRecipientListId [$list->type])
+            return false;
+        
+        foreach ( $this->emailProviderRecipientListId [$list->type] as $listId )
+        {
+            if ( $list->emailProviderRecipientListId == $listId )
+                return true;
+        }
+                
+        return false;
+    }
 }

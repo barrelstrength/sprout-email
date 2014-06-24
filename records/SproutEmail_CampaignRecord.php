@@ -12,7 +12,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Return table name corresponding to this record
-     * 
+     *
      * @return string
      */
     public function getTableName()
@@ -22,7 +22,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * These have to be explicitly defined in order for the plugin to install
-     * 
+     *
      * @return multitype:multitype:string multitype:boolean string
      */
     public function defineAttributes()
@@ -81,7 +81,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Record relationships
-     * 
+     *
      * @return array
      */
     public function defineRelations()
@@ -119,7 +119,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Function for adding rules
-     * 
+     *
      * @param array $rules            
      * @return void
      */
@@ -132,7 +132,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
      * Yii style validation rules;
      * These are the 'base' rules but specific ones are added in the service based on
      * the scenario
-     * 
+     *
      * @return array
      */
     public function rules()
@@ -158,7 +158,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Custom email provider validator
-     * 
+     *
      * @param string $attr            
      * @param array $params            
      * @return void
@@ -173,7 +173,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Return section based campaign(s)
-     * 
+     *
      * @param int $campaign_id            
      * @return array Campaigns
      */
@@ -200,7 +200,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Return section based campaign(s) given entry id and campaign id
-     * 
+     *
      * @param int $entryId            
      * @param int $campaignId            
      * @return array Campaigns
@@ -225,7 +225,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
     
     /**
      * Returns notifications
-     * 
+     *
      * @return array
      */
     public function getNotifications()

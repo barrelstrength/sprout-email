@@ -1,0 +1,35 @@
+{
+    "event": "suiteStart",
+    "suite": "acceptance",
+    "tests": 2
+}{
+    "event": "testStart",
+    "suite": "acceptance",
+    "test": "create a notification, verify successful creation, and delete (CreateCampaignCept)"
+}{
+    "event": "test",
+    "suite": "acceptance",
+    "test": "create a notification, verify successful creation, and delete (CreateCampaignCept)",
+    "status": "pass",
+    "time": 6.417366027832,
+    "trace": [
+
+    ],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "acceptance",
+    "test": "create a notification, verify successful creation, and delete (CreateNotificationCept)"
+}{
+    "event": "test",
+    "suite": "acceptance",
+    "test": "create a notification, verify successful creation, and delete (CreateNotificationCept)",
+    "status": "pass",
+    "time": 5.5922060012817,
+    "trace": [
+
+    ],
+    "message": "",
+    "output": ""
+}

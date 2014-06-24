@@ -137,7 +137,7 @@ class SproutEmailService extends BaseApplicationComponent
                 $emailProviderRecipientListIdArr = array ();
                 foreach ( $campaignRecord->recipientList as $list )
                 {
-                    $emailProviderRecipientListIdArr [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
+                    $emailProviderRecipientListIdArr [$list->type] [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
                 }
                 
                 $campaignModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
@@ -327,6 +327,14 @@ class SproutEmailService extends BaseApplicationComponent
         
         return $campaignRecord;
     }
+    
+    /**
+     * Save campaign templates
+     * 
+     * @param SproutEmail_CampaignModel $campaign
+     * @throws Exception
+     * @return SproutEmail_CampaignRecord
+     */
     private function _saveCampaignTemplates(SproutEmail_CampaignModel &$campaign)
     {
         $campaignRecord = SproutEmail_CampaignRecord::model()->findById( $campaign->id );
@@ -543,6 +551,34 @@ class SproutEmailService extends BaseApplicationComponent
         }
         
         return $options;
+    }
+    
+    /**
+     * Get subscription users given element id
+     * 
+     * @param string $elementId
+     */
+    public function getSubscriptionUsersByElementId($elementId = null)
+    {
+        $users = array();
+        $criteria = new \CDbCriteria();
+        $criteria->condition = 'elementId=:elementId';
+        $criteria->params = array (
+                ':elementId' => $elementId 
+        );
+        
+        if ( $subscriptions = SproutEmail_SubscriptionRecord::model()->findAll( $criteria ) )
+        {
+            $criteria = craft()->elements->getCriteria( 'User' );
+            
+            foreach ($subscriptions as $subscription)
+            {
+                $criteria->id = $subscription->elementId;
+                $users[] = craft()->elements->findElements($criteria);
+            }
+        }
+        
+        return $users;
     }
     
     /**

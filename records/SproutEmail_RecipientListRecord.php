@@ -31,6 +31,9 @@ class SproutEmail_RecipientListRecord extends BaseRecord
                 'emailProvider' => array (
                         AttributeType::String 
                 ),
+                'type' => array (
+                        AttributeType::String 
+                ),
                 'dateCreated' => array (
                         AttributeType::DateTime 
                 ),

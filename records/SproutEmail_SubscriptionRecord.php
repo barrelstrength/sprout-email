@@ -23,6 +23,12 @@ class SproutEmail_SubscriptionRecord extends BaseRecord
     {
         return array ();
     }
+    
+    /**
+     * Relationships
+     *
+     * @return multitype:multitype:string boolean
+     */
     public function defineRelations()
     {
         return array (

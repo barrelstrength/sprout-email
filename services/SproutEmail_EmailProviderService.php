@@ -51,15 +51,6 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
             die( 'Campaign not found' );
         }
         
-        if ( $campaign ['emailProvider'] == 'sproutemail' )
-        {
-            $res = craft()->sproutEmail_sproutemail->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ), $return );
-            if ( $return )
-            {
-                return $res;
-            }
-        }
-        
         if ( ! $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
         {
             if ( $return )

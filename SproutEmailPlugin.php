@@ -4,7 +4,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-    private $version = '0.7.4';
+    private $version = '0.7.5';
 
     
     public function getName()
