@@ -33,7 +33,7 @@
 			        name: 'emailProviderRecipientListId[' ~ key ~ ']',
 			        id: 'emailProviderRecipientListId' ~ key ,
 			        options : subscriber_list.options,
-			        values: campaign is defined ? campaign.emailProviderRecipientListId[key] : null
+			        values: campaign.emailProviderRecipientListId[key] is defined ? campaign.emailProviderRecipientListId[key] : null
 			    })) }}
 		    
 		    {% endfor %}
