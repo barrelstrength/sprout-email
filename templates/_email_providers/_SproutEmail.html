@@ -25,16 +25,16 @@
 		    
 		    {% for key, subscriber_list in subscriberLists %}
 
-		    {{ forms.field({
-		        label: key|t,
-		        instructions: "Select one or more email lists to send your campaign."|t,
-		        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
-		    }, forms.checkboxGroup({
-		        name: 'emailProviderRecipientListId[' ~ key ~ ']',
-		        id: 'emailProviderRecipientListId' ~ key ,
-		        options : subscriber_list,
-		        values: campaign is defined ? campaign.emailProviderRecipientListId[key] : null
-		    })) }}
+			    {{ forms.field({
+			        label: subscriber_list.label|t,
+			        instructions: subscriber_list.description|t,
+			        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
+			    }, forms.checkboxGroup({
+			        name: 'emailProviderRecipientListId[' ~ key ~ ']',
+			        id: 'emailProviderRecipientListId' ~ key ,
+			        options : subscriber_list.options,
+			        values: campaign is defined ? campaign.emailProviderRecipientListId[key] : null
+			    })) }}
 		    
 		    {% endfor %}
 		    

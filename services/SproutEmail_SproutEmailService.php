@@ -21,9 +21,12 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
         // Craft groups
         if ( $userGroups = craft()->userGroups->getAllGroups() )
         {
+            $options ['UserGroup'] ['label'] = Craft::t( 'Member Groups' );
+            $options ['UserGroup'] ['description'] = Craft::t( 'Select one or more member groups to send your email blast.' );
+            
             foreach ( $userGroups as $userGroup )
             {
-                $options ['UserGroup'] [$userGroup->id] = $userGroup->name . Craft::t( ' [Craft user group]' );
+                $options ['UserGroup'] ['options'] [$userGroup->id] = $userGroup->name . Craft::t( ' [Craft user group]' );
             }
         }
         
@@ -34,9 +37,12 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
                     'isEmailList' => 1 
             ) ) )
             {
+                $options ['SproutReport'] ['label'] = Craft::t( 'Sprout Reports Email Lists' );
+                $options ['SproutReport'] ['description'] = Craft::t( 'Select one or more email lists to send your email blast.' );
+                
                 foreach ( $list as $report )
                 {
-                    $options ['SproutReport'] [$report->id] = $report->name . Craft::t( ' [SproutReport]' );
+                    $options ['SproutReport'] ['options'] [$report->id] = $report->name . Craft::t( ' [SproutReport]' );
                 }
             }
         }
@@ -58,7 +64,13 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
             {
                 foreach ( $results as $row )
                 {
-                    $options [$key] [$row->id] = ( string ) $row;
+                    if ( ! isset( $options [$key] ['label'] ) )
+                    {
+                        $options [$key] ['label'] = Craft::t( $key . ' Subscriber Lists' );
+                        $options [$key] ['description'] = Craft::t( 'Select one or more ' . strtolower($key) . ' subscriber lists to send your email blast.' );
+                    }
+                    
+                    $options [$key] ['options'] [$row->id] = ( string ) $row;
                 }
             }
         }
@@ -164,9 +176,9 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
                     default : // element
                         if ( $results = craft()->sproutEmail->getSubscriptionUsersByElementId( $recipientList->emailProviderRecipientListId ) )
                         {
-                            foreach($results as $result)
+                            foreach ( $results as $result )
                             {
-                                foreach($result as $user)
+                                foreach ( $result as $user )
                                 {
                                     $recipients [] = $user->email;
                                 }
