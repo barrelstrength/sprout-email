@@ -40,4 +40,20 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
     {
         return SproutEmail_CampaignNotificationEventRecord::model()->getCampaignEventNotifications( $event, $entry );
     }
+    
+    /**
+     * Return campaign notification given campaign id
+     * 
+     * @param int $campaignId
+     */
+    public function getCampaignNotificationByCampaignId($campaignId)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->condition = 'campaignId=:campaignId';
+        $criteria->params = array (
+                ':campaignId' => $campaignId 
+        );
+        
+        return SproutEmail_CampaignNotificationEventRecord::model()->with('notificationEvent')->find( $criteria );
+    }
 }

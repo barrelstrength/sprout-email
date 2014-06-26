@@ -4,7 +4,7 @@ namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-    private $version = '0.7.5';
+    private $version = '0.7.6';
 
     
     public function getName()
@@ -80,7 +80,7 @@ class SproutEmailPlugin extends BasePlugin
                 
                 'sproutemail/events/new' => 'sproutemail/events/_edit',
                 
-                'sproutemail/events/edit/(?P<eventId>\d+)' => 'sproutemail/events/_edit' 
+                'sproutemail/events/edit/(?P<eventId>\d+)' => 'sproutemail/events/_edit',
         );
     }
     
@@ -178,7 +178,14 @@ class SproutEmailPlugin extends BasePlugin
                         'registrar' => 'craft',
                         'event' => 'updates.endUpdate',
                         'description' => 'Craft: When an update is finished' 
-                ) 
+                ),
+                
+                // Other
+                array (
+                        'registrar' => 'craft',
+                        'event' => 'cron',
+                        'description' => 'Send email via Cron Job'
+                ),
         );
         
         foreach ( $events as $event )

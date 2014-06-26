@@ -330,8 +330,8 @@ class SproutEmailService extends BaseApplicationComponent
     
     /**
      * Save campaign templates
-     * 
-     * @param SproutEmail_CampaignModel $campaign
+     *
+     * @param SproutEmail_CampaignModel $campaign            
      * @throws Exception
      * @return SproutEmail_CampaignRecord
      */
@@ -547,7 +547,6 @@ class SproutEmailService extends BaseApplicationComponent
         foreach ( $events as $event )
         {
             $options ['plugin_options'] [$event->id] = $event->options;
-            ;
         }
         
         return $options;
@@ -555,12 +554,12 @@ class SproutEmailService extends BaseApplicationComponent
     
     /**
      * Get subscription users given element id
-     * 
-     * @param string $elementId
+     *
+     * @param string $elementId            
      */
     public function getSubscriptionUsersByElementId($elementId = null)
     {
-        $users = array();
+        $users = array ();
         $criteria = new \CDbCriteria();
         $criteria->condition = 'elementId=:elementId';
         $criteria->params = array (
@@ -571,10 +570,10 @@ class SproutEmailService extends BaseApplicationComponent
         {
             $criteria = craft()->elements->getCriteria( 'User' );
             
-            foreach ($subscriptions as $subscription)
+            foreach ( $subscriptions as $subscription )
             {
                 $criteria->id = $subscription->elementId;
-                $users[] = craft()->elements->findElements($criteria);
+                $users [] = craft()->elements->findElements( $criteria );
             }
         }
         

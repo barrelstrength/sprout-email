@@ -26,23 +26,23 @@ class SproutEmail_CampaignsController extends BaseController
         else
         {
             craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
-//             craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
-//                     'campaignId' => craft()->request->getPost( 'campaignId' ),
-//                     'entryId' => craft()->request->getPost( 'entryId' ) 
-//             ) );
+            craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
+                    'campaignId' => craft()->request->getPost( 'campaignId' ),
+                    'entryId' => craft()->request->getPost( 'entryId' ) 
+            ) );
             
-//             // Apparently not. Is there a pending task?
-//             $task = craft()->tasks->getNextPendingTask();
+            // Apparently not. Is there a pending task?
+            $task = craft()->tasks->getNextPendingTask();
             
-//             if ( $task )
-//             {
-//                 // Return info about the next pending task without stopping PHP execution
-//                 JsonHelper::sendJsonHeaders();
-//                 craft()->request->close( JsonHelper::encode( 'Campaign successfully scheduled.' ) );
+            if ( $task )
+            {
+                // Return info about the next pending task without stopping PHP execution
+                JsonHelper::sendJsonHeaders();
+                craft()->request->close( JsonHelper::encode( 'Campaign successfully scheduled.' ) );
                 
-//                 // Start running tasks
-//                 craft()->tasks->runPendingTasks();
-//             }
+                // Start running tasks
+                craft()->tasks->runPendingTasks();
+            }
         }
     }
     

@@ -44,6 +44,22 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
     }
     
     /**
+     * Record relationships
+     *
+     * @return array
+     */
+    public function defineRelations()
+    {
+        return array (
+                'notificationEvent' => array (
+                        self::BELONGS_TO,
+                        'SproutEmail_NotificationEventRecord',
+                        'notificationEventId'
+                )
+        );
+    }
+    
+    /**
      * Associates a notification campaign with an event
      *
      * @param int $campaignId            
@@ -211,6 +227,13 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
                         'options' => array (
                                 'sectionIds' => $data ['entriesSaveEntrySectionIds'] 
                         ) 
+                );
+                break;
+            case 17:
+                $options = array (
+                        'options' => array (
+                                'cronHash' => $data ['cronHash']
+                        )
                 );
                 break;
             default :

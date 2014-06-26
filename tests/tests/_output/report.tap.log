@@ -1,12 +1,4 @@
 TAP version 13
-not ok 1 - Failure: create a notification, verify successful creation, and delete (CreateCampaignCept)
-  ---
-  message: 'Checkbox or Radio by Label or CSS or XPath ''input[type=checkbox]:nth-child(1)'' was not found on page.'
-  severity: fail
-  ...
-not ok 2 - Failure: create a notification, verify successful creation, and delete (CreateNotificationCept)
-  ---
-  message: 'Checkbox or Radio by Label or CSS or XPath ''input[type=checkbox]:nth-child(1)'' was not found on page.'
-  severity: fail
-  ...
+ok 1 - create a notification, verify successful creation, and delete (CreateCampaignCept)
+ok 2 - create a notification, verify successful creation, and delete (CreateNotificationCept)
 1..2

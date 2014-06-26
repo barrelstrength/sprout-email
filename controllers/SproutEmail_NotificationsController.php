@@ -68,4 +68,41 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignsControlle
             }
         }
     }
+    
+    /**
+     * Trigger notification
+     */
+    public function actionTrigger()
+    {
+        if ( ! $id = craft()->request->getSegment( 5 ) )
+        {
+            die( 'Invalid request' );
+        }
+        
+        $parts = explode( '-', $id );
+        $campaignId = array_shift( $parts );
+        
+        // get the notification
+        $campaignNotification = craft()->sproutEmail_notifications->getCampaignNotificationByCampaignId( $id );
+        
+        // authenticate
+        if( ! $campaignNotification->options || ! isset($campaignNotification->options['options']['cronHash']))
+        {
+            die('Invalid Request');
+        }
+
+        if ( $campaignNotification->options['options']['cronHash'] != $id || $campaignNotification->notificationEvent->event != 'cron' )
+        {
+            die( 'Invalid request' );
+        }
+        
+        // get campaign and send
+        $campaign = craft()->sproutEmail->getCampaign( array (
+                'id' => $id 
+        ) );
+        $service = 'sproutEmail_' . lcfirst( $campaign->emailProvider );
+        craft()->{$service}->sendCampaign( $campaign );
+        
+        exit( 0 );
+    }
 }
