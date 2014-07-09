@@ -1,7 +1,7 @@
 {% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set emailProviders = craft.sproutemail.getEmailProviders() %}
+{% set emailProviders = craft.sproutEmail.getEmailProviders() %}
 {% set campaigns = craft.sproutEmail.getAllCampaignInfo() %}
 
 {% set body %}
@@ -75,8 +75,8 @@
 
 	<div id="tab-campaign-info" class="tab-content" >	
 		{% for key, val in emailProviders %}
-			<div id="{{ key }}_recipients_template" class="recipient_templates" >
-				{% include "sproutemail/_email_provider_settings/_" ~ key %}
+			<div id="{{ key }}-recipients-template" class="recipient-templates" >
+				{% include "sproutemail/_services/" ~ key ~ "/settings" %}
 				<hr/>
 			</div>
 		{% endfor %}

@@ -1,6 +1,6 @@
 <hr>
 <h3>Send notification when new entries of selected sections are saved.  If none selected, all entries will apply.</h3>
-{% set sections = craft.sproutemail.getAllSections()[1:] %}
+{% set sections = craft.sproutEmail.getAllSections()[1:] %}
 
 
 {% if campaign.notificationEvents[0].options.sectionIds is defined %}

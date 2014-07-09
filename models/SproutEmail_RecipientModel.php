@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 /**
@@ -8,17 +7,17 @@ namespace Craft;
  */
 class SproutEmail_RecipientModel extends BaseModel
 {
-    /**
-     * We're only using this for email validation
-     *
-     * @return array
-     */
-    public function defineAttributes()
-    {
-        return array (
-                'email' => array (
-                        AttributeType::Email 
-                ) 
-        );
-    }
+	/**
+	 * We're only using this for email validation
+	 *
+	 * @return array
+	 */
+	public function defineAttributes()
+	{
+		return array (
+			'email' => array (
+				AttributeType::Email 
+			) 
+		);
+	}
 }

@@ -1,13 +1,12 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-
 {% if campaign is defined %}
 	{% set title = "Edit Notification" %}
 	{% set campaignId = campaign.id %}
 {% else %}
 	{% set title = "Edit Notification" %}
-	{% set campaign = craft.sproutemail.getCampaignById(campaignId) %}
+	{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
 	{% set campaignId = campaign.id %}	
 {% endif %}
 
@@ -41,11 +40,11 @@
 {% set content %}
 
 {% if craft.request.getSegment('5') == 'template' %}
-    {% include "sproutemail/notifications/tabs/_template" %}
+    {% include "sproutemail/notifications/_tabs/template" %}
 {% elseif craft.request.getSegment('5') == 'recipients' %} 
-    {% include "sproutemail/notifications/tabs/_recipients" %}
+    {% include "sproutemail/notifications/_tabs/recipients" %}
 {% else %}
-    {% include "sproutemail/notifications/tabs/_info" %}
+    {% include "sproutemail/notifications/_tabs/info" %}
 {% endif %}
 
 {% endset %}

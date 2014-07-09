@@ -59,7 +59,7 @@
     		errors: (campaign is defined ? campaign.getErrors('replyToEmail') : null) 	
     	}) }}
     	
-    	{% set events = craft.sproutemail.getNotificationEvents() %}
+    	{% set events = craft.sproutEmail.getNotificationEvents() %}
     
     	{{ forms.selectField({
     		label: "When would you like to send this email"|t,
@@ -77,7 +77,7 @@
     		{% for key, val in eventOptions.system_options %}
     			{% for key2, val2 in val %}
     				<div class="event_options {{ key | replace({'.':'---'}) }}" >
-    					{% include "sproutemail/notifications/_event_options/" ~ key ~ "/" ~  val2 %}
+    					{% include "sproutemail/notifications/_options/" ~ key ~ "/" ~  val2 %}
     				</div>
     			{% endfor %}
     		{% endfor %}

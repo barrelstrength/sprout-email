@@ -9,7 +9,7 @@
 	{% set campaignId = campaign.id %}
 {% else %}
 	{% set title = "Edit Campaign" %}
-	{% set campaign = craft.sproutemail.getCampaignById(campaignId) %}
+	{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
 	{% set campaignId = campaign.id %}	
 {% endif %}
 
@@ -36,7 +36,7 @@
 } %}
 
 {% set content %}
-    {% include "sproutemail/campaigns/tabs/_info" %}
+    {% include "sproutemail/campaigns/_tabs/info" %}
 {% endset %}
 
 {% includeJsResource "sproutemail/js/sproutemail.js" %}

@@ -12,7 +12,7 @@
 		errors: (campaign is defined ? campaign.getErrors('sectionIds') : null) ,
 	}, forms.checkboxGroup({
 		name: 'usersSaveProfileUseroptIds',
-		options : craft.sproutemail.getAllUserGroups(),
+		options : craft.sproutEmail.getAllUserGroups(),
 		values: userSavedAssignedGroups is defined ? userSavedAssignedGroups : null
 	})) }}
 <hr>

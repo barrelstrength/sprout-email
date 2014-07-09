@@ -1,5 +1,4 @@
 
-
 <form method="post" action="" accept-charset="UTF-8">
 	<input type="hidden" name="action" value="sproutEmail/campaigns/save">
 	<input type="hidden" name="redirect" value="sproutemail/campaigns">
@@ -7,8 +6,8 @@
   <input type="hidden" name="tab" value="recipients">
 
 	<div id="tab-recipients" class="tab-content">
-	  <div id="{{ campaign.emailProvider }}_recipients_template"  >
-			{% include "sproutemail/_email_providers/_" ~ campaign.emailProvider %}
+	  <div id="{{ campaign.emailProvider }}-recipients-template"  >
+			{% include "sproutemail/_services/" ~ campaign.emailProvider ~ "/recipients" %}
 		</div>
 	</div>
 

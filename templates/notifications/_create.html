@@ -9,7 +9,7 @@
 	{% set campaignId = campaign.id %}
 {% else %}
 	{% set title = "Edit Notification" %}
-	{% set campaign = craft.sproutemail.getCampaignById(campaignId) %}
+	{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
 	{% set campaignId = campaign.id %}	
 {% endif %}
 
@@ -36,7 +36,7 @@
 } %}
 
 {% set content %}
-    {% include "sproutemail/notifications/tabs/_info" %}
+    {% include "sproutemail/notifications/_tabs/info" %}
 {% endset %}
 
 {% includeJsResource "sproutemail/js/sproutemail.js" %}

@@ -1,0 +1,17 @@
+<form method="post" action="" accept-charset="UTF-8">
+	<input type="hidden" name="action" value="sproutEmail/notifications/save">
+	<input type="hidden" name="redirect" value="sproutemail/notifications">
+	<input type="hidden" name="id" value="{{ campaignId }}">
+	<input type="hidden" name="tab" value="recipients">
+	
+	<div id="tab-recipients" class="tab-content">
+		<div id="{{ campaign.emailProvider }}-recipients-template"  >
+		   {% include "sproutemail/_services/" ~ campaign.emailProvider ~ "/recipients" %}
+		</div>
+	</div>
+	
+	<div class="buttons">
+		<input class="btn" type="submit" value="Save Campaign Recipients">
+		<input class="btn submit" type="submit" value="Save Campaign Recipients & Finish">
+	</div>
+</form>

@@ -14,12 +14,12 @@
     		id: 'sectionId',
     		name: 'sectionId',
     		instructions: "Select the Section that you will be using to create content for this email campaign."|t,
-    		options : craft.sproutemail.getAllSections,
+    		options : craft.sproutEmail.getAllSections,
     		value: (campaign is defined ? campaign.sectionId : null),
     		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
     	}) }}
     	
-    	{% set templatesDirListing = craft.sproutemail.getTemplatesDirListing() %}
+    	{% set templatesDirListing = craft.sproutEmail.getTemplatesDirListing() %}
     	
     	{{ forms.selectField({
     		label: "HTML Template"|t,
