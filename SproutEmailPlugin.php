@@ -1,10 +1,12 @@
 <?php
-
 namespace Craft;
 
 class SproutEmailPlugin extends BasePlugin
 {
-	private $version = '0.7.6';
+	public function __construct()
+	{
+		require_once 'libraries/CssToInlineStyles/CssToInlineStyles.php';
+	}
 
 	public function getName()
 	{
@@ -23,7 +25,7 @@ class SproutEmailPlugin extends BasePlugin
 	
 	public function getVersion()
 	{
-		return $this->version;
+		return '0.7.6';
 	}
 	
 	public function getDeveloper()
@@ -91,6 +93,16 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/events/edit/(?P<eventId>\d+)' => 
 			'sproutemail/events/_edit',
 		);
+	}
+
+	/**
+	 * Register twig extension
+	 */
+	public function addTwigExtension()
+	{
+	    Craft::import('plugins.sproutemail.twigextensions.SproutEmailTwigExtension');
+
+	    return new SproutEmailTwigExtension();
 	}
 	
 	/**
@@ -229,7 +241,7 @@ class SproutEmailPlugin extends BasePlugin
 	public function init()
 	{
 		parent::init();
-		
+
 		// events fired by $this->raiseEvent
 		craft()->on( 'entries.saveEntry', array (
 				$this,
