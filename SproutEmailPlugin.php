@@ -5,7 +5,7 @@ class SproutEmailPlugin extends BasePlugin
 {
 	public function __construct()
 	{
-		require_once 'libraries/CssToInlineStyles/CssToInlineStyles.php';
+		require_once 'helpers/CssToInlineStyles/CssToInlineStyles.php';
 	}
 
 	public function getName()

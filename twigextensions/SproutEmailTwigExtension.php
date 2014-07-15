@@ -11,6 +11,7 @@ class SproutEmailTwigExtension extends Twig_Extension
 	{
 		return 'Sprout Email';
 	}
+	
 	public function getFilters()
 	{
 		return array (
