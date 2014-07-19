@@ -138,7 +138,7 @@ class SproutEmailService extends BaseApplicationComponent
 				$emailProviderRecipientListIdArr = array ();
 				foreach ( $campaignRecord->recipientList as $list )
 				{
-					$emailProviderRecipientListIdArr [$list->type] [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
+					$emailProviderRecipientListIdArr [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
 				}
 				
 				$campaignModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;

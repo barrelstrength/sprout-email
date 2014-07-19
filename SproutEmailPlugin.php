@@ -25,7 +25,7 @@ class SproutEmailPlugin extends BasePlugin
 	
 	public function getVersion()
 	{
-		return '0.7.6';
+		return '0.7.7';
 	}
 	
 	public function getDeveloper()
@@ -224,7 +224,12 @@ class SproutEmailPlugin extends BasePlugin
 						'emailProvider' => 'MailChimp',
 						'apiSettings' => '{"api_key":""}',
 						'dateCreated' => '2014-03-10 21:00:00' 
-				) 
+				),
+				array (
+						'emailProvider' => 'SendGrid',
+						'apiSettings' => '{"api_user":"","api_key":""}',
+						'dateCreated' => '2014-07-19 21:00:00' 
+				)
 		);
 		
 		foreach ( $providers as $provider )

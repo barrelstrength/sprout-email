@@ -1,0 +1,20 @@
+{% set subscriber_lists = craft.sproutEmail.getSubscriberList('SendGrid') %}
+
+
+{% if(subscriber_lists|length > 0) %}
+
+    {{ forms.field({
+        label: "Subscriber Lists"|t,
+        instructions: "Select one subscriber list to send your campaign."|t,
+        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
+    }, forms.radioGroup({
+        name: 'emailProviderRecipientListId',
+        options : subscriber_lists,
+        value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
+    })) }}
+	
+{% else %}
+	
+	<p class="recipients-not-defined" >You must first create a subscriber list in your SendGrid account.</p>
+
+{% endif %}
