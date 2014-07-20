@@ -17,9 +17,13 @@ var mb = {
 		jQuery('input[name=useRecipientLists]').change(function(){
 			mb.toggle_recipient_list();
 		});
+		jQuery('select[name=emailProvider]').change(function(){
+			mb.select_email_provider();
+		});
 		mb.select_notification_event();
 		mb.set_recipient_btns();
 		mb.toggle_recipient_list();
+		mb.select_email_provider();
 	},
 	toggle_recipient_list: function(){
 		var check_box = jQuery('input[name=useRecipientLists]');
@@ -57,5 +61,12 @@ var mb = {
 		jQuery('.event_options').hide();
 		var event = jQuery('select[name=notificationEvent]').val();
 		jQuery('.'+event).show();
+	},
+	select_email_provider: function(){
+		var selected = jQuery('select[name=emailProvider]').val();
+		jQuery('.generalsettings').hide();
+		jQuery('.generalsettings').find('input, select').attr('disabled', true);
+		jQuery('#' + selected + '-generalsettings-template').show();
+		jQuery('#' + selected + '-generalsettings-template').find('input, select').attr('disabled', false);
 	}
 }

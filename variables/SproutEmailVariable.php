@@ -337,6 +337,20 @@ class SproutEmailVariable
 		return $ids;
 	}
 	
+	public function getGeneralSettingsTpl($emailProvider = null)
+	{
+		$customTemplate = 'sproutemail/_services/' . $emailProvider . '/generalCampaignSettings';
+		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
+		
+		// if there is a custom set of general settings for this provider, return those; if not, return the default
+		if($customTemplateExists)
+		{
+			return true;
+		}	
+		
+		return false;
+	}
+	
 	/**
 	 * Twig helper for dumping data
 	 *
@@ -346,5 +360,18 @@ class SproutEmailVariable
 	{
 		Craft::dump( $mixed );
 		die();
+	}
+	
+	/**
+	 * Provider specific functions (since there is no support for multiple variable files)
+	 */
+	public function getSendGridSenderAddresses()
+	{
+		if( ! $senderAddresses = craft()->sproutEmail_sendGrid->getSenderAddresses())
+		{
+			$senderAddresses[''] = 'Please create a sender address (from name) in your SendGrid account.';
+		}
+		
+		return $senderAddresses;
 	}
 }

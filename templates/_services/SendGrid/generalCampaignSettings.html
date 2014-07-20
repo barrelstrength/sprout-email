@@ -1,0 +1,24 @@
+{% set senderAddresses = craft.sproutEmail.getSendGridSenderAddresses() %}
+
+        {{ forms.hidden({
+            id: 'fromEmail',
+            name: 'fromEmail',
+            value: 'na@invalidemail.com' 
+        }) }}
+    
+        {{ forms.hidden({
+            id: 'replyToEmail',
+            name: 'replyToEmail',
+            value: 'na@invalidemail.com'  
+        }) }}
+
+        
+	       {{ forms.selectField({
+	            label: "Which SendGrid sender address would you like to use?"|t,
+	            id: 'fromName',
+	            name: 'fromName',
+	            instructions: "Select the SendGrid sender address use for this campaign."|t,
+	            options : senderAddresses,
+	            value: (campaign is defined ? campaign.fromName : null),
+	            errors: (campaign is defined ? campaign.getErrors('fromName') : null)  
+	        }) }}
