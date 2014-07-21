@@ -27,7 +27,7 @@
 		<td>
 			<a href="#" class="export" >
 			     {% if campaign.emailProvider == 'SproutEmail' or campaign.emailProvider == 'SendGrid' %}
-			         Send campaign
+			         Send campaign immediately
 			     {% else %}
 			         Export to {{ campaign.emailProvider }} 
 			     {% endif %}
