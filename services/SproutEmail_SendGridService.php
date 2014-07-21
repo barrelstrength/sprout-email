@@ -64,7 +64,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	 * @param array $listIds            
 	 */
 	public function exportCampaign($campaign = array(), $listIds = array(), $return = false)
-	{
+	{		
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
 		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
 		
@@ -109,6 +109,13 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 
 		// now we need to assign the recipient list to it
 		$res = $sendgrid->newsletter_recipients_add($campaign ['name'] , $listIds[0]);
+		
+		if( $error = $sendgrid->getLastResponseError())
+		{
+			die($error);
+		}
+		
+		$res = $sendgrid->newsletter_schedule_add($campaign ['name']);
 		
 		if( $error = $sendgrid->getLastResponseError())
 		{
@@ -177,7 +184,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
-		// Future feature
+		
 	}
 	
 	public function getSenderAddresses()
