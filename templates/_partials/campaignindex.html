@@ -26,11 +26,11 @@
 		</td>
 		<td>
 			<a href="#" class="export" >
-			     {% if campaign.emailProvider == 'SproutEmail' or campaign.emailProvider == 'SendGrid' %}
-			         Send campaign immediately
-			     {% else %}
-			         Export to {{ campaign.emailProvider }} 
-			     {% endif %}
+				{% if campaign.emailProvider == 'SproutEmail' or campaign.emailProvider == 'SendGrid' %}
+				 Send campaign immediately via {{ campaign.emailProvider }} 
+				{% else %}
+				 Export to {{ campaign.emailProvider }} 
+				{% endif %}
 			&rsaquo;&rsaquo;
 			</a> 
 		</td>
