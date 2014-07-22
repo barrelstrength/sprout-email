@@ -23,6 +23,16 @@
     		required: true,
     		errors: (campaign is defined ? campaign.getErrors('name') : null) 	
     	}) }}
+
+        {{ forms.selectField({
+            label: "How would you like to send this email"|t,
+            id: 'emailProvider',
+            name: 'emailProvider',
+            instructions: "Select the platform you will use to send your campaign."|t,
+            options : emailProviders,
+            value: (campaign is defined ? campaign.emailProvider : null),
+            errors: (campaign is defined ? campaign.getErrors('emailProvider') : null)  
+        }) }}
     	
     	{% for emailProvider in emailProviders %}
     	   {% if craft.sproutEmail.getGeneralSettingsTpl(emailProvider) %}
@@ -35,18 +45,6 @@
            </div>
     	   {% endif %}
     	{% endfor %}
-    
-
-    	
-    	{{ forms.selectField({
-    		label: "How would you like to send this email"|t,
-    		id: 'emailProvider',
-    		name: 'emailProvider',
-    		instructions: "Select the platform you will use to send your campaign."|t,
-    		options : emailProviders,
-    		value: (campaign is defined ? campaign.emailProvider : null),
-    		errors: (campaign is defined ? campaign.getErrors('emailProvider') : null) 	
-    	}) }}
 	
         </div>
         
