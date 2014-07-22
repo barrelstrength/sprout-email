@@ -16,7 +16,8 @@ class SproutEmailTwigExtension extends Twig_Extension
 	{
 		return array (
 			'inlineCss' => new Twig_Filter_Method( $this, 'inlineCssFilter',  array('is_safe' => array('html')) ),
-			// 'wordwrap' => new Twig_Filter_Method( $this, 'wordwrapFilter' ),
+			'wordwrap' => new Twig_Filter_Method( $this, 'wordwrapFilter'),
+
 			// 'jsonDecode' => new Twig_Filter_Method( $this, 'jsonDecodeFilter' ) 
 		);
 	}
@@ -43,34 +44,35 @@ class SproutEmailTwigExtension extends Twig_Extension
 	}
 	
 	// @TODO - This doesn't work properly yet, but we need to 
-	// get Email to support tags like this:
+	// get Email to support tags like this.  Site source of code, or update 
+	// to own use case: https://github.com/fabpot/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
 	//
 	// {% wordwrap %}
 	// {% endwordwrap %}
 	//
-	// public function wordwrapFilter($value, $length = 80, $separator = "\n", $preserve = false)
-	// {
-	// 	$sentences = array ();
+	public function wordwrapFilter($value, $length = 60, $separator = "\n", $preserve = false)
+	{
+		$sentences = array ();
 		
-	// 	$previous = mb_regex_encoding();
-	// 	mb_regex_encoding( $env->getCharset() );
+		$previous = mb_regex_encoding();
+		mb_regex_encoding( craft()->templates->getTwig()->getCharset() );
 		
-	// 	$pieces = mb_split( $separator, $value );
-	// 	mb_regex_encoding( $previous );
+		$pieces = mb_split( $separator, $value );
+		mb_regex_encoding( $previous );
 		
-	// 	foreach ( $pieces as $piece )
-	// 	{
-	// 		while ( ! $preserve && mb_strlen( $piece, $env->getCharset() ) > $length )
-	// 		{
-	// 			$sentences [] = mb_substr( $piece, 0, $length, $env->getCharset() );
-	// 			$piece = mb_substr( $piece, $length, 2048, $env->getCharset() );
-	// 		}
+		foreach ( $pieces as $piece )
+		{
+			while ( ! $preserve && mb_strlen( $piece, craft()->templates->getTwig()->getCharset() ) > $length )
+			{
+				$sentences [] = mb_substr( $piece, 0, $length, craft()->templates->getTwig()->getCharset() );
+				$piece = mb_substr( $piece, $length, 2048, craft()->templates->getTwig()->getCharset() );
+			}
 			
-	// 		$sentences [] = $piece;
-	// 	}
+			$sentences [] = $piece;
+		}
 		
-	// 	return implode( $separator, $sentences );
-	// }
+		return implode( $separator, $sentences );
+	}
 	
 	// public function jsonDecodeFilter($string)
 	// {
