@@ -115,12 +115,13 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			die($error);
 		}
 		
-		$res = $sendgrid->newsletter_schedule_add($campaign ['name']);
+		// schedule
+// 		$res = $sendgrid->newsletter_schedule_add($campaign ['name']);
 		
-		if( $error = $sendgrid->getLastResponseError())
-		{
-			die($error);
-		}
+// 		if( $error = $sendgrid->getLastResponseError())
+// 		{
+// 			die($error);
+// 		}
 		
 		// customize messages
 		if($res['message'])
