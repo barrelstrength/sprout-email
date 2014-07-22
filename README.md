@@ -1,4 +1,4 @@
-Requirements:   
+Requirements:
 
 - Integration file must be placed inside the plugins/<plugin>/integrations/sproutemail directory
 - Integration file must be named SproutEmail_<pluginName>.php
