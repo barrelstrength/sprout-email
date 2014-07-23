@@ -73,10 +73,10 @@ class SproutEmail_CampaignsController extends BaseController
 			switch (craft()->request->getPost( 'continue' ))
 			{
 				case 'info' :
-					$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
-					break;
-				case 'template' :
 					$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/recipients' );
+					break;
+				case 'recipients' :
+					$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
 					break;
 				default :
 					$this->redirectToPostedUrl( array (

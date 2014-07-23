@@ -55,10 +55,10 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignsControlle
 			switch (craft()->request->getPost( 'continue' ))
 			{
 				case 'info' :
-					$this->redirect( 'sproutemail/notifications/edit/' . $campaignModel->id . '/template' );
-					break;
-				case 'template' :
 					$this->redirect( 'sproutemail/notifications/edit/' . $campaignModel->id . '/recipients' );
+					break;
+				case 'recipients' :
+					$this->redirect( 'sproutemail/notifications/edit/' . $campaignModel->id . '/template' );
 					break;
 				default :
 					$this->redirectToPostedUrl( array (

@@ -129,7 +129,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			switch($res['message'])
 			{
 				case 'success':
-					$msg = 'Your campaign has bee successfully exported.';
+					$msg = 'Your campaign has been successfully exported. Please login to SendGrid to complete your email blast.';
 					break;
 				default:
 					$msg = 'Unknown error.';

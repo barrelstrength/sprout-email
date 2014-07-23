@@ -40,7 +40,15 @@ class SproutEmailPlugin extends BasePlugin
 	
 	public function hasCpSection()
 	{
-		return true;
+		if (craft()->userSession->isAdmin() or craft()->userSession->user->can('manageEmail'))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
 	}
 	
 	protected function defineSettings()
@@ -55,6 +63,13 @@ class SproutEmailPlugin extends BasePlugin
 		return craft()->templates->render( 'sproutemail/_cp/settings', array (
 			'settings' => $this->getSettings() 
 		));
+	}
+
+	public function registerUserPermissions()
+	{
+		return array(
+			'manageEmail'	=> array('label' => Craft::t('Manage Email Section')),
+		);
 	}
 	
 	/**
