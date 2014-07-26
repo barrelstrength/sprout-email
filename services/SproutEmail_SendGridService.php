@@ -64,7 +64,11 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	 * @param array $listIds            
 	 */
 	public function exportCampaign($campaign = array(), $listIds = array(), $return = false)
-	{		
+	{	
+		// Turn off devMode output (@TODO - this doesn't work)
+		craft()->log->removeRoute('WebLogRoute');
+		craft()->log->removeRoute('ProfileLogRoute');
+
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
 		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
 		
@@ -72,23 +76,22 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		curl_setopt( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13' );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
 		
-		$html_url = craft()->getBaseUrl( true ) . '/' . $campaign ['htmlTemplate'] . "?sectionId={$campaign['sectionId']}" . "&handle={$campaign['handle']}" . "&entryId={$campaign['entryId']}" . "&slug={$campaign['slug']}";
+		$htmlTemplate = preg_replace('/\.html/', '', $campaign ['htmlTemplate']);
+		$html_url = craft()->getBaseUrl( true ) . '/' . $htmlTemplate . "?entryId={$campaign['entryId']}";
 		curl_setopt( $ch, CURLOPT_URL, $html_url );
 		$html = curl_exec( $ch );
 		
-		$text_url = craft()->getBaseUrl( true ) . '/' . $campaign ['textTemplate'] . "?sectionId={$campaign['sectionId']}" . "&handle={$campaign['handle']}" . "&entryId={$campaign['entryId']}" . "&slug={$campaign['slug']}";
+		$text_url = craft()->getBaseUrl( true ) . '/' . $campaign ['textTemplate'] . "?entryId={$campaign['entryId']}";
 		curl_setopt( $ch, CURLOPT_URL, $text_url );
 		$text = curl_exec( $ch );
-	
-		
-		// check if newsletter exists
-		$res = $sendgrid->newsletter_get($campaign ['name']);
 
+		// check if newsletter exists
+		$res = $sendgrid->newsletter_get($campaign ['title']);
 			
 		// need to create the template (newsletter)
 		if( ! $res)
 		{
-			$res = $sendgrid->newsletter_add($campaign ['fromName'], $campaign ['name'] , $campaign ['title'] , $text , $html);
+			$res = $sendgrid->newsletter_add($campaign ['fromName'], $campaign ['title'] , $campaign ['title'] , $text , $html);
 		}
 		
 		if( $error = $sendgrid->getLastResponseError())
@@ -99,7 +102,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		// if sender address has changed, update the newsletter
 		if(isset($res['identity']) && $res['identity'] != $campaign['fromName'])
 		{
-			$res = $sendgrid->newsletter_edit($campaign ['fromName'], $res['name'] , $campaign ['name'], $campaign ['title'] , $text , $html);
+			$res = $sendgrid->newsletter_edit($campaign ['fromName'], $res['name'] , $campaign ['title'], $campaign ['title'] , $text , $html);
 						
 			if( $error = $sendgrid->getLastResponseError())
 			{
@@ -108,7 +111,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 
 		// now we need to assign the recipient list to it
-		$res = $sendgrid->newsletter_recipients_add($campaign ['name'] , $listIds[0]);
+		$res = $sendgrid->newsletter_recipients_add($campaign ['title'] , $listIds[0]);
 		
 		if( $error = $sendgrid->getLastResponseError())
 		{
