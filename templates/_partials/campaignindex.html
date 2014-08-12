@@ -28,7 +28,7 @@
 		<td>
 			<a href="#" class="export btn small" >
 			     {% if campaign.emailProvider == 'SproutEmail' %}
-			         Send campaign
+			         Send Email Blast
 			     {% else %}
 			         Export to {{ campaign.emailProvider }} 
 			     {% endif %}
@@ -36,7 +36,7 @@
 		</td>
 		{% else %}
 		<td colspan="2">
-		<i>This campaign is incomplete.</i>
+		<i>This Email Blast is incomplete.</i>
 		</td>
 		{% endif %}
 	</tr>

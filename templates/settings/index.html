@@ -9,17 +9,17 @@
 {% if campaigns|length %}
 	
 	<h3>
-		Campaign Types
+		Email-Enabled Sections
 		<span class="info">
-			<p>You can create multiple Campaign Types by:</p>
+			<p>You can create multiple Email-Enabled Sections by:</p>
 
 			<ol>
-				<li>Adding information about your campaign emails</li>
+				<li>Adding information about your Email-Enabled Section</li>
 				<li>Selecting a target Section and email templates</li>
 				<li>Selecting one or more target recipient lists</li>
 			</ol>
 
-			<p>Once you have created a new Campaign Type, all entries in your target section will be listed as Campaigns on the Campaigns tab.</p>
+			<p>Once you have created a new Email-Enabled Section, all entries in your target Section will be listed as Email Blasts on the Email Blasts tab.</p>
 
 		</span>
 	</h3>
@@ -48,19 +48,19 @@
 	{% endfor %}
  	
 	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Campaign Type</a>
+		<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Email-Enabled Section</a>
 	</div>
 
 {% else %}
  	
  	<div style="width:40%;">
 
-	 	<h2>Create your first Campaign</h2>
+	 	<h2>Create your first Email Blast</h2>
 
-	 	<p>Section-based Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
+	 	<p>Email Blasts are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
 
 	 	<div class="buttons">
-			<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create a Campaign &raquo;</a>
+			<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create an Email Blast &raquo;</a>
 		</div>
 
 	</div>

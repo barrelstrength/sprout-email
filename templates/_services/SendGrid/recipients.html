@@ -5,7 +5,7 @@
 
     {{ forms.field({
         label: "Subscriber Lists"|t,
-        instructions: "Select one subscriber list to send your campaign."|t,
+        instructions: "Select one subscriber list to send your Email Blasts in this Section."|t,
         errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.radioGroup({
         name: 'emailProviderRecipientListId',

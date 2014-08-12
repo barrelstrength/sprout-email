@@ -7,56 +7,56 @@
 	<input type="hidden" name="continue" value="false">
 	<input type="hidden" name="templateOption" value="3">
 
-    <div id="tab-campaign-info" class="tab-content" >
+	<div id="tab-campaign-info" class="tab-content" >
 
-    {% set emailProviders = craft.sproutEmail.getEmailProviders(true) %}
-    
-    {% if emailProviders %}
+	{% set emailProviders = craft.sproutEmail.getEmailProviders(true) %}
 	
-    	{{ forms.textField({
-    		label: "Campaign Type Name"|t,
-    		id: 'name',
-    		name: 'name',
-    		instructions: "Human readable campaign name"|t,
-    		value: (campaign is defined ? campaign.name : null),
-    		autofocus: true,
-    		required: true,
-    		errors: (campaign is defined ? campaign.getErrors('name') : null) 	
-    	}) }}
+	{% if emailProviders %}
+	
+		{{ forms.textField({
+			label: "Email-Enabled Section Name"|t,
+			id: 'name',
+			name: 'name',
+			instructions: "Human readable name for all Email Blasts in this Section"|t,
+			value: (campaign is defined ? campaign.name : null),
+			autofocus: true,
+			required: true,
+			errors: (campaign is defined ? campaign.getErrors('name') : null) 	
+		}) }}
 
-        {{ forms.selectField({
-            label: "How would you like to send this email"|t,
-            id: 'emailProvider',
-            name: 'emailProvider',
-            instructions: "Select the platform you will use to send your campaign."|t,
-            options : emailProviders,
-            value: (campaign is defined ? campaign.emailProvider : null),
-            errors: (campaign is defined ? campaign.getErrors('emailProvider') : null)  
-        }) }}
-    	
-    	{% for emailProvider in emailProviders %}
-    	   {% if craft.sproutEmail.getGeneralSettingsTpl(emailProvider) %}
-    	    <div id="{{ emailProvider }}-generalsettings-template" class="generalsettings"   >
-                {% include "sproutemail/_services/" ~ emailProvider ~ "/generalCampaignSettings" %}
-            </div>
-    	   {% else %}
-    	   <div id="{{ emailProvider }}-generalsettings-template"  class="generalsettings"  >
-                {% include "sproutemail/_partials/generalCampaignSettings" %}
-           </div>
-    	   {% endif %}
-    	{% endfor %}
+		{{ forms.selectField({
+			label: "How would you like to send this email"|t,
+			id: 'emailProvider',
+			name: 'emailProvider',
+			instructions: "Select the platform you will use to send your Email Blasts."|t,
+			options : emailProviders,
+			value: (campaign is defined ? campaign.emailProvider : null),
+			errors: (campaign is defined ? campaign.getErrors('emailProvider') : null)  
+		}) }}
+		
+		{% for emailProvider in emailProviders %}
+		   {% if craft.sproutEmail.getGeneralSettingsTpl(emailProvider) %}
+			<div id="{{ emailProvider }}-generalsettings-template" class="generalsettings"   >
+				{% include "sproutemail/_services/" ~ emailProvider ~ "/generalCampaignSettings" %}
+			</div>
+		   {% else %}
+		   <div id="{{ emailProvider }}-generalsettings-template"  class="generalsettings"  >
+				{% include "sproutemail/_partials/generalCampaignSettings" %}
+		   </div>
+		   {% endif %}
+		{% endfor %}
 	
-        </div>
-        
-        <div class="buttons">
-        	<input class="btn" type="submit" value="Save Campaign Info">
-        	<input class="btn submit save-and-continue" id="info" type="button" value="Save Campaign Info & Continue">
-        </div>
-    
-    {% else %}
+		</div>
+		
+		<div class="buttons">
+			<input class="btn" type="submit" value="Save Info">
+			<input class="btn submit save-and-continue" id="info" type="button" value="Save Info & Continue">
+		</div>
 	
-    	<p>In order to set up a campaign, you must first provide valid MailChimp and/or CampaignMonitor API settings.
-    	<a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
+	{% else %}
+	
+		<p>In order to set up an Email Blast, you must first provide valid MailChimp and/or CampaignMonitor API settings.
+		<a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
 	
 	{% endif %}
 </form>
@@ -64,8 +64,8 @@
 <hr>
 
 <form method="post" action="" accept-charset="UTF-8">
-    <input type="hidden" name="action" value="sproutEmail/campaigns/delete">
-    <input type="hidden" name="redirect" value="sproutemail/campaigns">
-    <input type="hidden" name="id" value="{{ campaignId }}">
-    <input type="submit" class="btn small" value="Delete">
+	<input type="hidden" name="action" value="sproutEmail/campaigns/delete">
+	<input type="hidden" name="redirect" value="sproutemail/campaigns">
+	<input type="hidden" name="id" value="{{ campaignId }}">
+	<input type="submit" class="btn small" value="Delete">
 </form>
