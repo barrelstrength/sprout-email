@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set emailProviders = craft.sproutEmail.getEmailProviders() %}
-{% set campaigns = craft.sproutEmail.getAllCampaignInfo() %}
+{% set campaigns = craft.sproutEmail.getSectionCampaigns() %}
 
 {% set body %}
 
