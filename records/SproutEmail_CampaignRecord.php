@@ -194,7 +194,26 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				s.handle,
 				e.id as entryId,
 				c.title as title,
-				s.id as sectionId' )->from( 'sproutemail_campaigns mc' )->leftJoin( 'sections s', 'mc.sectionId=s.id' )->leftJoin( 'entries e', 's.id = e.sectionId' )->leftJoin( 'content c', 'e.id = c.elementId' )->leftJoin( 'elements_i18n el', 'e.id = el.elementId' )->where( $where_binds, $where_params )->order( 'mc.dateCreated desc, el.slug asc' )->queryAll();
+				s.id as sectionId' )
+				->from( 'sproutemail_campaigns mc' )
+				->leftJoin( 'sections s', 'mc.sectionId=s.id' )
+				->leftJoin( 'entries e', 's.id = e.sectionId' )
+				->leftJoin( 'content c', 'e.id = c.elementId' )
+				->leftJoin( 'elements_i18n el', 'e.id = el.elementId' )
+				->where( $where_binds, $where_params )
+				->order( 'mc.dateCreated desc, el.slug asc' )
+				->queryAll();
+
+	}
+
+	public function getSectionBasedCampaignTypes()
+	{
+			return craft()->db->createCommand()
+					->select( '*' )
+					->from( 'sproutemail_campaigns' )
+					->where( 'templateOption=:templateOption', array( ':templateOption' => 3 ) )
+					->order( 'dateCreated desc' )
+					->queryAll();
 	}
 	
 	/**

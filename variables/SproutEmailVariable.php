@@ -62,6 +62,11 @@ class SproutEmailVariable
 		// Craft::dump(craft()->getBaseUrl(true));die();
 		return craft()->sproutEmail->getSectionCampaigns();
 	}
+
+	public function getSectionBasedCampaignTypes()
+	{
+		return craft()->sproutEmail->getSectionBasedCampaignTypes();
+	}
 	
 	/**
 	 * Get a Campaign by id *
