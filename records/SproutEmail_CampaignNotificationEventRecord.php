@@ -110,9 +110,9 @@ class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
 		foreach ( $res->campaignNotificationEvent as $key => $campaignNotification )
 		{
 			$notificationCampaignIds [$key] = $campaignNotification->campaignId; // assume it's a match
-			if ( $opts = $campaignNotification->options ) // get options, if any
+			if ( $options = $campaignNotification->options ) // get options, if any
 			{
-				foreach ( $opts ['options'] as $option_key => $option ) // process each option set associated with the campagin
+				foreach ( $options ['options'] as $option_key => $option ) // process each option set associated with the campagin
 				{
 					if ( ! is_array( $option ) )
 					{

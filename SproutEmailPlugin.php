@@ -339,7 +339,7 @@ class SproutEmailPlugin extends BasePlugin
 				{
 					craft()->plugins->call( $event->registrar, array (
 							$event->event,
-							$this->_get_closure() 
+							$this->_getClosure() 
 					) );
 				}
 				catch ( \Exception $e )
@@ -355,7 +355,7 @@ class SproutEmailPlugin extends BasePlugin
 	 *
 	 * @return function
 	 */
-	private function _get_closure()
+	private function _getClosure()
 	{
 		/**
 		 * Event handler closure

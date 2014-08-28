@@ -63,17 +63,6 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		return SproutEmail_CampaignRecord::model()->getSectionBasedCampaigns( $campaign_id );
 	}
-
-	/**
-	 * Returns all section based campaigns.
-	 *
-	 * @param string|null $indexBy            
-	 * @return array
-	 */
-	public function getSectionBasedCampaignTypes()
-	{
-		return SproutEmail_CampaignRecord::model()->getSectionBasedCampaignTypes();
-	}
 	
 	/**
 	 * Returns section based campaign by entryId

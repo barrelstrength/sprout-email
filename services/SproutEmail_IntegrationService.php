@@ -6,8 +6,8 @@ namespace Craft;
  */
 class SproutEmail_IntegrationService extends BaseApplicationComponent
 {
-	private $plugin_events;
-	private $existing_events;
+	private $pluginEvents;
+	private $existingEvents;
 	
 	/**
 	 * Register plugin events with SproutEmail
@@ -22,7 +22,7 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 		// set existing events to compare to
 		$this->_setExistingEvents();
 		
-		foreach ( $this->plugin_events as $events )
+		foreach ( $this->pluginEvents as $events )
 		{
 			foreach ( $events as $event )
 			{
@@ -41,19 +41,19 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 	private function _cleanUpEvents()
 	{
 		// compile list of events from parsed classes for easy comparison
-		$plugin_events = array ();
-		foreach ( $this->plugin_events as $events )
+		$pluginEvents = array ();
+		foreach ( $this->pluginEvents as $events )
 		{
 			foreach ( $events as $event )
 			{
-				$plugin_events [$event->getHook()] [$event->getEvent()] = true;
+				$pluginEvents [$event->getHook()] [$event->getEvent()] = true;
 			}
 		}
 		
 		// go through each existing event and check if there is a corresponding fresh event; if not, delete
-		foreach ( $this->existing_events as $event )
+		foreach ( $this->existingEvents as $event )
 		{
-			if ( ! isset( $plugin_events [$event->registrar] [$event->event] ) || ! $plugin_events [$event->registrar] [$event->event] )
+			if ( ! isset( $pluginEvents [$event->registrar] [$event->event] ) || ! $pluginEvents [$event->registrar] [$event->event] )
 			{
 				// delete if the plugin doesn't exist anymore
 				craft()->db->createCommand()->delete( 'sproutemail_notification_events', array (
@@ -89,7 +89,7 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 			}
 		}
 		
-		$this->plugin_events = $events;
+		$this->pluginEvents = $events;
 	}
 	
 	/**
@@ -105,7 +105,7 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 		$criteria->params = array (
 				':registrar' => 'craft' 
 		);
-		$this->existing_events = SproutEmail_NotificationEventRecord::model()->findAll( $criteria );
+		$this->existingEvents = SproutEmail_NotificationEventRecord::model()->findAll( $criteria );
 	}
 	
 	/**
@@ -120,7 +120,7 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 		$event_event = $event->getEvent();
 		$event_hook = $event->getHook();
 		$existing_event = false;
-		foreach ( $this->existing_events as $existing )
+		foreach ( $this->existingEvents as $existing )
 		{
 			if ( $existing->event == $event_event && $existing->registrar == $event_hook )
 			{

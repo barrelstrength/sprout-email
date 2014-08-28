@@ -62,11 +62,6 @@ class SproutEmailVariable
 		// Craft::dump(craft()->getBaseUrl(true));die();
 		return craft()->sproutEmail->getSectionCampaigns();
 	}
-
-	public function getSectionBasedCampaignTypes()
-	{
-		return craft()->sproutEmail->getSectionBasedCampaignTypes();
-	}
 	
 	/**
 	 * Get a Campaign by id *
@@ -342,7 +337,7 @@ class SproutEmailVariable
 		return $ids;
 	}
 	
-	public function getGeneralSettingsTpl($emailProvider = null)
+	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
 		$customTemplate = 'sproutemail/_services/' . $emailProvider . '/generalCampaignSettings';
 		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
@@ -355,18 +350,7 @@ class SproutEmailVariable
 		
 		return false;
 	}
-	
-	/**
-	 * Twig helper for dumping data
-	 *
-	 * @param mixed $mixed            
-	 */
-	public function dump($mixed)
-	{
-		Craft::dump( $mixed );
-		die();
-	}
-	
+
 	/**
 	 * Provider specific functions (since there is no support for multiple variable files)
 	 */
