@@ -416,7 +416,7 @@ class SproutEmailPlugin extends BasePlugin
 					{
 						foreach ( $post as $key => $val )
 						{
-							if ( is_object( $entity ) )
+							if ( is_object( $entity ) && property_exists($entity, $key) )
 							{
 								$entity->{$key} = $val;
 							}
