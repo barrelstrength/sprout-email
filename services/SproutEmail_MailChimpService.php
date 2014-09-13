@@ -119,6 +119,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		$record->apiSettings = json_encode( $settings );
 		return $record->save();
 	}
+	
 	public function getSettings()
 	{
 		if ( $this->api_key )
