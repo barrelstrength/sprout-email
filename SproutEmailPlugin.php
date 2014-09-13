@@ -25,7 +25,7 @@ class SproutEmailPlugin extends BasePlugin
 	
 	public function getVersion()
 	{
-		return '0.7.8';
+		return '0.7.13';
 	}
 	
 	public function getDeveloper()
@@ -244,6 +244,16 @@ class SproutEmailPlugin extends BasePlugin
 						'emailProvider' => 'SendGrid',
 						'apiSettings' => '{"api_user":"","api_key":""}',
 						'dateCreated' => '2014-07-19 21:00:00' 
+				),
+				array (
+						'emailProvider' => 'MailGun',
+						'apiSettings' => '{"api_user":"","domain":""}',
+						'dateCreated' => '2014-09-09 21:00:00' 
+				),
+				array (
+						'emailProvider' => 'CopyPaste',
+						'apiSettings' => '',
+						'dateCreated' => '2014-09-12 21:00:00' 
 				)
 		);
 		
