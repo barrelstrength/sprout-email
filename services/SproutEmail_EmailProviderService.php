@@ -41,6 +41,10 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	 */
 	public function exportCampaign($entryId, $campaignId, $return = false)
 	{
+        // Define our variables
+    		$listIds = array ();
+    		$listProviders = array ();
+		
 		if ( ! $campaign = craft()->sproutEmail->getSectionBasedCampaignByEntryAndCampaignId( $entryId, $campaignId ) )
 		{
 			if ( $return )
@@ -49,24 +53,28 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			}
 			die( 'Campaign not found' );
 		}
+
+        // We can't check for a recipients list on CopyPaste since one doesn't exist		
+    		if($campaign["emailProvider"] != 'CopyPaste'){
+        		if ( ! $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
+        		{
+        			if ( $return )
+        			{
+        				return false;
+        			}
+        			die( 'Recipient lists not found' );
+        		}
+    		}else{
+                craft()->sproutEmail_copyPaste->exportCampaign( $campaign );
+                die();
+        	}
 		
-		if ( ! $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
-		{
-			if ( $return )
-			{
-				return false;
-			}
-			die( 'Recipient lists not found' );
-		}
-		
-		$listIds = array ();
-		$listProviders = array ();
 		foreach ( $recipientLists as $list )
 		{
 			$listProviders [] = $list->emailProvider;
 			$listIds [$list->emailProvider] [] = $list ['emailProviderRecipientListId'];
 		}
-		
+
 		foreach ( $listProviders as $provider )
 		{
 			$provider_service = 'sproutEmail_' . lcfirst( $provider );
