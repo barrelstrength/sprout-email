@@ -1,0 +1,20 @@
+{#
+SendGrid specific api settings.
+#}
+<h3>MailGun</h3>
+
+{% set settings = craft.sproutEmail.getEmailProviderSettings('MailGun') %}
+
+{{ forms.textField({
+	label: "API Key"|t,
+	name: 'settings[MailGun][api_key]',
+	instructions: "Enter the API Key from your MailGun control panel dashboard"|t,
+	value: (settings.api_key is defined ? settings.api_key : null)	
+}) }}
+
+{{ forms.textField({
+	label: "Domain"|t,
+	name: 'settings[MailGun][domain]',
+	instructions: "Enter the MailGun domain name"|t,
+	value: (settings.domain is defined ? settings.domain : null)
+}) }}
