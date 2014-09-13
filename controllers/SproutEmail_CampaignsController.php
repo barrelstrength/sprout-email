@@ -25,13 +25,13 @@ class SproutEmail_CampaignsController extends BaseController
 		}
 		else
 		{
-			craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
-
+	        craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
+            
 			craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
 					'campaignId' => craft()->request->getPost( 'campaignId' ),
 					'entryId' => craft()->request->getPost( 'entryId' ) 
 			) );
-			
+
 			// Apparently not. Is there a pending task?
 			$task = craft()->tasks->getNextPendingTask();
 			
@@ -57,7 +57,7 @@ class SproutEmail_CampaignsController extends BaseController
 		$this->requirePostRequest();
 		
 		$campaignModel = SproutEmail_CampaignModel::populateModel( craft()->request->getPost() );
-		
+				
 		$campaignModel->useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
 		
 		if ( $campaignId = craft()->sproutEmail->saveCampaign( $campaignModel, craft()->request->getPost( 'tab' ) ) )
@@ -70,19 +70,29 @@ class SproutEmail_CampaignsController extends BaseController
 			}
 			craft()->userSession->setNotice( Craft::t( 'Campaign successfully saved.' ) );
 			
-			switch (craft()->request->getPost( 'continue' ))
+			$continue = craft()->request->getPost( 'continue' );
+			
+			if($continue == 'info')
 			{
-				case 'info' :
-					$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/recipients' );
-					break;
-				case 'recipients' :
-					$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
-					break;
-				default :
-					$this->redirectToPostedUrl( array (
-							$campaignModel 
-					) );
-					break;
+				if(craft()->request->getPost( 'emailProvider' ) == 'CopyPaste'){
+				    $this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
+                }
+                else
+                {
+                    $this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/recipients' );
+                }
+			}
+			elseif($continue == 'recipients')
+			{
+				$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
+			}
+			else
+			{
+				$this->redirectToPostedUrl(
+				                            array(
+						                            $campaignModel 
+                                                 )
+                                          );
 			}
 		}
 		else // problem
