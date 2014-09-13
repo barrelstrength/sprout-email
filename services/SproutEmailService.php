@@ -63,6 +63,17 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		return SproutEmail_CampaignRecord::model()->getSectionBasedCampaigns( $campaign_id );
 	}
+
+	/**
+	 * Returns all section based campaigns.
+	 *
+	 * @param string|null $indexBy            
+	 * @return array
+	 */
+	public function getSectionBasedCampaignTypes()
+	{
+		return SproutEmail_CampaignRecord::model()->getSectionBasedCampaignTypes();
+	}
 	
 	/**
 	 * Returns section based campaign by entryId
@@ -215,7 +226,7 @@ class SproutEmailService extends BaseApplicationComponent
 		// since we have to perform saves on multiple entities,
 		// it's all or nothing using sql transactions
 		$transaction = craft()->db->beginTransaction();
-		
+        
 		switch ($tab)
 		{
 			case 'template' :
@@ -352,6 +363,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$campaignRecord->templateOption = $campaign->templateOption;
 		
 		// template specific attributes & validation
+		
 		switch ($campaign->templateOption)
 		{
 			case 1 : // Import the HTML/Text on your own
@@ -372,8 +384,12 @@ class SproutEmailService extends BaseApplicationComponent
 				break;
 			case 3 : // Create a Campaign based on an Entries Section and Template
 				$campaignRecord->sectionId = $campaign->sectionId;
+				$campaignRecord->subjectHandle = $campaign->subjectHandle;
 				$campaignRecord->htmlTemplate = $campaign->htmlTemplate;
 				$campaignRecord->textTemplate = $campaign->textTemplate;
+				$campaignRecord->htmlBodyTemplate = $campaign->htmlBodyTemplate;
+				$campaignRecord->textBodyTemplate = $campaign->textBodyTemplate;
+
 				$campaignRecord->addRules( array (
 						'sectionId,htmlTemplate,textTemplate',
 						'required' 
@@ -484,6 +500,25 @@ class SproutEmailService extends BaseApplicationComponent
 			$select_options [$file] = implode( '.', $fileArr );
 		}
 		return $select_options;
+	}
+	
+	public function getPlainTextFields()
+	{
+	    $fields = array();
+	    $fields[""] = "---------";
+        foreach (craft()->fields->getAllFields() as $field)
+        {
+            // Grab the plain text fields 
+            // and store them in a key:value array
+                if($field->type == 'PlainText')
+                {
+                    $fields[$field->handle] = $field->name;
+                }
+        }
+        // Sort them alphabetically
+            ksort($fields);
+        
+	    return $fields;
 	}
 	
 	/**

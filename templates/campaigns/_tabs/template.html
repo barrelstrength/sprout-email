@@ -19,6 +19,18 @@
     		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
     	}) }}
     	
+    	{% set fieldOptions = craft.sproutEmail.getPlainTextFields() %}
+    	
+    	{{ forms.selectField({
+    		label: "Subject Field"|t,
+    		id: 'subjectHandle',
+    		name: 'subjectHandle',
+    		instructions: "Select the field that will be your subject field for the campaign"|t,
+    		options: fieldOptions,
+    		value: (campaign is defined ? campaign.subjectHandle : null),
+    		errors: (campaign is defined ? campaign.getErrors('subjectHandle') : null) 	
+    	}) }}
+
     	{% set templatesDirListing = craft.sproutEmail.getTemplatesDirListing() %}
     	
     	{{ forms.selectField({
@@ -40,6 +52,33 @@
     		value: (campaign is defined ? campaign.textTemplate : null),
     		errors: (campaign is defined ? campaign.getErrors('textTemplate') : null) 	
     	}) }}
+    	
+    	{% if campaign.emailProvider == 'CopyPaste' %}
+            <hr />
+            <h3>Copy & Paste Templates</h3>
+            
+        	{{ forms.selectField({
+        		label: "HTML Body Template"|t,
+        		id: 'htmlBodyTemplate',
+        		name: 'htmlBodyTemplate',
+        		instructions: "Select the file that will be the template to display the body HTML to cut and paste"|t,
+        		options: templatesDirListing,
+        		value: (campaign is defined ? campaign.htmlBodyTemplate : null),
+        		errors: (campaign is defined ? campaign.getErrors('htmlBodyTemplate') : null) 	
+        	}) }}
+        
+        	{{ forms.selectField({
+        		label: "Text Body Template"|t,
+        		id: 'textBodyTemplate',
+        		name: 'textBodyTemplate',
+        		options: templatesDirListing,
+        		instructions: "Select the file that will be the template to display the body Plain Text to cut and paste"|t,
+        		value: (campaign is defined ? campaign.textBodyTemplate : null),
+        		errors: (campaign is defined ? campaign.getErrors('textBodyTemplate') : null) 	
+        	}) }}
+
+        {% endif %}
+    	
     	</div>
     
     </div>

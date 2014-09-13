@@ -62,6 +62,11 @@ class SproutEmailVariable
 		// Craft::dump(craft()->getBaseUrl(true));die();
 		return craft()->sproutEmail->getSectionCampaigns();
 	}
+
+	public function getSectionBasedCampaignTypes()
+	{
+		return craft()->sproutEmail->getSectionBasedCampaignTypes();
+	}
 	
 	/**
 	 * Get a Campaign by id *
@@ -161,6 +166,16 @@ class SproutEmailVariable
 	}
 	
 	/**
+	 * Get plain text field handles
+	 *
+	 * @return array
+	 */
+	public function getPlainTextFields()
+	{
+		return craft()->sproutEmail->getPlainTextFields();
+	}
+
+	/**
 	 * Get email providers
 	 *
 	 * @return array
@@ -168,6 +183,7 @@ class SproutEmailVariable
 	public function getEmailProviders($excludeWithoutApiSettings = false)
 	{
 		$providers = craft()->sproutEmail_emailProvider->getEmailProviders();
+		
 		if ( $excludeWithoutApiSettings )
 		{
 			foreach ( $providers as $key => $provider )
