@@ -54,10 +54,19 @@ class SproutEmail_CampaignModel extends BaseModel
 			'sectionId' => array (
 				AttributeType::Number 
 			),
+			'subjectHandle' => array (
+				AttributeType::String 
+			),
 			'htmlTemplate' => array (
 				AttributeType::String 
 			),
 			'textTemplate' => array (
+				AttributeType::String 
+			),
+			'htmlBodyTemplate' => array (
+				AttributeType::String 
+			),
+			'textBodyTemplate' => array (
 				AttributeType::String 
 			),
 			
