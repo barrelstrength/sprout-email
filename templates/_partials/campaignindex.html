@@ -14,19 +14,23 @@
 
 	<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 		<td>
+			
 			{% set section = craft.sections.getSectionById(campaign.sectionId) %}
+
 			<a href="{{ url('entries/' ~ section.handle ~ '/') }}/{{ campaign.entryId }}">{{ campaign.title ? campaign.title : 'New Campaign' }}</a><br/>
+
 			<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.name }} <span style="color:#121212;">/</span> 
 
-    			{% set entries = craft.entries.id(campaign.entryId) %}
-                
-                {% for entry in entries %}
-    
-                    {{ entry.dateCreated|date('F d, Y') }}
-                
-                {% endfor %}
+				{% set entries = craft.entries.id(campaign.entryId) %}
 
-            </span>
+				{% for entry in entries %}
+
+				    {{ entry.dateCreated|date('F d, Y') }}
+
+				{% endfor %}
+
+			</span>
+
 		</td>
 		
 		{% if campaign.sectionId and campaign.entryId and campaign.textTemplate and campaign.emailProvider %}
