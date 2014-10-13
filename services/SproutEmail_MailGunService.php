@@ -1,6 +1,12 @@
 <?php
 namespace Craft;
 
+require_once (dirname( __FILE__ ) . '/../vendor/autoload.php');
+
+use Mailgun\Mailgun;
+use Mailgun\Connection;
+use Guzzle\Http\Client;
+
 /**
  * SendGrid service
  * Abstracted SendGrid wrapper
@@ -10,6 +16,8 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	protected $apiSettings;
 	protected $api_key;
 	protected $domain;
+	
+	private $export_once;     # Track that we only run the export once. 
 	
 	/**
 	 * Constructor
@@ -30,31 +38,50 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	}
 	
 	/**
-	 * Returns subscriber lists
+	 * Returns mailing lists
 	 *
 	 * @return array
 	 */
 	public function getSubscriberList()
 	{
-		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
-		
-		$subscriber_lists = array ();
-		
-		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
+        // Container
+    		$subscriber_lists = array ();
 	
-		$result = $sendgrid->newsletter_lists_get();
-		
-		if ( ! $result)
-		{
-			return $subscriber_lists;
-		}
-	
-		foreach ( $result as $v )
-		{
-			$subscriber_lists [$v['list']] = $v['list'];
-		}
-		
+        // List request from Mailgun
+    	    $mgClient = new Mailgun($this->api_key);
+            $result = $mgClient->get("lists");
+            $response = $result->http_response_body;
+
+            foreach($response->items as $list)
+            {
+                $subscriber_lists[$list->address] = '<b>'.$list->name.'</b> ('.$list->members_count.') <span class="info">'.$list->description.'</span>';
+            }
+
 		return $subscriber_lists;
+	}
+	
+	public function getCampaignList()
+	{
+    	$campaigns = array();
+    	
+    	// List the campaign options
+    	    $mgClient = new Mailgun($this->api_key);
+            $result = $mgClient->get($this->domain."/campaigns");
+            $response = $result->http_response_body;        
+        
+            $campaigns[] = array(
+                                     'label' => 'No Campaign',
+                                     'value' => ''
+                                 );
+            foreach($response->items as $list)
+            {
+                $campaigns[] = array(
+                                         'label' => $list->name,
+                                         'value'=>$list->id
+                                     );
+            }
+            
+        return $campaigns;
 	}
 	
 	/**
@@ -64,7 +91,80 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	 * @param array $listIds            
 	 */
 	public function exportCampaign($campaign = array(), $listIds = array(), $return = false)
-	{	
+	{
+        // We only want to run once! 
+            if($this->export_once == 1){
+                return;
+            }
+
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $endpoint = ($protocol.$_SERVER['HTTP_HOST']);
+        $client = new Client($endpoint);
+        
+        // send request / get response / grab body of email
+        $request = $client->get('/'.$campaign["htmlTemplate"].'?entryId='.$campaign["entryId"]);
+        $response = $request->send();
+        $htmlContent = trim($response->getBody());
+
+        // send request / get response / grab body of text email
+        $textRequest = $client->get('/'.$campaign["textTemplate"].'?entryId='.$campaign["entryId"]);
+        $textResponse = $textRequest->send();
+        $textContent = trim($textResponse->getBody());
+
+        // Get the subject of the email from the entry
+            
+            $entry = craft()->entries->getEntryById($campaign["entryId"]);
+            $emailSubject = (isset($entry->$campaign["subjectHandle"]) && $entry->$campaign["subjectHandle"] != '') ? $entry->$campaign["subjectHandle"] : $entry->title;
+
+        // Send to mailgun
+        
+            $recipients = craft()->db->createCommand("SELECT 
+                                                    	r.type, 
+                                                    	r.emailProviderRecipientListId as val 
+                                                    FROM 
+                                                    	".DbHelper::addTablePrefix('sproutemail_campaign_recipient_lists')." cr,
+                                                    	".DbHelper::addTablePrefix('sproutemail_recipient_lists')." r
+                                                    WHERE 	
+                                                    	cr.recipientListId = r.id 
+                                                    AND 
+                                                    	cr.campaignId = ".$campaign["id"])->queryAll();
+
+            // Put the results into the campaign_id variable 
+            // or the list_email array based on their type 
+                $campaign_id = '';
+                $list_email  = array();
+                foreach($recipients as $rec)
+                {
+                    if($rec["type"] == 'campaign'){
+                        $campaign_id = $rec["val"];
+                    }else{
+                        $list_email[]= $rec["val"];
+                    }
+                }
+
+                foreach($list_email as $send){
+                    $mgClient = new Mailgun($this->api_key);
+
+                    # Next, instantiate a Message Builder object from the SDK.
+										$msgBldr = $mgClient->MessageBuilder();
+
+                    $domain = $this->domain;
+                    # Make the call to the client.
+                    $result = $mgClient->sendMessage($domain, array(
+                        'from'       => $campaign["fromName"].' <'.$campaign["fromEmail"].'>',
+                        'to'         => $send,
+                        'subject'    => htmlspecialchars($emailSubject),
+                        'html'       => $htmlContent,
+                        'text'       => $textContent,
+                        'o:campaign' => $campaign_id
+                    ));                   
+                }
+
+                // Give back a message
+                    echo 'Email sent to Mailgun for delivery';
+
+                // All done. Only do it once! 
+                    $this->export_once++;
 	}
 	
 	/**
@@ -112,26 +212,61 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	 */
 	public function sendCampaign($campaign = array(), $listIds = array())
 	{
-		echo 'here';
 	}
 	
-	public function getSenderAddresses()
+	public function saveRecipientList(SproutEmail_CampaignModel &$campaign, SproutEmail_CampaignRecord &$campaignRecord)
 	{
-		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
-		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key);
-		
-		$senderAddresses = array();
-		
-		if ( $identities = $sendgrid->newsletter_identity_list())
+		// an email provider is required
+		if ( ! isset( $campaign->emailProvider ) || ! $campaign->emailProvider )
 		{
-			foreach ($identities as $key => $identity)
-			{
-				$details = $sendgrid->newsletter_identity_get($identity['identity']);
-
-				$senderAddresses[$identity['identity']] = $identity['identity'] . ' - ' . $details['email'] . ' - ' . $details['name'];
-			}
+			$campaign->addError( 'emailProvider', 'Unsupported email provider.' );
+			return false;
 		}
 
-		return $senderAddresses;
+		// Start with some housecleaning
+		    $recipients = craft()->db->createCommand("DELETE FROM 
+		                                                ".DbHelper::addTablePrefix('sproutemail_recipient_lists')."
+		                                              WHERE 
+		                                                id IN 
+		                                                    (
+                                                                SELECT 
+                                                                    recipientListId 
+                                                                FROM 
+                                                                    ".DbHelper::addTablePrefix('sproutemail_campaign_recipient_lists')." 
+                                                                WHERE 	
+                                                                    campaignId = ".$campaign["id"]."
+                                                            )")->query();
+		    
+        foreach($campaign->emailProviderRecipientListId as $key => $val)
+        {
+            if(!is_array($val)){
+                $tmp = $val;
+                unset($val);
+                $val[0] = $tmp;
+            }
+            foreach($val as $value)
+            {
+                $recipientListRecord = new SproutEmail_RecipientListRecord();
+                $recipientListRecord->emailProviderRecipientListId = $value;
+                $recipientListRecord->type = $key;
+                $recipientListRecord->emailProvider = $campaign->emailProvider;
+				
+				if ( $recipientListRecord->save() ) 
+				{
+					// associate with campaign, if not already done so
+					if ( SproutEmail_CampaignRecipientListRecord::model()->count( 'recipientListId=:recipientListId AND campaignId=:campaignId', array (
+							':recipientListId'  => $recipientListRecord->id,
+							':campaignId'       => $campaignRecord->id 
+					) ) == 0 )
+					{
+						$campaignRecipientListRecord = new SproutEmail_CampaignRecipientListRecord();
+						$campaignRecipientListRecord->recipientListId = $recipientListRecord->id;
+						$campaignRecipientListRecord->campaignId      = $campaignRecord->id;
+						$campaignRecipientListRecord->save( false );
+					}
+				}
+            }
+        }
+        return true;
 	}
 }
