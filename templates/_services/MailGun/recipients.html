@@ -1,20 +1,41 @@
-{% set subscriber_lists = craft.sproutEmail.getSubscriberList('MailGun') %}
+{% set campaigns = craft.sproutEmail.getCampaignList('MailGun') %}
 
+    {% if(campaigns|length > 0) %}
+    
+        {{ forms.field({
+            label: "Campaigns (optional)"|t,
+            instructions: "Select a campaign to associate with this section."|t,
+            errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
+        }, forms.select({
+            name: 'emailProviderRecipientListId[campaign]',
+            options : campaigns,
+            value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
+        })) }}
+    
+    {% endif %}
 
-{% if(subscriber_lists|length > 0) %}
+    <hr />
+
+{% set mailing_list = craft.sproutEmail.getSubscriberList('MailGun') %}
+
+{% if(mailing_list|length > 0) %}
 
     {{ forms.field({
-        label: "Subscriber Lists"|t,
-        instructions: "Select one subscriber list to send your Email Blasts in this Section."|t,
+        label: "Mailing Lists"|t,
+        instructions: "Select one or more mailing lists to send your Email Blasts in this Section."|t,
         errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
-    }, forms.radioGroup({
-        name: 'emailProviderRecipientListId',
-        options : subscriber_lists,
-        value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
+    }, forms.checkboxGroup({
+        name: 'emailProviderRecipientListId[list]',
+        options : mailing_list,
+        values: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId : null
     })) }}
-	
+
 {% else %}
 	
-	<p class="recipients-not-defined" >You must first create a subscriber list in your SendGrid account.</p>
+    <p class="recipients-not-defined" >
+        {{ "You must first create a mailing list in your Mailgun account."|t }}
+    </p>
 
 {% endif %}
+
+<hr />

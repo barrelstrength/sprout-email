@@ -14,25 +14,21 @@
 
 	<tr data-id="{{ campaign.id }}" data-entry-id="{{ campaign.entryId }}" data-name="{{ campaign.name|t }}">
 		<td>
-			
 			{% set section = craft.sections.getSectionById(campaign.sectionId) %}
-
 			<a href="{{ url('entries/' ~ section.handle ~ '/') }}/{{ campaign.entryId }}">{{ campaign.title ? campaign.title : 'New Campaign' }}</a><br/>
-
 			<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.name }} <span style="color:#121212;">/</span> 
 
-				{% set entries = craft.entries.id(campaign.entryId) %}
+    			{% set entries = craft.entries.id(campaign.entryId) %}
+                
+                {% for entry in entries %}
+    
+                    {{ entry.dateCreated|date('F d, Y') }}
+                
+                {% endfor %}
 
-				{% for entry in entries %}
-
-				    {{ entry.dateCreated|date('F d, Y') }}
-
-				{% endfor %}
-
-			</span>
-
+            </span>
 		</td>
-		
+		 
 		{% if campaign.sectionId and campaign.entryId and campaign.textTemplate and campaign.emailProvider %}
 		<td>		
 			<a href="{{ siteUrl }}{{campaign.htmlTemplate|replace({'.html': ''}) }}?entryId={{campaign.entryId}}" target="_blank">HTML</a> 
@@ -48,9 +44,13 @@
                  <a href="#" data-format="html" class="copy btn small" >
                      Display Source
                  </a>
-            {% else %}
+            {% elseif campaign.emailProvider == 'SendGrid' %}
                  <a href="#" class="export btn small" >
                      Export to {{ campaign.emailProvider }} 
+                 </a>
+            {% elseif campaign.emailProvider == 'MailGun' %}
+                 <a href="#" class="confirm btn small" >
+                     Prepare {{ campaign.emailProvider }} Blast
                  </a>
             {% endif %}
 		</td>
@@ -76,15 +76,26 @@
 	jQuery(document).ready(function(){
 
 		jQuery('.export').click(function(){
+		    var btn = jQuery(this);
 		    var tr = jQuery(this).closest('tr');
+			
+			btn.addClass('disabled');
 			
 			var query = 'entryId='+tr.data('entry-id')
 			            +'&campaignId='+tr.data('id')
                         +'&action=SproutEmail/campaigns/export';
 
 			$.post('{{ url('SproutEmail/campaigns/export') }}',query, function(data){
-			    alert(data);
-			})
+    			btn.removeClass('disabled');
+			    var sgConfirmModal = new Garnish.Modal($('<div class="modal fitted" style="padding: 40px;">'+
+			                                      '<div class="body"><h1>SendGrid</h1><p>'+data.response+'</p>'+
+			                                      '<p><strong>SendGrid:</strong> <a href="https://sendgrid.com/newsletter" target="_blank">View all Campaigns</a>'+
+			                                      '<div class="buttons right"><input type="submit" id="sendGridClose" class="btn submit" value="'+Craft.t('Close')+'" /></div>'+
+			                                      '</div></div>'));
+			     $('#sendGridClose').unbind().bind('click',function(){
+			        sgConfirmModal.hide();
+			     });
+			},"json")
             return false;
 		})
 
@@ -98,13 +109,71 @@
 
 			jQuery.post('{{ url('SproutEmail/campaigns/export') }}',query, function(data){
                 var myModal = new Garnish.Modal($('<div class="modal" style="padding: 40px;">'+
-                                                  '<h1>Source</h1>'+
-                                                  '<h2>HTML Source</h2><textarea style="width:100%;height:35%">'+data.html+'</textarea>'+
-                                                  '<h2>Plain Text Source</h2><textarea style="width:100%;height:35%">'+data.text+'</textarea>'+
+                                                  '<p><strong>Title:</strong> '+data.title+'</p>'+
+                                                  '<p><strong>From:</strong> '+data.fromName+' &lt;'+data.fromEmail+'&gt;</p>'+
+                                                  '<h2>HTML Source</h2><textarea style="width:100%;height:33%">'+data.html+'</textarea>'+
+                                                  '<h2>Plain Text Source</h2><textarea style="width:100%;height:33%">'+data.text+'</textarea>'+
                                                   '</div>'));
 			}, "json");
             return false;
 		})
+		
+		jQuery('.confirm').click(function(e){
+            
+            e.preventDefault();
+
+            // Hold these so we can get back to them on submit            		
+                var btn = jQuery(this);
+                var tr = jQuery(this).closest('tr');            			
+    			var query = 'entryId='+tr.data('entry-id')
+    			            +'&campaignId='+tr.data('id')
+                            +'&action=SproutEmail/campaigns/export';
+
+            // Build up our modal
+    			var $confirm = $('<div class="modal fitted" />'),
+    			    $body = $('<div class="body" />').appendTo($confirm),
+    			    $message = $('<h1>Send Via MailGun</h1>'+
+                                 '<p id="modalMessage">You are about to send the campaign to the configured list of recipients</p>').appendTo($body),
+                    $buttons  = $('<div class="buttons right"/>').appendTo($body);
+    				$cancelBtn = $('<div class="btn">'+Craft.t('Cancel')+'</div>').appendTo($buttons),
+    				$submitBtn = $('<input type="submit" class="btn submit" value="'+Craft.t('Send email now')+'" />').appendTo($buttons);                               
+                    $closeBtn = $('<input type="submit" class="btn submit hidden" value="'+Craft.t('Close')+'" />').appendTo($buttons);                               
+                    $spinner   = $('<div class="spinner hidden"/>').appendTo($buttons);
+
+            // Show Modal                            
+                var confirmModal = new Garnish.Modal($confirm);
+
+            // Bind Cancel 
+    			$cancelBtn.unbind().bind('click', function() {
+    				confirmModal.hide();
+    			});
+            
+            // Bind the close
+                $closeBtn.unbind().bind('click', function() {
+    				confirmModal.hide();
+    			});
+
+            // Bind Submit    			
+    			$submitBtn.unbind().bind('click', function(e) {
+                    e.preventDefault();
+
+                    // Hide buttons 
+        				$cancelBtn.hide();
+        				$submitBtn.hide();
+                    // Show Spinner    
+                        $spinner.removeClass('hidden');
+                        
+                    $.post('{{ url('SproutEmail/campaigns/export') }}',query, function(data){
+            			$('#modalMessage').html(data);
+                        $closeBtn.removeClass('hidden');
+                        $spinner.addClass('hidden');
+        			}).fail(function(){
+                        $('#modalMessage').html('Error: Please verify your email renders properly before sending');
+                        $closeBtn.removeClass('hidden');
+                        $spinner.addClass('hidden');
+        			});
+    			});
+		});
 
 	})
 {% endset %}

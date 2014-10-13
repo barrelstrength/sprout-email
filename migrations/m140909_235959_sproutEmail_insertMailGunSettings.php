@@ -13,7 +13,7 @@ class m140909_235959_sproutEmail_insertMailGunSettings extends BaseMigration
 	 */
 	public function safeUp()
 	{		
-	  $tableName = 'sproutemail_email_provider_settings';
+	    $tableName = 'sproutemail_email_provider_settings';
 		$table = $this->dbConnection->schema->getTable('{{' . $tableName . '}}');
 
 		if ($table)
@@ -21,10 +21,11 @@ class m140909_235959_sproutEmail_insertMailGunSettings extends BaseMigration
 		    Craft::log('Inserting into `' . $tableName, LogLevel::Info, true);
 		    
 		    $data = array(
-					array (
-					  'emailProvider' => 'MailGun',
-					  'apiSettings' => '{"api_key":"","domain":""}'
-					),
+                array (
+                        'id' => 4,
+                        'emailProvider' => 'MailGun',
+                        'apiSettings' => '{"api_key":"","domain":""}'
+                ),
 		    );	
 		    
 		    foreach($data as $entry)

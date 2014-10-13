@@ -196,7 +196,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 			$where_params [':id'] = $campaign_id;
 		}
 		
-		return craft()->db->createCommand()->selectDistinct( 'mc.*,
+		return craft()->db->createCommand()->select( 'mc.*,
 				el.slug as slug,
 				s.handle,
 				e.id as entryId,

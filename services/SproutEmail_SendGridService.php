@@ -1,6 +1,10 @@
 <?php
 namespace Craft;
 
+require_once (dirname( __FILE__ ) . '/../vendor/autoload.php');
+
+use Guzzle\Http\Client;
+
 /**
  * SendGrid service
  * Abstracted SendGrid wrapper
@@ -72,26 +76,35 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
 		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
 		
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13' );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
-		
-		$htmlTemplate = preg_replace('/\.html/', '', $campaign ['htmlTemplate']);
-		$html_url = craft()->getBaseUrl( true ) . '/' . $htmlTemplate . "?entryId={$campaign['entryId']}";
-		curl_setopt( $ch, CURLOPT_URL, $html_url );
-		$html = curl_exec( $ch );
-		
-		$text_url = craft()->getBaseUrl( true ) . '/' . $campaign ['textTemplate'] . "?entryId={$campaign['entryId']}";
-		curl_setopt( $ch, CURLOPT_URL, $text_url );
-		$text = curl_exec( $ch );
+        // Create an instance of the guzzle client
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+            $endpoint = ($protocol.$_SERVER['HTTP_HOST']);
+            $client = new Client($endpoint);
+        
+        // Get the HTML
+            $request = $client->get('/'.$campaign["htmlTemplate"].'?entryId='.$campaign["entryId"]);
+            $response = $request->send();
+            $html = trim($response->getBody());
+
+        // Get the text
+            $request = $client->get("/".$campaign ['textTemplate'] . "?entryId={$campaign['entryId']}");
+            $response = $request->send();
+            $text = trim($response->getBody());
+            
+        // Get the Entry
+            $entry = craft()->entries->getEntryById($campaign["entryId"]);
+
 
 		// check if newsletter exists
-		$res = $sendgrid->newsletter_get($campaign ['title']);
-			
+    		$res = $sendgrid->newsletter_get($entry->title);
+		
+        // Get the subject
+            $subject = (isset($entry->$campaign["subjectHandle"]) && $entry->$campaign["subjectHandle"] != '') ? $entry->$campaign["subjectHandle"] : $entry->title;
+            
 		// need to create the template (newsletter)
 		if( ! $res)
 		{
-			$res = $sendgrid->newsletter_add($campaign ['fromName'], $campaign ['title'] , $campaign ['title'] , $text , $html);
+			$res = $sendgrid->newsletter_add($campaign ['fromName'], $entry->title , $subject , $text , $html);
 		}
 		
 		if( $error = $sendgrid->getLastResponseError())
@@ -102,7 +115,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		// if sender address has changed, update the newsletter
 		if(isset($res['identity']) && $res['identity'] != $campaign['fromName'])
 		{
-			$res = $sendgrid->newsletter_edit($campaign ['fromName'], $res['name'] , $campaign ['title'], $campaign ['title'] , $text , $html);
+			$res = $sendgrid->newsletter_edit($campaign ['fromName'], $res['name'] , $entry->title, $entry->title , $text , $html);
 						
 			if( $error = $sendgrid->getLastResponseError())
 			{
@@ -111,7 +124,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 
 		// now we need to assign the recipient list to it
-		$res = $sendgrid->newsletter_recipients_add($campaign ['title'] , $listIds[0]);
+		$res = $sendgrid->newsletter_recipients_add($entry->title , $listIds[0]);
 		
 		if( $error = $sendgrid->getLastResponseError())
 		{
@@ -132,15 +145,15 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			switch($res['message'])
 			{
 				case 'success':
-					$msg = 'Your campaign has been successfully exported. Please login to SendGrid to complete your email blast.';
+					$msg["response"] = 'Your campaign has been successfully exported. Please login to SendGrid to complete your email blast.';
 					break;
 				default:
-					$msg = 'Unknown error.';
+					$msg["response"] = 'Unknown error.';
 					break;
 			}
 		}
-		
-		die($msg);
+		echo json_encode($msg);
+		exit;
 	}
 	
 	/**

@@ -155,6 +155,19 @@ class SproutEmailVariable
 		return craft()->{$service}->getSubscriberList();
 	}
 	
+	
+	/**
+	 * Get campaign list for specified provider
+	 *
+	 * @param string $provider            
+	 * @return array
+	 */
+	public function getCampaignList($provider = 'SproutEmail')
+	{
+		$service = 'sproutEmail_' . lcfirst( $provider );
+		return craft()->{$service}->getCampaignList();
+	}
+	
 	/**
 	 * Get templates
 	 *

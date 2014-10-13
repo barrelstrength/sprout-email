@@ -75,7 +75,13 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
         
         // The body of the email
             $arr["text"] = trim($response->getBody());
-        
+            
+            
+        // Show name of email, name of selected list and name of sender?     
+            $arr["title"]       = $campaign["title"];
+            $arr["fromEmail"]  = $campaign["fromEmail"];
+            $arr["fromName"]   = $campaign["fromName"];
+                
             echo json_encode($arr);
             unset($client);
 		exit;

@@ -21,10 +21,11 @@ class m140719_235959_sproutEmail_insertSendGridSettings extends BaseMigration
 		    Craft::log('Inserting into `' . $tableName, LogLevel::Info, true);
 		    
 		    $data = array(
-          array (
-            'emailProvider' => 'SendGrid',
-            'apiSettings' => '{"api_user":"","api_key":""}'
-          ),
+                array (
+                        'id' => 3,
+                        'emailProvider' => 'SendGrid',
+                        'apiSettings' => '{"api_user":"","api_key":""}'
+                ),
 		    );	
 		    
 		    foreach($data as $entry)
