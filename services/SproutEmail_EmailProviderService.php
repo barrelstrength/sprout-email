@@ -41,34 +41,154 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	 */
 	public function exportCampaign($entryId, $campaignId, $return = false)
 	{
-        // Define our variables
-    		$listIds = array ();
-    		$listProviders = array ();
+		// Define our variables
+		$listIds = array ();
+		$listProviders = array ();
 		
+		// Get our campaign info
 		if ( ! $campaign = craft()->sproutEmail->getSectionBasedCampaignByEntryAndCampaignId( $entryId, $campaignId ) )
 		{
+			SproutEmailPlugin::log("Campaign not found");
+
 			if ( $return )
 			{
 				return false;
 			}
+
+			// @TODO - update use of die
 			die( 'Campaign not found' );
 		}
 
-        // We can't check for a recipients list on CopyPaste since one doesn't exist		
-    		if($campaign["emailProvider"] != 'CopyPaste'){
-        		if ( ! $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
-        		{
-        			if ( $return )
-        			{
-        				return false;
-        			}
-        			die( 'Recipient lists not found' );
-        		}
-    		}else{
-                craft()->sproutEmail_copyPaste->exportCampaign( $campaign );
-                die();
-        	}
+		// Get our recipient list info
+		if($campaign["emailProvider"] != 'CopyPaste')
+		{
+			if ( ! $recipientLists = craft()->sproutEmail->getCampaignRecipientLists( $campaign ['id'] ) )
+			{
+				SproutEmailPlugin::log("Recipient lists not found");
+
+				if ( $return )
+				{
+					return false;
+				}
+
+				// @TODO - update use of die
+				die( 'Recipient lists not found' );
+			}
+		}
+		else
+		{
+			SproutEmailPlugin::log("Exporting Copy/Paste Email");
+
+			// We can't check for a recipients list on CopyPaste since one doesn't exist
+			craft()->sproutEmail_copyPaste->exportCampaign( $campaign );
+
+			// @TODO - update use of die
+			die();
+		}
 		
+		// Check to see if we have entry level settings and update 
+		// before shuffling off to the individual service connectors. 
+
+		$entry = craft()->entries->getEntryById($entryId);
+		$entryFields = $entry->getFieldLayout()->getFields();
+
+		// Assume we have no override, and update overrideHandle if we do
+		$overrideHandle = "";
+
+		foreach ($entryFields as $field) 
+		{
+			// If we have an Email Campaign Field, grab the handle of the first one that matches
+			if ($field->getField()->type == 'SproutEmail_EmailCampaign')
+			{
+				SproutEmailPlugin::log('We have a Campaign Override field');
+				SproutEmailPlugin::log('Override Field Handle: ' . $field->getField()->handle);
+
+				$overrideHandle = $field->getField()->handle;
+				continue;
+			}
+		}
+	
+		// If the entry has an override handle assigned to it
+		if ($overrideHandle != "")
+		{
+			// Grab our Email Campaign override settings
+			$entryOverrideSettings = $entry->{$overrideHandle};
+			$entryOverrideSettings = json_decode($entryOverrideSettings,TRUE);
+
+			SproutEmailPlugin::log('Our override settings: ' . $entry->{$overrideHandle});
+
+			// Merge the entry level settings with our campaign
+			$emailProviderRecipientListId = '';
+
+			if( ! empty($entryOverrideSettings) )
+			{
+				foreach($entryOverrideSettings as $key => $value)
+				{
+					// Override our campaign settings
+					$campaign[$key] = $value;
+
+					if($key == 'emailProviderRecipientListId')
+					{
+						// Make sure our $emailProviderRecipientListId is an array
+						// @TODO - clarify what this value is for.  Is it only for Mailgun?
+						$emailProviderRecipientListId = (array) $value;
+						$campaign[$key] = $emailProviderRecipientListId;
+					}
+
+					SproutEmailPlugin::log('Entry override ' . $key . ': ' . $value);
+					
+				}
+			}
+
+			if($emailProviderRecipientListId != '')
+			{
+				$recipientListOverrides = array();
+				
+				// Loop through each of the override lists in our override settings
+				foreach ($emailProviderRecipientListId as $key => $value) 
+				{
+					$recipientListOverride = new SproutEmail_RecipientListModel();
+					$recipientListOverride->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId'];
+					$recipientListOverride->emailProvider = $campaign['emailProvider'];
+					$recipientListOverride->type = null;
+
+					$recipientListOverrides[$key] = $recipientListOverride;
+				}
+				
+				// We have an override setting, so let's clear our current recipients
+				unset($recipientLists);
+
+				$recipientLists = $recipientListOverrides;
+
+				// $criteria = new \CDbCriteria();
+				// $criteria->params = array (
+				// 		':emailProvider' => $campaign["emailProvider"]
+				// );
+				// $criteria->condition = 'emailProvider=:emailProvider';
+				// $criteria->addInCondition('emailProviderRecipientListId',$emailProviderRecipientListId);
+
+				// $recipientLists = SproutEmail_RecipientListRecord::model()->with( 'campaignRecipientList' )->findAll($criteria);
+
+				// ------------------------------------------------------------
+				
+				// $recipientLists = craft()->db->createCommand()
+				//     ->select('*')
+				//     ->from('sproutemail_recipient_lists recipient_lists')
+				//     ->join('sproutemail_campaign_recipient_lists campaign_recipient_lists', 'recipient_lists.id=campaign_recipient_lists.recipientListId')
+				//     ->where('recipient_lists.emailProvider=:emailProvider', array(
+				//     	':emailProvider'=>$campaign["emailProvider"])
+				//     )
+				//     ->andWhere(array(
+				//     	'in', 
+				//     	'recipient_lists.emailProvisderRecipientListId', 
+				//     	$emailProviderRecipientListId
+				//     ))
+				//     ->queryAll();
+
+			}
+		}
+
+		// Create the recipient list variables
 		foreach ( $recipientLists as $list )
 		{
 			$listProviders [] = $list->emailProvider;
@@ -80,10 +200,13 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			$provider_service = 'sproutEmail_' . lcfirst( $provider );
 			craft()->{$provider_service}->exportCampaign( $campaign, $listIds [$provider], $return );
 		}
+		
 		if ( $return )
 		{
 			return true;
 		}
+
+		// @TODO - update use of die
 		die();
 	}
 	

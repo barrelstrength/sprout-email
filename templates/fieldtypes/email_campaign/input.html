@@ -1,0 +1,39 @@
+{% import "_includes/forms" as forms %}
+
+<input type="hidden" name="{{name}}" value="" />
+    
+{% set campaign = value.campaign %}
+
+{% if value.enabled == false %}
+    
+    <p>
+        This content section is not email enabled in the SproutEmail plugin
+    </p>
+    
+{% else %}
+
+    <hr /> 
+    
+    <div id="{{ campaign.emailProvider }}-generalsettings-provider" class="generalsettings"   >
+        <p><strong>Email Provider: </strong> {{campaign.emailProvider}}</p>
+    </div>
+
+    {% if craft.sproutEmail.getGeneralSettingsTemplate(campaign.emailProvider) %}
+        <div id="{{ campaign.emailProvider }}-generalsettings-template" class="generalsettings"   >
+        	{% include "sproutemail/_services/" ~ campaign.emailProvider ~ "/generalCampaignSettings" %}
+        </div>
+    {% else %}
+       <div id="{{ campaign.emailProvider }}-generalsettings-template"  class="generalsettings"  >
+    		{% include "sproutemail/_partials/generalCampaignSettings" %}
+       </div>
+    {% endif %}
+
+    <hr />
+
+    <div id="tab-recipients" class="tab-content">
+      <div id="{{ campaign.emailProvider }}-recipients-template"  >
+    		{% include "sproutemail/_services/" ~ campaign.emailProvider ~ "/recipients" %}
+    	</div>
+    </div>
+
+{% endif %}

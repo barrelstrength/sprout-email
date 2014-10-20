@@ -249,6 +249,25 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	}
 	
 	/**
+	 * Return section based campaign(s) given entry id and campaign id
+	 *
+	 * @param int $entryId            
+	 * @param int $campaignId            
+	 * @return array Campaigns
+	 */
+	public function getSectionBasedCampaignBySectionId($sectionId)
+	{
+		$res = craft()->db
+		        ->createCommand()
+		        ->from( 'sproutemail_campaigns' )
+		        ->where( array('sectionId' => $sectionId ) )
+		        ->limit( 1 )
+		        ->queryRow();
+        return $res;
+	}
+
+
+	/**
 	 * Returns notifications
 	 *
 	 * @return array

@@ -1,6 +1,5 @@
 {% set subscriber_lists = craft.sproutEmail.getSubscriberList('SendGrid') %}
 
-
 {% if(subscriber_lists|length > 0) %}
 
     {{ forms.field({
