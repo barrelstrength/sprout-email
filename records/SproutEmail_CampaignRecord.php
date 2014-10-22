@@ -27,6 +27,9 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array (
+			'fieldLayoutId' => array (
+				AttributeType::Number
+			),
 			'sectionId' => array (
 				AttributeType::Number 
 			),
@@ -93,6 +96,11 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array (
+			'fieldLayout' => array(
+				static::BELONGS_TO, 
+				'FieldLayoutRecord', 
+				'onDelete' => static::SET_NULL
+			),
 			'section' => array (
 				self::BELONGS_TO,
 				'SectionRecord',

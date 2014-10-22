@@ -17,7 +17,7 @@
 
 {% set tabs = {
     general: { 
-      label: "Email-Enabled Section Info"|t,
+      label: "Email Blast Type"|t,
       url: url('sproutemail/campaigns/edit/' ~ campaignId),
       class: 'campaigninfo'
     },
@@ -31,6 +31,11 @@
       url: url('sproutemail/campaigns/edit/' ~ campaignId ~ '/template'),
       class: 'template'
     },
+    fields: {
+      label: "Fields"|t,
+      url: url('sproutemail/campaigns/edit/' ~ campaignId ~ '/fields'),
+      class: 'fields'
+    }
 } %}
 
 {% if craft.request.getSegment('5') %}
@@ -44,6 +49,8 @@
     {% include "sproutemail/campaigns/_tabs/template" %}
 {% elseif craft.request.getSegment('5') == 'recipients' %} 
     {% include "sproutemail/campaigns/_tabs/recipients" %}
+{% elseif craft.request.getSegment('5') == 'fields' %}
+    {% include 'sproutemail/campaigns/_tabs/fields' %}
 {% else %}
     {% include "sproutemail/campaigns/_tabs/info" %}
 {% endif %}

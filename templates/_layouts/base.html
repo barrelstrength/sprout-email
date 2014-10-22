@@ -5,46 +5,30 @@
 {% set tabs = {
     campaigns:  { 
       label: "Email Blasts"|t, 
-      url: url('sproutemail/campaigns') 
+      url: url('sproutemail/emailblasts') 
     },
     notifications:  { 
       label: "Notifications"|t, 
       url: url('sproutemail/notifications') 
     },
     settings:  { 
-      label: "Settings"|t, 
+      label: "Settings"|t,
       url: url('sproutemail/settings') 
     }
 } %}
 
-{# 
-subscribers: { 
-  label: "Subscribers"|t, 
-  url: url('sproutemail/subscribers')
-},
-reports:  { 
-  label: "Reports"|t, 
-  url: url('sproutemail/reports') 
-},
-templates: { 
-  label: "Templates"|t, 
-  url: url('sproutemail/templates')
-}, 
-#}
-
 {% set selectedTab = craft.request.segment(2) ? craft.request.segment(2) : 'overview' %}
 
-{% set content %}
+{% if currentUser.can('editSproutEmailSettings') %}
+  {% set extraPageHeaderHtml %}
+    <a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
+  {% endset %}
+{% endif %}
+
+{% block main %}
   
   {{ body }}
 
-  <footer class="bsd-branding">
-    <p>
-      Powered by <a href="http://barrelstrengthdesign.com" target="_blank">Sprout Email</a> {{ craft.sproutEmail.version }} | 
-      Designed by <a href="http://barrelstrengthdesign.com" target="_blank">(Barrel Strength)</a>
-    </p>
-  </footer>
-
-{% endset %}
+{% endblock %}
 
 {% includeCssResource "sproutemail/css/sproutemail.css" %}

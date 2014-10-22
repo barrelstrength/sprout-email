@@ -1,0 +1,28 @@
+{% extends "_layouts/cp" %}
+
+{% set title  = "Settings"|t %}
+
+{% set crumbs = [
+  { label: "Sprout Email"|t, url: url('sproutemail') }
+] %}
+
+{% set tabs = {
+	general: {
+	    label: "Email Blast Settings"|t,
+	    url: "#settings-general"
+	},
+	settings: {
+	    label: "Control Panel"|t,
+	    url: "#settings-cp"
+	}
+} %}
+
+{% set content %}
+
+  {{ body }}
+
+  {% include 'sproutemail/_partials/brand/footer' %}
+
+{% endset %}
+
+{% includeCssResource "sproutemail/css/brand.css" %}

@@ -1,0 +1,24 @@
+{% extends "sproutemail/_layouts/elementindex" %}
+{% set title = "Email Blasts"|t %}
+{% set elementType = 'SproutEmail_EmailBlast' %}
+
+{% set tabs = {
+  emailblasts:  { 
+    label: "Email Blasts"|t, 
+    url: url('sproutforms/emailblasts') 
+  }
+} %}
+
+{% set selectedTab = 'emailblasts' %}
+
+{% block sidebar %}
+	
+	<div class="buttons">
+		<a class="btn submit add icon" href="{{ url('sproutemail/emailblasts/new') }}">{{ "New Email Blast"|t }}</a>
+	</div>
+
+	<div id="groups">
+  	{{ parent() }}
+  </div>
+
+{% endblock %}

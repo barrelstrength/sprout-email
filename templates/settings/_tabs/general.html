@@ -1,0 +1,78 @@
+{% import "_includes/forms" as forms %}
+
+{% set emailProviders = craft.sproutEmail.getEmailProviders() %}
+{% set campaigns = craft.sproutEmail.getSectionBasedCampaignTypes() %}
+
+{% if campaigns|length %}
+	
+	<h3>
+		Email Blast Types
+		<span class="info">
+			<p>Create multiple Email Blast Types with unique fields, layouts, and email service provider integrations.</p>
+		</span>
+	</h3>
+
+	{% for campaign in campaigns %}
+		{% if loop.first %}
+
+		<table id="campaigns" class="data fullwidth">
+			<thead>
+				<th width="40%"></th>
+				<th width="20%"></th>
+				<th width="10%"></th>
+				<th width="15%"></th>
+			</thead>
+		{% endif %}
+			<tr>
+				<td><a href="{{ url('sproutemail/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		{% if loop.last %}
+		</table>
+		{% endif %}
+
+	{% endfor %}
+ 	
+	<div class="buttons">
+		<a class="btn submit add icon" href="{{ url('sproutemail/campaigns/new') }}">New Email Blast Types</a>
+	</div>
+
+{% else %}
+ 	
+ 	<div style="width:40%;">
+
+	 	<h2>Create your first Email Blast Type</h2>
+
+	 	<p>Email Blast Types are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
+
+	 	<div class="buttons">
+			<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create an Email Blast Type &raquo;</a>
+		</div>
+
+	</div>
+
+	<br/>
+	<br/>
+	
+{% endif %}
+
+<form method="post" action="" accept-charset="UTF-8">
+	<input type="hidden" name="action" value="sproutEmail/campaigns/saveSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings">
+
+	<div id="tab-campaign-info" class="tab-content" >	
+		{% for key, val in emailProviders %}
+			<div id="{{ key }}-recipients-template" class="recipient-templates" >
+				{% include "sproutemail/_services/" ~ key ~ "/settings" %}
+				<hr/>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="Save API Settings">
+	</div>
+
+</form>

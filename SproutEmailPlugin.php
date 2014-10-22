@@ -57,18 +57,16 @@ class SproutEmailPlugin extends BasePlugin
 				'pluginNameOverride' => AttributeType::String 
 		);
 	}
-	
-	public function getSettingsHtml()
-	{
-		return craft()->templates->render( 'sproutemail/_cp/settings', array (
-			'settings' => $this->getSettings() 
-		));
-	}
 
 	public function registerUserPermissions()
 	{
 		return array(
-			'manageEmail'	=> array('label' => Craft::t('Manage Email Section')),
+			'manageEmail'	=> array(
+				'label' => Craft::t('Manage Email Section')
+			),
+			'editSproutFormsSettings'	=> array(
+				'label' => Craft::t('Edit Form Settings')
+			)
 		);
 	}
 	
@@ -89,6 +87,9 @@ class SproutEmailPlugin extends BasePlugin
 			
 			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/recipients' => 
 			'sproutemail/campaigns/_edit',
+
+			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/fields' => 
+			'sproutemail/campaigns/_edit',
 			
 			'sproutemail/notifications/new' => 
 			'sproutemail/notifications/_create',
@@ -107,6 +108,27 @@ class SproutEmailPlugin extends BasePlugin
 			
 			'sproutemail/events/edit/(?P<eventId>\d+)' => 
 			'sproutemail/events/_edit',
+
+
+			/*
+			 * Create New Email Blast
+			 * @controller SproutEmail_EmailBlastController
+			 * @method     actionEditEmailBlastTemplate
+			 * @template   sproutemail/templates/emailblasts/_edit.html
+			 */
+			'sproutemail/emailblasts/new' => array(
+				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
+			),
+
+			/*
+			 * Edit Settings
+			 * @controller SproutEmail_SettingsController
+			 * @method     actionSettingsIndexTemplate
+			 * @template   sproutemail/templates/settings/index.html
+			 */
+			'sproutemail/settings' => array(
+				'action' => 'sproutEmail/settings/settingsIndexTemplate'
+			),
 		);
 	}
 

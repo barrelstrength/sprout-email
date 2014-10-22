@@ -14,10 +14,10 @@
 	{% if emailProviders %}
 	
 		{{ forms.textField({
-			label: "Email-Enabled Section Name"|t,
+			label: "Email Blast Type Name"|t,
 			id: 'name',
 			name: 'name',
-			instructions: "Human readable name for all Email Blasts in this Section"|t,
+			instructions: "Human readable name for this type of Email Blast"|t,
 			value: (campaign is defined ? campaign.name : null),
 			autofocus: true,
 			required: true,
@@ -55,8 +55,16 @@
 	
 	{% else %}
 	
-		<p>In order to set up an Email Blast, you must first provide valid MailChimp and/or CampaignMonitor API settings.
-		<a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
+		<p>In order to set up an Email Blast Type, you must first provide valid API settings for one of the supported email service providers.</p>
+
+		<ul>
+			<li>Campaign Monitor</li>
+			<li>MailChimp</li>
+			<li>MailGun</li>
+			<li>SendGrid</li>
+		</ul>
+		
+		<p><a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
 	
 	{% endif %}
 </form>

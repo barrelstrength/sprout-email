@@ -33,6 +33,11 @@
       url: '#',
       class: 'tab-recipients disabled'
     },
+    fields: {
+      label: "Fields"|t,
+      url: url('sproutemail/campaigns/edit/' ~ campaignId ~ '/fields'),
+      class: 'fields'
+    }
 } %}
 
 {% set content %}
