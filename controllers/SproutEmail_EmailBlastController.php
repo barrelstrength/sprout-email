@@ -300,22 +300,28 @@ class SproutEmail_EmailBlastController extends BaseController
 	 */
 	public function actionEditEmailBlastTemplate(array $variables = array())
 	{	
-		$emailBlastId = craft()->request->getSegment(4);
+		$emailBlastTypeId = craft()->request->getSegment(3);
+
+		$emailBlastType = craft()->sproutEmail->getCampaign(array('id'=>$emailBlastTypeId));
 		
-		$emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
+		// $emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
 		
-		if (is_a($emailBlast, 'SproutEmail_EmailBlast')) 
+		if (is_a($emailBlastType, 'SproutEmail_EmailBlastTypeModel')) 
 		{
-			$variables['emailBlastId'] = $emailBlast->id;	
+			$variables['emailBlastTypeId'] = $emailBlastType->id;	
 
 			// This is our element, so we know where to get the field values
-			$variables['emailBlast']   = $emailBlast;
+			$variables['emailBlastType']   = $emailBlastType;
+
+			$variables['tabs'] = $emailBlastType->getFieldLayout()->getTabs();
 		}
 		else
 		{
-			$variables['emailBlast']   = new SproutEmail_EmailBlastModel();
-			$variables['emailBlastId'] = '';
+			$variables['emailBlastType']   = new SproutEmail_EmailBlastTypeModel();
+			$variables['emailBlastTypeId'] = '';
 		}
+
+		$variables['emailBlastId'] = "";
 
 		$this->renderTemplate('sproutemail/emailblasts/_edit', $variables);
 	}
