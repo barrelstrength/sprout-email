@@ -2,20 +2,16 @@
 
 {% set title = craft.SproutEmail.name %}
 
-{% set tabs = {
-    campaigns:  { 
+{# {% set tabs = {
+    emailblasts:  { 
       label: "Email Blasts"|t, 
       url: url('sproutemail/emailblasts') 
     },
     notifications:  { 
       label: "Notifications"|t, 
       url: url('sproutemail/notifications') 
-    },
-    settings:  { 
-      label: "Settings"|t,
-      url: url('sproutemail/settings') 
     }
-} %}
+} %} #}
 
 {% set selectedTab = craft.request.segment(2) ? craft.request.segment(2) : 'overview' %}
 

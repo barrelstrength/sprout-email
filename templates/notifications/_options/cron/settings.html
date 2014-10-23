@@ -2,13 +2,13 @@
 
 <h3>Send this notification when the following url is requested:</h3>
 
-{% if campaign.notificationEvents[0].options.cronHash is defined %}
+{% if emailBlastType.notificationEvents[0].options.cronHash is defined %}
 
-    {% set hash = campaign.notificationEvents[0].options.cronHash %}
+    {% set hash = emailBlastType.notificationEvents[0].options.cronHash %}
     
 {% else %}
 
-    {% set hash = campaign.id ~ '-' ~ random() ~ '-' ~ random() ~ '-' ~ random() %}
+    {% set hash = emailBlastType.id ~ '-' ~ random() ~ '-' ~ random() ~ '-' ~ random() %}
 
 {% endif %}
 

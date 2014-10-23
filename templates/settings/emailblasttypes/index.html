@@ -3,14 +3,14 @@
 
 {% set body %}
 
-	{% set campaigns = craft.sproutEmail.getSectionCampaigns() %}
+	{% set emailblasts = craft.sproutEmail.getEmailBlastTypes() %}
 
-	{# If there are Section-based Campaigns, Display them. #}
-	{% for campaign in campaigns %}
-		{% include 'sproutemail/_partials/campaignindex' %}
+	{# If there are Section-based EmailBlastTypes, Display them. #}
+	{% for emailBlastType in emailblasts %}
+		{% include 'sproutemail/_partials/emailblastsindex' %}
 	{% endfor %}
 	
-	{% if not campaigns|length %}
+	{% if not emailblasts|length %}
 	 	
 	 	<div style="width:40%;">
 
@@ -19,7 +19,7 @@
 		 	<p>Email Blast Types are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
 
 		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create an Email Blast Type &raquo;</a>
+				<a class="btn submit icon" href="{{ url('sproutemail/emailblasts/new') }}">Create an Email Blast Type &raquo;</a>
 			</div>
 
 		</div>

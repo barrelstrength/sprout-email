@@ -48,18 +48,18 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 	}
 	
 	/**
-	 * Exports campaign (no send)
+	 * Exports emailBlastType (no send)
 	 *
-	 * @param array $campaign            
+	 * @param array $emailBlastType            
 	 * @param array $listIds            
 	 */
-	public function exportCampaign($campaign = array(), $listIds = array(), $return = false)
+	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{	
 	    $arr = array();
     	$client = new Client('http://'.$_SERVER["HTTP_HOST"]);
 
         // Get the HTML version
-            $request = $client->get('/'.$campaign['htmlBodyTemplate'].'?entryId='.$campaign['entryId']);
+            $request = $client->get('/'.$emailBlastType['htmlBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
                             
             // send request / get response
                 $response = $request->send();
@@ -68,7 +68,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
                 $arr["html"] = trim($response->getBody());
 
         // Get the Text Version
-            $request = $client->get('/'.$campaign['textBodyTemplate'].'?entryId='.$campaign['entryId']);
+            $request = $client->get('/'.$emailBlastType['textBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
                             
         // send request / get response
             $response = $request->send();
@@ -78,9 +78,9 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
             
             
         // Show name of email, name of selected list and name of sender?     
-            $arr["title"]       = $campaign["title"];
-            $arr["fromEmail"]  = $campaign["fromEmail"];
-            $arr["fromName"]   = $campaign["fromName"];
+            $arr["title"]       = $emailBlastType["title"];
+            $arr["fromEmail"]  = $emailBlastType["fromEmail"];
+            $arr["fromName"]   = $emailBlastType["fromName"];
                 
             echo json_encode($arr);
             unset($client);
@@ -117,7 +117,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		return $record->save();
 	}
 
-	public function sendCampaign($campaign = array(), $listIds = array())
+	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
 	{
 		
 	}

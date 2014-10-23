@@ -76,31 +76,31 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerCpRoutes()
 	{
 		return array (
-			'sproutemail/campaigns/new' => 
-			'sproutemail/campaigns/_create',
+			'sproutemail/settings/emailblasttypes/new' => 
+			'sproutemail/settings/emailblasttypes/_create',
 			
-			'sproutemail/campaigns/edit\/(?P<campaignId>\d+)' => 
-			'sproutemail/campaigns/_edit',
+			'sproutemail/settings/emailblasttypes/edit\/(?P<emailBlastTypeId>\d+)' => 
+			'sproutemail/settings/emailblasttypes/_edit',
 			
-			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/template' => 
-			'sproutemail/campaigns/_edit',
+			'sproutemail/settings/emailblasttypes/edit/(?P<emailBlastTypeId>\d+)/template' => 
+			'sproutemail/settings/emailblasttypes/_edit',
 			
-			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/recipients' => 
-			'sproutemail/campaigns/_edit',
+			'sproutemail/settings/emailblasttypes/edit/(?P<emailBlastTypeId>\d+)/recipients' => 
+			'sproutemail/settings/emailblasttypes/_edit',
 
-			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/fields' => 
-			'sproutemail/campaigns/_edit',
+			'sproutemail/settings/emailblasttypes/edit/(?P<emailBlastTypeId>\d+)/fields' => 
+			'sproutemail/settings/emailblasttypes/_edit',
 			
 			'sproutemail/notifications/new' => 
 			'sproutemail/notifications/_create',
 			
-			'sproutemail/notifications/edit\/(?P<campaignId>\d+)' => 
+			'sproutemail/notifications/edit\/(?P<emailBlastTypeId>\d+)' => 
 			'sproutemail/notifications/_edit',
 			
-			'sproutemail/notifications/edit/(?P<campaignId>\d+)/template' => 
+			'sproutemail/notifications/edit/(?P<emailBlastTypeId>\d+)/template' => 
 			'sproutemail/notifications/_edit',
 			
-			'sproutemail/notifications/edit/(?P<campaignId>\d+)/recipients' => 
+			'sproutemail/notifications/edit/(?P<emailBlastTypeId>\d+)/recipients' => 
 			'sproutemail/notifications/_edit',
 			
 			'sproutemail/events/new' => 

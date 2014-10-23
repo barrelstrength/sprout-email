@@ -59,73 +59,14 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 		);
 
 		// Prepare the data for our sources sidebar
-		// $groups = craft()->sproutForms_groups->getAllFormGroups('id');
-		// $forms = craft()->sproutForms_forms->getAllForms();
+		$emailBlastTypes = craft()->sproutEmail->getAllEmailBlastTypes();
 
-		// $noSources = array();
-		// $prepSources = array();
-
-		// foreach ($forms as $form) 
-		// {
-		// 	if ($form->groupId) 
-		// 	{
-		// 		if (!isset($prepSources[$form->groupId]['heading']))
-		// 		{
-		// 			$prepSources[$form->groupId]['heading'] = $groups[$form->groupId]->name;	
-		// 		}
-				
-		// 		$prepSources[$form->groupId]['forms'][$form->id] = array(
-		// 			'label' => $form->name,
-		// 			'data' => array('formId' => $form->id),
-		// 			'criteria' => array('formId' => $form->id)
-		// 		);
-		// 	}
-		// 	else
-		// 	{
-		// 		$noSources[$form->id] = array(
-		// 			'label' => $form->name,
-		// 			'data' => array('formId' => $form->id),
-		// 			'criteria' => array('formId' => $form->id)
-		// 		);
-		// 	}
-		// }
-
-		// usort($prepSources, 'self::_sortByGroupName');
-
-		// // Build our sources for forms with no group
-		// foreach ($noSources as $form) 
-		// {
-		// 	$sources[$form['data']['formId']] = array(
-		// 		'label' => $form['label'],
-		// 		'data' => array(
-		// 			'formId' => $form['data']['formId'],
-		// 		),
-		// 		'criteria' => array(
-		// 			'formId' => $form['criteria']['formId'],
-		// 		)
-		// 	);
-		// }
-
-		// // Build our sources sidebar for forms in groups
-		// foreach ($prepSources as $source) 
-		// {
-		// 	$sources[] = array(
-		// 		'heading' => $source['heading']
-		// 	);
-
-		// 	foreach ($source['forms'] as $form) 
-		// 	{
-		// 		$sources[] = array(
-		// 			'label' => $form['label'],
-		// 			'data' => array(
-		// 				'formId' => $form['data']['formId'],
-		// 			),
-		// 			'criteria' => array(
-		// 				'formId' => $form['criteria']['formId'],
-		// 			)
-		// 		);
-		// 	}
-		// }
+		foreach ($emailBlastTypes as $emailBlastType) 
+		{
+			$sources[] = array(
+				'label' => $emailBlastType['name'],
+			);
+		}
 
 		return $sources;
 	}

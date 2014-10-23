@@ -4,7 +4,7 @@
 		<div id="tab{{ loop.index }}"{% if not loop.first %} class="hidden"{% endif %}>
 			{% include "_includes/fields" with {
 				fields:  tab.getFields(),
-				element: entry,
+				element: emailBlast,
 				static:  (static is defined ? static : false)
 			} only %}
 		</div>

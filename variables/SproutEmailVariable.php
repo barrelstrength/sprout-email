@@ -33,62 +33,46 @@ class SproutEmailVariable
 	}
 	
 	/**
-	 * Get All Campaigns
-	 * By default, this returns all campaigns that are normal campaigns.
+	 * Get All EmailBlastTypes
+	 * By default, this returns all emailblasts that are normal emailblasts.
 	 * If you want
-	 * to get only Section-based campaigns, pass 'true' to the $sectionId paramenter
+	 * to get only Section-based emailblasts, pass 'true' to the $sectionId paramenter
 	 *
 	 * @todo - make this more intuitive, kinda clunky parameter names
 	 *      
-	 * @return mixed Campaign model
+	 * @return mixed EmailBlastType model
 	 */
-	public function getCampaigns()
+	public function getEmailBlastTypes()
 	{
-		return craft()->sproutEmail->getAllCampaigns();
+		/**
+	 * Get All Section Based EmailBlastTypes
+	 * return craft()->sproutEmail->getEmailBlastTypes();
+	 */
+	
+		return craft()->sproutEmail->getAllEmailBlastTypes();
 	}
 	
 	/**
-	 * Get All Section Based Campaigns
-	 * By default, this returns all campaigns that are normal campaigns.
-	 * If you want
-	 * to get only Section-based campaigns, pass 'true' to the $sectionId paramenter
+	 * Get a EmailBlastType by id *
 	 *
-	 * @todo - make this more intuitive, kinda clunky parameter names
-	 *      
-	 * @return mixed Campaign model
+	 * @param int $emailBlastTypeId            
+	 * @return object emailBlastType record
 	 */
-	public function getSectionCampaigns()
+	public function getEmailBlastTypeById($emailBlastTypeId)
 	{
-		// Craft::dump(craft()->getBaseUrl(true));die();
-		return craft()->sproutEmail->getSectionCampaigns();
-	}
-
-	public function getSectionBasedCampaignTypes()
-	{
-		return craft()->sproutEmail->getSectionBasedCampaignTypes();
-	}
-	
-	/**
-	 * Get a Campaign by id *
-	 *
-	 * @param int $campaignId            
-	 * @return object campaign record
-	 */
-	public function getCampaignById($campaignId)
-	{
-		return craft()->sproutEmail->getCampaign( array (
-				'id' => $campaignId 
+		return craft()->sproutEmail->getEmailBlastType( array (
+				'id' => $emailBlastTypeId 
 		) );
 	}
 	
 	/**
-	 * Get all Campaign Info (only settings, no related Section Campaigns)
+	 * Get all EmailBlastType Info (only settings, no related Section EmailBlastTypes)
 	 *
-	 * @return object campaign table records
+	 * @return object emailBlastType table records
 	 */
-	public function getAllCampaignInfo()
+	public function getAllEmailBlastTypeInfo()
 	{
-		return craft()->sproutEmail->getAllCampaignInfo();
+		return craft()->sproutEmail->getAllEmailBlastTypeInfo();
 	}
 	
 	/**
@@ -157,15 +141,15 @@ class SproutEmailVariable
 	
 	
 	/**
-	 * Get campaign list for specified provider
+	 * Get emailBlastType list for specified provider
 	 *
 	 * @param string $provider            
 	 * @return array
 	 */
-	public function getCampaignList($provider = 'SproutEmail')
+	public function getEmailBlastTypeList($provider = 'SproutEmail')
 	{
 		$service = 'sproutEmail_' . lcfirst( $provider );
-		return craft()->{$service}->getCampaignList();
+		return craft()->{$service}->getEmailBlastTypeList();
 	}
 	
 	/**
@@ -368,7 +352,7 @@ class SproutEmailVariable
 	
 	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
-		$customTemplate = 'sproutemail/_services/' . $emailProvider . '/generalCampaignSettings';
+		$customTemplate = 'sproutemail/_services/' . $emailProvider . '/generalEmailBlastTypeSettings';
 		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
 		
 		// if there is a custom set of general settings for this provider, return those; if not, return the default

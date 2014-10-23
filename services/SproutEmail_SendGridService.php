@@ -62,12 +62,12 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	}
 	
 	/**
-	 * Exports campaign (no send)
+	 * Exports emailBlastType (no send)
 	 *
-	 * @param array $campaign            
+	 * @param array $emailBlastType            
 	 * @param array $listIds            
 	 */
-	public function exportCampaign($campaign = array(), $listIds = array(), $return = false)
+	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{	
 		// Turn off devMode output (@TODO - this doesn't work)
 		craft()->log->removeRoute('WebLogRoute');
@@ -82,29 +82,29 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
             $client = new Client($endpoint);
         
         // Get the HTML
-            $request = $client->get('/'.$campaign["htmlTemplate"].'?entryId='.$campaign["entryId"]);
+            $request = $client->get('/'.$emailBlastType["htmlTemplate"].'?entryId='.$emailBlastType["entryId"]);
             $response = $request->send();
             $html = trim($response->getBody());
 
         // Get the text
-            $request = $client->get("/".$campaign ['textTemplate'] . "?entryId={$campaign['entryId']}");
+            $request = $client->get("/".$emailBlastType ['textTemplate'] . "?entryId={$emailBlastType['entryId']}");
             $response = $request->send();
             $text = trim($response->getBody());
             
         // Get the Entry
-            $entry = craft()->entries->getEntryById($campaign["entryId"]);
+            $entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
 
 
 		// check if newsletter exists
     		$res = $sendgrid->newsletter_get($entry->title);
 		
         // Get the subject
-            $subject = (isset($entry->$campaign["subjectHandle"]) && $entry->$campaign["subjectHandle"] != '') ? $entry->$campaign["subjectHandle"] : $entry->title;
+            $subject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
             
 		// need to create the template (newsletter)
 		if( ! $res)
 		{
-			$res = $sendgrid->newsletter_add($campaign ['fromName'], $entry->title , $subject , $text , $html);
+			$res = $sendgrid->newsletter_add($emailBlastType ['fromName'], $entry->title , $subject , $text , $html);
 		}
 		
 		if( $error = $sendgrid->getLastResponseError())
@@ -113,9 +113,9 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 		
 		// if sender address has changed, update the newsletter
-		if(isset($res['identity']) && $res['identity'] != $campaign['fromName'])
+		if(isset($res['identity']) && $res['identity'] != $emailBlastType['fromName'])
 		{
-			$res = $sendgrid->newsletter_edit($campaign ['fromName'], $res['name'] , $entry->title, $entry->title , $text , $html);
+			$res = $sendgrid->newsletter_edit($emailBlastType ['fromName'], $res['name'] , $entry->title, $entry->title , $text , $html);
 						
 			if( $error = $sendgrid->getLastResponseError())
 			{
@@ -132,7 +132,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 		
 		// schedule
-// 		$res = $sendgrid->newsletter_schedule_add($campaign ['name']);
+// 		$res = $sendgrid->newsletter_schedule_add($emailBlastType ['name']);
 		
 // 		if( $error = $sendgrid->getLastResponseError())
 // 		{
@@ -145,7 +145,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			switch($res['message'])
 			{
 				case 'success':
-					$msg["response"] = 'Your campaign has been successfully exported. Please login to SendGrid to complete your email blast.';
+					$msg["response"] = 'Your emailBlastType has been successfully exported. Please login to SendGrid to complete your email blast.';
 					break;
 				default:
 					$msg["response"] = 'Unknown error.';
@@ -194,12 +194,12 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	}
 	
 	/**
-	 * Exports campaign (with send)
+	 * Exports emailBlastType (with send)
 	 *
-	 * @param array $campaign            
+	 * @param array $emailBlastType            
 	 * @param array $listIds            
 	 */
-	public function sendCampaign($campaign = array(), $listIds = array())
+	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
 	{
 		
 	}

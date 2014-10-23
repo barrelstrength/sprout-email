@@ -7,52 +7,52 @@ namespace Craft;
 class SproutEmail_NotificationsService extends BaseApplicationComponent
 {
 	/**
-	 * Associates a notifcation campaign with an event
+	 * Associates a notifcation emailBlastType with an event
 	 *
-	 * @param int $campaignId            
+	 * @param int $emailBlastTypeId            
 	 * @param int $notificationEventId            
 	 */
-	public function associateCampaign($campaignId, $notificationEventId)
+	public function associateEmailBlastType($emailBlastTypeId, $notificationEventId)
 	{
-		return SproutEmail_CampaignNotificationEventRecord::model()->associateCampaignEvent( $campaignId, $notificationEventId );
+		return SproutEmail_EmailBlastTypeNotificationEventRecord::model()->associateEmailBlastTypeEvent( $emailBlastTypeId, $notificationEventId );
 	}
 	
 	/**
 	 * Sets notification event options
 	 *
-	 * @param int $campaignId            
+	 * @param int $emailBlastTypeId            
 	 * @param array $data
 	 *            ($_POST)
 	 */
-	public function setCampaignNotificationEventOptions($campaignId, $data)
+	public function setEmailBlastTypeNotificationEventOptions($emailBlastTypeId, $data)
 	{
-		return SproutEmail_CampaignNotificationEventRecord::model()->setCampaignNotificationEventOptions( $campaignId, $data );
+		return SproutEmail_EmailBlastTypeNotificationEventRecord::model()->setEmailBlastTypeNotificationEventOptions( $emailBlastTypeId, $data );
 	}
 	
 	/**
-	 * Returns all campaign notifications based on the passed event
+	 * Returns all emailBlastType notifications based on the passed event
 	 *
 	 * @param string $event            
 	 * @param object $entry            
 	 */
 	public function getEventNotifications($event, $entry)
 	{
-		return SproutEmail_CampaignNotificationEventRecord::model()->getCampaignEventNotifications( $event, $entry );
+		return SproutEmail_EmailBlastTypeNotificationEventRecord::model()->getEmailBlastTypeEventNotifications( $event, $entry );
 	}
 	
 	/**
-	 * Return campaign notification given campaign id
+	 * Return emailBlastType notification given emailBlastType id
 	 * 
-	 * @param int $campaignId
+	 * @param int $emailBlastTypeId
 	 */
-	public function getCampaignNotificationByCampaignId($campaignId)
+	public function getEmailBlastTypeNotificationByEmailBlastTypeId($emailBlastTypeId)
 	{
 		$criteria = new \CDbCriteria();
-		$criteria->condition = 'campaignId=:campaignId';
+		$criteria->condition = 'emailBlastTypeId=:emailBlastTypeId';
 		$criteria->params = array (
-				':campaignId' => $campaignId 
+				':emailBlastTypeId' => $emailBlastTypeId 
 		);
 		
-		return SproutEmail_CampaignNotificationEventRecord::model()->with('notificationEvent')->find( $criteria );
+		return SproutEmail_EmailBlastTypeNotificationEventRecord::model()->with('notificationEvent')->find( $criteria );
 	}
 }

@@ -30,7 +30,7 @@ class SproutEmail_EmailBlastRecord extends BaseRecord
 	{
 		return array(
 			'element' => array(static::BELONGS_TO, 'ElementRecord', 'id', 'required' => true, 'onDelete' => static::CASCADE),
-			'campaign' => array(static::BELONGS_TO, 'SproutEmail_CampaignRecord', 'required' => true, 'onDelete' => static::CASCADE),
+			'emailBlastType' => array(static::BELONGS_TO, 'SproutEmail_EmailBlastTypeRecord', 'required' => true, 'onDelete' => static::CASCADE),
 		);
 	}
 }

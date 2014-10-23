@@ -1,0 +1,22 @@
+{% import "_includes/forms" as forms %}
+
+{% set emailProviders = craft.sproutEmail.getEmailProviders() %}
+
+<form method="post" action="" accept-charset="UTF-8">
+	<input type="hidden" name="action" value="sproutEmail/emailBlastType/saveSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings">
+
+	<div id="tab-emailBlastType-info" class="tab-content" >	
+		{% for key, val in emailProviders %}
+			<div id="{{ key }}-recipients-template" class="recipient-templates" >
+				{% include "sproutemail/_services/" ~ key ~ "/settings" %}
+				<hr/>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="Save API Settings">
+	</div>
+
+</form>

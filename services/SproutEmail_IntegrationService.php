@@ -61,7 +61,7 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 				) );
 				
 				// disassociate
-				craft()->db->createCommand()->delete( 'sproutemail_campaign_notification_events', array (
+				craft()->db->createCommand()->delete( 'sproutemail_emailblasttypes_notificationevents', array (
 						'notificationEventId' => $event->id 
 				) );
 			}

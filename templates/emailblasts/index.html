@@ -5,12 +5,16 @@
 {% set tabs = {
   emailblasts:  { 
     label: "Email Blasts"|t, 
-    url: url('sproutforms/emailblasts') 
-  }
+    url: url('sproutemail/emailblasts') 
+  },
+  notifications:  { 
+    label: "Notifications"|t, 
+    url: url('sproutemail/notifications') 
+  },
 } %}
 
 {% set selectedTab = 'emailblasts' %}
-{% set emailBlastTypes = craft.sproutEmail.getCampaigns() %}
+{% set emailBlastTypes = craft.sproutEmail.getEmailBlastTypes() %}
 
 {% block sidebar %}
 	

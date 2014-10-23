@@ -15,7 +15,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	{
 		return array_merge(parent::defineAttributes(), array(
 			'id'         => AttributeType::Number,
-			'campaignId' => AttributeType::Number
+			'emailBlastTypeId' => AttributeType::Number
 		));
 	}
 
@@ -26,12 +26,12 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$campaignArray = craft()->sproutEmail->getSectionCampaigns($this->id);
+		$emailBlastTypeArray = craft()->sproutEmail->getEmailBlastTypes($this->id);
 
-		$campaignModel = new SproutEmail_CampaignModel();
-		$campaignModel->setAttributes($campaignArray);
+		$emailBlastTypeModel = new SproutEmail_EmailBlastTypeModel();
+		$emailBlastTypeModel->setAttributes($emailBlastTypeArray);
 
-		return $campaignModel->getFieldLayout();
+		return $emailBlastTypeModel->getFieldLayout();
 	}
 
 	/**

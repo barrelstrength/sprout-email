@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * Campaign record
+ * EmailBlastType record
  */
-class SproutEmail_CampaignRecord extends BaseRecord
+class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 {
 	public $rules = array ();
 	public $sectionRecord;
@@ -16,7 +16,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_campaigns';
+		return 'sproutemail_emailblasttypes';
 	}
 	
 	/**
@@ -106,27 +106,27 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				'SectionRecord',
 				'sectionId' 
 			),
-			'campaignRecipientList' => array (
+			'emailBlastTypeRecipientList' => array (
 				self::HAS_MANY,
-				'SproutEmail_CampaignRecipientListRecord',
-				'campaignId' 
+				'SproutEmail_EmailBlastTypeRecipientListRecord',
+				'emailBlastTypeId' 
 			),
 			'recipientList' => array (
 				self::HAS_MANY,
 				'SproutEmail_RecipientListRecord',
 				'recipientListId',
-				'through' => 'campaignRecipientList' 
+				'through' => 'emailBlastTypeRecipientList' 
 			),
-			'campaignNotificationEvent' => array (
+			'emailBlastTypeNotificationEvent' => array (
 				self::HAS_MANY,
-				'SproutEmail_CampaignNotificationEventRecord',
-				'campaignId' 
+				'SproutEmail_EmailBlastTypeNotificationEventRecord',
+				'emailBlastTypeId' 
 			),
 			'notificationEvent' => array (
 				self::HAS_MANY,
 				'SproutEmail_NotificationEventRecord',
 				'notificationEventId',
-				'through' => 'campaignNotificationEvent' 
+				'through' => 'emailBlastTypeNotificationEvent' 
 			) 
 		);
 	}
@@ -186,22 +186,22 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	}
 	
 	/**
-	 * Return section based campaign(s)
+	 * Return section based emailBlastType(s)
 	 *
-	 * @param int $campaign_id            
-	 * @return array Campaigns
+	 * @param int $emailBlastType_id            
+	 * @return array EmailBlastTypes
 	 */
-	public function getSectionBasedCampaigns($campaign_id = false)
+	public function getEmailBlastTypes($emailBlastType_id = false)
 	{
 		$where_binds = 'templateOption=:templateOption';
 		$where_params = array (
 				':templateOption' => 3 
 		);
 		
-		if ( $campaign_id )
+		if ( $emailBlastType_id )
 		{
 			$where_binds .= ' AND :id=mc.id';
-			$where_params [':id'] = $campaign_id;
+			$where_params [':id'] = $emailBlastType_id;
 		}
 		
 		return craft()->db->createCommand()->select( 'mc.*,
@@ -210,7 +210,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				e.id as entryId,
 				c.title as title,
 				s.id as sectionId' )
-				->from( 'sproutemail_campaigns mc' )
+				->from( 'sproutemail_emailblasts mc' )
 				->leftJoin( 'sections s', 'mc.sectionId=s.id' )
 				->leftJoin( 'entries e', 's.id = e.sectionId' )
 				->leftJoin( 'content c', 'e.id = c.elementId' )
@@ -219,32 +219,28 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				->order( 'mc.dateCreated desc, el.slug asc' )
 				->queryAll();
 
+		// return craft()->db->createCommand()
+		// 			->select( '*' )
+		// 			->from( 'sproutemail_emailblasts' )
+		// 			->where( 'templateOption=:templateOption', array( ':templateOption' => 3 ) )
+		// 			->order( 'dateCreated desc' )
+		// 			->queryAll();
 	}
 
-	public function getSectionBasedCampaignTypes()
-	{
-			return craft()->db->createCommand()
-					->select( '*' )
-					->from( 'sproutemail_campaigns' )
-					->where( 'templateOption=:templateOption', array( ':templateOption' => 3 ) )
-					->order( 'dateCreated desc' )
-					->queryAll();
-	}
-	
 	/**
-	 * Return section based campaign(s) given entry id and campaign id
+	 * Return section based emailBlastType(s) given entry id and emailBlastType id
 	 *
 	 * @param int $entryId            
-	 * @param int $campaignId            
-	 * @return array Campaigns
+	 * @param int $emailBlastTypeId            
+	 * @return array EmailBlastTypes
 	 */
-	public function getSectionBasedCampaignByEntryAndCampaignId($entryId, $campaignId)
+	public function getEmailBlastTypeByEntryAndEmailBlastTypeId($entryId, $emailBlastTypeId)
 	{
-		$where_binds = 'mc.templateOption=:templateOption AND e.id=:entryId AND mc.id=:campaignId';
+		$where_binds = 'mc.templateOption=:templateOption AND e.id=:entryId AND mc.id=:emailBlastTypeId';
 		$where_params = array (
 				':templateOption' => 3,
 				':entryId' => $entryId,
-				':campaignId' => $campaignId 
+				':emailBlastTypeId' => $emailBlastTypeId 
 		);
 		
 		$res = craft()->db->createCommand()->select( 'mc.*,
@@ -252,22 +248,22 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				s.handle,
 				c.title,
 				e.id as entryId,
-				s.id as sectionId' )->from( 'sproutemail_campaigns mc' )->join( 'sections s', 'mc.sectionId=s.id' )->join( 'entries e', 's.id = e.sectionId' )->join( 'elements_i18n el', 'e.id = el.elementId' )->join( 'content c', 'el.elementId=c.elementId' )->where( $where_binds, $where_params )->queryRow();
+				s.id as sectionId' )->from( 'sproutemail_emailblasts mc' )->join( 'sections s', 'mc.sectionId=s.id' )->join( 'entries e', 's.id = e.sectionId' )->join( 'elements_i18n el', 'e.id = el.elementId' )->join( 'content c', 'el.elementId=c.elementId' )->where( $where_binds, $where_params )->queryRow();
 		return $res;
 	}
 	
 	/**
-	 * Return section based campaign(s) given entry id and campaign id
+	 * Return section based emailBlastType(s) given entry id and emailBlastType id
 	 *
 	 * @param int $entryId            
-	 * @param int $campaignId            
-	 * @return array Campaigns
+	 * @param int $emailBlastTypeId            
+	 * @return array EmailBlastTypes
 	 */
-	public function getSectionBasedCampaignBySectionId($sectionId)
+	public function getEmailBlastTypeBySectionId($sectionId)
 	{
 		$res = craft()->db
 		        ->createCommand()
-		        ->from( 'sproutemail_campaigns' )
+		        ->from( 'sproutemail_emailblasts' )
 		        ->where( array('sectionId' => $sectionId ) )
 		        ->limit( 1 )
 		        ->queryRow();
@@ -283,7 +279,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	public function getNotifications()
 	{
 		$res = craft()->db->createCommand()->select( 'mc.*,
-				mcne.notificationEventId' )->from( 'sproutemail_campaigns mc' )->join( 'sproutemail_campaign_notification_events mcne', 'mc.id=mcne.campaignId' )->queryAll();
+				mcne.notificationEventId' )->from( 'sproutemail_emailblasts mc' )->join( 'sproutemail_emailblasttypes_notificationevents mcne', 'mc.id=mcne.emailBlastTypeId' )->queryAll();
 		return $res;
 	}
 }

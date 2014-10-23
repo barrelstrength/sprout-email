@@ -1,13 +1,13 @@
 
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/campaigns/save">
+	<input type="hidden" name="action" value="sproutEmail/emailBlastType/save">
 	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
-	<input type="hidden" name="id" value="{{ campaignId }}">
+	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="hidden" name="tab" value="info">
 	<input type="hidden" name="continue" value="false">
 	<input type="hidden" name="templateOption" value="3">
 
-	<div id="tab-campaign-info" class="tab-content" >
+	<div id="tab-emailBlastType-info" class="tab-content" >
 
 	{% set emailProviders = craft.sproutEmail.getEmailProviders(true) %}
 	
@@ -18,10 +18,10 @@
 			id: 'name',
 			name: 'name',
 			instructions: "Human readable name for this type of Email Blast"|t,
-			value: (campaign is defined ? campaign.name : null),
+			value: (emailBlastType is defined ? emailBlastType.name : null),
 			autofocus: true,
 			required: true,
-			errors: (campaign is defined ? campaign.getErrors('name') : null) 	
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('name') : null) 	
 		}) }}
 
 		{{ forms.selectField({
@@ -30,18 +30,18 @@
 			name: 'emailProvider',
 			instructions: "Select the platform you will use to send your Email Blasts."|t,
 			options : emailProviders,
-			value: (campaign is defined ? campaign.emailProvider : null),
-			errors: (campaign is defined ? campaign.getErrors('emailProvider') : null)  
+			value: (emailBlastType is defined ? emailBlastType.emailProvider : null),
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProvider') : null)  
 		}) }}
 		
 		{% for emailProvider in emailProviders %}
 		   {% if craft.sproutEmail.getGeneralSettingsTemplate(emailProvider) %}
 			<div id="{{ emailProvider }}-generalsettings-template" class="generalsettings"   >
-				{% include "sproutemail/_services/" ~ emailProvider ~ "/generalCampaignSettings" %}
+				{% include "sproutemail/_services/" ~ emailProvider ~ "/generalEmailBlastTypeSettings" %}
 			</div>
 		   {% else %}
 		   <div id="{{ emailProvider }}-generalsettings-template"  class="generalsettings"  >
-				{% include "sproutemail/_partials/generalCampaignSettings" %}
+				{% include "sproutemail/_partials/generalEmailBlastTypeSettings" %}
 		   </div>
 		   {% endif %}
 		{% endfor %}
@@ -72,8 +72,8 @@
 <hr>
 
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/campaigns/delete">
-	<input type="hidden" name="redirect" value="sproutemail/campaigns">
-	<input type="hidden" name="id" value="{{ campaignId }}">
+	<input type="hidden" name="action" value="sproutEmail/emailBlastType/delete">
+	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
+	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="submit" class="btn small" value="Delete">
 </form>

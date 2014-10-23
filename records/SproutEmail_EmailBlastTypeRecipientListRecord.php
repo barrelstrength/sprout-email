@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * Campaign recipient list record
+ * EmailBlastType recipient list record
  */
-class SproutEmail_CampaignRecipientListRecord extends BaseRecord
+class SproutEmail_EmailBlastTypeRecipientListRecord extends BaseRecord
 {
 	/**
 	 * Return table name corresponding to this record
@@ -13,7 +13,7 @@ class SproutEmail_CampaignRecipientListRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_campaign_recipient_lists';
+		return 'sproutemail_emailblasttypes_recipientlists';
 	}
 	
 	/**
@@ -27,7 +27,7 @@ class SproutEmail_CampaignRecipientListRecord extends BaseRecord
 			'recipientListId' => array (
 				AttributeType::Number 
 			),
-			'campaignId' => array (
+			'emailBlastTypeId' => array (
 				AttributeType::Number 
 			),
 			'dateCreated' => array (

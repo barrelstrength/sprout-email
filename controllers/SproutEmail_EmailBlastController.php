@@ -302,23 +302,30 @@ class SproutEmail_EmailBlastController extends BaseController
 	{	
 		$emailBlastTypeId = craft()->request->getSegment(3);
 
-		$emailBlastType = craft()->sproutEmail->getCampaign(array('id'=>$emailBlastTypeId));
+		$emailBlastType = craft()->sproutEmail->getEmailBlastType(array('id'=>$emailBlastTypeId));
 		
-		// $emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
-		
-		if (is_a($emailBlastType, 'SproutEmail_EmailBlastTypeModel')) 
+		$variables['emailBlastTypeId'] = $emailBlastType->id;	
+
+		// This is our element, so we know where to get the field values
+		$variables['emailBlastType']   = $emailBlastType;
+
+		foreach ($emailBlastType->getFieldLayout()->getTabs() as $key => $value) 
 		{
-			$variables['emailBlastTypeId'] = $emailBlastType->id;	
+			$variables['tabs'][] = array(
+				'label' => $value->name,
+				'url' => '#'.$value->id
+			);
+		}
 
-			// This is our element, so we know where to get the field values
-			$variables['emailBlastType']   = $emailBlastType;
-
-			$variables['tabs'] = $emailBlastType->getFieldLayout()->getTabs();
+		if (1 == 2) 
+		{
+			die('Shazam!');
+			
+			// Grab ID of current Email Blast
 		}
 		else
 		{
-			$variables['emailBlastType']   = new SproutEmail_EmailBlastTypeModel();
-			$variables['emailBlastTypeId'] = '';
+			$variables['emailBlast'] = new SproutEmail_EmailBlastModel();
 		}
 
 		$variables['emailBlastId'] = "";

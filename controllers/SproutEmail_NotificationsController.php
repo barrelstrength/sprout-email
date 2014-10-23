@@ -5,23 +5,23 @@ namespace Craft;
 /**
  * Notifications controller
  */
-class SproutEmail_NotificationsController extends SproutEmail_CampaignsController
+class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeController
 {
 	/**
-	 * Save campaign
+	 * Save emailBlastType
 	 *
 	 * @return void
 	 */
 	public function actionSave()
 	{
-		// first save the campaign as normally would be done
-		$campaignModel = parent::actionSave();
+		// first save the emailBlastType as normally would be done
+		$emailBlastTypeModel = parent::actionSave();
 		
-		if ( $campaignModel->getErrors() )
+		if ( $emailBlastTypeModel->getErrors() )
 		{
 			// Send the field back to the template
 			craft()->urlManager->setRouteVariables( array (
-					'campaign' => $campaignModel 
+					'emailBlastType' => $emailBlastTypeModel 
 			) );
 		}
 		else
@@ -43,11 +43,11 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignsControlle
 			
 			if ( isset( $_POST ['notificationEvent'] ) )
 			{
-				// since this is a notification, we'll make an event/campaign association...
-				craft()->sproutEmail_notifications->associateCampaign( $campaignModel->id, $_POST ['notificationEvent'] );
+				// since this is a notification, we'll make an event/emailblasts association...
+				craft()->sproutEmail_notifications->associateEmailBlastType( $emailBlastTypeModel->id, $_POST ['notificationEvent'] );
 				
 				// ... and set notification options
-				craft()->sproutEmail_notifications->setCampaignNotificationEventOptions( $campaignModel->id, $_POST );
+				craft()->sproutEmail_notifications->setEmailBlastTypeNotificationEventOptions( $emailBlastTypeModel->id, $_POST );
 			}
 			
 			craft()->userSession->setNotice( Craft::t( 'Notification successfully saved.' ) );
@@ -55,14 +55,14 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignsControlle
 			switch (craft()->request->getPost( 'continue' ))
 			{
 				case 'info' :
-					$this->redirect( 'sproutemail/notifications/edit/' . $campaignModel->id . '/recipients' );
+					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
 					break;
 				case 'recipients' :
-					$this->redirect( 'sproutemail/notifications/edit/' . $campaignModel->id . '/template' );
+					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
 					break;
 				default :
 					$this->redirectToPostedUrl( array (
-							$campaignModel 
+							$emailBlastTypeModel 
 					) );
 					break;
 			}
@@ -80,28 +80,28 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignsControlle
 		}
 		
 		$parts = explode( '-', $id );
-		$campaignId = array_shift( $parts );
+		$emailBlastTypeId = array_shift( $parts );
 		
 		// get the notification
-		$campaignNotification = craft()->sproutEmail_notifications->getCampaignNotificationByCampaignId( $id );
+		$emailBlastTypeNotification = craft()->sproutEmail_notifications->getEmailBlastTypeNotificationByEmailBlastTypeId( $id );
 		
 		// authenticate
-		if( ! $campaignNotification->options || ! isset($campaignNotification->options['options']['cronHash']))
+		if( ! $emailBlastTypeNotification->options || ! isset($emailBlastTypeNotification->options['options']['cronHash']))
 		{
 			die('Invalid Request');
 		}
 
-		if ( $campaignNotification->options['options']['cronHash'] != $id || $campaignNotification->notificationEvent->event != 'cron' )
+		if ( $emailBlastTypeNotification->options['options']['cronHash'] != $id || $emailBlastTypeNotification->notificationEvent->event != 'cron' )
 		{
 			die( 'Invalid request' );
 		}
 		
-		// get campaign and send
-		$campaign = craft()->sproutEmail->getCampaign( array (
+		// get emailBlastType and send
+		$emailBlastType = craft()->sproutEmail->getEmailBlastType( array (
 				'id' => $id 
 		) );
-		$service = 'sproutEmail_' . lcfirst( $campaign->emailProvider );
-		craft()->{$service}->sendCampaign( $campaign );
+		$service = 'sproutEmail_' . lcfirst( $emailBlastType->emailProvider );
+		craft()->{$service}->sendEmailBlast( $emailBlastType );
 		
 		exit( 0 );
 	}

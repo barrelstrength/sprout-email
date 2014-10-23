@@ -1,6 +1,6 @@
 <?php 
 /**
- * This test will create a campaign, verify that everything is ok, and then delete it.
+ * This test will create a emailBlastType, verify that everything is ok, and then delete it.
  */
 
 // login
@@ -19,14 +19,14 @@ $I->amOnPage('/admin/sproutemail');
 
 // go to notifications
 $I->click('Notifications');
-$I->amOnPage('/admin/sproutemail/campaigns');
+$I->amOnPage('/admin/sproutemail/emailblasts');
 
 // create new notification
 $I->click('a.btn.submit');
-$I->see('new campaign');
+$I->see('new emailBlastType');
 
 // fill out form and submit
-$I->fillField('name', 'Codeception Test campaign 1');
+$I->fillField('name', 'Codeception Test emailBlastType 1');
 $I->fillField('fromName', 'Tester From Name');
 $I->fillField('fromEmail', 'tester@test.com');
 $I->fillField('replyToEmail', 'tester@test.com');
@@ -43,7 +43,7 @@ $I->checkOption('#emailProviderRecipientListIdUser'); // we wil always have at l
 $I->click('.btn.submit');
 
 // verify
-$I->see('codeception test campaign');
+$I->see('codeception test emailBlastType');
 
 // logout
 $I->click('.myaccount');

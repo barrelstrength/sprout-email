@@ -2,13 +2,19 @@
 {% import "_includes/forms" as forms %}
 
 {% set emailProviders = craft.sproutEmail.getEmailProviders() %}
-{% set campaigns = craft.sproutEmail.getSectionBasedCampaignTypes() %}
+{% set emailblasts = craft.sproutEmail.getEmailBlastTypes() %}
 
 {% set body %}
 
 	<div id="settings-general">
 
     {% include 'sproutemail/settings/_tabs/general' %}
+
+	</div>
+
+	<div id="settings-api" class="hidden">
+
+    {% include 'sproutemail/settings/_tabs/api' %}
 
 	</div>
 	

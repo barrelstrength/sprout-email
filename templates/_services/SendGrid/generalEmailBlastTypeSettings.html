@@ -16,8 +16,8 @@
 	label: "Which SendGrid sender address would you like to use?"|t,
 	id: 'fromName',
 	name: 'fromName',
-	instructions: "Select the SendGrid sender address use for this campaign."|t,
+	instructions: "Select the SendGrid sender address use for this emailBlastType."|t,
 	options : senderAddresses,
-	value: (campaign is defined ? campaign.fromName : null),
-	errors: (campaign is defined ? campaign.getErrors('fromName') : null)  
+	value: (emailBlastType is defined ? emailBlastType.fromName : null),
+	errors: (emailBlastType is defined ? emailBlastType.getErrors('fromName') : null)  
 }) }}

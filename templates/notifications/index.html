@@ -5,11 +5,11 @@
 
 	{% set notifications = craft.sproutEmail.getNotifications() %}
 	
-	{% for campaign in notifications %}
+	{% for emailBlastType in notifications %}
 			
 		{% if loop.first %}
 		<h3>Notifications</h3>
-		<table id="campaigns" class="data fullwidth">
+		<table id="emailblasts" class="data fullwidth">
 			<thead>
 				<th width="65%"></th>
 				<th width="30%"></th>
@@ -17,19 +17,19 @@
 			</thead>
 		{% endif %}
 		
-			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
+			<tr data-id="{{ emailBlastType.id }}"  data-name="{{ emailBlastType.name|t }}">
 				<td>
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">{{ campaign.name }}</a>
-					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}">{{ emailBlastType.name }}</a>
+					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ emailBlastType.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td>
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}">
 						Notification Info
 					</a> | 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}/template">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}/template">
 						Templates
 					</a> | 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ campaign.id }}/recipients">
+					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}/recipients">
 						Define recipients
 					</a>
 				</td>
@@ -77,9 +77,9 @@
 
 {% set js %}
 	new Craft.AdminTable({
-		tableSelector: '#campaigns',
-		noObjectsSelector: '#nocampaigns',
-		deleteAction: 'SproutEmail/campaigns/delete'
+		tableSelector: '#emailblasts',
+		noObjectsSelector: '#noemailblasts',
+		deleteAction: 'SproutEmail/emailblasts/delete'
 	});
 {% endset %}
 {% includeJs js %}

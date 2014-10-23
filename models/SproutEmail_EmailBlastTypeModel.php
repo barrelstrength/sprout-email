@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * Campaign model
+ * EmailBlastType model
  */
-class SproutEmail_CampaignModel extends BaseModel
+class SproutEmail_EmailBlastTypeModel extends BaseModel
 {
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
@@ -15,7 +15,7 @@ class SproutEmail_CampaignModel extends BaseModel
 	{
 		return array (
 				
-			// campaign info
+			// emailBlastType info
 			'id' => array (
 				AttributeType::Number 
 			),

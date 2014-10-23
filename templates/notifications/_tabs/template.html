@@ -4,7 +4,7 @@ textarea.text { min-height: 300px; }
 <form method="post" action="" accept-charset="UTF-8">
     <input type="hidden" name="action" value="sproutEmail/notifications/save">
     <input type="hidden" name="redirect" value="sproutemail/notifications">
-    <input type="hidden" name="id" value="{{ campaignId }}">
+    <input type="hidden" name="id" value="{{ emailBlastTypeId }}">
     <input type="hidden" name="continue" value="false">
     <input type="hidden" name="templateOption" value="2" />
     <input type="hidden" name="tab" value="template">
@@ -17,8 +17,8 @@ textarea.text { min-height: 300px; }
 			id: 'htmlBody',
 			name: 'htmlBody',
 			instructions: "The code for your html email. Be sure to inline your CSS beforehand."|t,
-			value: (campaign is defined ? campaign.htmlBody : null),
-			errors: (campaign is defined ? campaign.getErrors('htmlBody') : null) 	
+			value: (emailBlastType is defined ? emailBlastType.htmlBody : null),
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('htmlBody') : null) 	
 		}) }}	
 		</div>
 		<br/>
@@ -29,15 +29,15 @@ textarea.text { min-height: 300px; }
 			id: 'textBody',
 			name: 'textBody',
 			instructions: "The code for your email's text version."|t,
-			value: (campaign is defined ? campaign.textBody : null),
-			errors: (campaign is defined ? campaign.getErrors('textBody') : null) 	
+			value: (emailBlastType is defined ? emailBlastType.textBody : null),
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('textBody') : null) 	
 		}) }}
 		</div>
 
 	</div>
 
     <div class="buttons">
-    	<input class="btn" type="submit" value="Save Campaign Template">
-    	<input class="btn submit" type="submit" value="Save Campaign Template & Finish">
+    	<input class="btn" type="submit" value="Save EmailBlastType Template">
+    	<input class="btn submit" type="submit" value="Save EmailBlastType Template & Finish">
     </div>
 </form>

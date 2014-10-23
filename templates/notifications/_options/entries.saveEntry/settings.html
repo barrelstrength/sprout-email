@@ -3,15 +3,15 @@
 {% set sections = craft.sproutEmail.getAllSections()[1:] %}
 
 
-{% if campaign.notificationEvents[0].options.sectionIds is defined %}
-{% set contentSavedAssignedSections = campaign.notificationEvents[0].options.sectionIds %}
+{% if emailBlastType.notificationEvents[0].options.sectionIds is defined %}
+{% set contentSavedAssignedSections = emailBlastType.notificationEvents[0].options.sectionIds %}
 {% endif %}
 
 
 	{{ forms.field({
 		label: "Sections"|t,
 		instructions: "Select one or more sections."|t,
-		errors: (campaign is defined ? campaign.getErrors('sectionIds') : null) ,
+		errors: (emailBlastType is defined ? emailBlastType.getErrors('sectionIds') : null) ,
 	}, forms.checkboxGroup({
 		name: 'entriesSaveEntrySectionIds',   
 		options : sections,

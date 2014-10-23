@@ -1,7 +1,7 @@
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/campaigns/save">
-	<input type="hidden" name="redirect" value="sproutemail/campaigns">
-	<input type="hidden" name="id" value="{{ campaignId }}">
+	<input type="hidden" name="action" value="sproutEmail/emailBlastType/save">
+	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
+	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
     <input type="hidden" name="tab" value="template">
     <input type="hidden" name="continue" value="false">
     <input type="hidden" name="templateOption" value="3" />
@@ -15,8 +15,8 @@
     		name: 'sectionId',
     		instructions: "Select the Section that you will be using to create content for this Email Blast."|t,
     		options : craft.sproutEmail.getAllSections,
-    		value: (campaign is defined ? campaign.sectionId : null),
-    		errors: (campaign is defined ? campaign.getErrors('sectionId') : null) 	
+    		value: (emailBlastType is defined ? emailBlastType.sectionId : null),
+    		errors: (emailBlastType is defined ? emailBlastType.getErrors('sectionId') : null) 	
     	}) }}
     	
     	{% set fieldOptions = craft.sproutEmail.getPlainTextFields() %}
@@ -25,10 +25,10 @@
     		label: "Subject Field"|t,
     		id: 'subjectHandle',
     		name: 'subjectHandle',
-    		instructions: "Select the field that will be your subject field for the campaign"|t,
+    		instructions: "Select the field that will be your subject field for the emailBlastType"|t,
     		options: fieldOptions,
-    		value: (campaign is defined ? campaign.subjectHandle : null),
-    		errors: (campaign is defined ? campaign.getErrors('subjectHandle') : null) 	
+    		value: (emailBlastType is defined ? emailBlastType.subjectHandle : null),
+    		errors: (emailBlastType is defined ? emailBlastType.getErrors('subjectHandle') : null) 	
     	}) }}
 
     	{% set templatesDirListing = craft.sproutEmail.getTemplatesDirListing() %}
@@ -39,8 +39,8 @@
     		name: 'htmlTemplate',
     		instructions: "Select the file that will be the template for your HTML Emails in this Section"|t,
     		options: templatesDirListing,
-    		value: (campaign is defined ? campaign.htmlTemplate : null),
-    		errors: (campaign is defined ? campaign.getErrors('htmlTemplate') : null) 	
+    		value: (emailBlastType is defined ? emailBlastType.htmlTemplate : null),
+    		errors: (emailBlastType is defined ? emailBlastType.getErrors('htmlTemplate') : null) 	
     	}) }}
     
     	{{ forms.selectField({
@@ -49,11 +49,11 @@
     		name: 'textTemplate',
     		options: templatesDirListing,
     		instructions: "Select the file that will be the template for your Plain Text Emails in this Section."|t,
-    		value: (campaign is defined ? campaign.textTemplate : null),
-    		errors: (campaign is defined ? campaign.getErrors('textTemplate') : null) 	
+    		value: (emailBlastType is defined ? emailBlastType.textTemplate : null),
+    		errors: (emailBlastType is defined ? emailBlastType.getErrors('textTemplate') : null) 	
     	}) }}
     	
-    	{% if campaign.emailProvider == 'CopyPaste' %}
+    	{% if emailBlastType.emailProvider == 'CopyPaste' %}
             <hr />
             <h3>Copy & Paste Templates</h3>
             
@@ -63,8 +63,8 @@
         		name: 'htmlBodyTemplate',
         		instructions: "Select the file that will be the template to display the body HTML to cut and paste"|t,
         		options: templatesDirListing,
-        		value: (campaign is defined ? campaign.htmlBodyTemplate : null),
-        		errors: (campaign is defined ? campaign.getErrors('htmlBodyTemplate') : null) 	
+        		value: (emailBlastType is defined ? emailBlastType.htmlBodyTemplate : null),
+        		errors: (emailBlastType is defined ? emailBlastType.getErrors('htmlBodyTemplate') : null) 	
         	}) }}
         
         	{{ forms.selectField({
@@ -73,8 +73,8 @@
         		name: 'textBodyTemplate',
         		options: templatesDirListing,
         		instructions: "Select the file that will be the template to display the body Plain Text to cut and paste"|t,
-        		value: (campaign is defined ? campaign.textBodyTemplate : null),
-        		errors: (campaign is defined ? campaign.getErrors('textBodyTemplate') : null) 	
+        		value: (emailBlastType is defined ? emailBlastType.textBodyTemplate : null),
+        		errors: (emailBlastType is defined ? emailBlastType.getErrors('textBodyTemplate') : null) 	
         	}) }}
 
         {% endif %}

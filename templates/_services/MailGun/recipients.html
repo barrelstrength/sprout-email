@@ -1,15 +1,15 @@
-{% set campaigns = craft.sproutEmail.getCampaignList('MailGun') %}
+{% set emailblasts = craft.sproutEmail.getEmailBlastTypeList('MailGun') %}
 
-    {% if(campaigns|length > 0) %}
+    {% if(emailblasts|length > 0) %}
     
         {{ forms.field({
-            label: "Campaigns (optional)"|t,
-            instructions: "Select a campaign to associate with this section."|t,
-            errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
+            label: "EmailBlastTypes (optional)"|t,
+            instructions: "Select a emailBlastType to associate with this section."|t,
+            errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
         }, forms.select({
-            name: 'emailProviderRecipientListId[campaign]',
-            options : campaigns,
-            value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
+            name: 'emailProviderRecipientListId[emailBlastType]',
+            options : emailblasts,
+            value: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? emailBlastType.emailProviderRecipientListId|first : null
         })) }}
     
     {% endif %}
@@ -23,11 +23,11 @@
     {{ forms.field({
         label: "Mailing Lists"|t,
         instructions: "Select one or more mailing lists to send your Email Blasts in this Section."|t,
-        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
+        errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.checkboxGroup({
         name: 'emailProviderRecipientListId[list]',
         options : mailing_list,
-        values: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId : null
+        values: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? emailBlastType.emailProviderRecipientListId : null
     })) }}
 
 {% else %}

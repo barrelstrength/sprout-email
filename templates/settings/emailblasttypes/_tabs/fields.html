@@ -1,14 +1,14 @@
 
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/campaigns/save">
-	<input type="hidden" name="redirect" value="sproutemail/campaigns">
-	<input type="hidden" name="id" value="{{ campaignId }}">
+	<input type="hidden" name="action" value="sproutEmail/emailBlastType/save">
+	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
+	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="hidden" name="tab" value="info">
 	<input type="hidden" name="continue" value="false">
 	<input type="hidden" name="templateOption" value="3">
 
 	{% include "_includes/fieldlayoutdesigner" with {
-		fieldLayout: campaign.getFieldLayout()
+		fieldLayout: emailBlastType.getFieldLayout()
 	} only %}
 	
 </form>

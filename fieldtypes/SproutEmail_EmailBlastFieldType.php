@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_EmailCampaignFieldType extends BaseFieldType
+class SproutEmail_EmailBlastFieldType extends BaseFieldType
 {
 	/**
 	 * Field Type name
@@ -10,7 +10,7 @@ class SproutEmail_EmailCampaignFieldType extends BaseFieldType
 	 */
 	public function getName()
 	{
-		return Craft::t( 'SproutEmail Email Campaign' );
+		return Craft::t( 'SproutEmail Email Blast' );
 	}
 	
 	/**
@@ -35,20 +35,20 @@ class SproutEmail_EmailCampaignFieldType extends BaseFieldType
     public function getInputHtml($name, $value)
     {
         // Set up an array of the defaults
-            $campaignRecord = new SproutEmail_CampaignModel();
-            $campaign = SproutEmail_CampaignModel::populateModel( $campaignRecord );
+            $emailBlastTypeRecord = new SproutEmail_EmailBlastTypeModel();
+            $emailBlastType = SproutEmail_EmailBlastTypeModel::populateModel( $emailBlastTypeRecord );
 
             $fields = array(
-                                "campaign"                      => $campaign,
+                                "emailBlastType"                      => $emailBlastType,
                                 "emailProviderRecipientListId"  => "",
                                 "enabled"                       => FALSE,
                                 "sectionId"                     => $this->element->sectionId
                             );
 
-        // Get the section campaign settings
-            $sectionCampaign = SproutEmail_CampaignRecord::model()->getSectionBasedCampaignBySectionId($fields["sectionId"]);
+        // Get the section emailBlastType settings
+            $sectionEmailBlastType = SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypeBySectionId($fields["sectionId"]);
 
-            if(!$sectionCampaign){
+            if(!$sectionEmailBlastType){
                 // The section isn't email enabled
                     return $fields;
             }
@@ -58,9 +58,9 @@ class SproutEmail_EmailCampaignFieldType extends BaseFieldType
                     $fields["enabled"] = TRUE;
                                     
                     // Get the RecipientListId
-                        $list = craft()->sproutEmail->getCampaignRecipientLists($sectionCampaign["id"] );
+                        $list = craft()->sproutEmail->getEmailBlastTypeRecipientLists($sectionEmailBlastType["id"] );
                         
-                        $fields["campaign"]["emailProviderRecipientListId"] = array();
+                        $fields["emailBlastType"]["emailProviderRecipientListId"] = array();
                         if(isset($list))
                         {
                             $arr = array();
@@ -68,14 +68,14 @@ class SproutEmail_EmailCampaignFieldType extends BaseFieldType
                             {
                                 $arr[] = $recipients->emailProviderRecipientListId;
                             }
-                            $fields["campaign"]["emailProviderRecipientListId"] = $arr;
+                            $fields["emailBlastType"]["emailProviderRecipientListId"] = $arr;
                         }
     
                     // Merge on the 
                         $keys = array('fromName','fromEmail','replyToEmail','emailProvider');
                         foreach($keys as $val)
                         {
-                            $fields["campaign"][$val] = $sectionCampaign[$val];    
+                            $fields["emailBlastType"][$val] = $sectionEmailBlastType[$val];    
                         }
             }
         
@@ -91,11 +91,11 @@ class SproutEmail_EmailCampaignFieldType extends BaseFieldType
                             $val = (array) $val;
                         }
                     }
-                    $fields["campaign"][$key] = $val;
+                    $fields["emailBlastType"][$key] = $val;
                 }
             }
 
-        return craft()->templates->render('/sproutemail/fieldtypes/email_campaign/input', array(
+        return craft()->templates->render('/sproutemail/_cp/fieldtypes/emailblast/input', array(
             'name'      => $name,
             'value'     => $fields
         ));
@@ -151,7 +151,7 @@ class SproutEmail_EmailCampaignFieldType extends BaseFieldType
     
     public function getSettingsHtml()
     {
-        return craft()->templates->render('/sproutemail/fieldtypes/email_campaign/settings', array(
+        return craft()->templates->render('/sproutemail/fieldtypes/email_emailBlastType/settings', array(
             'settings' => $this->getSettings()
         ));
     }

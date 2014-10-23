@@ -53,16 +53,16 @@ class SproutEmail_NotificationEventRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array (
-			'campaignNotificationEvent' => array (
+			'emailBlastTypeNotificationEvent' => array (
 				self::HAS_MANY,
-				'SproutEmail_CampaignNotificationEventRecord',
+				'SproutEmail_EmailBlastTypeNotificationEventRecord',
 				'notificationEventId' 
 			),
-			'campaign' => array (
+			'emailBlastType' => array (
 				self::HAS_MANY,
-				'SproutEmail_CampaignRecord',
-				'campaignId',
-				'through' => 'campaignNotificationEvent' 
+				'SproutEmail_EmailBlastTypeRecord',
+				'emailBlastTypeId',
+				'through' => 'emailBlastTypeNotificationEvent' 
 			) 
 		);
 	}
@@ -84,6 +84,6 @@ class SproutEmail_NotificationEventRecord extends BaseRecord
 			);
 		}
 		
-		return SproutEmail_NotificationEventRecord::model()->with( 'campaign', 'campaign.recipientList' )->findAll( $criteria );
+		return SproutEmail_NotificationEventRecord::model()->with( 'emailBlastType', 'emailBlastType.recipientList' )->findAll( $criteria );
 	}
 }

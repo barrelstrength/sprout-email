@@ -1,0 +1,60 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+
+{% if emailBlastType is defined %}
+	{% set title = "Edit EmailBlastType" %}
+	{% set emailBlastTypeId = emailBlastType.id %}
+{% else %}
+	{% set title = "Edit EmailBlastType" %}
+	{% set emailBlastType = craft.sproutEmail.getEmailBlastTypeById(emailBlastTypeId) %}
+	{% set emailBlastTypeId = emailBlastType.id %}	
+{% endif %}
+
+{% set crumbs = [
+	{ label: "Sprout Email"|t, url: url('sproutemail/emailblasts') },
+] %}
+
+{% set tabs = {
+    general: { 
+      label: "Email Blast Type"|t,
+      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId),
+      class: 'emailBlastTypeinfo'
+    },
+    recipients:    { 
+      label: "Recipients"|t,
+      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId ~ '/recipients'),
+      class: 'recipients'
+    },
+    template:    { 
+      label: "Email Template"|t,
+      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId ~ '/template'),
+      class: 'template'
+    },
+    fields: {
+      label: "Fields"|t,
+      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId ~ '/fields'),
+      class: 'fields'
+    }
+} %}
+
+{% if craft.request.getSegment('6') %}
+    {% set selectedTab = craft.request.getSegment('6') %}
+{% endif %}
+
+
+{% set content %}
+
+{% if craft.request.getSegment('6') == 'template' %}
+    {% include "sproutemail/settings/emailblasttypes/_tabs/template" %}
+{% elseif craft.request.getSegment('6') == 'recipients' %} 
+    {% include "sproutemail/settings/emailblasttypes/_tabs/recipients" %}
+{% elseif craft.request.getSegment('6') == 'fields' %}
+    {% include 'sproutemail/settings/emailblasttypes/_tabs/fields' %}
+{% else %}
+    {% include "sproutemail/settings/emailblasttypes/_tabs/info" %}
+{% endif %}
+
+{% endset %}
+
+{% includeJsResource "sproutemail/js/sproutemail.js" %}

@@ -51,25 +51,25 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 	}
 	
 	/**
-	 * Exports campaign (no send)
+	 * Exports emailBlastType (no send)
 	 *
-	 * @param array $campaign            
+	 * @param array $emailBlastType            
 	 * @param array $listIds            
 	 */
-	public function exportCampaign($campaign = array(), $listIds = array(), $return = false)
+	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
 		require_once (dirname( __FILE__ ) . '/../libraries/CampaignMonitor/csrest_campaigns.php');
 		$wrap = new \CS_REST_Campaigns( NULL, $this->api_key );
 		
 		$result = $wrap->create( $this->client_id, array(
-			'Subject' => $campaign ['title'],
-			'Name' => $campaign ['name'],
-			'FromName' => $campaign ['fromName'],
-			'FromEmail' => $campaign ['fromEmail'],
-			'ReplyTo' => $campaign ['replyToEmail'],
-			'HtmlUrl' => craft()->getBaseUrl( true ) . '/' . $campaign ['htmlTemplate'] . "?sectionId={$campaign['sectionId']}" . "&handle={$campaign['handle']}" . "&entryId={$campaign['entryId']}" . "&slug={$campaign['slug']}",
-			'TextUrl' => craft()->getBaseUrl( true ) . '/' . $campaign ['textTemplate'] . "?sectionId={$campaign['sectionId']}" . "&handle={$campaign['handle']}" . "&entryId={$campaign['entryId']}" . "&slug={$campaign['slug']}",
+			'Subject' => $emailBlastType ['title'],
+			'Name' => $emailBlastType ['name'],
+			'FromName' => $emailBlastType ['fromName'],
+			'FromEmail' => $emailBlastType ['fromEmail'],
+			'ReplyTo' => $emailBlastType ['replyToEmail'],
+			'HtmlUrl' => craft()->getBaseUrl( true ) . '/' . $emailBlastType ['htmlTemplate'] . "?sectionId={$emailBlastType['sectionId']}" . "&handle={$emailBlastType['handle']}" . "&entryId={$emailBlastType['entryId']}" . "&slug={$emailBlastType['slug']}",
+			'TextUrl' => craft()->getBaseUrl( true ) . '/' . $emailBlastType ['textTemplate'] . "?sectionId={$emailBlastType['sectionId']}" . "&handle={$emailBlastType['handle']}" . "&entryId={$emailBlastType['entryId']}" . "&slug={$emailBlastType['slug']}",
 			'ListIDs' => $listIds 
 		));
 		
@@ -106,12 +106,12 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 	}
 	
 	/**
-	 * Exports campaign (with send)
+	 * Exports emailBlastType (with send)
 	 *
-	 * @param array $campaign            
+	 * @param array $emailBlastType            
 	 * @param array $listIds            
 	 */
-	public function sendCampaign($campaign = array(), $listIds = array())
+	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
 	{
 		// Future feature
 	}

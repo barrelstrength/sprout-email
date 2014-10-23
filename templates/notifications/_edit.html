@@ -1,13 +1,13 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% if campaign is defined %}
+{% if emailBlastType is defined %}
 	{% set title = "Edit Notification" %}
-	{% set campaignId = campaign.id %}
+	{% set emailBlastTypeId = emailBlastType.id %}
 {% else %}
 	{% set title = "Edit Notification" %}
-	{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
-	{% set campaignId = campaign.id %}	
+	{% set emailBlastType = craft.sproutEmail.getEmailBlastTypeById(emailBlastTypeId) %}
+	{% set emailBlastTypeId = emailBlastType.id %}	
 {% endif %}
 
 {% set crumbs = [
@@ -17,17 +17,17 @@
 {% set tabs = {
     general: { 
       label: "Notification Info"|t,
-      url: url('sproutemail/notifications/edit/' ~ campaignId),
+      url: url('sproutemail/notifications/edit/' ~ emailBlastTypeId),
       class: 'notificationinfo'
     },
     recipients:    { 
       label: "Recipients"|t,
-      url: url('sproutemail/notifications/edit/' ~ campaignId ~ '/recipients'),
+      url: url('sproutemail/notifications/edit/' ~ emailBlastTypeId ~ '/recipients'),
       class: 'recipients'
     },
     template:    { 
       label: "Email Template"|t,
-      url: url('sproutemail/notifications/edit/' ~ campaignId ~ '/template'),
+      url: url('sproutemail/notifications/edit/' ~ emailBlastTypeId ~ '/template'),
       class: 'template'
     },
 } %}

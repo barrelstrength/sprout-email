@@ -3,32 +3,32 @@
 namespace Craft;
 
 /**
- * Campaigns controller
+ * Email Blast Type controller
  */
-class SproutEmail_CampaignsController extends BaseController
+class SproutEmail_EmailBlastTypeController extends BaseController
 {
 	
 	/**
-	 * Export campaign
+	 * Export emailBlastType
 	 *
 	 * @return void
 	 */
 	public function actionExport()
 	{
-		$campaign = craft()->sproutEmail->getCampaign( array (
-				'id' => craft()->request->getPost( 'campaignId' ) 
+		$emailBlastType = craft()->sproutEmail->getEmailBlast( array (
+				'id' => craft()->request->getPost( 'emailBlastTypeId' ) 
 		) );
 		
-		if ( $campaign->emailProvider != 'SproutEmail' )
+		if ( $emailBlastType->emailProvider != 'SproutEmail' )
 		{
-			craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
+			craft()->sproutEmail_emailProvider->exportEmailBlast( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'emailBlastTypeId' ) );
 		}
 		else
 		{
-	        craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
+	        craft()->sproutEmail_emailProvider->exportEmailBlast( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'emailBlastTypeId' ) );
             
-			craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
-					'campaignId' => craft()->request->getPost( 'campaignId' ),
+			craft()->tasks->createTask( 'SproutEmail_RunEmailBlastType', Craft::t( 'Running emailBlastType' ), array (
+					'emailBlastTypeId' => craft()->request->getPost( 'emailBlastTypeId' ),
 					'entryId' => craft()->request->getPost( 'entryId' ) 
 			) );
 
@@ -39,7 +39,7 @@ class SproutEmail_CampaignsController extends BaseController
 			{
 				// Return info about the next pending task without stopping PHP execution
 				JsonHelper::sendJsonHeaders();
-				craft()->request->close( JsonHelper::encode( 'Campaign successfully scheduled.' ) );
+				craft()->request->close( JsonHelper::encode( 'EmailBlastType successfully scheduled.' ) );
 				
 				// Start running tasks
 				craft()->tasks->runPendingTasks();
@@ -48,7 +48,7 @@ class SproutEmail_CampaignsController extends BaseController
 	}
 	
 	/**
-	 * Save campaign
+	 * Save emailBlastType
 	 *
 	 * @return void
 	 */
@@ -56,41 +56,41 @@ class SproutEmail_CampaignsController extends BaseController
 	{
 		$this->requirePostRequest();
 		
-		$campaignModel = SproutEmail_CampaignModel::populateModel( craft()->request->getPost() );
+		$emailBlastTypeModel = SproutEmail_EmailBlastTypeModel::populateModel( craft()->request->getPost() );
 				
-		$campaignModel->useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
+		$emailBlastTypeModel->useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
 		
-		if ( $campaignId = craft()->sproutEmail->saveCampaign( $campaignModel, craft()->request->getPost( 'tab' ) ) )
+		if ( $emailBlastTypeId = craft()->sproutEmail->saveEmailBlastType( $emailBlastTypeModel, craft()->request->getPost( 'tab' ) ) )
 		{
 			// if this was called by the child (Notifications), return the model
 			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
 			{
-				$campaignModel->id = $campaignId;
-				return $campaignModel;
+				$emailBlastTypeModel->id = $emailBlastTypeId;
+				return $emailBlastTypeModel;
 			}
-			craft()->userSession->setNotice( Craft::t( 'Campaign successfully saved.' ) );
+			craft()->userSession->setNotice( Craft::t( 'EmailBlastType successfully saved.' ) );
 			
 			$continue = craft()->request->getPost( 'continue' );
 			
 			if($continue == 'info')
 			{
 				if(craft()->request->getPost( 'emailProvider' ) == 'CopyPaste'){
-				    $this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
+				    $this->redirect( 'sproutemail/emailblasts/edit/' . $emailBlastTypeId . '/template' );
                 }
                 else
                 {
-                    $this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/recipients' );
+                    $this->redirect( 'sproutemail/emailblasts/edit/' . $emailBlastTypeId . '/recipients' );
                 }
 			}
 			elseif($continue == 'recipients')
 			{
-				$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
+				$this->redirect( 'sproutemail/emailblasts/edit/' . $emailBlastTypeId . '/template' );
 			}
 			else
 			{
 				$this->redirectToPostedUrl(
 				                            array(
-						                            $campaignModel 
+						                            $emailBlastTypeModel 
                                                  )
                                           );
 			}
@@ -102,18 +102,18 @@ class SproutEmail_CampaignsController extends BaseController
 			// if this was called by the child (Notifications), return the model
 			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
 			{
-				return $campaignModel;
+				return $emailBlastTypeModel;
 			}
 		}
 		
 		// Send the field back to the template
 		craft()->urlManager->setRouteVariables( array (
-				'campaign' => $campaignModel 
+				'emailBlastType' => $emailBlastTypeModel 
 		) );
 	}
 	
 	/**
-	 * Delete campaign
+	 * Delete emailBlastType
 	 *
 	 * @return void
 	 */
@@ -123,7 +123,7 @@ class SproutEmail_CampaignsController extends BaseController
 		$this->requireAjaxRequest();
 		
 		$this->returnJson( array (
-				'success' => craft()->sproutEmail->deleteCampaign( craft()->request->getRequiredPost( 'id' ) ) 
+				'success' => craft()->sproutEmail->deleteEmailBlastType( craft()->request->getRequiredPost( 'id' ) ) 
 		) );
 	}
 	
