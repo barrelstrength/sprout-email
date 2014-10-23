@@ -10,12 +10,32 @@
 } %}
 
 {% set selectedTab = 'emailblasts' %}
+{% set emailBlastTypes = craft.sproutEmail.getCampaigns() %}
 
 {% block sidebar %}
 	
-	<div class="buttons">
+	{# <div class="buttons">
 		<a class="btn submit add icon" href="{{ url('sproutemail/emailblasts/new') }}">{{ "New Email Blast"|t }}</a>
 	</div>
+ #}
+  {% if emailBlastTypes|length %}
+    <div class="buttons">
+      {% if emailBlastTypes|length > 1 %}
+        <div class="btngroup submit">
+          <div class="btn submit menubtn add icon">{{ "New Email Blast"|t }}</div>
+          <div class="menu">
+            <ul>
+              {% for emailBlastType in emailBlastTypes %}
+                <li><a href="{{ url('sproutemail/emailblasts/'~emailBlastType.id~'/new') }}">{{ emailBlastType.name|t }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% else %}
+        <a class="btn submit add icon" href="{{ url('sproutemail/emailblasts/'~emailBlastTypes[0].id~'/new') }}">{{ "New Email Blast"|t }}</a>
+      {% endif %}
+    </div>
+  {% endif %}
 
 	<div id="groups">
   	{{ parent() }}

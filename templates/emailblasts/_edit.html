@@ -9,8 +9,6 @@
 
 {% block main %}
 
-
-	
 	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut="1" data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/' ~ emailBlastId) }}">
 		<input type="hidden" name="action" value="sproutEmail/emailBlasts/saveEmailBlast">
 		{# <input type="hidden" name="handle" value="{{ form.handle }}">
@@ -22,7 +20,8 @@
 			<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
 				<div id="fields" class="pane">
 
-					
+					{% include "_includes/tabs" %}
+					{% include "sproutemail/emailblasts/_fields" %}
 
 				</div>
 			</div>		

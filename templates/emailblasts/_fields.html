@@ -1,0 +1,12 @@
+
+<div>
+	{% for tab in emailBlastType.getFieldLayout().getTabs() %}
+		<div id="tab{{ loop.index }}"{% if not loop.first %} class="hidden"{% endif %}>
+			{% include "_includes/fields" with {
+				fields:  tab.getFields(),
+				element: entry,
+				static:  (static is defined ? static : false)
+			} only %}
+		</div>
+	{% endfor %}
+</div>
