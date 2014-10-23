@@ -121,6 +121,16 @@ class SproutEmailPlugin extends BasePlugin
 			),
 
 			/*
+			 * Create New Email Blast
+			 * @controller SproutEmail_EmailBlastController
+			 * @method     actionEditEmailBlastTemplate
+			 * @template   sproutemail/templates/emailblasts/_edit.html
+			 */
+			'sproutemail/emailblasts/(?P<emailBlastTypeId>\d)/new' => array(
+				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
+			),
+
+			/*
 			 * Edit Settings
 			 * @controller SproutEmail_SettingsController
 			 * @method     actionSettingsIndexTemplate
