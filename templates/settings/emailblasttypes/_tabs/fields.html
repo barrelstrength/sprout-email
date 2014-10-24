@@ -1,5 +1,5 @@
 
-<form method="post" action="" accept-charset="UTF-8">
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut>
 	<input type="hidden" name="action" value="sproutEmail/emailBlastType/save">
 	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
 	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
@@ -11,4 +11,10 @@
 		fieldLayout: emailBlastType.getFieldLayout()
 	} only %}
 	
+	<hr>
+
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="Save">
+	</div>
+
 </form>

@@ -59,15 +59,26 @@ class SproutEmailService extends BaseApplicationComponent
 	 * @param string|null $indexBy            
 	 * @return array
 	 */
-	public function getEmailBlastTypes($emailBlastType_id = false)
+	public function getEmailBlastTypeById($emailBlastTypeId)
 	{
+		$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model();
+		$emailBlastTypeRecord = $emailBlastTypeRecord->findById($emailBlastTypeId);
+		
+		if ($emailBlastTypeRecord) 
+		{
+			return SproutEmail_EmailBlastTypeModel::populateModel($emailBlastTypeRecord);
+		} 
+		else 
+		{
+			return null;
+		}
 
 	/**
 	 * Returns all section based emailblasts.
 	 * return SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypes();
 	 */
 	
-		return SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypes( $emailBlastType_id );
+		// return SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypes( $emailBlastType_id );
 	}
 
 	
@@ -220,6 +231,14 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function saveEmailBlastType(SproutEmail_EmailBlastTypeModel $emailBlastType, $tab = 'info')
 	{
+
+		if ($emailBlastType->id) 
+		{
+			$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->findById( $emailBlastType->id );
+			$oldEmailBlastType = SproutEmail_EmailBlastTypeModel::populateModel($emailBlastTypeRecord);
+		}
+		
+
 		// since we have to perform saves on multiple entities,
 		// it's all or nothing using sql transactions
 		$transaction = craft()->db->beginTransaction();
@@ -255,7 +274,25 @@ class SproutEmailService extends BaseApplicationComponent
 				
 				try
 				{
+					// Save Field Layout
+					
+					// Delete our previous record
+					craft()->fields->deleteLayoutById($oldEmailBlastType->fieldLayoutId);
+
+					$fieldLayout = $emailBlastType->getFieldLayout();
+
+					// Save the field layout
+					craft()->fields->saveLayout($fieldLayout);
+
+					// Assign our new layout id info to our 
+					// form model and records
+					$emailBlastType->fieldLayoutId = $fieldLayout->id;
+					$emailBlastType->setFieldLayout($fieldLayout);
+					$emailBlastTypeRecord->fieldLayoutId = $fieldLayout->id;
+
+					// Save the Email Blast Type
 					$emailBlastTypeRecord = $this->_saveEmailBlastTypeInfo( $emailBlastType );
+
 					if ( $emailBlastTypeRecord->hasErrors() ) // no good
 					{
 						$transaction->rollBack();
@@ -263,7 +300,7 @@ class SproutEmailService extends BaseApplicationComponent
 					}
 				}
 				catch ( \Exception $e )
-				{
+				{	
 					throw new Exception( Craft::t( 'Error: EmailBlastType could not be saved.' ) );
 				}
 				break;
@@ -296,6 +333,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		
 		// Set common attributes
+		$emailBlastTypeRecord->fieldLayoutId = $emailBlastType->fieldLayoutId;
 		$emailBlastTypeRecord->name = $emailBlastType->name;
 		$emailBlastTypeRecord->subject = $emailBlastType->subject;
 		$emailBlastTypeRecord->fromEmail = $emailBlastType->fromEmail;

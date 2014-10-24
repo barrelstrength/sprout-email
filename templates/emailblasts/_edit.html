@@ -9,11 +9,11 @@
 
 {% block main %}
 
-	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut="1" data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/' ~ emailBlastId) }}">
-		<input type="hidden" name="action" value="sproutEmail/emailBlasts/saveEmailBlast">
-		{# <input type="hidden" name="handle" value="{{ form.handle }}">
-		<input type="hidden" name="entryId" value="{{ emailBlastId }}">
- #}
+	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/' ~ emailBlastId) }}">
+		<input type="hidden" name="action" value="sproutEmail/emailBlast/saveEmailBlast">
+		<input type="hidden" name="emailBlastTypeId" value="{{ emailBlastTypeId }}">
+		<input type="hidden" name="emailBlastId" value="{{ emailBlastId }}">
+
 		{% if namespace is not defined %}{% set namespace = 'fields' %}{% endif %}
 	
 		<div class="grid first">

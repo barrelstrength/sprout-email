@@ -120,6 +120,10 @@ class SproutEmailPlugin extends BasePlugin
 				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
 			),
 
+			'sproutemail/emailblasts/edit/(?P<emailBlastId>\d+)' => array(
+				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
+			),
+
 			/*
 			 * Create New Email Blast
 			 * @controller SproutEmail_EmailBlastController

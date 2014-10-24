@@ -26,12 +26,9 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$emailBlastTypeArray = craft()->sproutEmail->getEmailBlastTypes($this->id);
+		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($this->emailBlastTypeId);
 
-		$emailBlastTypeModel = new SproutEmail_EmailBlastTypeModel();
-		$emailBlastTypeModel->setAttributes($emailBlastTypeArray);
-
-		return $emailBlastTypeModel->getFieldLayout();
+		return $emailBlastType->getFieldLayout();
 	}
 
 	/**

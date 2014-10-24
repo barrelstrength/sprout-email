@@ -25,9 +25,9 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 	 * @throws \Exception
 	 * @return bool
 	 */
-	public function saveEntry(SproutEmail_EmailBlastRecord $emailBlast)
+	public function saveEmailBlast(SproutEmail_EmailBlastModel $emailBlast)
 	{	
-		$isNewEntry = !$emailBlast->id;
+		$isNewEmailBlast = !$emailBlast->id;
 
 		if ($emailBlast->id)
 		{
@@ -38,16 +38,14 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $emailBlast->id)));
 			}
 
-			$oldEmailBlast = SproutEmail_EmailBlastRecord::populateModel($emailBlastRecord);
+			$oldEmailBlast = SproutEmail_EmailBlastModel::populateModel($emailBlastRecord);
 		}
 		else
 		{
 			$emailBlastRecord = new SproutEmail_EmailBlastRecord();
 		}
 
-		// $emailBlastRecord->formId = $emailBlast->formId;
-		// $emailBlastRecord->ipAddress = $emailBlast->ipAddress;
-		// $emailBlastRecord->userAgent = $emailBlast->userAgent;
+		$emailBlastRecord->emailBlastTypeId = $emailBlast->emailBlastTypeId;
 
 		$emailBlastRecord->validate();
 		$emailBlast->addErrors($emailBlastRecord->getErrors());
@@ -61,26 +59,23 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 			try
 			{	
-				if ($event->isValid)
-				{	
-					if (craft()->elements->saveElement($emailBlast))
+				if (craft()->elements->saveElement($emailBlast))
+				{
+					// Now that we have an element ID, save it on the other stuff
+					if ($isNewEmailBlast)
 					{
-						// Now that we have an element ID, save it on the other stuff
-						if ($isNewEntry)
-						{
-							$emailBlastRecord->id = $emailBlast->id;
-						}
-
-						// Save our Entry Settings
-						$emailBlastRecord->save(false);
-
-						if ($transaction !== null)
-						{
-							$transaction->commit();
-						}
-
-						return true;
+						$emailBlastRecord->id = $emailBlast->id;
 					}
+
+					// Save our Entry Settings
+					$emailBlastRecord->save(false);
+
+					if ($transaction !== null)
+					{
+						$transaction->commit();
+					}
+
+					return true;
 				}
 			}
 			catch (\Exception $e)
@@ -141,7 +136,7 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 		
 		if ($emailBlastRecord) 
 		{
-			return SproutEmail_EmailBlastRecord::populateModel($emailBlastRecord);
+			return SproutEmail_EmailBlastModel::populateModel($emailBlastRecord);
 		} 
 		else 
 		{

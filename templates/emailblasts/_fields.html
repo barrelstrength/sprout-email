@@ -1,3 +1,17 @@
+{% from "_includes/forms" import textField %}
+
+{{ textField({
+	label: "Email Subject"|t,
+	id: 'title',
+	name: 'title',
+	value: emailBlast.title,
+	errors: emailBlast.getErrors('title'),
+	first: true,
+	autofocus: true,
+	required: false,
+	maxlength: 255
+}) }}
+
 
 <div>
 	{% for tab in emailBlastType.getFieldLayout().getTabs() %}

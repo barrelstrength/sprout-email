@@ -3,6 +3,7 @@ namespace Craft;
 
 class SproutEmail_EmailBlastController extends BaseController
 {
+	private $emailBlastType;
 	/**
 	 * Save Email Blast
 	 * 
@@ -12,82 +13,35 @@ class SproutEmail_EmailBlastController extends BaseController
 	{		
 		$this->requirePostRequest();
 
-		$formHandle = craft()->request->getRequiredPost('handle');
-		$this->form = craft()->sproutForms_forms->getFormByHandle($formHandle);
+		$emailBlastTypeId = craft()->request->getRequiredPost('emailBlastTypeId');
+		$this->emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
 
-		if (!isset($this->form)) 
+		if (!isset($this->emailBlastType)) 
 		{
-			throw new Exception(Craft::t('No form exists with the handle “{handle}”', array('handle' => $formHandle)));
+			throw new Exception(Craft::t('No Email Blast Type exists with the id “{id}”', array('id' => $emailBlastTypeId)));
 		}
+
+		$emailBlast = $this->_getEmailBlastModel();
 		
-		craft()->content->fieldContext = $this->form->getFieldContext();
-		craft()->content->contentTable = $this->form->getContentTable();
-
-		$entry = $this->_getEntryModel();
-
-		// Our SproutForms_EntryModel requires that we assign it a SproutForms_FormModel
-		$entry->formId = $this->form->id;
-
 		// Populate the entry with post data
 		// @TODO - This function doesn't update our $entry variable, why?
-		$this->_populateEntryModel($entry);
+		$this->_populateEmailBlastModel($emailBlast);
 
-		// Swap out any dynamic variables for our notifications
-		$this->form->notificationRecipients = craft()->templates->renderObjectTemplate($this->form->notificationRecipients, $entry);
-		$this->form->notificationSubject = craft()->templates->renderObjectTemplate($this->form->notificationSubject, $entry);
-		$this->form->notificationSenderName = craft()->templates->renderObjectTemplate($this->form->notificationSenderName, $entry);
-		$this->form->notificationSenderEmail = craft()->templates->renderObjectTemplate($this->form->notificationSenderEmail, $entry);
-		$this->form->notificationReplyToEmail = craft()->templates->renderObjectTemplate($this->form->notificationReplyToEmail, $entry);
-
-		if (craft()->sproutForms_entries->saveEntry($entry)) 
+		if (craft()->sproutEmail_emailBlast->saveEmailBlast($emailBlast)) 
 		{	
-			// Only send notification email for front-end submissions
-			if (!craft()->request->isCpRequest()) 
-			{
-				$this->_notifyAdmin($this->form, $entry);
-			}
-			
-			craft()->userSession->setNotice(Craft::t('Entry saved.'));
-			
-			// Store our new entry so we can recreate the Entry object on our thank you page
-			$_SESSION['lastEntryId'] = $entry->id;
+			craft()->userSession->setNotice(Craft::t('Email blast saved.'));
 			
 			$this->redirectToPostedUrl();
 		}
 		else
-		{
-			if (craft()->request->isCpRequest()) 
-			{
-				// make errors available to variable
-				craft()->userSession->setError(Craft::t('Couldn’t save entry.'));
+		{	
+			// make errors available to variable
+			craft()->userSession->setError(Craft::t('Couldn’t save email blast.'));
 
-				// Store this Entry Model in a variable in our Service layer
-				// so that we can access the error object from our actionEditEntryTemplate() method
-				craft()->sproutForms_forms->activeCpEntry = $entry;
-
-				// Return the form as an 'entry' variable if in the cp
-				craft()->urlManager->setRouteVariables(array(
-					'entry' => $entry
-				));
-			}
-			else
-			{
-				if (craft()->sproutForms_entries->fakeIt) 
-				{
-					$this->redirectToPostedUrl();
-				}
-				else
-				{
-					// Store this Entry Model in a variable in our Service layer
-					// so that we can access the error object from our displayForm() variable 
-					craft()->sproutForms_forms->activeEntries[$this->form->handle] = $entry;
-					
-					// Return the form using it's name as a variable on the front-end
-					craft()->urlManager->setRouteVariables(array(
-						$this->form->handle => $entry
-					));
-				}
-			}
+			// Return the form as an 'emailBlast' variable if in the cp
+			craft()->urlManager->setRouteVariables(array(
+				'emailBlast' => $emailBlast
+			));
 		}
 	}
 
@@ -111,184 +65,48 @@ class SproutEmail_EmailBlastController extends BaseController
 	}
 
 	/**
-	 * Fetch or create a SproutForms_EntryModel
+	 * Fetch or create a SproutEmail_EmailBlastModel
 	 *
 	 * @access private
 	 * @throws Exception
-	 * @return SproutForms_EntryModel
+	 * @return SproutEmail_EmailBlastModel
 	 */
-	private function _getEntryModel()
+	private function _getEmailBlastModel()
 	{
-		$entryId = craft()->request->getPost('entryId');
+		$emailBlastId = craft()->request->getPost('emailBlastId');
 
-		if ($entryId)
+		if ($emailBlastId)
 		{
-			$entry = craft()->sproutForms_entries->getEntryById($entryId);
+			$emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
 
-			if (!$entry)
+			if (!$emailBlast)
 			{
-				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $entryId)));
+				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $emailBlastId)));
 			}
 		}
 		else
 		{
-			$entry = new SproutForms_EntryModel();
+			$emailBlast = new SproutEmail_EmailBlastModel();
 		}
 
-		return $entry;
+		return $emailBlast;
 	}
 
 	/**
-	 * Populate a SproutForms_EntryModel with post data
+	 * Populate a SproutEmail_EmailBlastModel with post data
 	 *
 	 * @access private
-	 * @param SproutForms_EntryModel $entry
+	 * @param SproutEmail_EmailBlastModel $entry
 	 */
-	private function _populateEntryModel(SproutForms_EntryModel $entry)
+	private function _populateEmailBlastModel(SproutEmail_EmailBlastModel $emailBlast)
 	{
-		$entry->formId = $this->form->id;
-		$entry->ipAddress = craft()->request->getUserHostAddress();
-		$entry->userAgent = craft()->request->getUserAgent();
+		$emailBlast->getContent()->title = craft()->request->getRequiredPost('title');
+		$emailBlast->emailBlastTypeId = $this->emailBlastType->id;
 
 		// Set the entry attributes, defaulting to the existing values for whatever is missing from the post data
 		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
-		$entry->setContentFromPost($fieldsLocation);
-		$entry->setContentPostLocation($fieldsLocation);
-	}
-	
-	/**
-	 * Notify admin
-	 * 
-	 * @param object $form
-	 * @param object $field
-	 * @return bool
-	 */
-	private function _notifyAdmin(SproutForms_FormModel $form, SproutForms_EntryModel $entry)
-	{	
-		// Get our recipients
-		$recipients = explode(',', $form->notificationRecipients);
-		$recipients = array_map('trim', $recipients);
-		$recipients = array_unique($recipients);
-		
-		if (!empty($recipients)) 
-		{
-			$email = new EmailModel();
-
-			// $entryCpUrl = craft()->config->get('cpTrigger') . "/sproutforms/entries/edit/" . $entry->id;
-
-			$fields = $entry->getFieldLayout()->getFields();
-
-			$settings = craft()->plugins->getPlugin('sproutforms')->getSettings();
-			$templateFolderOverride = $settings->templateFolderOverride;
-
-			$emailTemplate = craft()->path->getPluginsPath() . 'sproutforms/templates/_special/';
-
-			if ($templateFolderOverride) 
-			{
-				$emailTemplateFile = craft()->path->getSiteTemplatesPath() . $templateFolderOverride . "/email";
-
-				foreach (craft()->config->get('defaultTemplateExtensions') as $extension) 
-				{
-					if (IOHelper::fileExists($emailTemplateFile . "." . $extension)) 
-					{
-						$emailTemplate = craft()->path->getSiteTemplatesPath() . $templateFolderOverride . "/";
-					}
-				}
-			}
-
-			// Set our Sprout Forms Email Template path
-			craft()->path->setTemplatesPath($emailTemplate);
-			
-			$email->htmlBody = craft()->templates->render('email', array(
-				'formName' => $form->name,
-				// 'entryCpUrl' => $entryCpUrl,
-				'fields' => $fields,
-				'element' => $entry
-			));
-
-			craft()->path->setTemplatesPath(craft()->path->getCpTemplatesPath());
-
-			// @TODO - create fallback text email
-			// $email->body     = $form->body;
-
-			$post = (object) $_POST;
-
-			// Set the "from" information.
-			$email->fromEmail = $form->notificationSenderEmail;
-			$email->fromName  = $form->notificationSenderName;
-			$email->subject   = $form->notificationSubject;
-
-			// Has a custom subject been set for this form?
-			if ($form->notificationSubject) 
-			{
-				try {
-					$email->subject = craft()->templates->renderString($form->notificationSubject, array(
-						'entry' => $post
-					));
-				}
-				catch (\Exception $e) {
-					// do nothing;  retain default subj
-				}
-			}
-			
-			// custom replyTo has been set for this form
-			if ($form->notificationReplyToEmail) 
-			{
-				try {
-
-					$email->replyTo = craft()->templates->renderString($form->notificationReplyToEmail, array(
-						'entry' => $post
-					));
-					
-					// we must validate this before attempting to send; 
-					// invalid email will throw an error/fail to send silently
-					if ( ! $this->_validEmail($email->replyTo) ) 
-					{
-						$email->replyTo = null;
-					}
-				}
-				catch (\Exception $e) {
-					// do nothing;  replyTo will not be included
-				}
-			}
-			
-			$error = false;
-			foreach ($recipients as $emailAddress) 
-			{	
-				// Do we need to swap in any email addresses that 
-				// were submitted with the form?
-				$email->toEmail = craft()->templates->renderString($emailAddress, array(
-					'entry' => $post
-				));
-				
-				// we must validate this before attempting to send;
-				// invalid email will throw an error/fail to send silently
-				if ( ! $this->_validEmail($email->toEmail) ) 
-				{
-					continue;
-				}
-				
-				try {
-					$res = craft()->email->sendEmail($email);
-				}
-				catch (\Exception $e) {
-					$error = true;
-				}
-			}
-
-			return $error;
-		}
-	}
-	
-	/**
-	 * Validate email address
-	 * 
-	 * @param  string $email recipient list email
-	 * @return bool          true/false
-	 */
-	private function _validEmail($email) 
-	{
-		return preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $email);
+		$emailBlast->setContentFromPost($fieldsLocation);
+		$emailBlast->setContentPostLocation($fieldsLocation);
 	}
 
 	/**
@@ -300,35 +118,56 @@ class SproutEmail_EmailBlastController extends BaseController
 	 */
 	public function actionEditEmailBlastTemplate(array $variables = array())
 	{	
+		$emailBlastId = craft()->request->getSegment(4);
 		$emailBlastTypeId = craft()->request->getSegment(3);
 
-		$emailBlastType = craft()->sproutEmail->getEmailBlastType(array('id'=>$emailBlastTypeId));
-		
-		$variables['emailBlastTypeId'] = $emailBlastType->id;	
-
-		// This is our element, so we know where to get the field values
-		$variables['emailBlastType']   = $emailBlastType;
-
-		foreach ($emailBlastType->getFieldLayout()->getTabs() as $key => $value) 
+		if (is_numeric($emailBlastId)) 
 		{
-			$variables['tabs'][] = array(
-				'label' => $value->name,
-				'url' => '#'.$value->id
-			);
-		}
-
-		if (1 == 2) 
-		{
-			die('Shazam!');
-			
-			// Grab ID of current Email Blast
-		}
+			$variables['emailBlast'] = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
+			$variables['emailBlastId'] = $emailBlastId;
+		}	
 		else
 		{
 			$variables['emailBlast'] = new SproutEmail_EmailBlastModel();
+
+			// @TODO - fix error
+			$variables['emailBlastId'] = "";
+		}
+		
+		if (!is_numeric($emailBlastTypeId)) 
+		{
+			$emailBlastTypeId = $variables['emailBlast']->emailBlastTypeId;
 		}
 
-		$variables['emailBlastId'] = "";
+		$variables['emailBlastType'] = craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
+		$variables['emailBlastTypeId'] = $emailBlastTypeId;
+		
+		// Tabs
+		$variables['tabs'] = array();
+
+		foreach ($variables['emailBlastType']->getFieldLayout()->getTabs() as $index => $tab) 
+		{
+			// Do any of the fields on this tab have errors?
+			$hasErrors = false;
+
+			if ($variables['emailBlast']->hasErrors())
+			{
+				foreach ($tab->getFields() as $field)
+				{
+					if ($variables['emailBlast']->getErrors($field->getField()->handle))
+					{
+						$hasErrors = true;
+						break;
+					}
+				}
+			}
+
+			$variables['tabs'][] = array(
+				'label' => Craft::t($tab->name),
+				'url'   => '#tab'.($index+1),
+				'class' => ($hasErrors ? 'error' : null)
+			);
+		}
 
 		$this->renderTemplate('sproutemail/emailblasts/_edit', $variables);
 	}

@@ -198,33 +198,35 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 				':templateOption' => 3 
 		);
 		
-		if ( $emailBlastType_id )
-		{
-			$where_binds .= ' AND :id=mc.id';
-			$where_params [':id'] = $emailBlastType_id;
-		}
+		// @TODO - had a previously named function by the same name that did the 
+		// commented out stuff... add back where?
+		// if ( $emailBlastType_id )
+		// {
+		// 	$where_binds .= ' AND :id=mc.id';
+		// 	$where_params [':id'] = $emailBlastType_id;
+		// }
 		
-		return craft()->db->createCommand()->select( 'mc.*,
-				el.slug as slug,
-				s.handle,
-				e.id as entryId,
-				c.title as title,
-				s.id as sectionId' )
-				->from( 'sproutemail_emailblasts mc' )
-				->leftJoin( 'sections s', 'mc.sectionId=s.id' )
-				->leftJoin( 'entries e', 's.id = e.sectionId' )
-				->leftJoin( 'content c', 'e.id = c.elementId' )
-				->leftJoin( 'elements_i18n el', 'e.id = el.elementId' )
-				->where( $where_binds, $where_params )
-				->order( 'mc.dateCreated desc, el.slug asc' )
-				->queryAll();
+		// return craft()->db->createCommand()->select( 'mc.*,
+		// 		el.slug as slug,
+		// 		s.handle,
+		// 		e.id as entryId,
+		// 		c.title as title,
+		// 		s.id as sectionId' )
+		// 		->from( 'sproutemail_emailblasttypes mc' )
+		// 		->leftJoin( 'sections s', 'mc.sectionId=s.id' )
+		// 		->leftJoin( 'entries e', 's.id = e.sectionId' )
+		// 		->leftJoin( 'content c', 'e.id = c.elementId' )
+		// 		->leftJoin( 'elements_i18n el', 'e.id = el.elementId' )
+		// 		->where( $where_binds, $where_params )
+		// 		->order( 'mc.dateCreated desc, el.slug asc' )
+		// 		->queryAll();
 
-		// return craft()->db->createCommand()
-		// 			->select( '*' )
-		// 			->from( 'sproutemail_emailblasts' )
-		// 			->where( 'templateOption=:templateOption', array( ':templateOption' => 3 ) )
-		// 			->order( 'dateCreated desc' )
-		// 			->queryAll();
+		return craft()->db->createCommand()
+					->select( '*' )
+					->from( 'sproutemail_emailblasttypes' )
+					->where( 'templateOption=:templateOption', array( ':templateOption' => 3 ) )
+					->order( 'dateCreated desc' )
+					->queryAll();
 	}
 
 	/**
