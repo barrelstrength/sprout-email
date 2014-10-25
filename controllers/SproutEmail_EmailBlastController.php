@@ -104,6 +104,7 @@ class SproutEmail_EmailBlastController extends BaseController
 		$emailBlast->emailBlastTypeId = $this->emailBlastType->id;
 
 		// Set the entry attributes, defaulting to the existing values for whatever is missing from the post data
+		
 		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
 		$emailBlast->setContentFromPost($fieldsLocation);
 		$emailBlast->setContentPostLocation($fieldsLocation);
