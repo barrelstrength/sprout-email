@@ -1,7 +1,27 @@
 {% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set body %}
+{% set crumbs = [
+  { label: "Sprout Email"|t, url: url('sproutemail') }
+] %}
+
+{# @TODO - this doens't work... ug
+{% set tabs = {
+  emailblasts:  { 
+    label: "Email Blasts"|t, 
+    url: url('sproutemail/emailblasts') 
+  },
+  notifications:  { 
+    label: "Notifications"|t, 
+    url: url('sproutemail/notifications') 
+  },
+} %} #}
+
+{% set title = 'Notifications' %}
+
+{% block main %}
+	
+	<div class="pane">
 
 	{% set notifications = craft.sproutEmail.getNotifications() %}
 	
@@ -48,8 +68,8 @@
 	{% if notifications|length %}
 	 	
 		<div class="buttons">
-	<a class="btn submit add icon" href="{{ url('sproutemail/notifications/new') }}">New Notification</a>
-</div>
+			<a class="btn submit add icon" href="{{ url('sproutemail/notifications/new') }}">New Notification</a>
+		</div>
 
 	{% else %}
 	 	
@@ -67,13 +87,13 @@
 
 	{% endif %}
  	
+	{% if brandMessageFooter is defined %}
+		{{ brandMessageFooter }}
+	{% endif %}
+	
+	</div>
 
-
-{% if brandMessageFooter is defined %}
-	{{ brandMessageFooter }}
-{% endif %}
-
-{% endset %}
+{% endblock %}
 
 {% set js %}
 	new Craft.AdminTable({
