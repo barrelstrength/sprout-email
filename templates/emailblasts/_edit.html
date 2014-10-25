@@ -5,7 +5,7 @@
 	{ label: "Email Blasts"|t, url: url('sproutemail/emailblasts') },
 ] %}
 
-{% set title = 'Edit Email Blast' %}
+{% set title = (emailBlast.title is defined ? emailBlast.title : 'Create a new Email Blast') %}
 
 {% block main %}
 
@@ -27,7 +27,7 @@
 			</div>		
 
 			<div class="item" data-position="right" data-colspan="1">
-				
+
 				<div class="pane">
 
 					{% if emailBlast is defined %}
@@ -65,3 +65,10 @@
 	</form>
 
 {% endblock %}
+
+{# @TODO - need to customize live preview for emails
+{% set js %}
+    Craft.livePreview = new Craft.LivePreview("http:\/\/craft.dev\/", "en_us");
+{% endset %}
+
+{% includeJs js %} #}
