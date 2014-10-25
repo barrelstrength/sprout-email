@@ -128,14 +128,29 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 	 *
 	 * @return void
 	 */
-	public function actionDelete()
+	public function actionDeleteEmailBlastType()
 	{
 		$this->requirePostRequest();
-		$this->requireAjaxRequest();
 		
-		$this->returnJson( array (
-				'success' => craft()->sproutEmail->deleteEmailBlastType( craft()->request->getRequiredPost( 'id' ) ) 
-		) );
+		$emailBlastTypeId = craft()->request->getRequiredPost('id');
+
+		// @TODO - handle errors
+		if (craft()->sproutEmail->deleteEmailBlastType($emailBlastTypeId)) 
+		{
+			craft()->userSession->setNotice(Craft::t('Email Blast Type deleted.'));
+
+			$this->redirectToPostedUrl();	
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t('Couldn’t delete Email Blast Type.'));
+		}
+
+		
+
+		// $this->returnJson( array (
+		// 		'success' => craft()->sproutEmail->deleteEmailBlastType( $emailBlastTypeId ) 
+		// ) );
 	}
 	
 	/**

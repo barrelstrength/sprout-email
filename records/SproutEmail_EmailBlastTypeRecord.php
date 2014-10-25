@@ -281,7 +281,7 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	public function getNotifications()
 	{
 		$res = craft()->db->createCommand()->select( 'mc.*,
-				mcne.notificationEventId' )->from( 'sproutemail_emailblasts mc' )->join( 'sproutemail_emailblasttypes_notificationevents mcne', 'mc.id=mcne.emailBlastTypeId' )->queryAll();
+				mcne.notificationEventId' )->from( 'sproutemail_emailblasttypes mc' )->join( 'sproutemail_emailblasttypes_notificationevents mcne', 'mc.id=mcne.emailBlastTypeId' )->queryAll();
 		return $res;
 	}
 }
