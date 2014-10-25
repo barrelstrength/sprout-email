@@ -151,7 +151,7 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
     
     public function getSettingsHtml()
     {
-        return craft()->templates->render('/sproutemail/fieldtypes/email_emailBlastType/settings', array(
+        return craft()->templates->render('/sproutemail/_cp/fields/emailblast/settings', array(
             'settings' => $this->getSettings()
         ));
     }
