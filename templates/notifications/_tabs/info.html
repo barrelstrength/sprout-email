@@ -60,14 +60,18 @@
     	}) }}
     	
     	{% set events = craft.sproutEmail.getNotificationEvents() %}
-    
+        
+        {% set existingEvent = (emailBlastType is defined and emailBlastType.notificationEvent[0] is defined ? (emailBlastType.notificationEvent[0].registrar == 'craft' ? emailBlastType.notificationEvent[0].event | replace({'.':'---'}) : emailBlastType.notificationEvent[0].id) : null) %}
+
+        {% set notificationEvent = (emailBlastType is defined ? (emailBlastType.getErrors()|length ? emailBlastType.notificationEvent : existingEvent) : null) %}
+
     	{{ forms.selectField({
     		label: "When would you like to send this email"|t,
     		id: 'notificationEvent',
     		name: 'notificationEvent',
     		instructions: "Select the event on which you would like to send this email."|t,
     		options : events,
-    		value: (emailBlastType is defined and emailBlastType.notificationEvent[0] is defined ? (emailBlastType.notificationEvent[0].registrar == 'craft' ? emailBlastType.notificationEvent[0].event | replace({'.':'---'}) : emailBlastType.notificationEvent[0].id) : null),
+    		value: notificationEvent,
     		errors: (emailBlastType is defined ? emailBlastType.getErrors('notificationEvent') : null) 	
     	}) }}
     	
