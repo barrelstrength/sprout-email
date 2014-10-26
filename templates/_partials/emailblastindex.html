@@ -1,0 +1,189 @@
+{% if loop.first %}
+
+{% if craft.request.getSegment(2) == "" %}
+<h3>{{ "Email Blasts"|t }}</h3>
+{% endif %}
+
+<table id="emailblasts" class="data fullwidth">
+	<thead>
+		<th width="70%">Email Blast</th>
+		<th width="15%">Preview</th>
+		<th width="15%">Deliver</th>
+	</thead>
+{% endif %}
+
+	<tr data-id="{{ emailBlast.id }}" data-name="{{ emailBlast.subjectLine|t }}">
+		<td>
+			<span class="status {{ emailBlast.status }}"></span>
+			<a href="{{ url('sproutemail/emailblasts/edit/' ~ emailBlast.id) }}">{{ emailBlast.title ? emailBlast.subjectLine : 'New Email Blast' }}</a><br/>
+			<span style="color: #999;text-transform:uppercase;font-size:.8em">
+				{{ emailBlastType.name }} <span style="color:#121212;">/</span> {{ emailBlast.dateCreated|date('F d, Y') }}
+			</span>
+		</td>
+		 
+		{% if emailBlast.emailBlastTypeId and emailBlast.id and emailBlastType.textTemplate and emailBlastType.emailProvider %}
+		<td>		
+			<a href="{{ siteUrl }}{{emailBlastType.htmlTemplate|replace({'.html': ''}) }}?id={{emailBlast.id}}" target="_blank">HTML</a> 
+			/ 
+			<a href="{{ siteUrl }}{{emailBlastType.textTemplate }}?entryId={{emailBlast.id}}" target="_blank">Text</a> 
+		</td>
+		<td>
+			{% switch emailBlastType.emailProvider %}
+			
+				{% case "SproutEmail" %}
+			
+					<a href="#" class="export btn small" >
+						Send Email Blast
+					</a>
+			
+				{% case "CopyPaste" %}
+			
+					<a href="#" data-format="html" class="copy btn small" >
+						Display Source
+					</a>
+
+				{% case "SendGrid" %}
+			
+					<a href="#" class="export btn small" >
+						Export to {{ emailBlast.emailProvider }} 
+					</a>
+			
+				{% case "MailGun" %}
+			
+					<a href="#" class="confirm btn small" >
+						Prepare {{ emailBlast.emailProvider }} Blast
+					</a>
+
+				{% default %}
+			
+					{# Do nothing #}
+			
+			{% endswitch %}
+
+		</td>
+		{% else %}
+		<td colspan="2">
+			<i><a href="{{ url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastType.id ) }}" style="color:inherit;text-decoration:underline;">Update your settings</a> to have full control over your Email Blasts for {{ emailBlastType.name }}.</i>
+		</td>
+		{% endif %}
+	</tr>
+
+{% if loop.last %}
+</table>
+<br/>
+<br/>
+
+{% set js %}
+	new Craft.AdminTable({
+		tableSelector: '#emailblasts',
+		noObjectsSelector: '#noemailblasts',
+		deleteAction: 'sproutEmail/emailBlast/deleteEmailBlast'
+	});
+	
+	jQuery(document).ready(function(){
+
+		jQuery('.export').click(function(){
+				var btn = jQuery(this);
+				var tr = jQuery(this).closest('tr');
+			
+			btn.addClass('disabled');
+			
+			var query = 'emailBlastId='+tr.data('id')
+									+'&emailBlastTypeId='+tr.data('id')
+												+'&action=sproutEmail/emailBlast/export';
+
+			$.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
+					btn.removeClass('disabled');
+					var sgConfirmModal = new Garnish.Modal($('<div class="modal fitted" style="padding: 40px;">'+
+																						'<div class="body"><h1>SendGrid</h1><p>'+data.response+'</p>'+
+																						'<p><strong>SendGrid:</strong> <a href="https://sendgrid.com/newsletter" target="_blank">View all EmailBlastTypes</a>'+
+																						'<div class="buttons right"><input type="submit" id="sendGridClose" class="btn submit" value="'+Craft.t('Close')+'" /></div>'+
+																						'</div></div>'));
+					 $('#sendGridClose').unbind().bind('click',function(){
+							sgConfirmModal.hide();
+					 });
+			},"json")
+						return false;
+		})
+
+		jQuery('.copy').click(function(){
+
+				var tr      = jQuery(this).closest('tr');
+			
+			var query = 'entryId='+tr.data('entry-id')
+									+'&emailBlastTypeId='+tr.data('id')
+												+'&action=SproutEmail/emailblasts/export';
+
+			jQuery.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
+								var myModal = new Garnish.Modal($('<div class="modal" style="padding: 40px;">'+
+																									'<p><strong>Title:</strong> '+data.title+'</p>'+
+																									'<p><strong>From:</strong> '+data.fromName+' &lt;'+data.fromEmail+'&gt;</p>'+
+																									'<h2>HTML Source</h2><textarea style="width:100%;height:33%">'+data.html+'</textarea>'+
+																									'<h2>Plain Text Source</h2><textarea style="width:100%;height:33%">'+data.text+'</textarea>'+
+																									'</div>'));
+			}, "json");
+						return false;
+		})
+		
+		jQuery('.confirm').click(function(e){
+						
+						e.preventDefault();
+
+						// Hold these so we can get back to them on submit            		
+								var btn = jQuery(this);
+								var tr = jQuery(this).closest('tr');            			
+					var query = 'entryId='+tr.data('entry-id')
+											+'&emailBlastTypeId='+tr.data('id')
+														+'&action=SproutEmail/emailblasts/export';
+
+						// Build up our modal
+					var $confirm = $('<div class="modal fitted" />'),
+							$body = $('<div class="body" />').appendTo($confirm),
+							$message = $('<h1>Send Via MailGun</h1>'+
+																 '<p id="modalMessage">You are about to send the emailBlastType to the configured list of recipients</p>').appendTo($body),
+										$buttons  = $('<div class="buttons right"/>').appendTo($body);
+						$cancelBtn = $('<div class="btn">'+Craft.t('Cancel')+'</div>').appendTo($buttons),
+						$submitBtn = $('<input type="submit" class="btn submit" value="'+Craft.t('Send email now')+'" />').appendTo($buttons);                               
+										$closeBtn = $('<input type="submit" class="btn submit hidden" value="'+Craft.t('Close')+'" />').appendTo($buttons);                               
+										$spinner   = $('<div class="spinner hidden"/>').appendTo($buttons);
+
+						// Show Modal                            
+								var confirmModal = new Garnish.Modal($confirm);
+
+						// Bind Cancel 
+					$cancelBtn.unbind().bind('click', function() {
+						confirmModal.hide();
+					});
+						
+						// Bind the close
+								$closeBtn.unbind().bind('click', function() {
+						confirmModal.hide();
+					});
+
+						// Bind Submit    			
+					$submitBtn.unbind().bind('click', function(e) {
+										e.preventDefault();
+
+										// Hide buttons 
+								$cancelBtn.hide();
+								$submitBtn.hide();
+										// Show Spinner    
+												$spinner.removeClass('hidden');
+												
+										$.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
+									$('#modalMessage').html(data);
+												$closeBtn.removeClass('hidden');
+												$spinner.addClass('hidden');
+							}).fail(function(){
+												$('#modalMessage').html('Error: Please verify your email renders properly before sending');
+												$closeBtn.removeClass('hidden');
+												$spinner.addClass('hidden');
+							});
+					});
+		});
+
+	})
+{% endset %}
+{% includeJs js %}
+
+{% endif %}

@@ -27,10 +27,20 @@ class SproutEmail_EmailBlastController extends BaseController
 		// @TODO - This function doesn't update our $entry variable, why?
 		$this->_populateEmailBlastModel($emailBlast);
 
+		// Only use the Title Format if it exists
+		// @TODO - hide Title Format by default, only show it if 
+		// Has auto-generated Title field is checked
+		if ($this->emailBlastType->titleFormat) 
+		{
+			$emailBlast->getContent()->title = craft()->templates->renderObjectTemplate($this->emailBlastType->titleFormat, $emailBlast);
+		}
+
 		if (craft()->sproutEmail_emailBlast->saveEmailBlast($emailBlast)) 
 		{	
 			craft()->userSession->setNotice(Craft::t('Email blast saved.'));
 			
+			$_POST['redirect'] = str_replace('{id}', $emailBlast->id, $_POST['redirect']);
+
 			$this->redirectToPostedUrl();
 		}
 		else
@@ -100,7 +110,11 @@ class SproutEmail_EmailBlastController extends BaseController
 	 */
 	private function _populateEmailBlastModel(SproutEmail_EmailBlastModel $emailBlast)
 	{
-		$emailBlast->getContent()->title = craft()->request->getRequiredPost('title');
+		$emailBlast->slug = craft()->request->getPost('slug', $emailBlast->slug);
+		$emailBlast->enabled = (bool) craft()->request->getPost('enabled', $emailBlast->enabled);
+
+		$emailBlast->getContent()->title = craft()->request->getRequiredPost('subjectLine');
+		$emailBlast->subjectLine = $emailBlast->getContent()->title;
 		$emailBlast->emailBlastTypeId = $this->emailBlastType->id;
 
 		// Set the entry attributes, defaulting to the existing values for whatever is missing from the post data
@@ -124,8 +138,8 @@ class SproutEmail_EmailBlastController extends BaseController
 
 		if (is_numeric($emailBlastId)) 
 		{
-			$variables['emailBlast'] = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
-			$variables['emailBlastId'] = $emailBlastId;
+			$variables['emailBlast'] = craft()->elements->getElementById($emailBlastId);
+			$variables['emailBlastId'] = $emailBlastId;			
 		}	
 		else
 		{
@@ -133,7 +147,7 @@ class SproutEmail_EmailBlastController extends BaseController
 
 			// @TODO - fix error
 			$variables['emailBlastId'] = "";
-		}
+		}		
 		
 		if (!is_numeric($emailBlastTypeId)) 
 		{

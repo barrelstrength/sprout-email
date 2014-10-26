@@ -60,9 +60,7 @@ class SproutEmailVariable
 	 */
 	public function getEmailBlastTypeById($emailBlastTypeId)
 	{
-		return craft()->sproutEmail->getEmailBlastType( array (
-				'id' => $emailBlastTypeId 
-		) );
+		return craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
 	}
 	
 	/**

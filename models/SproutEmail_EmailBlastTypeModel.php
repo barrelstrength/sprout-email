@@ -25,6 +25,19 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			'name' => array (
 				AttributeType::String 
 			),
+			'handle' => array (
+				AttributeType::String 
+			),
+			'titleFormat' => array (
+				AttributeType::String
+			),
+			'hasUrls' => array(
+				AttributeType::Bool, 
+				'default' => true
+			),
+			'urlFormat' => array(
+				AttributeType::String
+			),
 			'subject' => array (
 				AttributeType::String 
 			),
@@ -53,9 +66,6 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			),
 			'textBody' => array (
 				AttributeType::String 
-			),
-			'sectionId' => array (
-				AttributeType::Number 
 			),
 			'subjectHandle' => array (
 				AttributeType::String 

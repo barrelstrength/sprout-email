@@ -261,8 +261,8 @@ class SproutEmailService extends BaseApplicationComponent
 					}
 				}
 				catch ( \Exception $e )
-				{
-					throw new Exception( Craft::t( 'Error: EmailBlastType could not be saved.' ) );
+				{					
+					throw new Exception( Craft::t( 'Error: Email Blast Type could not be saved.' ) );
 				}
 
 				break;
@@ -351,6 +351,9 @@ class SproutEmailService extends BaseApplicationComponent
 		// Set common attributes
 		$emailBlastTypeRecord->fieldLayoutId = $emailBlastType->fieldLayoutId;
 		$emailBlastTypeRecord->name = $emailBlastType->name;
+		$emailBlastTypeRecord->handle = $emailBlastType->handle;
+		$emailBlastTypeRecord->titleFormat = $emailBlastType->titleFormat;
+		$emailBlastTypeRecord->hasUrls = $emailBlastType->hasUrls;
 		$emailBlastTypeRecord->subject = $emailBlastType->subject;
 		$emailBlastTypeRecord->fromEmail = $emailBlastType->fromEmail;
 		$emailBlastTypeRecord->fromName = $emailBlastType->fromName;
@@ -434,7 +437,7 @@ class SproutEmailService extends BaseApplicationComponent
 				) );
 				break;
 			case 3 : // Create a EmailBlastType based on an Entries Section and Template
-				$emailBlastTypeRecord->sectionId = $emailBlastType->sectionId;
+				// $emailBlastTypeRecord->sectionId = $emailBlastType->sectionId;
 				$emailBlastTypeRecord->subjectHandle = $emailBlastType->subjectHandle;
 				$emailBlastTypeRecord->htmlTemplate = $emailBlastType->htmlTemplate;
 				$emailBlastTypeRecord->textTemplate = $emailBlastType->textTemplate;
@@ -442,7 +445,7 @@ class SproutEmailService extends BaseApplicationComponent
 				$emailBlastTypeRecord->textBodyTemplate = $emailBlastType->textBodyTemplate;
 
 				$emailBlastTypeRecord->addRules( array (
-						'sectionId,htmlTemplate,textTemplate',
+						'htmlTemplate,textTemplate',
 						'required' 
 				) );
 				break;
@@ -468,7 +471,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function deleteEmailBlastTypeRecipientList($recipientListId, $emailBlastTypeId)
 	{
-		return craft()->db->createCommand()->delete( 'sproutemail_emailBlastType_recipient_lists', array (
+		return craft()->db->createCommand()->delete( 'sproutemail_emailblasttypes_recipientlists', array (
 				'recipientListId' => $recipientListId,
 				'emailBlastTypeId' => $emailBlastTypeId 
 		) );

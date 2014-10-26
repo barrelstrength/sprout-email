@@ -44,6 +44,26 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	}
 
 	/**
+	 * @inheritDoc IElementType::hasStatuses()
+	 *
+	 * @return bool
+	 */
+	public function hasStatuses()
+	{
+		return true;
+	}
+
+	public function getStatuses()
+	{
+		return array(
+			SproutEmail_EmailBlastModel::READY     => Craft::t('Ready'),
+			SproutEmail_EmailBlastModel::PENDING   => Craft::t('Pending'),
+			SproutEmail_EmailBlastModel::DISABLED  => Craft::t('Disabled'),
+			SproutEmail_EmailBlastModel::ARCHIVED  => Craft::t('Archived'),
+		);
+	}
+
+	/**
 	 * Returns this element type's sources.
 	 *
 	 * @param string|null $context
@@ -62,13 +82,40 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 		$emailBlastTypes = craft()->sproutEmail->getAllEmailBlastTypes();
 
 		foreach ($emailBlastTypes as $emailBlastType) 
-		{
-			$sources[] = array(
-				'label' => $emailBlastType['name'],
+		{	
+			$key = 'emailBlastType:'.$emailBlastType->id;
+			
+			$sources[$key] = array(
+				'label' => $emailBlastType->name,
+				'data' => array('emailBlastTypeId' => $emailBlastType->id),
+				'criteria' => array('emailBlastTypeId' => $emailBlastType->id)
 			);
 		}
 
 		return $sources;
+	}
+
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context)
+	{
+		if ($context == 'index')
+		{
+			$criteria->offset = 0;
+			$criteria->limit = null;
+
+			$source = $this->getSource($sourceKey, $context);
+
+			return craft()->templates->render('sproutemail/emailblasts/_emailblastindex', array(
+				'context'             => $context,
+				'elementType'         => new ElementTypeVariable($this),
+				'disabledElementIds'  => $disabledElementIds,
+				'elements'            => $criteria->find(),
+				// 'groupId'             => $source['criteria']['groupId'],
+			));
+		}
+		else
+		{
+			return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context);
+		}
 	}
 
 	/**
@@ -95,7 +142,52 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	{
 		return array(
 			'title' => AttributeType::String,
+			'subjectLine' => AttributeType::String,
+			'emailBlastTypeId' => AttributeType::Number,
 		);
+	}
+
+	/**
+	 * @inheritDoc IElementType::getElementQueryStatusCondition()
+	 *
+	 * @param DbCommand $query
+	 * @param string    $status
+	 *
+	 * @return array|false|string|void
+	 */
+	public function getElementQueryStatusCondition(DbCommand $query, $status)
+	{
+		switch ($status)
+		{
+			case SproutEmail_EmailBlastModel::DISABLED:
+			{
+				return 'emailblasttypes.textTemplate IS NULL';
+			}
+
+			case SproutEmail_EmailBlastModel::PENDING:
+			{
+				return array('and',
+					'elements.enabled = 0',
+					'emailblasttypes.textTemplate IS NOT NULL',
+					'emailblasts.sent = 0',
+				);
+			}
+
+			case SproutEmail_EmailBlastModel::READY:
+			{
+				return array('and',
+					'elements.enabled = 1',
+					'elements_i18n.enabled = 1',
+					'emailblasttypes.textTemplate IS NOT NULL',
+					'emailblasts.sent = 0',
+				);
+			}
+
+			case SproutEmail_EmailBlastModel::ARCHIVED:
+			{
+				return 'emailblasts.sent = 1';
+			}
+		}
 	}
 
 	/**
@@ -121,8 +213,18 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		$query
-			->addSelect('emailblast.id AS emailBlastId')
-			->join('sproutemail_emailblasts emailblast', 'emailblast.id = elements.id');
+			->addSelect('emailblasts.id AS emailBlastId, 
+									 emailblasts.emailBlastTypeId AS emailBlastTypeId,
+									 emailblasts.subjectLine AS subjectLine, 
+									 emailblasts.sent AS sent
+				')
+			->join('sproutemail_emailblasts emailblasts', 'emailblasts.id = elements.id')
+			->join('sproutemail_emailblasttypes emailblasttypes', 'emailblasttypes.id = emailblasts.emailBlastTypeId');
+
+		if ($criteria->emailBlastTypeId) 
+		{
+			$query->andWhere(DbHelper::parseParam('emailblasts.emailBlastTypeId', $criteria->emailBlastTypeId, $query->params));
+		}
 	}
 
 	/**

@@ -30,14 +30,21 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 			'fieldLayoutId' => array (
 				AttributeType::Number
 			),
-			'sectionId' => array (
-				AttributeType::Number 
-			),
 			'emailProvider' => array (
 				AttributeType::String 
 			),
 			'name' => array (
 				AttributeType::String 
+			),
+			'handle' => array (
+				AttributeType::String 
+			),
+			'titleFormat' => array (
+				AttributeType::String
+			),
+			'hasUrls' => array(
+				AttributeType::Bool, 
+				'default' => true
 			),
 			'subject' => array (
 				AttributeType::String 
@@ -101,11 +108,6 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 				'FieldLayoutRecord', 
 				'onDelete' => static::SET_NULL
 			),
-			'section' => array (
-				self::BELONGS_TO,
-				'SectionRecord',
-				'sectionId' 
-			),
 			'emailBlastTypeRecipientList' => array (
 				self::HAS_MANY,
 				'SproutEmail_EmailBlastTypeRecipientListRecord',
@@ -152,7 +154,6 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	public function rules()
 	{
 		$rules = array (
-			// array('sectionId', 'exist'), // if section is passed, it must be a valid record
 			array (
 				'name,fromName,fromEmail,replyToEmail,templateOption',
 				'required' 

@@ -46,6 +46,7 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 		}
 
 		$emailBlastRecord->emailBlastTypeId = $emailBlast->emailBlastTypeId;
+		$emailBlastRecord->subjectLine = $emailBlast->subjectLine;
 
 		$emailBlastRecord->validate();
 		$emailBlast->addErrors($emailBlastRecord->getErrors());

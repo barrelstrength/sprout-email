@@ -24,14 +24,43 @@
 			errors: (emailBlastType is defined ? emailBlastType.getErrors('name') : null) 	
 		}) }}
 
+		{{ forms.textField({
+			label: "Email Blast Type Handle"|t,
+			id: 'handle',
+			name: 'handle',
+			instructions: "How you'll refer to this section in the templates."|t,
+			value: (emailBlastType is defined ? emailBlastType.handle : null),
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('handle') : null) 	
+		}) }}
+
+		{{ forms.textField({
+			label: "Title Format"|t,
+			instructions: "What the auto-generated Email Blast titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
+			id: 'titleFormat',
+			name: 'titleFormat',
+			value: emailBlastType.titleFormat,
+			errors: emailBlastType.getErrors('titleFormat'),
+		}) }}
+
 		{{ forms.selectField({
 			label: "How would you like to send this email"|t,
-			id: 'emailProvider',
+			instructions: 'Select the platform you will use to send your Email Blasts. Add support for more services via your <a href="' ~ url('sproutemail/settings#settings-api') ~ '">API settings</a>'|t,
 			name: 'emailProvider',
-			instructions: "Select the platform you will use to send your Email Blasts."|t,
+			id: 'emailProvider',
+			required: true,
 			options : emailProviders,
 			value: (emailBlastType is defined ? emailBlastType.emailProvider : null),
 			errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProvider') : null)  
+		}) }}
+
+		{{ forms.textField({
+			label: "URI"|t,
+			instructions: "What the entry URI should be."|t,
+			name: 'urlFormat',
+			value: (emailBlastType is defined ? emailBlastType.urlFormat : null),
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('urlFormat') : null) 	
 		}) }}
 		
 		{% for emailProvider in emailProviders %}
@@ -54,14 +83,25 @@
 		</div>
 	
 	{% else %}
-	
-		<p>In order to set up an Email Blast Type, you must first provide valid API settings for one of the supported email service providers.</p>
+		
+		<p>Manage and send your email marketing and notification emails directly from Craft.</p>
+		<ul>
+			<li>Sprout Email</li>
+		</ul>
+
+		<p>In you want to set up an Email Blast Type to send via a third party, you must first provide valid API settings for one of the supported email service providers.</p>
 
 		<ul>
 			<li>Campaign Monitor</li>
 			<li>MailChimp</li>
 			<li>MailGun</li>
 			<li>SendGrid</li>
+		</ul>
+
+		<p>Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?</p>
+
+		<ul>
+			<li>Copy &amp; Paste</li>
 		</ul>
 		
 		<p><a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
@@ -77,3 +117,11 @@
 	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="submit" class="btn small" value="Delete">
 </form>
+
+{% set js %}
+	{% if emailBlastType is not defined or not emailBlastType.handle %}
+		new Craft.HandleGenerator('#name', '#handle');
+	{% endif %}
+{% endset %}
+
+{% includeJs js %}

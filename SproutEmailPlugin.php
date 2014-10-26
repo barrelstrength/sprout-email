@@ -143,6 +143,12 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings' => array(
 				'action' => 'sproutEmail/settings/settingsIndexTemplate'
 			),
+
+			/*
+			 * Example Form installation page
+			 */
+			'sproutemail/examples' => 
+			'sproutemail/_cp/examples',
 		);
 	}
 
@@ -297,6 +303,12 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			craft()->db->createCommand()->insert( 'sproutemail_email_provider_settings', $provider );
 		}
+
+		/**
+	 	 * Install optional examples after installation
+	 	 */
+		craft()->request->redirect(UrlHelper::getCpUrl() . '/sproutemail/examples');
+
 	}
 	
 	/**
@@ -305,7 +317,7 @@ class SproutEmailPlugin extends BasePlugin
 	 * @return void
 	 */
 	public function init()
-	{
+	{	
 		parent::init();
 
 		// events fired by $this->raiseEvent
@@ -972,4 +984,7 @@ class SproutEmailPlugin extends BasePlugin
 			}
 		}
 	}
+
+	
+	
 }

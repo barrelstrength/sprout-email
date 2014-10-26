@@ -174,7 +174,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 				// $recipientLists = craft()->db->createCommand()
 				//     ->select('*')
 				//     ->from('sproutemail_recipient_lists recipient_lists')
-				//     ->join('sproutemail_emailBlastType_recipient_lists emailBlastType_recipient_lists', 'recipient_lists.id=emailBlastType_recipient_lists.recipientListId')
+				//     ->join('sproutemail_emailblasttypes_recipientlists emailBlastType_recipient_lists', 'recipient_lists.id=emailBlastType_recipient_lists.recipientListId')
 				//     ->where('recipient_lists.emailProvider=:emailProvider', array(
 				//     	':emailProvider'=>$emailBlastType["emailProvider"])
 				//     )
@@ -310,7 +310,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	public function deleteRecipients(SproutEmail_EmailBlastTypeRecord $emailBlastTypeRecord)
 	{
 		// delete associated recipient lists
-		if ( ! craft()->db->createCommand()->delete( 'sproutemail_emailBlastType_recipient_lists', array (
+		if ( ! craft()->db->createCommand()->delete( 'sproutemail_emailblasttypes_recipientlists', array (
 				'emailBlastTypeId' => $emailBlastTypeRecord->id 
 		) ) )
 		{

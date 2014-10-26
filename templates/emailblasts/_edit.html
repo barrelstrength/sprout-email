@@ -1,16 +1,18 @@
 {% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
 
 {% set crumbs = [
 	{ label: craft.sproutEmail.name|t, url: url('sproutemail') },
 	{ label: "Email Blasts"|t, url: url('sproutemail/emailblasts') },
 ] %}
 
-{% set title = (emailBlast.title is defined ? emailBlast.title : 'Create a new Email Blast') %}
+{% set title = (emailBlast is defined and emailBlast.title is not empty ? emailBlast.title : 'Create a new Email Blast') %}
 
 {% block main %}
-
-	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/' ~ emailBlastId) }}">
+	
+	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/{id}') }}">
 		<input type="hidden" name="action" value="sproutEmail/emailBlast/saveEmailBlast">
+		<input type="hidden" name="redirect" value="sproutemail/emailblasts">
 		<input type="hidden" name="emailBlastTypeId" value="{{ emailBlastTypeId }}">
 		<input type="hidden" name="emailBlastId" value="{{ emailBlastId }}">
 
@@ -30,22 +32,58 @@
 
 				<div class="pane">
 
-					{% if emailBlast is defined %}
-					<div class="field" id="postDate-field">
-						<div class="heading">
-							<label for="postDate">
-								Date Created
-							</label>
-						</div>
-						<div class="input">
-							<strong>{{ emailBlast.dateCreated|date('m F Y') }}</strong>
-						</div>
-					</div>
-					{% endif %}
+					{{ forms.textField({
+						label: "Slug"|t,
+						locale: emailBlast.locale,
+						id: 'slug',
+						name: 'slug',
+						value: emailBlast.slug,
+						errors: (emailBlast ? emailBlast.getErrors('slug')|merge(emailBlast.getErrors('uri'))),
+					}) }}
 
-					<p>
-					  <input type="button" class="btn small formsubmit" value="Delete" data-action="sproutEmail/emailBlast/deleteEmailBlast" data-confirm="Are you sure you want to delete this Email Blast and all of it's data?" data-redirect="sproutemail/emailblast">
-					</p>
+					{# {{ forms.dateTimeField({
+						label: "Post Date"|t,
+						id: 'postDate',
+						name: 'postDate',
+						value: (emailBlast.postDate ? emailBlast.postDate : null),
+						errors: emailBlast.getErrors('postDate'),
+						disabled: isVersion
+					}) }}
+
+					{{ forms.dateTimeField({
+						label: "Expiration Date"|t,
+						id: 'expiryDate',
+						name: 'expiryDate',
+						value: (emailBlast.expiryDate ? emailBlast.expiryDate : null),
+						errors: emailBlast.getErrors('expiryDate'),
+						disabled: isVersion
+					}) }} #}
+
+					{# {% if canPublish or (not isVersion and canDeleteEntry) %} #}
+
+						{% set statusInput %}
+							{# {% if canPublish %} #}
+								<div class="left">
+									{{ forms.lightswitch({
+										id: 'enabled',
+										name: 'enabled',
+										on: emailBlast.enabled
+									}) }}
+								</div>
+							{# {% endif %} #}
+
+							{# {% if not isSingle and not isVersion and canDeleteEntry %} #}
+								<div class="right">
+									<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}" data-action="sproutEmail/emailBlast/deleteEmailBlast" data-confirm="Are you sure you want to delete this Email Blast and all of it's data?" data-redirect="sproutemail/emailblast">
+								</div>
+							{# {% endif %} #}
+						{% endset %}
+
+						{{ forms.field({
+							label: "Status"|t,
+							id: 'enabled'
+						}, statusInput) }}
+					{# {% endif %} #}
 				</div>
 
 				<table class="inputs fullwidth">
@@ -65,6 +103,11 @@
 	</form>
 
 {% endblock %}
+
+
+{% if not emailBlast.slug %}
+	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');" %}
+{% endif %}
 
 {# @TODO - need to customize live preview for emails
 {% set js %}

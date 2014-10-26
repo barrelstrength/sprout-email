@@ -18,10 +18,13 @@ class SproutEmail_EmailBlastRecord extends BaseRecord
 	 *
 	 * @return array
 	 */
-	// public function defineAttributes()
-	// {
-	// 	return array();
-	// }
+	public function defineAttributes()
+	{
+		return array(
+			'subjectLine' => AttributeType::String,
+			'sent' => AttributeType::Bool,
+		);
+	}
 	
 	/**
 	 * @return array

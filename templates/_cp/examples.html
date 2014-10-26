@@ -1,0 +1,45 @@
+{% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Get started with some example emails" %}
+
+{% block main %}
+
+<div class="grid">
+	<div class="item">
+		<div class="pane">
+
+<style type="text/css">
+	.examples {
+		width: 35%;
+	}
+	.examples .buttons {
+		margin-top: 1em;
+	}
+</style>
+
+<form method="post" action="" accept-charset="utf-8" class="examples">
+	<input type="hidden" name="action" value="sproutEmail/examples/install">
+	
+	<h2>{{ "Getting Started"|t }}</h2>
+	
+	<p>{{ "Install example emails with commented templates and example data. The example templates will be created placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
+
+	<p>{{ "<em>Example emails include ...</em>"|t|raw }}</p>
+	
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="{{ 'Install Example Email Blasts'|t }}" />
+	</div>
+
+	<p>{{ "Don't install any example forms or data, I will build the forms I need myself."|t }}</p>
+
+	<div class="buttons">
+		<a href="{{ url('sproutemail/emailblasts') }}" class="btn delete">{{ "Take me to Sprout Email"|t }}</a>
+	</div>
+
+</form>
+
+		</div>
+	</div>
+</div>
+{% endblock %}

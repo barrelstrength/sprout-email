@@ -1,0 +1,538 @@
+{% if entry is defined or craft.request.getParam('entryId') != null %}
+{% if entry is not defined %}
+	{% set entry = craft.entries.id(craft.request.getParam('entryId')).first() %}
+{% endif %}
+{% else %}
+{% redirect '/' %}
+{% endif %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width"/>
+</head>
+<body {% if entry.type == "graphicalEmail" %}style="margin: 10px;"{% else %}style="margin: 30px;"{% endif %}>
+
+	<style>
+	/*  Media Queries */
+	@media only screen and (max-width: 600px) {
+
+		table[class="body"] {
+			padding: 40px;
+		}
+
+		table[class="body"] img {
+			width: auto !important;
+			height: auto !important;
+		}
+
+		table[class="body"] center {
+			min-width: 0 !important;
+		}
+
+		table[class="body"] .container {
+			width: 95% !important;
+		}
+
+		table[class="body"] .row {
+			width: 100% !important;
+			display: block !important;
+		}
+
+		table[class="body"] .wrapper {
+			display: block !important;
+			padding-right: 0 !important;
+		}
+
+		table[class="body"] .columns,
+		table[class="body"] .column {
+			table-layout: fixed !important;
+			float: none !important;
+			width: 100% !important;
+			padding-right: 0px !important;
+			padding-left: 0px !important;
+			display: block !important;
+		}
+
+		table[class="body"] .wrapper.first .columns,
+		table[class="body"] .wrapper.first .column {
+			display: table !important;
+		}
+
+		table[class="body"] table.columns td,
+		table[class="body"] table.column td {
+			width: 100% !important;
+		}
+
+		table[class="body"] .columns td.one,
+		table[class="body"] .column td.one { width: 8.333333% !important; }
+		table[class="body"] .columns td.two,
+		table[class="body"] .column td.two { width: 16.666666% !important; }
+		table[class="body"] .columns td.three,
+		table[class="body"] .column td.three { width: 25% !important; }
+		table[class="body"] .columns td.four,
+		table[class="body"] .column td.four { width: 33.333333% !important; }
+		table[class="body"] .columns td.five,
+		table[class="body"] .column td.five { width: 41.666666% !important; }
+		table[class="body"] .columns td.six,
+		table[class="body"] .column td.six { width: 50% !important; }
+		table[class="body"] .columns td.seven,
+		table[class="body"] .column td.seven { width: 58.333333% !important; }
+		table[class="body"] .columns td.eight,
+		table[class="body"] .column td.eight { width: 66.666666% !important; }
+		table[class="body"] .columns td.nine,
+		table[class="body"] .column td.nine { width: 75% !important; }
+		table[class="body"] .columns td.ten,
+		table[class="body"] .column td.ten { width: 83.333333% !important; }
+		table[class="body"] .columns td.eleven,
+		table[class="body"] .column td.eleven { width: 91.666666% !important; }
+		table[class="body"] .columns td.twelve,
+		table[class="body"] .column td.twelve { width: 100% !important; }
+
+		table[class="body"] td.offset-by-one,
+		table[class="body"] td.offset-by-two,
+		table[class="body"] td.offset-by-three,
+		table[class="body"] td.offset-by-four,
+		table[class="body"] td.offset-by-five,
+		table[class="body"] td.offset-by-six,
+		table[class="body"] td.offset-by-seven,
+		table[class="body"] td.offset-by-eight,
+		table[class="body"] td.offset-by-nine,
+		table[class="body"] td.offset-by-ten,
+		table[class="body"] td.offset-by-eleven {
+			padding-left: 0 !important;
+		}
+
+		table[class="body"] table.columns td.expander {
+			width: 1px !important;
+		}
+
+		table[class="body"] .right-text-pad,
+		table[class="body"] .text-pad-right {
+			padding-left: 10px !important;
+		}
+
+		table[class="body"] .left-text-pad,
+		table[class="body"] .text-pad-left {
+			padding-right: 10px !important;
+		}
+
+		table[class="body"] .hide-for-small,
+		table[class="body"] .show-for-desktop {
+			display: none !important;
+		}
+
+		table[class="body"] .show-for-small,
+		table[class="body"] .hide-for-desktop {
+			display: inherit !important;
+		}
+	}
+	</style>
+	<!--[if gte mso 12]>
+	<style type="text/css">
+	.panel p {
+		padding: 10px 10px 0 10px !important;
+	}
+	</style>
+	<![endif]-->
+
+	{# We need to make sure we define `entry` here as well for the copy/paste behavior #}
+	{% if entry is defined or craft.request.getParam('entryId') != null %}
+	{% if entry is not defined %}
+		{% set entry = craft.entries.id(craft.request.getParam('entryId')).first() %}
+	{% endif %}
+	{% else %}
+	{% redirect '/' %}
+	{% endif %}
+
+	{% if entry.customLandingPage != "" %}
+		{% set landingPageLink = entry.customLandingPage %}
+	{% else %}
+		{% set landingPageLink = entry.landingPage.first().getUrl() %}
+	{% endif %}
+
+	{% set emailBody %}
+		<table class="body">
+			<tr>
+				<td class="center" align="center" valign="top">
+					<center>
+
+						{# NOTE:
+						Most of this template is handled with Zurb's Ink, but due to the number
+						of Matrix blocks that need to fit together, and some of those matrix blocks getting
+						spaced incorrectly due to the tables wrapping around everything, for several of the
+						blocks we have added padding-top:0!important; or padding-bottom:0!important; to adjust
+						the wrapping td tags so that the flow of blocks works out better.  In some cases, it
+						may be necessary to add 10px of padding to the bottom of an element within the tables
+						to help everything flow nicely too.  We've also set the wrapper top padding to zero,
+						so we can manage the space between rows better for our situation.
+						#}
+						{# Logo Row #}
+						
+						{% if entry.type == "narrativeEmail" or (entry.type == "graphicalEmail" and entry.removeLogo == "0") %}
+						<table class="row">
+							<tr>
+								<td class="wrapper last" style="padding-top:10px!important;padding-bottom:10px!important;">
+									<table class="twelve columns">
+										<tr>
+											<td class="three sub-columns">
+												&nbsp;
+											</td>
+											<td class="six sub-columns center">
+												<center>
+													<img src="http://kentrujillo.com/assets/img/logo.png" width="168" height="74" class="center">
+												</center>
+											</td>
+											<td class="three sub-columns last">
+												&nbsp;
+											</td>
+											<td class="expander"></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+						{% endif %}
+						{% for block in entry.emailBody %}
+
+							{% if block.type == 'richTextBlock' %}
+								{# Text Row #}
+								<table class="row">
+									<tr>
+										<td class="wrapper last" style="padding-top:0!important;">
+											<table class="twelve columns">
+												<tr>
+													<td style="padding-bottom:0!important;">
+														{{ block.richText }}
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							{% endif %}
+
+							{% if block.type == 'richTextWithImageCalloutBlock' %}
+								{# Text with Callout Row #}
+
+								{% set image = block.calloutImage.first() %}
+								<table class="row">
+									<tr>
+										<td class="wrapper last" style="padding-top:0!important;">
+											<table class="twelve columns">
+												<tr>
+													<td style="padding-bottom:0!important;">
+														<img src="{{ image.getUrl() }}" width="{{ image.getWidth() }}" alt="{{ block.calloutAltText }}" align="right" style="float:right;max-width:50%;padding:0 0 10px 10px;" />
+														{{ block.richText }}
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							{% endif %}
+
+							{% if block.type == 'ctaBlock' %}
+								{# CTA Row #}
+								<table class="row">
+									<tr>
+										<td class="wrapper last" style="padding-top:0!important;">
+
+											<table class="twelve columns">
+												<tr>
+													<td style="padding-bottom:0!important;">
+														<p><a href="{{ landingPageLink }}" class="cta">{{ block.ctaText }}</a></p>
+													</td>
+												</tr>
+											</table>
+
+										</td>
+									</tr>
+								</table>
+							{% endif %}
+
+
+							{% if block.type == 'insetCtaButtonBlock' or block.type == 'bottomCtaButtonBlock' %}
+								{# Button Row #}
+								<table class="row">
+									<tr>
+										<td class="wrapper last">
+											<table class="twelve columns">
+												<tr>
+													<td class="three sub-columns">
+														&nbsp;
+													</td>
+													<td class="six sub-columns">
+														<table class="{{ block.buttonSize}}-button {{ block.buttonColor}}">
+															<tr>
+																<td>
+																	<a href="{{ landingPageLink }}">{{ block.buttonText }}</a>
+																</td>
+															</tr>
+														</table>
+													</td>
+													<td class="three sub-columns last">
+														&nbsp;
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							{% endif %}
+
+
+							{% if block.type == 'imageBlock' %}
+								{# Image Row #}
+								{% set image = block.image.first() %}
+								{% switch block.columns %}
+									{% case "one" %}
+										{% set width = "30" %}
+									{% case "two" %}
+										{% set width = "80" %}
+									{% case "three" %}
+										{% set width = "130" %}
+									{% case "four" %}
+										{% set width = "180" %}
+									{% case "five" %}
+										{% set width = "230" %}
+									{% case "six" %}
+										{% set width = "280" %}
+									{% case "seven" %}
+										{% set width = "330" %}
+									{% case "eight" %}
+										{% set width = "380" %}
+									{% case "nine" %}
+										{% set width = "430" %}
+									{% case "ten" %}
+										{% set width = "480" %}
+									{% case "eleven" %}
+										{% set width = "530" %}
+									{% case "twelve" %}
+										{% set width = "580" %}
+								{% endswitch %}
+
+								{% set params = {
+									mode: 'fit',
+									width: width,
+									quality: 75
+								} %}
+								
+								{% set nextBlockType = "" %}
+								{% set nextBlock = block.getNext() %}
+								{% if nextBlock | length %}
+									{% set nextBlockType = nextBlock.type %}
+								{% endif %}
+								
+								<div align="center">
+								<table class="row">
+									<tr>
+										<td class="wrapper last">
+											<table class="{{ block.columns }} columns {% if nextBlockType == "imageBlock" %}image-block{% endif %}">
+												<tr>
+													<td class="center" align="center">
+														<center>
+															<a href="{{ landingPageLink }}"><img width="{{ image.getWidth(params) }}" alt="{{ block.altText }}" height="{{ image.getHeight(params) }}" src="{{ image.getUrl() }}" class="center" /></a>
+														</center>
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+								</div>
+							{% endif %}
+
+
+							{% if block.type == 'calloutPanelBlock' %}
+								{# Panel Row #}
+								<table class="row outer-panel">
+									<tr>
+										<td class="wrapper last" style="padding-bottom:10px !important; margin-bottom: 10px !important;">
+											<table class="twelve columns">
+												<tr>
+													<td class="panel">
+
+														{% if block.calloutPanelText %}
+															{{ block.calloutPanelText }}
+														{% endif %}
+
+														{% if block.calloutPanelQuotedText %}
+														<blockquote>
+															{{ block.calloutPanelQuotedText }}
+														</blockquote>
+														{% endif %}
+
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+								<!--[if gte mso 12]>
+									<br>
+								<![endif]-->
+							{% endif %}
+
+
+							{% if block.type == 'calloutPanelWithButtonBlock' %}
+								{# Panel with Button Row #}
+								<table class="row outer-panel">
+									<tr>
+										<td class="wrapper last" style="padding-bottom:10px !important; margin-bottom: 10px !important;">
+											<table class="twelve columns">
+												<tr>
+													<td class="panel sub-grid">
+														{% if block.panelText %}
+															{{ block.panelText }}
+														{% endif %}
+
+														{% if block.quotedText %}
+														<blockquote style="font-style: italic;margin:10px 20px;">
+															{{ block.quotedText }}
+														</blockquote>
+														{% endif %}
+
+														{% if block.buttonText %}
+															<table>
+																<tr>
+																	<td class="three sub-columns">
+																		&nbsp;
+																	</td>
+																	<td class="six sub-columns">
+																		<table class="{{ block.buttonSize}}-button {{ block.buttonColor}}">
+																			<tr>
+																				<td>
+																					<a href="{{ landingPageLink }}">{{ block.buttonText }}</a>
+																				</td>
+																			</tr>
+																		</table>
+																	</td>
+																	<td class="three sub-columns last">
+																		&nbsp;
+																	</td>
+																	<td class="expander"></td>
+																</tr>
+															</table>
+														{% endif %}
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+								<!--[if gte mso 12]>
+									<br>
+								<![endif]-->
+							{% endif %}
+
+
+							{% if block.type == 'senderBlock' %}
+								{# Sender Row #}
+								<table class="row">
+									<tr>
+										<td class="wrapper last">
+											<table class="twelve columns">
+												<tr>
+													<td>
+														- {{ block.firstNameField }}<br />
+														<br />
+														-- <br />
+														{{ block.firstNameField }} {{ block.lastNameField }},<br />
+														{{ block.jobTitle }}
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							{% endif %}
+
+
+							{% if block.type == 'psBlock' %}
+								{# PS Row #}
+								{% set link = block.psLandingPage %}
+								<table class="row">
+									<tr>
+										<td class="wrapper last">
+											<table class="twelve columns">
+												<tr>
+													<td>
+														<p>
+															-----------<br />
+															<a href="{{ link }}">{{ block.psText }}</a>
+														</p>
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							{% endif %}
+						{% endfor %}
+
+
+						{# Footer #}
+						<table>
+							<tr>
+								<td style="height: 50px"></td>
+							</tr>
+						</table>
+						<table class="row">
+							<tr>
+								<td class="wrapper last">
+
+									<table class="twelve columns">
+										<tr>
+											<td class="footer" style="padding-top: 10px !important;" align="center">
+
+												<p align="center">
+													<span style="font-size: 10.5px; color: #999; display: inline-block; text-align: center; margin: 0 0 10px; padding: 7px; border: 1px solid #ccc;">Paid for by Friends of Ken Trujillo. All Rights Reserved.</span>
+												</p>
+
+												<p align="center">This email was sent to %%EMAIL%% | You can always %%UNSUBSCRIBE%%</p>
+
+											</td>
+											<td class="expander"></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+
+
+					</center>
+				</td>
+			</tr>
+		</table>
+	{% endset %}
+
+
+	{% if entry.type == "narrativeEmail" %}
+		{% set cssUrl = "http://kentrujillo.com/assets/css/email.css" %}
+	{% else %}
+		{% set cssUrl = "http://kentrujillo.com/assets/css/graphic-email.css" %}
+	{% endif %}
+
+	{% set campaignId = 'email~' ~ entry.medium ~ '~' ~ now|date('Ymd') ~ "~" ~ entry.askType ~ "~" ~ entry.title|e|url_encode %}
+
+	{{ emailBody
+	| mailify(cssUrl, "bodyinnerhtml")
+	| urlbuilder([ 'kentrujillo.com', 'trujillo.cp.bsd.net', 'act.kentrujillo.com', 'secure.kentrujillo.com' ], {
+	'utm_source': 'email',
+	'utm_medium': entry.medium,
+	'utm_content': entry.askType,
+	'utm_campaign': campaignId,
+	'source': campaignId
+	}) }}
+
+	
+</body>
+</html>

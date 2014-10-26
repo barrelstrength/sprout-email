@@ -239,8 +239,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		$currentEmailBlastTypeRecipientLists = $emailBlastTypeRecord->recipientList;
 		
 		if ( $recipientListGroups = array_filter( ( array ) $emailBlastType->emailProviderRecipientListId ) )
-		{
-			
+		{	
 			// process each recipient listEmailBlastTypes
 			foreach ( $recipientListGroups as $groupType => $recipientListIds )
 			{

@@ -122,7 +122,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
                                                     	r.type, 
                                                     	r.emailProviderRecipientListId as val 
                                                     FROM 
-                                                    	".DbHelper::addTablePrefix('sproutemail_emailBlastType_recipient_lists')." cr,
+                                                    	".DbHelper::addTablePrefix('sproutemail_emailblasttypes_recipientlists')." cr,
                                                     	".DbHelper::addTablePrefix('sproutemail_recipient_lists')." r
                                                     WHERE 	
                                                     	cr.recipientListId = r.id 
@@ -232,7 +232,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
                                                                 SELECT 
                                                                     recipientListId 
                                                                 FROM 
-                                                                    ".DbHelper::addTablePrefix('sproutemail_emailBlastType_recipient_lists')." 
+                                                                    ".DbHelper::addTablePrefix('sproutemail_emailblasttypes_recipientlists')." 
                                                                 WHERE 	
                                                                     emailBlastTypeId = ".$emailBlastType["id"]."
                                                             )")->query();

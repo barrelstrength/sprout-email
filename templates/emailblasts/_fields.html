@@ -2,13 +2,13 @@
 
 {{ textField({
 	label: "Email Subject"|t,
-	id: 'title',
-	name: 'title',
-	value: emailBlast.title,
-	errors: emailBlast.getErrors('title'),
+	id: 'subjectLine',
+	name: 'subjectLine',
+	value: emailBlast.subjectLine,
+	errors: emailBlast.getErrors('subjectLine'),
 	first: true,
 	autofocus: true,
-	required: false,
+	required: true,
 	maxlength: 255
 }) }}
 

@@ -3,10 +3,10 @@
 
 
 {% if emailBlastType is defined %}
-	{% set title = "Edit EmailBlastType" %}
+	{% set title = "Edit Email Blast Type" %}
 	{% set emailBlastTypeId = emailBlastType.id %}
 {% else %}
-	{% set title = "Edit EmailBlastType" %}
+	{% set title = "Edit Email Blast Type" %}
 	{% set emailBlastType = craft.sproutEmail.getEmailBlastTypeById(emailBlastTypeId) %}
 	{% set emailBlastTypeId = emailBlastType.id %}	
 {% endif %}
