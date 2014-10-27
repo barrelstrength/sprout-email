@@ -1,6 +1,6 @@
 
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/emailBlastType/save">
+	<input type="hidden" name="action" value="sproutEmail/emailBlastType/saveEmailBlastType">
 	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
 	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="hidden" name="tab" value="info">
@@ -39,8 +39,8 @@
 			instructions: "What the auto-generated Email Blast titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
 			id: 'titleFormat',
 			name: 'titleFormat',
-			value: emailBlastType.titleFormat,
-			errors: emailBlastType.getErrors('titleFormat'),
+			value: (emailBlastType is defined ? emailBlastType.titleFormat : null),
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('titleFormat') : null),
 		}) }}
 
 		{{ forms.selectField({

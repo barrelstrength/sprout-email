@@ -25,7 +25,7 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		}
 		else
 		{
-					craft()->sproutEmail_emailProvider->exportEmailBlast( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'emailBlastTypeId' ) );
+			craft()->sproutEmail_emailProvider->exportEmailBlast( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'emailBlastTypeId' ) );
 						
 			craft()->tasks->createTask( 'SproutEmail_RunEmailBlastType', Craft::t( 'Running emailBlastType' ), array (
 					'emailBlastTypeId' => craft()->request->getPost( 'emailBlastTypeId' ),
@@ -52,75 +52,78 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 	 *
 	 * @return void
 	 */
-	public function actionSave()
+	public function actionSaveEmailBlastType()
 	{
 		$this->requirePostRequest();
 		
-		$emailBlastEntryTypeId = craft()->request->getRequiredPost('id');
+		$emailBlastTypeId = craft()->request->getRequiredPost('id');
 
 		// @TODO - clean this ugly crap up
-		$emailBlastTypeModel = craft()->sproutEmail->getEmailBlastTypeById($emailBlastEntryTypeId);
-		$emailBlastTypeModel->setAttributes( craft()->request->getPost() );
+		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
+		$emailBlastType->setAttributes( craft()->request->getPost() );
 
 		$useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
-		$emailBlastTypeModel->useRecipientLists = $useRecipientLists;
+		$emailBlastType->useRecipientLists = $useRecipientLists;
 
-		// Set the field layout
-		$fieldLayout =  craft()->fields->assembleLayoutFromPost();
-				
-		$fieldLayout->type = 'SproutEmail_EmailBlastType';
-		$emailBlastTypeModel->setFieldLayout($fieldLayout);
+		if (craft()->request->getPost('fieldLayout')) 
+		{
+			// Set the field layout
+			$fieldLayout =  craft()->fields->assembleLayoutFromPost();
+							
+			$fieldLayout->type = 'SproutEmail_EmailBlastType';
+			$emailBlastType->setFieldLayout($fieldLayout);
+		}
 
 		$tab = craft()->request->getPost( 'tab' );
 
-		if ( $emailBlastTypeId = craft()->sproutEmail->saveEmailBlastType( $emailBlastTypeModel,  $tab) )
+		if ( $emailBlastTypeId = craft()->sproutEmail->saveEmailBlastType( $emailBlastType,  $tab) )
 		{
 			// if this was called by the child (Notifications), return the model
 			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
 			{
-				$emailBlastTypeModel->id = $emailBlastTypeId;
-				return $emailBlastTypeModel;
+				$emailBlastType->id = $emailBlastTypeId;
+				return $emailBlastType;
 			}
+
 			craft()->userSession->setNotice( Craft::t( 'Email Blast Type successfully saved.' ) );
 			
 			$continue = craft()->request->getPost( 'continue' );
 			
-			if($continue == 'info')
+			if ($continue == 'info')
 			{
 				if(craft()->request->getPost( 'emailProvider' ) == 'CopyPaste')
 				{
-					$this->redirect( 'sproutemail/emailblasts/edit/' . $emailBlastTypeId . '/template' );
+					$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastTypeId . '/template' );
 				}
 				else
 				{
-					$this->redirect( 'sproutemail/emailblasts/edit/' . $emailBlastTypeId . '/recipients' );
+					$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastTypeId . '/recipients' );
 				}
 			}
 			elseif($continue == 'recipients')
 			{
-				$this->redirect( 'sproutemail/emailblasts/edit/' . $emailBlastTypeId . '/template' );
+				$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastTypeId . '/template' );
 			}
 			else
 			{
-				$this->redirectToPostedUrl(array($emailBlastTypeModel));
+				$this->redirectToPostedUrl($emailBlastType);
 			}
 		}
 		else // problem
 		{
-			
 			craft()->userSession->setError( Craft::t( 'Please correct the errors below.' ) );
 			
 			// if this was called by the child (Notifications), return the model
 			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
 			{
-				return $emailBlastTypeModel;
+				return $emailBlastType;
 			}
 		}
 		
 		// Send the field back to the template
-		craft()->urlManager->setRouteVariables( array (
-				'emailBlastType' => $emailBlastTypeModel 
-		) );
+		craft()->urlManager->setRouteVariables(array(
+			'emailBlastType' => $emailBlastType 
+		));
 	}
 	
 	/**
