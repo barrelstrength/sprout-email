@@ -114,13 +114,13 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			// Grab our Email Campaign override settings
 			$entryOverrideSettings = $entry->{$overrideHandle};
 			$entryOverrideSettings = json_decode($entryOverrideSettings,TRUE);
-
+			
 			SproutEmailPlugin::log('Our override settings: ' . $entry->{$overrideHandle});
 
 			// Merge the entry level settings with our campaign
 			$emailProviderRecipientListId = '';
 
-			if( ! empty($entryOverrideSettings) )
+			if( isset($entryOverrideSettings) )
 			{
 				foreach($entryOverrideSettings as $key => $value)
 				{
@@ -141,25 +141,34 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			}
 
 			if($emailProviderRecipientListId != '')
-			{
-				$recipientListOverrides = array();
+			{	
+				// $recipientListOverrides = array();
 				
 				// Loop through each of the override lists in our override settings
-				foreach ($emailProviderRecipientListId as $key => $value) 
-				{
-					$recipientListOverride = new SproutEmail_RecipientListModel();
-					$recipientListOverride->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId'];
-					$recipientListOverride->emailProvider = $campaign['emailProvider'];
-					$recipientListOverride->type = null;
+				// foreach ($emailProviderRecipientListId as $key => $value) 
+				// {
+				// 	$recipientListOverride = new SproutEmail_RecipientListModel();
+				// 	$recipientListOverride->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId'];
+				// 	$recipientListOverride->emailProvider = $campaign['emailProvider'];
+				// 	$recipientListOverride->type = null;
 
-					$recipientListOverrides[$key] = $recipientListOverride;
-				}
+				// 	$recipientListOverrides[$key] = $recipientListOverride;
+				// }
 				
 				// We have an override setting, so let's clear our current recipients
-				unset($recipientLists);
+				// unset($recipientLists);
 
-				$recipientLists = $recipientListOverrides;
+				// $recipientLists = $recipientListOverrides;
+				
+				foreach ($emailProviderRecipientListId as $key => $value) 
+				{
+					$recipientLists[0]->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId']['list'];
+					$recipientLists[0]->emailProvider = $campaign['emailProvider'];
+					$recipientLists[0]->type = null;
 
+					// $recipientListOverrides[$key] = $recipientListOverride;
+				}
+				
 				// $criteria = new \CDbCriteria();
 				// $criteria->params = array (
 				// 		':emailProvider' => $campaign["emailProvider"]

@@ -181,7 +181,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	 * @return bool
 	 */
 	public function saveSettings($settings = array())
-	{
+	{		
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'emailProvider=:emailProvider';
 		$criteria->params = array (

@@ -7,11 +7,12 @@
         instructions: "Select one subscriber list to send your Email Blasts in this Section."|t,
         errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.radioGroup({
-        name: 'emailProviderRecipientListId',
+        name: 'sproutEmail[override][emailProviderRecipientListId][list]',
         options : subscriber_lists,
-        value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
+        value: campaign is defined and campaign.emailProviderRecipientListId.list ? campaign.emailProviderRecipientListId.list : null
     })) }}
 	
+
 {% else %}
 	
 	<p class="recipients-not-defined" >You must first create a subscriber list in your SendGrid account.</p>

@@ -7,9 +7,9 @@
             instructions: "Select a campaign to associate with this section."|t,
             errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
         }, forms.select({
-            name: 'emailProviderRecipientListId[campaign]',
+            name: 'sproutEmail[override][emailProviderRecipientListId][campaign]',
             options : campaigns,
-            value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
+            value: campaign is defined and campaign.emailProviderRecipientListId.campaign ? campaign.emailProviderRecipientListId.campaign : null
         })) }}
     
     {% endif %}
@@ -25,9 +25,9 @@
         instructions: "Select one or more mailing lists to send your Email Blasts in this Section."|t,
         errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.checkboxGroup({
-        name: 'emailProviderRecipientListId[list]',
+        name: 'sproutEmail[override][emailProviderRecipientListId][list]',
         options : mailing_list,
-        values: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId : null
+        values: campaign is defined and campaign.emailProviderRecipientListId.list ? campaign.emailProviderRecipientListId.list : null
     })) }}
 
 {% else %}

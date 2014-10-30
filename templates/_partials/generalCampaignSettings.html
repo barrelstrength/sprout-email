@@ -1,30 +1,30 @@
 
-{{ forms.textField({
-	label: "From Name"|t,
-	id: 'fromName',
-	name: 'fromName',
-	instructions: "The person or business sending the email"|t,
-	value: (campaign is defined ? campaign.fromName : null),
-	required: true,
-	errors: (campaign is defined ? campaign.getErrors('fromName') : null)   
-}) }}
+{{ forms.field({
+    label: "From Name"|t,
+    instructions: "The person or business sending the email"|t,
+		errors: (campaign is defined ? campaign.getErrors('fromName') : null) 
+	}, forms.textField({
+		name: 'sproutEmail[override][fromName]',
+		value: (campaign is defined ? campaign.fromName : null),
+		required: true,  
+})) }}
 
-{{ forms.textField({
-	label: "From Email"|t,
-	id: 'fromEmail',
-	name: 'fromEmail',
-	instructions: "The email address of the person or business sending the email"|t,
-	value: (campaign is defined ? campaign.fromEmail : null),
-	required: true,
-	errors: (campaign is defined ? campaign.getErrors('fromEmail') : null)  
-}) }}
+{{ forms.field({
+    label: "From Email"|t,
+    instructions: "The email address of the person or business sending the email"|t,
+		errors: (campaign is defined ? campaign.getErrors('fromEmail') : null)
+	}, forms.textField({
+		name: 'sproutEmail[override][fromEmail]',
+		value: (campaign is defined ? campaign.fromEmail : null),
+		required: true,  
+})) }}
 
-{{ forms.textField({
-	label: "Reply To Email"|t,
-	id: 'replyToEmail',
-	name: 'replyToEmail',
-	instructions: "The email address which will be used if any recipients reply to your email"|t,
-	value: (campaign is defined ? campaign.replyToEmail : null),
-	required: true,
-	errors: (campaign is defined ? campaign.getErrors('replyToEmail') : null)   
-}) }}
+{{ forms.field({
+    label: "Reply To Email"|t,
+    instructions: "The email address which will be used if any recipients reply to your email"|t,
+		errors: (campaign is defined ? campaign.getErrors('replyToEmail') : null) 
+	}, forms.textField({
+		name: 'sproutEmail[override][replyToEmail]',
+		value: (campaign is defined ? campaign.replyToEmail : null),
+		required: true,  
+})) }}
