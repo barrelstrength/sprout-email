@@ -139,7 +139,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 					
 				}
 			}
-
+			
 			if($emailProviderRecipientListId != '')
 			{	
 				// $recipientListOverrides = array();

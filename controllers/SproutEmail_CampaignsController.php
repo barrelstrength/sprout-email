@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 /**
@@ -7,7 +6,6 @@ namespace Craft;
  */
 class SproutEmail_CampaignsController extends BaseController
 {
-	
 	/**
 	 * Export campaign
 	 *
@@ -15,21 +13,24 @@ class SproutEmail_CampaignsController extends BaseController
 	 */
 	public function actionExport()
 	{
+		$campaignId = craft()->request->getPost('campaignId');
+		$entryId = craft()->request->getPost('entryId');
+
 		$campaign = craft()->sproutEmail->getCampaign( array (
-				'id' => craft()->request->getPost( 'campaignId' ) 
+				'id' => $campaignId 
 		) );
 		
 		if ( $campaign->emailProvider != 'SproutEmail' )
 		{
-			craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
+			craft()->sproutEmail_emailProvider->exportCampaign($entryId, $campaignId);
 		}
 		else
 		{
-	        craft()->sproutEmail_emailProvider->exportCampaign( craft()->request->getPost( 'entryId' ), craft()->request->getPost( 'campaignId' ) );
-            
+			craft()->sproutEmail_emailProvider->exportCampaign($entryId, $campaignId);
+						
 			craft()->tasks->createTask( 'SproutEmail_RunCampaign', Craft::t( 'Running campaign' ), array (
-					'campaignId' => craft()->request->getPost( 'campaignId' ),
-					'entryId' => craft()->request->getPost( 'entryId' ) 
+					'campaignId' => $campaignId,
+					'entryId' => $entryId 
 			) );
 
 			// Apparently not. Is there a pending task?
@@ -55,12 +56,15 @@ class SproutEmail_CampaignsController extends BaseController
 	public function actionSave()
 	{
 		$this->requirePostRequest();
+
+		$tab = craft()->request->getPost('tab');
+		$continue = craft()->request->getPost('continue');
 		
 		$campaignModel = SproutEmail_CampaignModel::populateModel( craft()->request->getPost() );
 				
 		$campaignModel->useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
 		
-		if ( $campaignId = craft()->sproutEmail->saveCampaign( $campaignModel, craft()->request->getPost( 'tab' ) ) )
+		if ( $campaignId = craft()->sproutEmail->saveCampaign($campaignModel, $tab))
 		{
 			// if this was called by the child (Notifications), return the model
 			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
@@ -70,29 +74,27 @@ class SproutEmail_CampaignsController extends BaseController
 			}
 			craft()->userSession->setNotice( Craft::t( 'Campaign successfully saved.' ) );
 			
-			$continue = craft()->request->getPost( 'continue' );
-			
 			if($continue == 'info')
 			{
-				if(craft()->request->getPost( 'emailProvider' ) == 'CopyPaste'){
-				    $this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
-                }
-                else
-                {
-                    $this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/recipients' );
-                }
+				if(craft()->request->getPost( 'emailProvider' ) == 'CopyPaste')
+				{
+					$redirectUrl = 'sproutemail/campaigns/edit/' . $campaignId . '/template';
+					$this->redirect($redirectUrl);
+				}
+				else
+				{
+					$redirectUrl = 'sproutemail/campaigns/edit/' . $campaignId . '/recipients';
+					$this->redirect($redirectUrl);
+				}
 			}
-			elseif($continue == 'recipients')
+			elseif ($continue == 'recipients')
 			{
-				$this->redirect( 'sproutemail/campaigns/edit/' . $campaignId . '/template' );
+				$redirectUrl = 'sproutemail/campaigns/edit/' . $campaignId . '/template';
+				$this->redirect($redirectUrl);
 			}
 			else
 			{
-				$this->redirectToPostedUrl(
-				                            array(
-						                            $campaignModel 
-                                                 )
-                                          );
+				$this->redirectToPostedUrl($campaignModel);
 			}
 		}
 		else // problem
@@ -121,9 +123,11 @@ class SproutEmail_CampaignsController extends BaseController
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
+
+		$campaignId = craft()->request->getRequiredPost('id');
 		
 		$this->returnJson( array (
-				'success' => craft()->sproutEmail->deleteCampaign( craft()->request->getRequiredPost( 'id' ) ) 
+				'success' => craft()->sproutEmail->deleteCampaign($campaignId) 
 		) );
 	}
 	
@@ -135,11 +139,13 @@ class SproutEmail_CampaignsController extends BaseController
 	public function actionSaveSettings()
 	{
 		$this->requirePostRequest();
+
+		$settings = craft()->request->getPost('settings');
 		
-		foreach ( craft()->request->getPost( 'settings' ) as $provider => $settings )
+		foreach ($settings  as $provider => $providerSettings )
 		{
 			$service = 'sproutEmail_' . lcfirst( $provider );
-			craft()->$service->saveSettings( $settings );
+			craft()->$service->saveSettings( $providerSettings );
 		}
 		
 		craft()->userSession->setNotice( Craft::t( 'Settings successfully saved.' ) );

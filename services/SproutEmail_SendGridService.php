@@ -42,7 +42,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	{
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
 		
-		$subscriber_lists = array ();
+		$subscriberLists = array ();
 		
 		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
 	
@@ -50,15 +50,21 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		
 		if ( ! $result)
 		{
-			return $subscriber_lists;
-		}
-	
-		foreach ( $result as $v )
-		{
-			$subscriber_lists [$v['list']] = $v['list'];
+			return $subscriberLists;
 		}
 		
-		return $subscriber_lists;
+		foreach ( $result as $v )
+		{
+			// Array
+			// (
+			//     [Test 2] => Test 2
+			//     [Test List] => Test List
+			// )
+
+			$subscriberLists [$v['list']] = $v['list'];
+		}
+		
+		return $subscriberLists;
 	}
 	
 	/**

@@ -1,6 +1,6 @@
-{% set subscriber_lists = craft.sproutEmail.getSubscriberList('SendGrid') %}
+{% set subscriberLists = craft.sproutEmail.getSubscriberList('SendGrid') %}
 
-{% if(subscriber_lists|length > 0) %}
+{% if (subscriberLists|length > 0) %}
 
     {{ forms.field({
         label: "Subscriber Lists"|t,
@@ -8,7 +8,7 @@
         errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.radioGroup({
         name: 'sproutEmail[override][emailProviderRecipientListId][list]',
-        options : subscriber_lists,
+        options : subscriberLists,
         value: campaign is defined and campaign.emailProviderRecipientListId.list ? campaign.emailProviderRecipientListId.list : null
     })) }}
 	
