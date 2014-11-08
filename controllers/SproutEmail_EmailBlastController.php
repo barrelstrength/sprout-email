@@ -194,6 +194,142 @@ class SproutEmail_EmailBlastController extends BaseController
 			);
 		}
 
+		// Share Email (if not Live)
+		if (false) 
+		{
+			//$variables['shareUrl'] = $variables['emailBlast']->url;
+		}
+		else
+		{
+			$shareParamsHtml = array(
+				'emailBlastId' => $variables['emailBlast']->id,
+				'template' => 'html'
+			);
+
+			$shareParamsText = array(
+				'emailBlastId' => $variables['emailBlast']->id,
+				'template' => 'text'
+			);
+
+			$variables['shareUrlHtml'] = UrlHelper::getActionUrl('sproutEmail/emailBlast/shareEmailBlast', $shareParamsHtml);
+			$variables['shareUrlText'] = UrlHelper::getActionUrl('sproutEmail/emailBlast/shareEmailBlast', $shareParamsText);		
+		}
+		
+
 		$this->renderTemplate('sproutemail/emailblasts/_edit', $variables);
+	}
+
+
+	/**
+	 * Redirects the client to a URL for viewing an entry/draft/version on the front end.
+	 *
+	 * @param mixed $entryId
+	 * @param mixed $locale
+	 * @param mixed $draftId
+	 * @param mixed $versionId
+	 *
+	 * @throws HttpException
+	 * @return null
+	 */
+	public function actionShareEmailBlast($emailBlastId = null, $template = null)
+	{
+		if ($emailBlastId)
+		{
+			$emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
+
+			if (!$emailBlast)
+			{
+				throw new HttpException(404);
+			}
+
+			$params = array(
+				'emailBlastId' => $emailBlastId
+			);
+		}
+		else
+		{
+			throw new HttpException(404);
+		}
+
+		// Make sure they have permission to be viewing this entry
+		// $this->enforceEditEntryPermissions($entry);
+
+		// Make sure the entry actually can be viewed
+		// if (!craft()->sections->isSectionTemplateValid($entry->getSection()))
+		// {
+		// 	throw new HttpException(404);
+		// }
+
+		// Create the token and redirect to the entry URL with the token in place
+		$token = craft()->tokens->createToken(array(
+			'action' => 'sproutEmail/emailBlast/viewSharedEmailBlast', 
+			'params' => $params
+		));
+		$url = UrlHelper::getUrlWithToken($emailBlast->getUrl($template), $token);
+		craft()->request->redirect($url);
+	}
+
+	/**
+	 * Shows an entry/draft/version based on a token.
+	 *
+	 * @param mixed $entryId
+	 * @param mixed $locale
+	 * @param mixed $draftId
+	 * @param mixed $versionId
+	 *
+	 * @throws HttpException
+	 * @return null
+	 */
+	public function actionViewSharedEmailBlast($emailBlastId = null)
+	{
+		$this->requireToken();
+
+		if ($emailBlastId)
+		{
+			$emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
+		}
+
+		if (!$emailBlast)
+		{
+			throw new HttpException(404);
+		}
+
+		$this->_showEmailBlast($emailBlast);
+	}
+
+	/**
+	 * Displays an entry.
+	 *
+	 * @param EntryModel $entry
+	 *
+	 * @throws HttpException
+	 * @return null
+	 */
+	private function _showEmailBlast(SproutEmail_EmailBlastModel $emailBlast)
+	{
+		
+		// @TODO
+		// Grab email blast type
+		// Make sure it exists
+		// Get the template value from the Email Blast Type settings
+		// ------------------------------------------------------------
+
+		$emailBlastType = $emailBlast->getType();
+
+		if ($emailBlastType)
+		{
+			craft()->templates->getTwig()->disableStrictVariables();
+
+			craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+
+			$this->renderTemplate($emailBlastType->htmlTemplate, array(
+				'emailBlast' => $emailBlast
+			));
+		}
+		else
+		{
+			Craft::log('Attempting to preview an Email Blast that does not exist', LogLevel::Error);
+			throw new HttpException(404);
+		}
 	}
 }

@@ -46,28 +46,20 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 		return $emailBlastType->getFieldLayout();
 	}
 
-	// public function getUrlFormat()
-	// {
-		// $group = $this->getGroup();
-
-		// if ($group && $group->hasUrls)
-		// {
-		// 	$groupLocales = $group->getLocales();
-
-		// 	if (isset($groupLocales[$this->locale]))
-		// 	{
-		// 		if ($this->level > 1)
-		// 		{
-		// 			return $groupLocales[$this->locale]->nestedUrlFormat;
-		// 		}
-		// 		else
-		// 		{
-		// 			return $groupLocales[$this->locale]->urlFormat;
-		// 		}
-		// 	}
-		// }
-		// 
-	// }
+	public function getUrlFormat($template = null)
+	{
+		$emailBlastType = $this->getType();
+		
+		if ($emailBlastType && $emailBlastType->hasUrls)
+		{
+			// @TODO
+			// - need to sort out locales
+			// - need to determine if HTML/Text tempalte is needed
+			
+			return $emailBlastType->htmlTemplate;
+		}
+		
+	}
 
 	/**
 	 * Pending -  has all required attributes and is disabled or 
@@ -156,6 +148,13 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	public function setFields($fields)
 	{
 		$this->_fields = $fields;
+	}
+
+	public function getType()
+	{
+		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($this->emailBlastTypeId);
+		
+		return $emailBlastType;
 	}
 
 	/**

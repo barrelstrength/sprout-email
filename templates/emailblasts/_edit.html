@@ -26,9 +26,21 @@
 					{% include "sproutemail/emailblasts/_fields" %}
 
 				</div>
-			</div>		
+			</div>
 
 			<div class="item" data-position="right" data-colspan="1">
+
+				{% if shareUrlHtml is defined and shareUrlText is defined %}
+					<div id="view-btns" class="btngroup">
+						<div id="livepreview-btn" class="btn big">
+							<a href="{{ shareUrlHtml }}" title="{{ 'View the HTML Email'|t }}" target="_blank">{{ "HTML"|t }}</a>
+						</div>
+						<div id="livepreview-btn" class="btn big">
+							<a href="{{ shareUrlText }}" title="{{ 'View the Text Email'|t }}" target="_blank">{{ "Text"|t }}</a>
+						</div>
+						<div class="btn big" id="share-btn" data-icon="share"></div>
+					</div>
+				{% endif %}
 
 				<div class="pane">
 
