@@ -2,7 +2,7 @@
 
 {% set emailProviders = craft.sproutEmail.getEmailProviders() %}
 
-<form method="post" action="" accept-charset="UTF-8">
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings#settings-api') }}">
 	<input type="hidden" name="action" value="sproutEmail/emailBlastType/saveSettings">
 	<input type="hidden" name="redirect" value="sproutemail/settings">
 
