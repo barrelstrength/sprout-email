@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * Email provider settings record
  */
-class SproutEmail_EmailProviderSettingRecord extends BaseRecord
+class SproutEmail_EmailProviderSettingsRecord extends BaseRecord
 {
 	/**
 	 * Corresponding table

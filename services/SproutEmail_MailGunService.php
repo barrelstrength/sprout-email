@@ -30,7 +30,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 			':emailProvider' => 'MailGun' 
 		);
 		
-		$res = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
 		$this->api_key = isset( $this->apiSettings->api_key ) ? $this->apiSettings->api_key : '';
@@ -208,7 +208,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 			':emailProvider' => 'MailGun'
 		);
 		
-		$record = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$record = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$record->apiSettings = json_encode( $settings );
 		return $record->save();
 	}

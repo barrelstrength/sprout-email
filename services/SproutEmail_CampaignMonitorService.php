@@ -18,7 +18,7 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 				':emailProvider' => 'CampaignMonitor' 
 		);
 		
-		$res = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
 		$this->client_id = isset( $this->apiSettings->client_id ) ? $this->apiSettings->client_id : '';
@@ -100,7 +100,7 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 			':emailProvider' => 'CampaignMonitor'
 		);
 		
-		$record = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$record = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$record->apiSettings = json_encode( $settings );
 		return $record->save();
 	}

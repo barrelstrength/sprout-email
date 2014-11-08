@@ -26,7 +26,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			':emailProvider' => 'SendGrid' 
 		);
 		
-		$res = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
 		$this->api_user = isset( $this->apiSettings->api_user ) ? $this->apiSettings->api_user : '';
@@ -196,7 +196,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			':emailProvider' => 'SendGrid'
 		);
 		
-		$record = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$record = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$record->apiSettings = json_encode( $settings );
 		return $record->save();
 	}

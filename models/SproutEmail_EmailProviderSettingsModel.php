@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * Email provider settings
  */
-class SproutEmail_EmailProviderSettingModel extends BaseModel
+class SproutEmail_EmailProviderSettingsModel extends BaseModel
 {
 	
 	/**

@@ -111,7 +111,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 			':emailProvider' => 'CopyPaste'
 		);
 		
-		$record = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
+		$record = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$record->apiSettings = json_encode( $settings );
 		return $record->save();
 	}
