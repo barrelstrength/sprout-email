@@ -6,7 +6,7 @@
 	
 	<div id="tab-recipients" class="tab-content">
 		<div id="{{ emailBlastType.emailProvider }}-recipients-template"  >
-		   {% include "sproutemail/_services/" ~ emailBlastType.emailProvider ~ "/recipients" %}
+		   {% include "sproutemail/_providers/" ~ emailBlastType.emailProvider ~ "/recipients" %}
 		</div>
 	</div>
 	

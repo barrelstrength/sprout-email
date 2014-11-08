@@ -9,7 +9,7 @@
 	<div id="tab-emailBlastType-info" class="tab-content" >	
 		{% for key, val in emailProviders %}
 			<div id="{{ key }}-recipients-template" class="recipient-templates" >
-				{% include "sproutemail/_services/" ~ key ~ "/settings" %}
+				{% include "sproutemail/_providers/" ~ key ~ "/settings" %}
 				<hr/>
 			</div>
 		{% endfor %}

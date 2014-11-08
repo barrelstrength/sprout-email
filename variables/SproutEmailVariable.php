@@ -353,7 +353,7 @@ class SproutEmailVariable
 	
 	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
-		$customTemplate = 'sproutemail/_services/' . $emailProvider . '/generalEmailBlastTypeSettings';
+		$customTemplate = 'sproutemail/_providers/' . $emailProvider . '/generalEmailBlastTypeSettings';
 		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
 		
 		// if there is a custom set of general settings for this provider, return those; if not, return the default
