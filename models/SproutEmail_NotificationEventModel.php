@@ -15,18 +15,10 @@ class SproutEmail_NotificationEventModel extends BaseModel
 	{
 		return array (
 			// emailBlastType info
-			'id' => array (
-				AttributeType::Number 
-			),
-			'registrar' => array (
-				AttributeType::String 
-			),
-			'event' => array (
-				AttributeType::String 
-			),
-			'description' => array (
-				AttributeType::String 
-			) 
+			'id'          => AttributeType::Number,
+			'registrar'   => AttributeType::String,
+			'event'       => AttributeType::String,
+			'description' => AttributeType::String 
 		);
 	}
 }

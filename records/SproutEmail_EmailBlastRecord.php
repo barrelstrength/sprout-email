@@ -22,7 +22,7 @@ class SproutEmail_EmailBlastRecord extends BaseRecord
 	{
 		return array(
 			'subjectLine' => AttributeType::String,
-			'sent' => AttributeType::Bool,
+			'sent'        => AttributeType::Bool,
 		);
 	}
 	

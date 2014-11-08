@@ -27,10 +27,10 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	protected function defineAttributes()
 	{
 		return array_merge(parent::defineAttributes(), array(
-			'id'         => AttributeType::Number,
+			'id'               => AttributeType::Number,
 			'emailBlastTypeId' => AttributeType::Number,
-			'subjectLine' => AttributeType::String,
-			'sent' => AttributeType::Bool,
+			'subjectLine'      => AttributeType::String,
+			'sent'             => AttributeType::Bool,
 		));
 	}
 

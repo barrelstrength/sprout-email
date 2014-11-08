@@ -169,101 +169,101 @@ class SproutEmailPlugin extends BasePlugin
 	{
 		$events = array (
 				
-				// @TODO - At some point, consider making all hooks available, just make
-				// sure that less common ones don't crowd out the primary interface
-				
-				// Content
-				array (
-						'registrar' => 'craft',
-						'event' => 'entries.saveEntry.new',
-						'description' => 'Craft: When a new entry is created' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'entries.saveEntry',
-						'description' => 'Craft: When an existing entry is updated' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'assets.onSaveAsset',
-						'description' => 'Craft: When an asset is saved' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'content.saveContent',
-						'description' => 'Craft: When content is saved' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'globals.saveGlobalContent',
-						'description' => "Craft: When a global set's content is saved" 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'tags.saveTag',
-						'description' => 'Craft: When a tag is saved' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'tags.saveTagContent',
-						'description' => 'Craft: When tag content is saved' 
-				),
-				
-				// Users
-				array (
-						'registrar' => 'craft',
-						'event' => 'users.saveUser',
-						'description' => 'Craft: When a user is saved' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'users.activateUser',
-						'description' => 'Craft: When a user is activated' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'users.unlockUser',
-						'description' => 'Craft: When a user is unlocked' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'users.suspendUser',
-						'description' => 'Craft: When a user is suspended' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'users.unsuspendUser',
-						'description' => 'Craft: When a user is unsuspended' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'users.deleteUser',
-						'description' => 'Craft: When a user is deleted' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'userSession.login',
-						'description' => 'Craft: When a user logs in' 
-				),
-				
-				// Updates
-				array (
-						'registrar' => 'craft',
-						'event' => 'updates.beginUpdate',
-						'description' => 'Craft: When an update is started' 
-				),
-				array (
-						'registrar' => 'craft',
-						'event' => 'updates.endUpdate',
-						'description' => 'Craft: When an update is finished' 
-				),
-				
-				// Other
-				array (
-						'registrar' => 'craft',
-						'event' => 'cron',
-						'description' => 'Send email via Cron Job'
-				),
+			// @TODO - At some point, consider making all hooks available, just make
+			// sure that less common ones don't crowd out the primary interface
+
+			// Content
+			array (
+				'registrar' => 'craft',
+				'event' => 'entries.saveEntry.new',
+				'description' => 'Craft: When a new entry is created' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'entries.saveEntry',
+				'description' => 'Craft: When an existing entry is updated' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'assets.onSaveAsset',
+				'description' => 'Craft: When an asset is saved' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'content.saveContent',
+				'description' => 'Craft: When content is saved' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'globals.saveGlobalContent',
+				'description' => "Craft: When a global set's content is saved" 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'tags.saveTag',
+				'description' => 'Craft: When a tag is saved' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'tags.saveTagContent',
+				'description' => 'Craft: When tag content is saved' 
+			),
+
+			// Users
+			array (
+				'registrar' => 'craft',
+				'event' => 'users.saveUser',
+				'description' => 'Craft: When a user is saved' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'users.activateUser',
+				'description' => 'Craft: When a user is activated' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'users.unlockUser',
+				'description' => 'Craft: When a user is unlocked' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'users.suspendUser',
+				'description' => 'Craft: When a user is suspended' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'users.unsuspendUser',
+				'description' => 'Craft: When a user is unsuspended' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'users.deleteUser',
+				'description' => 'Craft: When a user is deleted' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'userSession.login',
+				'description' => 'Craft: When a user logs in' 
+			),
+
+			// Updates
+			array (
+				'registrar' => 'craft',
+				'event' => 'updates.beginUpdate',
+				'description' => 'Craft: When an update is started' 
+			),
+			array (
+				'registrar' => 'craft',
+				'event' => 'updates.endUpdate',
+				'description' => 'Craft: When an update is finished' 
+			),
+
+			// Other
+			array (
+				'registrar' => 'craft',
+				'event' => 'cron',
+				'description' => 'Send email via Cron Job'
+			),
 		);
 		
 		foreach ( $events as $event )
@@ -272,31 +272,31 @@ class SproutEmailPlugin extends BasePlugin
 		}
 		
 		$providers = array (
-				array (
-						'emailProvider' => 'CampaignMonitor',
-						'apiSettings' => '{"client_id":"","api_key":""}',
-						'dateCreated' => '2014-03-10 21:00:00' 
-				),
-				array (
-						'emailProvider' => 'MailChimp',
-						'apiSettings' => '{"api_key":""}',
-						'dateCreated' => '2014-03-10 21:00:00' 
-				),
-				array (
-						'emailProvider' => 'SendGrid',
-						'apiSettings' => '{"api_user":"","api_key":""}',
-						'dateCreated' => '2014-07-19 21:00:00' 
-				),
-				array (
-						'emailProvider' => 'MailGun',
-						'apiSettings' => '{"api_user":"","domain":""}',
-						'dateCreated' => '2014-09-09 21:00:00' 
-				),
-				array (
-						'emailProvider' => 'CopyPaste',
-						'apiSettings' => '',
-						'dateCreated' => '2014-09-12 21:00:00' 
-				)
+			array (
+				'emailProvider' => 'CampaignMonitor',
+				'apiSettings' => '{"client_id":"","api_key":""}',
+				'dateCreated' => '2014-03-10 21:00:00' 
+			),
+			array (
+				'emailProvider' => 'MailChimp',
+				'apiSettings' => '{"api_key":""}',
+				'dateCreated' => '2014-03-10 21:00:00' 
+			),
+			array (
+				'emailProvider' => 'SendGrid',
+				'apiSettings' => '{"api_user":"","api_key":""}',
+				'dateCreated' => '2014-07-19 21:00:00' 
+			),
+			array (
+				'emailProvider' => 'MailGun',
+				'apiSettings' => '{"api_user":"","domain":""}',
+				'dateCreated' => '2014-09-09 21:00:00' 
+			),
+			array (
+				'emailProvider' => 'CopyPaste',
+				'apiSettings' => '',
+				'dateCreated' => '2014-09-12 21:00:00' 
+			)
 		);
 		
 		foreach ( $providers as $provider )
@@ -321,68 +321,23 @@ class SproutEmailPlugin extends BasePlugin
 		parent::init();
 
 		// events fired by $this->raiseEvent
-		craft()->on( 'entries.saveEntry', array (
-				$this,
-				'onSaveEntry' 
-		) );
-		craft()->on( 'assets.saveAsset', array (
-				$this,
-				'onSaveAsset' 
-		) );
-		craft()->on( 'content.saveContent', array (
-				$this,
-				'onSaveContent' 
-		) );
-		craft()->on( 'globals.saveGlobalContent', array (
-				$this,
-				'onSaveGlobalContent' 
-		) );
-		craft()->on( 'tags.saveTag', array (
-				$this,
-				'onSaveTag' 
-		) );
-		craft()->on( 'tags.saveTagContent', array (
-				$this,
-				'onSaveTagContent' 
-		) );
+		craft()->on( 'entries.saveEntry', array($this,'onSaveEntry'));
+		craft()->on( 'assets.saveAsset', array($this,'onSaveAsset'));
+		craft()->on( 'content.saveContent', array($this,'onSaveContent'));
+		craft()->on( 'globals.saveGlobalContent', array($this,'onSaveGlobalContent'));
+		craft()->on( 'tags.saveTag', array($this,'onSaveTag'));
+		craft()->on( 'tags.saveTagContent', array($this,'onSaveTagContent'));
 		
-		craft()->on( 'users.saveUser', array (
-				$this,
-				'onSaveUser' 
-		) );
-		craft()->on( 'users.activateUser', array (
-				$this,
-				'onActivateUser' 
-		) );
-		craft()->on( 'users.unlockUser', array (
-				$this,
-				'onUnlockUser' 
-		) );
-		craft()->on( 'users.suspendUser', array (
-				$this,
-				'onSuspendUser' 
-		) );
-		craft()->on( 'users.unsuspendUser', array (
-				$this,
-				'onUnsuspendUser' 
-		) );
-		craft()->on( 'users.deleteUser', array (
-				$this,
-				'onDeleteUser' 
-		) );
-		craft()->on( 'userSession.login', array (
-				$this,
-				'onLogin' 
-		) );
+		craft()->on( 'users.saveUser', array($this,'onSaveUser'));
+		craft()->on( 'users.activateUser', array($this,'onActivateUser'));
+		craft()->on( 'users.unlockUser', array($this,'onUnlockUser'));
+		craft()->on( 'users.suspendUser', array($this,'onSuspendUser'));
+		craft()->on( 'users.unsuspendUser', array($this,'onUnsuspendUser'));
+		craft()->on( 'users.deleteUser', array($this,'onDeleteUser'));
+		craft()->on( 'userSession.login', array($this,'onLogin'));
 		
-		craft()->on( 'updates.beginUpdate', array (
-				$this,
-				'onBeginUpdate' 
-		) );
-		craft()->on( 'updates.endUpdate', array (
-				$this,
-				'onEndUpdate' 
-		) );
+		craft()->on( 'updates.beginUpdate', array($this,'onBeginUpdate'));
+		craft()->on( 'updates.endUpdate', array($this,'onEndUpdate'));
 		
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'registrar!=:registrar';
@@ -984,7 +939,4 @@ class SproutEmailPlugin extends BasePlugin
 			}
 		}
 	}
-
-	
-	
 }

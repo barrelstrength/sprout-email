@@ -15,8 +15,8 @@ class SproutEmail_RunEmailBlastTypeTask extends BaseTask
 	protected function defineSettings()
 	{
 		return array (
-				'emailBlastTypeId' => AttributeType::String,
-				'entryId' => AttributeType::String 
+			'emailBlastTypeId' => AttributeType::String,
+			'entryId' => AttributeType::String 
 		);
 	}
 	

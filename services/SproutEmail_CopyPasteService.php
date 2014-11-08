@@ -55,35 +55,34 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 	 */
 	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{	
-	    $arr = array();
-    	$client = new Client('http://'.$_SERVER["HTTP_HOST"]);
+		$arr = array();
+		$client = new Client('http://'.$_SERVER["HTTP_HOST"]);
 
-        // Get the HTML version
-            $request = $client->get('/'.$emailBlastType['htmlBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
-                            
-            // send request / get response
-                $response = $request->send();
-            
-            // The body of the email
-                $arr["html"] = trim($response->getBody());
+		// Get the HTML version
+		$request = $client->get('/'.$emailBlastType['htmlBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
+													
+		// send request / get response
+		$response = $request->send();
+					
+		// The body of the email
+		$arr["html"] = trim($response->getBody());
 
-        // Get the Text Version
-            $request = $client->get('/'.$emailBlastType['textBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
-                            
-        // send request / get response
-            $response = $request->send();
-        
-        // The body of the email
-            $arr["text"] = trim($response->getBody());
-            
-            
-        // Show name of email, name of selected list and name of sender?     
-            $arr["title"]       = $emailBlastType["title"];
-            $arr["fromEmail"]  = $emailBlastType["fromEmail"];
-            $arr["fromName"]   = $emailBlastType["fromName"];
-                
-            echo json_encode($arr);
-            unset($client);
+		// Get the Text Version
+		$request = $client->get('/'.$emailBlastType['textBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
+													
+		// send request / get response
+		$response = $request->send();
+			
+		// The body of the email
+		$arr["text"] = trim($response->getBody());
+					
+		// Show name of email, name of selected list and name of sender?     
+		$arr["title"]       = $emailBlastType["title"];
+		$arr["fromEmail"]  = $emailBlastType["fromEmail"];
+		$arr["fromName"]   = $emailBlastType["fromName"];
+							
+		echo json_encode($arr);
+		unset($client);
 		exit;
 	}
 	

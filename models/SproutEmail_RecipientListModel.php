@@ -15,15 +15,9 @@ class SproutEmail_RecipientListModel extends BaseModel
 	public function defineAttributes()
 	{
 		return array (
-			'emailProviderRecipientListId' => array (
-				AttributeType::String 
-			),
-			'emailProvider' => array (
-				AttributeType::String 
-			),
-			'type' => array (
-				AttributeType::String 
-			)
+			'emailProviderRecipientListId' => AttributeType::String,
+			'emailProvider'                => AttributeType::String,
+			'type'                         => AttributeType::String
 		);
 	}
 	

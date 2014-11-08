@@ -24,24 +24,12 @@ class SproutEmail_NotificationEventRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array (
-			'registrar' => array (
-				AttributeType::String 
-			),
-			'event' => array (
-				AttributeType::String 
-			),
-			'description' => array (
-				AttributeType::String 
-			),
-			'options' => array (
-				AttributeType::Mixed 
-			),
-			'dateCreated' => array (
-				AttributeType::DateTime 
-			),
-			'dateUpdated' => array (
-				AttributeType::DateTime 
-			) 
+			'registrar'   => AttributeType::String,
+			'event'       => AttributeType::String,
+			'description' => AttributeType::String,
+			'options'     => AttributeType::Mixed,
+			'dateCreated' => AttributeType::DateTime,
+			'dateUpdated' => AttributeType::DateTime 
 		);
 	}
 	

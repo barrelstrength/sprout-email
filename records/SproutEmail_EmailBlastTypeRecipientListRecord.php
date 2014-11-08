@@ -23,19 +23,11 @@ class SproutEmail_EmailBlastTypeRecipientListRecord extends BaseRecord
 	 */
 	public function defineAttributes()
 	{
-		return array (
-			'recipientListId' => array (
-				AttributeType::Number 
-			),
-			'emailBlastTypeId' => array (
-				AttributeType::Number 
-			),
-			'dateCreated' => array (
-				AttributeType::DateTime 
-			),
-			'dateUpdated' => array (
-				AttributeType::DateTime 
-			) 
+		return array(
+			'recipientListId'  => AttributeType::Number,
+			'emailBlastTypeId' => AttributeType::Number,
+			'dateCreated'      => AttributeType::DateTime,
+			'dateUpdated'      => AttributeType::DateTime 
 		);
 	}
 }

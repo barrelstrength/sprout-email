@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 /**
@@ -85,8 +84,10 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 				return $emailBlastType;
 			}
 
+			$_POST['redirect'] = str_replace('{id}', $emailBlastType->id, $_POST['redirect']);
+
 			craft()->userSession->setNotice( Craft::t( 'Email Blast Type successfully saved.' ) );
-			
+
 			$continue = craft()->request->getPost( 'continue' );
 			
 			if ($continue == 'info')
@@ -148,12 +149,6 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		{
 			craft()->userSession->setError(Craft::t('Couldn’t delete Email Blast Type.'));
 		}
-
-		
-
-		// $this->returnJson( array (
-		// 		'success' => craft()->sproutEmail->deleteEmailBlastType( $emailBlastTypeId ) 
-		// ) );
 	}
 	
 	/**

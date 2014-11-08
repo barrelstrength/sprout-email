@@ -15,9 +15,7 @@ class SproutEmail_RecipientModel extends BaseModel
 	public function defineAttributes()
 	{
 		return array (
-			'email' => array (
-				AttributeType::Email 
-			) 
+			'email' => AttributeType::Email
 		);
 	}
 }

@@ -24,21 +24,13 @@ class SproutEmail_EmailProviderSettingRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array (
-			'emailProvider' => array (
-				AttributeType::String 
-			),
+			'emailProvider' => AttributeType::String,
 			
 			// apiSettings is a generic field to store email provider specific settings;
-			'apiSettings' => array (
-				AttributeType::String 
-			),
+			'apiSettings' => AttributeType::String,
 			
-			'dateCreated' => array (
-				AttributeType::DateTime 
-			),
-			'dateUpdated' => array (
-				AttributeType::DateTime 
-			) 
+			'dateCreated' => AttributeType::DateTime,
+			'dateUpdated' => AttributeType::DateTime 
 		);
 	}
 }

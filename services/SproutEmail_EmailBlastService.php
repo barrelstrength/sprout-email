@@ -53,10 +53,6 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 
 		if (!$emailBlast->hasErrors())
 		{
-			// $form = craft()->sproutForms_forms->getFormById($emailBlast->formId);
-
-			// $emailBlast->getContent()->title = craft()->templates->renderObjectTemplate($form->titleFormat, $emailBlast);
-
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 			try
 			{	

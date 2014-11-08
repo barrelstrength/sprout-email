@@ -1,11 +1,15 @@
 {% from "_includes/forms" import textField %}
 
+{% if emailBlast.getErrors('subjectLine') or emailBlast.getErrors('title') %}
+	{% set subjectLineError = ['Subject Line cannot be blank.'|t] %}
+{% endif %}
+
 {{ textField({
 	label: "Email Subject"|t,
 	id: 'subjectLine',
 	name: 'subjectLine',
 	value: emailBlast.subjectLine,
-	errors: emailBlast.getErrors('subjectLine'),
+	errors: (subjectLineError is defined ? subjectLineError : null),
 	first: true,
 	autofocus: true,
 	required: true,

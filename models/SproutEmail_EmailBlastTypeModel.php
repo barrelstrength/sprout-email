@@ -16,91 +16,41 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 		return array (
 				
 			// emailBlastType info
-			'id' => array (
-				AttributeType::Number 
-			),
-			'fieldLayoutId' => array (
-				AttributeType::Number
-			),
-			'name' => array (
-				AttributeType::String 
-			),
-			'handle' => array (
-				AttributeType::String 
-			),
-			'titleFormat' => array (
-				AttributeType::String
-			),
-			'hasUrls' => array(
-				AttributeType::Bool, 
-				'default' => true
-			),
-			'urlFormat' => array(
-				AttributeType::String
-			),
-			'subject' => array (
-				AttributeType::String 
-			),
-			'fromName' => array (
-				AttributeType::String 
-			),
-			'fromEmail' => array (
-				AttributeType::Email 
-			),
-			'replyToEmail' => array (
-				AttributeType::Email 
-			),
-			'emailProvider' => array (
-				AttributeType::String 
-			),
-			'notificationEvent' => array (
-				AttributeType::Number 
-			),
+			'id'                => AttributeType::Number,
+			'fieldLayoutId'     => AttributeType::Number,
+			'name'              => AttributeType::String,
+			'handle'            => AttributeType::String ,
+			'titleFormat'       => AttributeType::String,
+			'hasUrls'           => array(
+															AttributeType::Bool, 
+															'default' => true,
+														 ),
+			'urlFormat'         => AttributeType::String,
+			'subject'           => AttributeType::String,
+			'fromName'          => AttributeType::String,
+			'fromEmail'         => AttributeType::Email,
+			'replyToEmail'      => AttributeType::Email,
+			'emailProvider'     => AttributeType::String,
+			'notificationEvent' => AttributeType::Number,
 			
 			// email template
-			'templateOption' => array (
-				AttributeType::Number 
-			),
-			'htmlBody' => array (
-				AttributeType::String 
-			),
-			'textBody' => array (
-				AttributeType::String 
-			),
-			'subjectHandle' => array (
-				AttributeType::String 
-			),
-			'htmlTemplate' => array (
-				AttributeType::String 
-			),
-			'textTemplate' => array (
-				AttributeType::String 
-			),
-			'htmlBodyTemplate' => array (
-				AttributeType::String 
-			),
-			'textBodyTemplate' => array (
-				AttributeType::String 
-			),
+			'templateOption'    => AttributeType::Number,
+			'htmlBody'          => AttributeType::String,
+			'textBody'          => AttributeType::String,
+			'subjectHandle'     => AttributeType::String,
+			'htmlTemplate'      => AttributeType::String,
+			'textTemplate'      => AttributeType::String,
+			'htmlBodyTemplate'  => AttributeType::String,
+			'textBodyTemplate'  => AttributeType::String,
 			
 			// recipients
-			'recipientOption' => array (
-				AttributeType::Number 
-			),
-			'emailProviderRecipientListId' => array (
-				AttributeType::Enum 
-			),
-			'recipients' => array (
-				AttributeType::String 
-			),
-			'useRecipientLists' => array (
-				AttributeType::Number 
-			),
+			'recipientOption'   => AttributeType::Number,
+			'emailProviderRecipientListId' => AttributeType::Enum,
+			'recipients'        => AttributeType::String,
+			'useRecipientLists' => AttributeType::Number,
 			
 			// events
-			'notificationEvents' => array (
-				AttributeType::Enum 
-			) 
+			'notificationEvents' => AttributeType::Enum 
 		);
 	}
 

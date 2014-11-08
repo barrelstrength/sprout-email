@@ -140,26 +140,9 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 				}
 			}
 			
+			// @TODO - need to revisit this behavior big time!
 			if($emailProviderRecipientListId != '')
 			{	
-				// $recipientListOverrides = array();
-				
-				// Loop through each of the override lists in our override settings
-				// foreach ($emailProviderRecipientListId as $key => $value) 
-				// {
-				// 	$recipientListOverride = new SproutEmail_RecipientListModel();
-				// 	$recipientListOverride->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId'];
-				// 	$recipientListOverride->emailProvider = $campaign['emailProvider'];
-				// 	$recipientListOverride->type = null;
-
-				// 	$recipientListOverrides[$key] = $recipientListOverride;
-				// }
-				
-				// We have an override setting, so let's clear our current recipients
-				// unset($recipientLists);
-
-				// $recipientLists = $recipientListOverrides;
-				
 				foreach ($emailProviderRecipientListId as $key => $value) 
 				{
 					$recipientLists[0]->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId']['list'];
@@ -168,32 +151,6 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 
 					// $recipientListOverrides[$key] = $recipientListOverride;
 				}
-				
-				// $criteria = new \CDbCriteria();
-				// $criteria->params = array (
-				// 		':emailProvider' => $emailBlastType["emailProvider"]
-				// );
-				// $criteria->condition = 'emailProvider=:emailProvider';
-				// $criteria->addInCondition('emailProviderRecipientListId',$emailProviderRecipientListId);
-
-				// $recipientLists = SproutEmail_RecipientListRecord::model()->with( 'emailBlastTypeRecipientList' )->findAll($criteria);
-
-				// ------------------------------------------------------------
-				
-				// $recipientLists = craft()->db->createCommand()
-				//     ->select('*')
-				//     ->from('sproutemail_recipient_lists recipient_lists')
-				//     ->join('sproutemail_emailblasttypes_recipientlists emailBlastType_recipient_lists', 'recipient_lists.id=emailBlastType_recipient_lists.recipientListId')
-				//     ->where('recipient_lists.emailProvider=:emailProvider', array(
-				//     	':emailProvider'=>$emailBlastType["emailProvider"])
-				//     )
-				//     ->andWhere(array(
-				//     	'in', 
-				//     	'recipient_lists.emailProvisderRecipientListId', 
-				//     	$emailProviderRecipientListId
-				//     ))
-				//     ->queryAll();
-
 			}
 		}
 
@@ -248,7 +205,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			$criteria = new \CDbCriteria();
 			$criteria->condition = 'emailProvider=:emailProvider';
 			$criteria->params = array (
-					':emailProvider' => $emailBlastType->emailProvider 
+				':emailProvider' => $emailBlastType->emailProvider 
 			);
 			
 			$recipientListIds = ( array ) $emailBlastType->emailProviderRecipientListId;
@@ -258,7 +215,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			{
 				$criteria->condition = 'emailProviderRecipientListId=:emailProviderRecipientListId';
 				$criteria->params = array (
-						':emailProviderRecipientListId' => $list_id 
+					':emailProviderRecipientListId' => $list_id 
 				);
 				$recipientListRecord = SproutEmail_RecipientListRecord::model()->find( $criteria );
 				
@@ -278,8 +235,8 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 				{
 					// associate with emailBlastType, if not already done so
 					if ( SproutEmail_EmailBlastTypeRecipientListRecord::model()->count( 'recipientListId=:recipientListId AND emailBlastTypeId=:emailBlastTypeId', array (
-							':recipientListId' => $recipientListRecord->id,
-							':emailBlastTypeId' => $emailBlastTypeRecord->id 
+						':recipientListId' => $recipientListRecord->id,
+						':emailBlastTypeId' => $emailBlastTypeRecord->id 
 					) ) == 0 )
 					{
 						$emailBlastTypeRecipientListRecord = new SproutEmail_EmailBlastTypeRecipientListRecord();

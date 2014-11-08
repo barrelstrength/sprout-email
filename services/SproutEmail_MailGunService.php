@@ -27,7 +27,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'emailProvider=:emailProvider';
 		$criteria->params = array (
-				':emailProvider' => 'MailGun' 
+			':emailProvider' => 'MailGun' 
 		);
 		
 		$res = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
@@ -44,44 +44,45 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	 */
 	public function getSubscriberList()
 	{
-        // Container
-    		$subscriber_lists = array ();
+		// Container
+		$subscriber_lists = array ();
 	
-        // List request from Mailgun
-    	    $mgClient = new Mailgun($this->api_key);
-            $result = $mgClient->get("lists");
-            $response = $result->http_response_body;
+		// List request from Mailgun
+		$mgClient = new Mailgun($this->api_key);
+		$result = $mgClient->get("lists");
+		$response = $result->http_response_body;
 
-            foreach($response->items as $list)
-            {
-                $subscriber_lists[$list->address] = '<b>'.$list->name.'</b> ('.$list->members_count.') <span class="info">'.$list->description.'</span>';
-            }
+		foreach($response->items as $list)
+		{
+			$subscriber_lists[$list->address] = '<b>'.$list->name.'</b> ('.$list->members_count.') <span class="info">'.$list->description.'</span>';
+		}
 
 		return $subscriber_lists;
 	}
 	
 	public function getEmailBlastTypeList()
 	{
-    	$emailblasts = array();
-    	
-    	// List the emailBlastType options
-    	    $mgClient = new Mailgun($this->api_key);
-            $result = $mgClient->get($this->domain."/emailblasts");
-            $response = $result->http_response_body;        
-        
-            $emailblasts[] = array(
-                                     'label' => 'No EmailBlastType',
-                                     'value' => ''
-                                 );
-            foreach($response->items as $list)
-            {
-                $emailblasts[] = array(
-                                         'label' => $list->name,
-                                         'value'=>$list->id
-                                     );
-            }
-            
-        return $emailblasts;
+		$emailblasts = array();
+			
+		// List the emailBlastType options
+		$mgClient = new Mailgun($this->api_key);
+		$result = $mgClient->get($this->domain."/emailblasts");
+		$response = $result->http_response_body;        
+
+		$emailblasts[] = array(
+			'label' => 'No EmailBlastType',
+			'value' => ''
+		);
+		
+		foreach($response->items as $list)
+		{
+			$emailblasts[] = array(
+				'label' => $list->name,
+				'value'=>$list->id
+		 	);
+		}
+
+		return $emailblasts;
 	}
 	
 	/**
@@ -92,83 +93,87 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	 */
 	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{
-        // We only want to run once! 
-            if($this->export_once == 1){
-                return;
-            }
+		// We only want to run once! 
+		if($this->export_once == 1)
+		{
+			return;
+		}
 
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $endpoint = ($protocol.$_SERVER['HTTP_HOST']);
-        $client = new Client($endpoint);
-        
-        // send request / get response / grab body of email
-        $request = $client->get('/'.$emailBlastType["htmlTemplate"].'?entryId='.$emailBlastType["entryId"]);
-        $response = $request->send();
-        $htmlContent = trim($response->getBody());
+		$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+		$endpoint = ($protocol.$_SERVER['HTTP_HOST']);
+		$client = new Client($endpoint);
+		
+		// send request / get response / grab body of email
+		$request = $client->get('/'.$emailBlastType["htmlTemplate"].'?entryId='.$emailBlastType["entryId"]);
+		$response = $request->send();
+		$htmlContent = trim($response->getBody());
 
-        // send request / get response / grab body of text email
-        $textRequest = $client->get('/'.$emailBlastType["textTemplate"].'?entryId='.$emailBlastType["entryId"]);
-        $textResponse = $textRequest->send();
-        $textContent = trim($textResponse->getBody());
+		// send request / get response / grab body of text email
+		$textRequest = $client->get('/'.$emailBlastType["textTemplate"].'?entryId='.$emailBlastType["entryId"]);
+		$textResponse = $textRequest->send();
+		$textContent = trim($textResponse->getBody());
 
-        // Get the subject of the email from the entry
-            
-            $entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
-            $emailSubject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
+		// Get the subject of the email from the entry
+		$entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
+		$emailSubject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
 
-        // Convert encoded quotes
-        // http://stackoverflow.com/questions/1262038/how-to-replace-microsoft-encoded-quotes-in-php
-        $emailSubject = iconv('UTF-8', 'ASCII//TRANSLIT', $emailSubject);
+		// Convert encoded quotes
+		// http://stackoverflow.com/questions/1262038/how-to-replace-microsoft-encoded-quotes-in-php
+		$emailSubject = iconv('UTF-8', 'ASCII//TRANSLIT', $emailSubject);
 
-        // Send to mailgun
-        
-            $recipients = craft()->db->createCommand("SELECT 
-                                                    	r.type, 
-                                                    	r.emailProviderRecipientListId as val 
-                                                    FROM 
-                                                    	".DbHelper::addTablePrefix('sproutemail_emailblasttypes_recipientlists')." cr,
-                                                    	".DbHelper::addTablePrefix('sproutemail_recipient_lists')." r
-                                                    WHERE 	
-                                                    	cr.recipientListId = r.id 
-                                                    AND 
-                                                    	cr.emailBlastTypeId = ".$emailBlastType["id"])->queryAll();
+		// Send to mailgun				
+		$recipients = craft()->db->createCommand("SELECT 
+																								r.type, 
+																								r.emailProviderRecipientListId as val 
+																							FROM 
+																								".DbHelper::addTablePrefix('sproutemail_emailblasttypes_recipientlists')." cr,
+																								".DbHelper::addTablePrefix('sproutemail_recipient_lists')." r
+																							WHERE 	
+																								cr.recipientListId = r.id 
+																							AND 
+																								cr.emailBlastTypeId = ".$emailBlastType["id"])->queryAll();
 
-            // Put the results into the emailBlastType_id variable 
-            // or the list_email array based on their type 
-                $emailBlastType_id = '';
-                $list_email  = array();
-                foreach($recipients as $rec)
-                {
-                    if($rec["type"] == 'emailBlastType'){
-                        $emailBlastType_id = $rec["val"];
-                    }else{
-                        $list_email[]= $rec["val"];
-                    }
-                }
+		// Put the results into the emailBlastType_id variable 
+		// or the list_email array based on their type 
+		$emailBlastType_id = '';
+		$list_email  = array();
 
-                foreach($list_email as $send){
-                    $mgClient = new Mailgun($this->api_key);
+		foreach($recipients as $rec)
+		{
+			if ($rec["type"] == 'emailBlastType')
+			{
+				$emailBlastType_id = $rec["val"];
+			}
+			else
+			{
+				$list_email[]= $rec["val"];
+			}
+		}
 
-                    # Next, instantiate a Message Builder object from the SDK.
-										$msgBldr = $mgClient->MessageBuilder();
+		foreach($list_email as $send)
+		{
+			$mgClient = new Mailgun($this->api_key);
 
-                    $domain = $this->domain;
-                    # Make the call to the client.
-                    $result = $mgClient->sendMessage($domain, array(
-                        'from'       => $emailBlastType["fromName"].' <'.$emailBlastType["fromEmail"].'>',
-                        'to'         => $send,
-                        'subject'    => htmlspecialchars($emailSubject),
-                        'html'       => $htmlContent,
-                        'text'       => $textContent,
-                        'o:emailBlastType' => $emailBlastType_id
-                    ));                   
-                }
+			# Next, instantiate a Message Builder object from the SDK.
+			$msgBldr = $mgClient->MessageBuilder();
 
-                // Give back a message
-                    echo 'Email sent to Mailgun for delivery';
+			$domain = $this->domain;
+			# Make the call to the client.
+			$result = $mgClient->sendMessage($domain, array(
+					'from'       => $emailBlastType["fromName"].' <'.$emailBlastType["fromEmail"].'>',
+					'to'         => $send,
+					'subject'    => htmlspecialchars($emailSubject),
+					'html'       => $htmlContent,
+					'text'       => $textContent,
+					'o:emailBlastType' => $emailBlastType_id
+			));                   
+		}
 
-                // All done. Only do it once! 
-                    $this->export_once++;
+		// Give back a message
+		echo 'Email sent to Mailgun for delivery';
+
+		// All done. Only do it once! 
+		$this->export_once++;
 	}
 	
 	/**
@@ -197,7 +202,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	 */
 	public function saveSettings($settings = array())
 	{
-	    $criteria = new \CDbCriteria();
+		$criteria = new \CDbCriteria();
 		$criteria->condition = 'emailProvider=:emailProvider';
 		$criteria->params = array (
 			':emailProvider' => 'MailGun'
@@ -228,49 +233,52 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 		}
 
 		// Start with some housecleaning
-		    $recipients = craft()->db->createCommand("DELETE FROM 
-		                                                ".DbHelper::addTablePrefix('sproutemail_recipient_lists')."
-		                                              WHERE 
-		                                                id IN 
-		                                                    (
-                                                                SELECT 
-                                                                    recipientListId 
-                                                                FROM 
-                                                                    ".DbHelper::addTablePrefix('sproutemail_emailblasttypes_recipientlists')." 
-                                                                WHERE 	
-                                                                    emailBlastTypeId = ".$emailBlastType["id"]."
-                                                            )")->query();
-		    
-        foreach($emailBlastType->emailProviderRecipientListId as $key => $val)
-        {
-            if(!is_array($val)){
-                $tmp = $val;
-                unset($val);
-                $val[0] = $tmp;
-            }
-            foreach($val as $value)
-            {
-                $recipientListRecord = new SproutEmail_RecipientListRecord();
-                $recipientListRecord->emailProviderRecipientListId = $value;
-                $recipientListRecord->type = $key;
-                $recipientListRecord->emailProvider = $emailBlastType->emailProvider;
-				
+		$recipients = craft()->db->createCommand("DELETE FROM 
+																								".DbHelper::addTablePrefix('sproutemail_recipient_lists')."
+																							WHERE 
+																								id IN 
+																										(
+																											SELECT 
+																													recipientListId 
+																											FROM 
+																													".DbHelper::addTablePrefix('sproutemail_emailblasttypes_recipientlists')." 
+																											WHERE 	
+																													emailBlastTypeId = ".$emailBlastType["id"]."
+																										)")->query();
+		
+		foreach($emailBlastType->emailProviderRecipientListId as $key => $val)
+		{
+			if (!is_array($val))
+			{
+				$tmp = $val;
+				unset($val);
+				$val[0] = $tmp;
+			}
+
+			foreach($val as $value)
+			{
+				$recipientListRecord = new SproutEmail_RecipientListRecord();
+				$recipientListRecord->emailProviderRecipientListId = $value;
+				$recipientListRecord->type = $key;
+				$recipientListRecord->emailProvider = $emailBlastType->emailProvider;
+
 				if ( $recipientListRecord->save() ) 
 				{
 					// associate with emailBlastType, if not already done so
 					if ( SproutEmail_EmailBlastTypeRecipientListRecord::model()->count( 'recipientListId=:recipientListId AND emailBlastTypeId=:emailBlastTypeId', array (
-							':recipientListId'  => $recipientListRecord->id,
-							':emailBlastTypeId'       => $emailBlastTypeRecord->id 
+						':recipientListId'  => $recipientListRecord->id,
+						':emailBlastTypeId' => $emailBlastTypeRecord->id 
 					) ) == 0 )
 					{
 						$emailBlastTypeRecipientListRecord = new SproutEmail_EmailBlastTypeRecipientListRecord();
 						$emailBlastTypeRecipientListRecord->recipientListId = $recipientListRecord->id;
-						$emailBlastTypeRecipientListRecord->emailBlastTypeId      = $emailBlastTypeRecord->id;
+						$emailBlastTypeRecipientListRecord->emailBlastTypeId = $emailBlastTypeRecord->id;
 						$emailBlastTypeRecipientListRecord->save( false );
 					}
 				}
-            }
-        }
-        return true;
+			}
+		}
+
+		return true;
 	}
 }

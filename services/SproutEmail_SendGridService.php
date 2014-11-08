@@ -23,7 +23,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'emailProvider=:emailProvider';
 		$criteria->params = array (
-				':emailProvider' => 'SendGrid' 
+			':emailProvider' => 'SendGrid' 
 		);
 		
 		$res = SproutEmail_EmailProviderSettingRecord::model()->find( $criteria );
@@ -82,31 +82,31 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
 		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
 		
-        // Create an instance of the guzzle client
-            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-            $endpoint = ($protocol.$_SERVER['HTTP_HOST']);
-            $client = new Client($endpoint);
-        
-        // Get the HTML
-            $request = $client->get('/'.$emailBlastType["htmlTemplate"].'?entryId='.$emailBlastType["entryId"]);
-            $response = $request->send();
-            $html = trim($response->getBody());
+		// Create an instance of the guzzle client
+		$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+		$endpoint = ($protocol.$_SERVER['HTTP_HOST']);
+		$client = new Client($endpoint);
 
-        // Get the text
-            $request = $client->get("/".$emailBlastType ['textTemplate'] . "?entryId={$emailBlastType['entryId']}");
-            $response = $request->send();
-            $text = trim($response->getBody());
-            
-        // Get the Entry
-            $entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
+		// Get the HTML
+		$request = $client->get('/'.$emailBlastType["htmlTemplate"].'?entryId='.$emailBlastType["entryId"]);
+		$response = $request->send();
+		$html = trim($response->getBody());
+
+		// Get the text
+		$request = $client->get("/".$emailBlastType ['textTemplate'] . "?entryId={$emailBlastType['entryId']}");
+		$response = $request->send();
+		$text = trim($response->getBody());
+
+		// Get the Entry
+		$entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
 
 
 		// check if newsletter exists
-    		$res = $sendgrid->newsletter_get($entry->title);
+		$res = $sendgrid->newsletter_get($entry->title);
 		
-        // Get the subject
-            $subject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
-            
+		// Get the subject
+		$subject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
+						
 		// need to create the template (newsletter)
 		if( ! $res)
 		{
@@ -138,26 +138,28 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 		
 		// schedule
-// 		$res = $sendgrid->newsletter_schedule_add($emailBlastType ['name']);
-		
-// 		if( $error = $sendgrid->getLastResponseError())
-// 		{
-// 			die($error);
-// 		}
+		// $res = $sendgrid->newsletter_schedule_add($emailBlastType ['name']);
+
+		// if( $error = $sendgrid->getLastResponseError())
+		// {
+		// 	die($error);
+		// }
 		
 		// customize messages
-		if($res['message'])
+		if ($res['message'])
 		{
 			switch($res['message'])
 			{
 				case 'success':
 					$msg["response"] = 'Your emailBlastType has been successfully exported. Please login to SendGrid to complete your email blast.';
 					break;
+		
 				default:
 					$msg["response"] = 'Unknown error.';
 					break;
 			}
 		}
+
 		echo json_encode($msg);
 		exit;
 	}

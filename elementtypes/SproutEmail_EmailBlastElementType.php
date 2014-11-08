@@ -109,7 +109,6 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 				'elementType'         => new ElementTypeVariable($this),
 				'disabledElementIds'  => $disabledElementIds,
 				'elements'            => $criteria->find(),
-				// 'groupId'             => $source['criteria']['groupId'],
 			));
 		}
 		else

@@ -15,24 +15,14 @@ class SproutEmail_EmailProviderSettingModel extends BaseModel
 	public function defineAttributes()
 	{
 		return array (
-			'id' => array (
-				AttributeType::Number 
-			),
-			'emailProvider' => array (
-				AttributeType::String 
-			),
+			'id'            => AttributeType::Number,
+			'emailProvider' => AttributeType::String,
 			
 			// apiSettings is a generic field to store email provider specific settings;
-			'apiSettings' => array (
-				AttributeType::String 
-			),
+			'apiSettings'   => AttributeType::String,
 			
-			'dateCreated' => array (
-				AttributeType::DateTime 
-			),
-			'dateUpdated' => array (
-				AttributeType::DateTime 
-			) 
+			'dateCreated'   => AttributeType::DateTime,
+			'dateUpdated'   => AttributeType::DateTime 
 		);
 	}
 }

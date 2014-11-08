@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 /**
@@ -7,6 +6,10 @@ namespace Craft;
  */
 class SproutEmail_ListsController extends BaseController
 {
+	/**
+	 * Subscribes a user to a List
+	 * @return [type] [description]
+	 */
 	public function actionSubscribe()
 	{
 		$userId = craft()->userSession->id;
@@ -154,13 +157,18 @@ class SproutEmail_ListsController extends BaseController
 				case 'info' :
 					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
 					break;
+
 				case 'template' :
+				
 					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
 					break;
+
 				default :
+					
 					$this->redirectToPostedUrl( array (
 							$emailBlastTypeModel 
 					) );
+
 					break;
 			}
 		}

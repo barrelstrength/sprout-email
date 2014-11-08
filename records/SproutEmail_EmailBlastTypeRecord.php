@@ -27,71 +27,31 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array (
-			'fieldLayoutId' => array (
-				AttributeType::Number
-			),
-			'emailProvider' => array (
-				AttributeType::String 
-			),
-			'name' => array (
-				AttributeType::String 
-			),
-			'handle' => array (
-				AttributeType::String 
-			),
-			'titleFormat' => array (
-				AttributeType::String
-			),
-			'hasUrls' => array(
-				AttributeType::Bool, 
-				'default' => true
-			),
-			'subject' => array (
-				AttributeType::String 
-			),
-			'fromName' => array (
-				AttributeType::String 
-			),
-			'fromEmail' => array (
-				AttributeType::Email 
-			),
-			'replyToEmail' => array (
-				AttributeType::Email 
-			),
+			'fieldLayoutId'    => AttributeType::Numbe,
+			'emailProvider'    => AttributeType::String,
+			'name'             => AttributeType::String,
+			'handle'           => AttributeType::String,
+			'titleFormat'      => AttributeType::String,
+			'hasUrls'          => array(
+															AttributeType::Bool, 
+															'default' => true,
+														),
+			'subject'          => AttributeType::String,
+			'fromName'         => AttributeType::String,
+			'fromEmail'        => AttributeType::Email,
+			'replyToEmail'     => AttributeType::Email,
 
-			'templateOption' => array (
-				AttributeType::Number 
-			),
-			'htmlBody' => array (
-				AttributeType::Mixed 
-			),
-			'textBody' => array (
-				AttributeType::Mixed 
-			),
-			'subjectHandle' => array (
-				AttributeType::String 
-			),
-			'htmlTemplate' => array (
-				AttributeType::String 
-			),
-			'textTemplate' => array (
-				AttributeType::String 
-			),
-			'htmlBodyTemplate' => array (
-				AttributeType::String 
-			),
-			'textBodyTemplate' => array (
-				AttributeType::String 
-			),
-			'recipients' => array (
-				AttributeType::Mixed 
-			),
-			'dateCreated' => array (
-				AttributeType::DateTime 
-			),
-			'dateUpdated' => array (
-				AttributeType::DateTime 
-			) 
+			'templateOption'   => AttributeType::Number,
+			'htmlBody'         => AttributeType::Mixed,
+			'textBody'         => AttributeType::Mixed,
+			'subjectHandle'    => AttributeType::String,
+			'htmlTemplate'     => AttributeType::String,
+			'textTemplate'     => AttributeType::String,
+			'htmlBodyTemplate' => AttributeType::String,
+			'textBodyTemplate' => AttributeType::String,
+			'recipients'       => AttributeType::Mixed,
+			'dateCreated'      => AttributeType::DateTime,
+			'dateUpdated'      => AttributeType::DateTime 
 		);
 	}
 	
@@ -197,30 +157,6 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 		$where_binds = 'templateOption=:templateOption';
 		$where_params = array (
 				':templateOption' => 3 
-		);
-		
-		// @TODO - had a previously named function by the same name that did the 
-		// commented out stuff... add back where?
-		// if ( $emailBlastType_id )
-		// {
-		// 	$where_binds .= ' AND :id=mc.id';
-		// 	$where_params [':id'] = $emailBlastType_id;
-		// }
-		
-		// return craft()->db->createCommand()->select( 'mc.*,
-		// 		el.slug as slug,
-		// 		s.handle,
-		// 		e.id as entryId,
-		// 		c.title as title,
-		// 		s.id as sectionId' )
-		// 		->from( 'sproutemail_emailblasttypes mc' )
-		// 		->leftJoin( 'sections s', 'mc.sectionId=s.id' )
-		// 		->leftJoin( 'entries e', 's.id = e.sectionId' )
-		// 		->leftJoin( 'content c', 'e.id = c.elementId' )
-		// 		->leftJoin( 'elements_i18n el', 'e.id = el.elementId' )
-		// 		->where( $where_binds, $where_params )
-		// 		->order( 'mc.dateCreated desc, el.slug asc' )
-		// 		->queryAll();
 
 		return craft()->db->createCommand()
 					->select( '*' )

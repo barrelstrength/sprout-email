@@ -1,9 +1,9 @@
 
-<form method="post" action="" accept-charset="UTF-8" data-saveshortcut>
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/emailblasttypes/edit/{id}/fields') }}">
 	<input type="hidden" name="action" value="sproutEmail/emailBlastType/saveEmailBlastType">
 	<input type="hidden" name="redirect" value="sproutemail/emailblasts">
 	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
-	<input type="hidden" name="tab" value="info">
+	<input type="hidden" name="tab" value="fields">
 	<input type="hidden" name="continue" value="false">
 	<input type="hidden" name="templateOption" value="3">
 

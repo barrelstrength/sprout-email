@@ -136,18 +136,28 @@ class SproutEmail_EmailBlastController extends BaseController
 		$emailBlastId = craft()->request->getSegment(4);
 		$emailBlastTypeId = craft()->request->getSegment(3);
 
-		if (is_numeric($emailBlastId)) 
+		// Check if we already have an emailBlast route variable
+		// If so it's probably due to a bad form submission and has an error object 
+		// that we don't want to overwrite.
+		if ( ! isset($variables['emailBlast']) ) 
 		{
-			$variables['emailBlast'] = craft()->elements->getElementById($emailBlastId);
-			$variables['emailBlastId'] = $emailBlastId;			
-		}	
+			if (is_numeric($emailBlastId)) 
+			{
+				$variables['emailBlast'] = craft()->elements->getElementById($emailBlastId);
+				$variables['emailBlastId'] = $emailBlastId;
+			}	
+			else
+			{
+				$variables['emailBlast'] = new SproutEmail_EmailBlastModel();
+
+				// @TODO - fix error
+				$variables['emailBlastId'] = "";
+			}
+		}
 		else
 		{
-			$variables['emailBlast'] = new SproutEmail_EmailBlastModel();
-
-			// @TODO - fix error
 			$variables['emailBlastId'] = "";
-		}		
+		}
 		
 		if (!is_numeric($emailBlastTypeId)) 
 		{

@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 /**
@@ -7,7 +6,6 @@ namespace Craft;
  */
 class SproutEmailVariable
 {
-	
 	/**
 	 * Plugin Name
 	 * Make your plugin name available as a variable
@@ -84,17 +82,17 @@ class SproutEmailVariable
 		$result = craft()->sections->getAllSections( $indexBy );
 		
 		$options = array (
-				array (
-						'label' => 'Select a Section...',
-						'value' => '' 
-				) 
+			array (
+				'label' => 'Select a Section...',
+				'value' => '' 
+			) 
 		);
 		
 		foreach ( $result as $key => $section )
 		{
 			array_push( $options, array (
-					'label' => $section->name,
-					'value' => $section->id 
+				'label' => $section->name,
+				'value' => $section->id 
 			) );
 		}
 		
@@ -116,12 +114,15 @@ class SproutEmailVariable
 			craft()->userSession->setError( Craft::t( 'In order to use this feature, you must install the ' . CraftPackage::Users . ' package.' ) );
 			craft()->request->redirect( implode( '/', $parts ) );
 		}
+
 		$result = craft()->userGroups->getAllGroups( $indexBy );
 		$options = array ();
+		
 		foreach ( $result as $key => $group )
 		{
 			$options [$group->id] = $group->name;
 		}
+		
 		return $options;
 	}
 	
@@ -297,6 +298,7 @@ class SproutEmailVariable
 		
 		return $out;
 	}
+
 	public function isSubscribed($userId = null, $elementId = null)
 	{
 		if ( ! $userId or ! $elementId )
@@ -315,6 +317,7 @@ class SproutEmailVariable
 		
 		return (is_array( $query )) ? true : false;
 	}
+	
 	public function getSubscriptionIds($userId = null, $elementType = 'Entry', $criteria = array())
 	{
 		$userId = craft()->userSession->id;

@@ -23,116 +23,116 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
 		return AttributeType::String;
 	}
 
+	/**
+	 * getInputHtml function.
+	 * 
+	 * @access public
+	 * @param mixed $name
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function getInputHtml($name, $value)
+	{
+		// Set up an array of the defaults
+		$emailBlastTypeRecord = new SproutEmail_EmailBlastTypeModel();
+		$emailBlastType = SproutEmail_EmailBlastTypeModel::populateModel( $emailBlastTypeRecord );
 
-    /**
-     * getInputHtml function.
-     * 
-     * @access public
-     * @param mixed $name
-     * @param mixed $value
-     * @return void
-     */
-    public function getInputHtml($name, $value)
-    {
-        // Set up an array of the defaults
-            $emailBlastTypeRecord = new SproutEmail_EmailBlastTypeModel();
-            $emailBlastType = SproutEmail_EmailBlastTypeModel::populateModel( $emailBlastTypeRecord );
+		$fields = array(
+			"emailBlastType"                => $emailBlastType,
+			"emailProviderRecipientListId"  => "",
+			"enabled"                       => FALSE,
+		);
 
-            $fields = array(
-                                "emailBlastType"                      => $emailBlastType,
-                                "emailProviderRecipientListId"  => "",
-                                "enabled"                       => FALSE,
-                                // "sectionId"                     => $this->element->sectionId
-                            );
+		// Get the section emailBlastType settings
+		// $sectionEmailBlastType = SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypeBySectionId($fields["sectionId"]);
 
-        // Get the section emailBlastType settings
-            // $sectionEmailBlastType = SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypeBySectionId($fields["sectionId"]);
+		if(!$sectionEmailBlastType)
+		{
+			// The section isn't email enabled
+			return $fields;
+		}
+		else
+		{
+		// Its enabled 
+			$fields["enabled"] = TRUE;
+							
+			// Get the RecipientListId
+			$list = craft()->sproutEmail->getEmailBlastTypeRecipientLists($sectionEmailBlastType["id"] );
+			
+			$fields["emailBlastType"]["emailProviderRecipientListId"] = array();
+			if(isset($list))
+			{
+				$arr = array();
+				foreach($list as $recipients)
+				{
+					$arr[] = $recipients->emailProviderRecipientListId;
+				}
+				$fields["emailBlastType"]["emailProviderRecipientListId"] = $arr;
+			}
 
-            if(!$sectionEmailBlastType){
-                // The section isn't email enabled
-                    return $fields;
-            }
-            else
-            {
-                // Its enabled 
-                    $fields["enabled"] = TRUE;
-                                    
-                    // Get the RecipientListId
-                        $list = craft()->sproutEmail->getEmailBlastTypeRecipientLists($sectionEmailBlastType["id"] );
-                        
-                        $fields["emailBlastType"]["emailProviderRecipientListId"] = array();
-                        if(isset($list))
-                        {
-                            $arr = array();
-                            foreach($list as $recipients)
-                            {
-                                $arr[] = $recipients->emailProviderRecipientListId;
-                            }
-                            $fields["emailBlastType"]["emailProviderRecipientListId"] = $arr;
-                        }
-    
-                    // Merge on the 
-                        $keys = array('fromName','fromEmail','replyToEmail','emailProvider');
-                        foreach($keys as $val)
-                        {
-                            $fields["emailBlastType"][$val] = $sectionEmailBlastType[$val];    
-                        }
-            }
-        
-    
-        // Merge on the entry level settings 
-            $value = json_decode($value,TRUE);
-            if(!empty($value))
-            {
-                foreach($value as $key=>$val)
-                {
-                    if($key == 'emailProviderRecipientListId'){
-                        if(is_string($val))
-                        {
-                            $val = (array) $val;
-                        }
-                    }
-                    $fields["emailBlastType"][$key] = $val;
-                }
-            }
+			// Merge on the 
+			$keys = array('fromName','fromEmail','replyToEmail','emailProvider');
+			foreach($keys as $val)
+			{
+				$fields["emailBlastType"][$val] = $sectionEmailBlastType[$val];    
+			}
+		}
+	
+		// Merge on the entry level settings 
+		$value = json_decode($value,TRUE);
+		
+		if(!empty($value))
+		{
+			foreach($value as $key=>$val)
+			{
+				if($key == 'emailProviderRecipientListId')
+				{
+					if(is_string($val))
+					{
+						$val = (array) $val;
+					}
+				}
+				$fields["emailBlastType"][$key] = $val;
+			}
+		}
 
-        return craft()->templates->render('/sproutemail/_cp/fieldtypes/emailblast/input', array(
-            'name'      => $name,
-            'value'     => $fields
-        ));
-    }
+		return craft()->templates->render('/sproutemail/_cp/fieldtypes/emailblast/input', array(
+			'name'      => $name,
+			'value'     => $fields
+		));
+	}
 
-    public function prepValue($value)
-    {
-        return $value;
-    }
+	public function prepValue($value)
+	{
+		return $value;
+	}
 
-    /**
-     * prepValueFromPost function.
-     * 
-     * @access public
-     * @param mixed $value
-     * @return void
-     */
-    public function prepValueFromPost($value)
-    {   
-        $overrideFields = craft()->request->getPost('fields.sproutEmail.override');
+	/**
+	 * prepValueFromPost function.
+	 * 
+	 * @access public
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function prepValueFromPost($value)
+	{   
+		$overrideFields = craft()->request->getPost('fields.sproutEmail.override');
 
-        return json_encode($overrideFields);
-    }
+		return json_encode($overrideFields);
+	}
 
-    protected function defineSettings()
-    {
-        return array(
-            'initialSlots' => array(AttributeType::Number, 'min' => 0)
-        );
-    }
-    
-    public function getSettingsHtml()
-    {
-        return craft()->templates->render('/sproutemail/_cp/fields/emailblast/settings', array(
-            'settings' => $this->getSettings()
-        ));
-    }
-    
+	protected function defineSettings()
+	{
+		return array(
+			'initialSlots' => array(AttributeType::Number, 'min' => 0)
+		);
+	}
+	
+	public function getSettingsHtml()
+	{
+		return craft()->templates->render('/sproutemail/_cp/fields/emailblast/settings', array(
+			'settings' => $this->getSettings()
+		));
+	}
+	
 }

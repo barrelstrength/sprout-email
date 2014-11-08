@@ -231,7 +231,6 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function saveEmailBlastType(SproutEmail_EmailBlastTypeModel $emailBlastType, $tab = 'info')
 	{
-
 		if ($emailBlastType->id) 
 		{
 			$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->findById( $emailBlastType->id );
@@ -282,30 +281,39 @@ class SproutEmailService extends BaseApplicationComponent
 				
 				break;
 
+			case 'fields' : 
+				
+				// Save Field Layout
+				$fieldLayout = $emailBlastType->getFieldLayout();
+				craft()->fields->saveLayout($fieldLayout);
+
+				// Delete our previous record
+				if ($emailBlastType->id && $oldEmailBlastType->fieldLayoutId) 
+				{
+					craft()->fields->deleteLayoutById($oldEmailBlastType->fieldLayoutId);	
+				}
+
+				// Assign our new layout id info to our 
+				// form model and records
+				$emailBlastType->fieldLayoutId = $fieldLayout->id;				
+				$emailBlastTypeRecord->fieldLayoutId = $fieldLayout->id;
+
+				// Save the Email Blast Type
+				$emailBlastTypeRecord = $this->_saveEmailBlastTypeInfo( $emailBlastType );
+
+				if ( $emailBlastTypeRecord->hasErrors() ) // no good
+				{
+					$transaction->rollBack();
+					return false;
+				}
+
+				break;
+
 			// save the emailBlastType
 			default :
 				
 				try
 				{
-					// Save Field Layout
-					
-					if ($emailBlastType->id) 
-					{
-						// Delete our previous record
-						craft()->fields->deleteLayoutById($oldEmailBlastType->fieldLayoutId);	
-					}
-					
-					$fieldLayout = $emailBlastType->getFieldLayout();
-
-					// Save the field layout
-					craft()->fields->saveLayout($fieldLayout);
-
-					// Assign our new layout id info to our 
-					// form model and records
-					$emailBlastType->fieldLayoutId = $fieldLayout->id;
-					$emailBlastType->setFieldLayout($fieldLayout);					
-					$emailBlastTypeRecord->fieldLayoutId = $fieldLayout->id;
-
 					// Save the Email Blast Type
 					$emailBlastTypeRecord = $this->_saveEmailBlastTypeInfo( $emailBlastType );
 
@@ -326,6 +334,9 @@ class SproutEmailService extends BaseApplicationComponent
 		
 		return $emailBlastTypeRecord->id;
 	}
+
+	
+
 	private function _saveEmailBlastTypeInfo(SproutEmail_EmailBlastTypeModel &$emailBlastType)
 	{
 		$oldEmailBlastTypeEmailProvider = null;
