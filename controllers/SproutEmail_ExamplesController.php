@@ -59,9 +59,8 @@ class SproutEmail_ExamplesController extends BaseController
 					'fromEmail' => $user->email,
 					'replyToEmail' => $user->email,
 					'emailProvider' => 'SproutEmail',
-					'templateOption' => 3,
-					'htmlTemplate' => 'sproutemail/html-email-ink',
-					'textTemplate' => 'sproutemail/text-email-ink',
+					'template' => 'sproutemail/email-ink',
+					'templateCopyPaste' => 'sproutemail/email-copypaste',
 				),
 				array(
 					'name' => 'Email Newsletter',
@@ -71,11 +70,8 @@ class SproutEmail_ExamplesController extends BaseController
 					'fromEmail' => $user->email,
 					'replyToEmail' => $user->email,
 					'emailProvider' => 'CopyPaste',
-					'templateOption' => 3,
-					'htmlTemplate' => 'sproutemail/html-email-ink',
-					'textTemplate' => 'sproutemail/text-email-ink',
-					'htmlBodyTemplate' => 'sproutemail/html-email-ink',
-					'textBodyTemplate' => 'sproutemail/text-email-ink',
+					'template' => 'sproutemail/email-ink',
+					'templateCopyPaste' => 'sproutemail/email-copypaste',
 				),
 			);
 
@@ -234,9 +230,8 @@ class SproutEmail_ExamplesController extends BaseController
 				$emailBlastType->fromEmail = $settings['fromEmail'];
 				$emailBlastType->replyToEmail = $settings['replyToEmail'];
 				$emailBlastType->emailProvider = $settings['emailProvider'];
-				$emailBlastType->templateOption = $settings['templateOption'];
-				$emailBlastType->htmlTemplate = $settings['htmlTemplate'];
-				$emailBlastType->textTemplate = $settings['textTemplate'];
+				$emailBlastType->template = $settings['template'];
+				$emailBlastType->templateCopyPaste = $settings['templateCopyPaste'];
 
 				// Create the Email Blast Type
 				$emailBlastTypeId = craft()->sproutEmail->saveEmailBlastType($emailBlastType);

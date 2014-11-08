@@ -112,6 +112,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	 */
 	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
 	{
+		// @TODO - do we need to udpate textBody here?
 		$emailData = array (
 				'fromEmail' => $emailBlastType->fromEmail,
 				'fromName' => $emailBlastType->fromName,
@@ -119,6 +120,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 				'body' => $emailBlastType->textBody 
 		);
 		
+		// @TODO - do we need to udpate htmlBody here?
 		if ( $emailBlastType->htmlBody )
 		{
 			$emailData ['htmlBody'] = $emailBlastType->htmlBody;

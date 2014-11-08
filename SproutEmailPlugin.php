@@ -486,30 +486,6 @@ class SproutEmailPlugin extends BasePlugin
 					
 					try
 					{
-						$campaign->textBody = craft()->templates->renderString( $campaign->textBody, array (
-								'entry' => $entity 
-						) );
-					}
-					catch ( \Exception $e )
-					{
-						$campaign->textBody = str_replace( '{{', '', $campaign->textBody );
-						$campaign->textBody = str_replace( '}}', '', $campaign->textBody );
-					}
-					
-					try
-					{
-						$campaign->htmlBody = craft()->templates->renderString( $campaign->htmlBody, array (
-								'entry' => $entity 
-						) );
-					}
-					catch ( \Exception $e )
-					{
-						$campaign->htmlBody = str_replace( '{{', '', $campaign->htmlBody );
-						$campaign->htmlBody = str_replace( '}}', '', $campaign->htmlBody );
-					}
-					
-					try
-					{
 						$campaign->replyToEmail = craft()->templates->renderString( $campaign->replyToEmail, array (
 								'entry' => $entity 
 						) );
@@ -886,30 +862,6 @@ class SproutEmailPlugin extends BasePlugin
 				{
 					$campaign->fromName = str_replace( '{{', '', $campaign->fromName );
 					$campaign->fromName = str_replace( '}}', '', $campaign->fromName );
-				}
-				
-				try
-				{
-					$campaign->textBody = craft()->templates->renderString( $campaign->textBody, array (
-							'entry' => $entry 
-					) );
-				}
-				catch ( \Exception $e )
-				{
-					$campaign->textBody = str_replace( '{{', '', $campaign->textBody );
-					$campaign->textBody = str_replace( '}}', '', $campaign->textBody );
-				}
-				
-				try
-				{
-					$campaign->htmlBody = craft()->templates->renderString( $campaign->htmlBody, array (
-							'entry' => $entry 
-					) );
-				}
-				catch ( \Exception $e )
-				{
-					$campaign->htmlBody = str_replace( '{{', '', $campaign->htmlBody );
-					$campaign->htmlBody = str_replace( '}}', '', $campaign->htmlBody );
 				}
 				
 				try

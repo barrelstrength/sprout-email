@@ -34,14 +34,91 @@
 			errors: (emailBlastType is defined ? emailBlastType.getErrors('handle') : null) 	
 		}) }}
 
-		{{ forms.textField({
-			label: "Title Format"|t,
-			instructions: "What the auto-generated Email Blast titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
-			id: 'titleFormat',
-			name: 'titleFormat',
-			value: (emailBlastType is defined ? emailBlastType.titleFormat : null),
-			errors: (emailBlastType is defined ? emailBlastType.getErrors('titleFormat') : null),
+		<hr>
+
+		{{ forms.checkboxField({
+			label: "Email Blasts of this type have their own URLs"|t,
+			id: 'hasUrls',
+			name: 'hasUrls',
+			checked: emailBlastType.hasUrls,
+			toggle: 'url-settings'
 		}) }}
+
+		<div id="url-settings" class="nested-fields{% if not emailBlastType.hasUrls %} hidden{% endif %}">
+
+			{{ forms.textField({
+				label: "Email Blast URL Format"|t,
+				instructions: 'What the online version of the Email Blast URLs should look like. You can include tags that output entry properties, such as {slug} or {postDate|date("Y")}.'|t,
+				placeholder: 'email/{slug}',
+				name: 'urlFormat',
+				value: (emailBlastType is defined ? emailBlastType.urlFormat : null),
+				required: true,
+				errors: (emailBlastType is defined ? emailBlastType.getErrors('urlFormat') : null)  
+			}) }}
+
+			
+			{{ forms.textField({
+				label: "Email Blast Template"|t,
+				id: 'template',
+				name: 'template',
+				instructions: "The template to use when an Email Blast's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+				placeholder: 'email/_emailblasttemplate',
+				value: (emailBlastType is defined ? emailBlastType.template : null),
+				errors: (emailBlastType is defined ? emailBlastType.getErrors('template') : null) 	
+			}) }}
+
+			{% if emailBlastType.emailProvider == 'CopyPaste' %}
+				
+				{{ forms.textField({
+					label: "Email Blast Copy/Paste Template"|t,
+					id: 'templateCopyPaste',
+					name: 'templateCopyPaste',
+					instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
+					placeholder: 'email/copypaste-template',
+					value: (emailBlastType is defined ? emailBlastType.templateCopyPaste : null),
+					errors: (emailBlastType is defined ? emailBlastType.getErrors('templateCopyPaste') : null) 	
+				}) }}
+
+			{% endif %}
+
+		</div>
+
+		<hr>
+
+		{{ forms.checkboxField({
+			label: "Additional control over Title and Subject Line"|t,
+			id: 'hasAdvancedTitles',
+			name: 'hasAdvancedTitles',
+			checked: emailBlastType.hasAdvancedTitles,
+			toggle: 'advancedtitle-settings'
+		}) }}
+
+		<div id="advancedtitle-settings" class="nested-fields{% if not emailBlastType.hasAdvancedTitles %} hidden{% endif %}">
+
+			{{ forms.textField({
+				label: "Title Format"|t,
+				instructions: "What the auto-generated Email Blast titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
+				id: 'titleFormat',
+				name: 'titleFormat',
+				value: (emailBlastType is defined ? emailBlastType.titleFormat : null),
+				errors: (emailBlastType is defined ? emailBlastType.getErrors('titleFormat') : null),
+			}) }}
+
+			{% set fieldOptions = craft.sproutEmail.getPlainTextFields() %}
+			
+			{{ forms.selectField({
+				label: "Subject Field"|t,
+				id: 'subjectHandle',
+				name: 'subjectHandle',
+				instructions: "Select the field that will be your subject field for the emailBlastType"|t,
+				options: fieldOptions,
+				value: (emailBlastType is defined ? emailBlastType.subjectHandle : null),
+				errors: (emailBlastType is defined ? emailBlastType.getErrors('subjectHandle') : null) 	
+			}) }}
+
+		</div>
+
+		<hr>
 
 		{{ forms.selectField({
 			label: "How would you like to send this email"|t,
@@ -52,15 +129,6 @@
 			options : emailProviders,
 			value: (emailBlastType is defined ? emailBlastType.emailProvider : null),
 			errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProvider') : null)  
-		}) }}
-
-		{{ forms.textField({
-			label: "URI"|t,
-			instructions: "What the entry URI should be."|t,
-			name: 'urlFormat',
-			value: (emailBlastType is defined ? emailBlastType.urlFormat : null),
-			required: true,
-			errors: (emailBlastType is defined ? emailBlastType.getErrors('urlFormat') : null) 	
 		}) }}
 		
 		{% for emailProvider in emailProviders %}

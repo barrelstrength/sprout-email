@@ -160,14 +160,14 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 		{
 			case SproutEmail_EmailBlastModel::DISABLED:
 			{
-				return 'emailblasttypes.textTemplate IS NULL';
+				return 'emailblasttypes.template IS NULL';
 			}
 
 			case SproutEmail_EmailBlastModel::PENDING:
 			{
 				return array('and',
 					'elements.enabled = 0',
-					'emailblasttypes.textTemplate IS NOT NULL',
+					'emailblasttypes.template IS NOT NULL',
 					'emailblasts.sent = 0',
 				);
 			}
@@ -177,7 +177,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 				return array('and',
 					'elements.enabled = 1',
 					'elements_i18n.enabled = 1',
-					'emailblasttypes.textTemplate IS NOT NULL',
+					'emailblasttypes.template IS NOT NULL',
 					'emailblasts.sent = 0',
 				);
 			}

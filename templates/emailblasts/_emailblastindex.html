@@ -1,5 +1,4 @@
 
-{# <pre>{{ dump(elements) }}</pre> #}
 {% for emailBlast in elements %}
 
 	{% set emailBlastType = craft.sproutEmail.getEmailBlastTypeById(emailBlast.emailBlastTypeId) %}
@@ -8,4 +7,5 @@
 		emailBlast : emailBlast,
 		emailBlastType : emailBlastType
 	} %}
+
 {% endfor %}

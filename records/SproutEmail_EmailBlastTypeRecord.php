@@ -36,19 +36,19 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 															AttributeType::Bool, 
 															'default' => true,
 														),
+			'hasAdvancedTitles' => array(
+															AttributeType::Bool, 
+															'default' => true,
+														 ),
 			'subject'          => AttributeType::String,
 			'fromName'         => AttributeType::String,
 			'fromEmail'        => AttributeType::Email,
 			'replyToEmail'     => AttributeType::Email,
 
-			'templateOption'   => AttributeType::Number,
-			'htmlBody'         => AttributeType::Mixed,
-			'textBody'         => AttributeType::Mixed,
 			'subjectHandle'    => AttributeType::String,
-			'htmlTemplate'     => AttributeType::String,
-			'textTemplate'     => AttributeType::String,
-			'htmlBodyTemplate' => AttributeType::String,
-			'textBodyTemplate' => AttributeType::String,
+			'template'         => AttributeType::String,
+			'templateCopyPaste'=> AttributeType::String,
+			
 			'recipients'       => AttributeType::Mixed,
 			'dateCreated'      => AttributeType::DateTime,
 			'dateUpdated'      => AttributeType::DateTime 

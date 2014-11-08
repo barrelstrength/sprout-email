@@ -247,25 +247,6 @@ class SproutEmailService extends BaseApplicationComponent
         
 		switch ($tab)
 		{
-			case 'template' :
-				
-				try
-				{
-					$emailBlastTypeRecord = $this->_saveEmailBlastTypeTemplates( $emailBlastType );
-					
-					if ( $emailBlastTypeRecord->hasErrors() )
-					{
-						$transaction->rollBack();
-						return false;
-					}
-				}
-				catch ( \Exception $e )
-				{					
-					throw new Exception( Craft::t( 'Error: Email Blast Type could not be saved.' ) );
-				}
-
-				break;
-
 			// save & associate the recipient list
 			case 'recipients' :
 				
@@ -336,7 +317,6 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	
-
 	private function _saveEmailBlastTypeInfo(SproutEmail_EmailBlastTypeModel &$emailBlastType)
 	{
 		$oldEmailBlastTypeEmailProvider = null;
@@ -365,13 +345,17 @@ class SproutEmailService extends BaseApplicationComponent
 		$emailBlastTypeRecord->handle = $emailBlastType->handle;
 		$emailBlastTypeRecord->titleFormat = $emailBlastType->titleFormat;
 		$emailBlastTypeRecord->hasUrls = $emailBlastType->hasUrls;
+		$emailBlastTypeRecord->hasAdvancedTitles = $emailBlastType->hasAdvancedTitles;
 		$emailBlastTypeRecord->subject = $emailBlastType->subject;
 		$emailBlastTypeRecord->fromEmail = $emailBlastType->fromEmail;
 		$emailBlastTypeRecord->fromName = $emailBlastType->fromName;
 		$emailBlastTypeRecord->replyToEmail = $emailBlastType->replyToEmail;
 		$emailBlastTypeRecord->emailProvider = $emailBlastType->emailProvider;
-		$emailBlastTypeRecord->templateOption = $emailBlastType->templateOption;
 		
+		$emailBlastTypeRecord->subjectHandle = $emailBlastType->subjectHandle;
+		$emailBlastTypeRecord->template = $emailBlastType->template;
+		$emailBlastTypeRecord->templateCopyPaste = $emailBlastType->templateCopyPaste;
+
 		// if this is a notification and replyToEmail does NOT contain a twig variable
 		// OR this is not a notification, set email rule
 		if ( ($emailBlastTypeRecord->notificationEvent && ! preg_match( '/{{(.*?)}}/', $emailBlastTypeRecord->replyToEmail )) || ! $emailBlastTypeRecord->notificationEvent )
@@ -400,74 +384,6 @@ class SproutEmailService extends BaseApplicationComponent
 					}
 				}
 			}
-		}
-		
-		return $emailBlastTypeRecord;
-	}
-	
-	/**
-	 * Save emailBlastType templates
-	 *
-	 * @param SproutEmail_EmailBlastTypeModel $emailBlastType            
-	 * @throws Exception
-	 * @return SproutEmail_EmailBlastTypeRecord
-	 */
-	private function _saveEmailBlastTypeTemplates(SproutEmail_EmailBlastTypeModel &$emailBlastType)
-	{
-		$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->findById( $emailBlastType->id );
-		
-		if ( ! $emailBlastTypeRecord )
-		{
-			throw new Exception( Craft::t( 'No emailBlastType exists with the ID “{id}”', array (
-					'id' => $emailBlastType->id 
-			) ) );
-		}
-		
-		$oldEmailBlastTypeName = $emailBlastTypeRecord->name;
-		
-		$emailBlastTypeRecord->templateOption = $emailBlastType->templateOption;
-		
-		// template specific attributes & validation
-		
-		switch ($emailBlastType->templateOption)
-		{
-			case 1 : // Import the HTML/Text on your own
-				$emailBlastTypeRecord->htmlBody = $emailBlastType->htmlBody;
-				$emailBlastTypeRecord->textBody = $emailBlastType->textBody;
-				$emailBlastTypeRecord->addRules( array (
-						'htmlBody,textBody',
-						'required' 
-				) );
-				break;
-			case 2 : // Send a text-based & html email
-				$emailBlastTypeRecord->htmlBody = $emailBlastType->htmlBody;
-				$emailBlastTypeRecord->textBody = $emailBlastType->textBody;
-				$emailBlastTypeRecord->addRules( array (
-						'textBody',
-						'required' 
-				) );
-				break;
-			case 3 : // Create a EmailBlastType based on an Entries Section and Template
-				// $emailBlastTypeRecord->sectionId = $emailBlastType->sectionId;
-				$emailBlastTypeRecord->subjectHandle = $emailBlastType->subjectHandle;
-				$emailBlastTypeRecord->htmlTemplate = $emailBlastType->htmlTemplate;
-				$emailBlastTypeRecord->textTemplate = $emailBlastType->textTemplate;
-				$emailBlastTypeRecord->htmlBodyTemplate = $emailBlastType->htmlBodyTemplate;
-				$emailBlastTypeRecord->textBodyTemplate = $emailBlastType->textBodyTemplate;
-
-				$emailBlastTypeRecord->addRules( array (
-						'htmlTemplate,textTemplate',
-						'required' 
-				) );
-				break;
-		}
-		
-		$emailBlastTypeRecord->validate();
-		$emailBlastType->addErrors( $emailBlastTypeRecord->getErrors() );
-		
-		if ( ! $emailBlastTypeRecord->hasErrors() )
-		{
-			$emailBlastTypeRecord->save( false );
 		}
 		
 		return $emailBlastTypeRecord;

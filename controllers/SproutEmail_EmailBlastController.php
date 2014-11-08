@@ -322,7 +322,7 @@ class SproutEmail_EmailBlastController extends BaseController
 
 			craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
 
-			$this->renderTemplate($emailBlastType->htmlTemplate, array(
+			$this->renderTemplate($emailBlastType->template, array(
 				'emailBlast' => $emailBlast
 			));
 		}

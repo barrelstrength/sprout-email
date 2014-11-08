@@ -21,11 +21,11 @@
 			</span>
 		</td>
 		 
-		{% if emailBlast.emailBlastTypeId and emailBlast.id and emailBlastType.textTemplate and emailBlastType.emailProvider %}
+		{% if emailBlast.emailBlastTypeId and emailBlast.id and emailBlastType.template and emailBlastType.emailProvider %}
 		<td>		
-			<a href="{{ siteUrl }}{{emailBlastType.htmlTemplate|replace({'.html': ''}) }}?id={{emailBlast.id}}" target="_blank">HTML</a> 
+			<a href="{{ siteUrl ~ emailBlastType.template }}?id={{emailBlast.id}}" target="_blank">HTML</a> 
 			/ 
-			<a href="{{ siteUrl }}{{emailBlastType.textTemplate }}?entryId={{emailBlast.id}}" target="_blank">Text</a> 
+			<a href="{{ siteUrl ~ emailBlastType.template }}.txt?entryId={{emailBlast.id}}" target="_blank">Text</a>
 		</td>
 		<td>
 			{% switch emailBlastType.emailProvider %}

@@ -56,7 +56,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 			// - need to sort out locales
 			// - need to determine if HTML/Text tempalte is needed
 			
-			return $emailBlastType->htmlTemplate;
+			return $emailBlastType->template;
 		}
 		
 	}
@@ -72,7 +72,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 		$status = parent::getStatus();
 
 		// Required attributes :$emailBlastType->emailProvider && 
-		// 											$emailBlastType->textTemplate
+		// 											$emailBlastType->template
 		// Enabled : static::ENABLED
 		// Disabled : static::DISABLED
 		// Archived : static::ARCHIVED
@@ -86,7 +86,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 		
 		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($this->emailBlastTypeId);
 
-		$hasRequiredAttributes = ($emailBlastType->emailProvider && $emailBlastType->textTemplate);
+		$hasRequiredAttributes = ($emailBlastType->emailProvider && $emailBlastType->template);
 
 		$hasBeenSent = $this->sent; // @TODO - hard coded
 

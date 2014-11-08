@@ -25,6 +25,10 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 															AttributeType::Bool, 
 															'default' => true,
 														 ),
+			'hasAdvancedTitles' => array(
+															AttributeType::Bool, 
+															'default' => true,
+														 ),
 			'urlFormat'         => AttributeType::String,
 			'subject'           => AttributeType::String,
 			'fromName'          => AttributeType::String,
@@ -34,14 +38,9 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			'notificationEvent' => AttributeType::Number,
 			
 			// email template
-			'templateOption'    => AttributeType::Number,
-			'htmlBody'          => AttributeType::String,
-			'textBody'          => AttributeType::String,
 			'subjectHandle'     => AttributeType::String,
-			'htmlTemplate'      => AttributeType::String,
-			'textTemplate'      => AttributeType::String,
-			'htmlBodyTemplate'  => AttributeType::String,
-			'textBodyTemplate'  => AttributeType::String,
+			'template'          => AttributeType::String,
+			'templateCopyPaste' => AttributeType::String,
 			
 			// recipients
 			'recipientOption'   => AttributeType::Number,

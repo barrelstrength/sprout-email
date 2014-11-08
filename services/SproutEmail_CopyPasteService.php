@@ -59,7 +59,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		$client = new Client('http://'.$_SERVER["HTTP_HOST"]);
 
 		// Get the HTML version
-		$request = $client->get('/'.$emailBlastType['htmlBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
+		$request = $client->get('/'.$emailBlastType['templateCopyPaste'].'?entryId='.$emailBlastType['entryId']);
 													
 		// send request / get response
 		$response = $request->send();
@@ -68,7 +68,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		$arr["html"] = trim($response->getBody());
 
 		// Get the Text Version
-		$request = $client->get('/'.$emailBlastType['textBodyTemplate'].'?entryId='.$emailBlastType['entryId']);
+		$request = $client->get('/'.$emailBlastType['templateCopyPaste'].'.txt?entryId='.$emailBlastType['entryId']);
 													
 		// send request / get response
 		$response = $request->send();
