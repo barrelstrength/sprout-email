@@ -127,17 +127,8 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 	 * @param int $id
 	 * @return object
 	 */
-	public function getEmailBlastById($id)
+	public function getEmailBlastById($emailBlastId)
 	{
-		$emailBlastRecord = $this->emailBlastRecord->findById($id);
-		
-		if ($emailBlastRecord) 
-		{
-			return SproutEmail_EmailBlastModel::populateModel($emailBlastRecord);
-		} 
-		else 
-		{
-			return null;
-		}
+		return craft()->elements->getElementById($emailBlastId, 'SproutEmail_EmailBlast');
 	}
 }
