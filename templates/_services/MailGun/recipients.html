@@ -7,9 +7,9 @@
             instructions: "Select a emailBlastType to associate with this section."|t,
             errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
         }, forms.select({
-            name: 'emailProviderRecipientListId[emailBlastType]',
-            options : emailblasts,
-            value: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? emailBlastType.emailProviderRecipientListId|first : null
+            name: 'sproutEmail[override][emailProviderRecipientListId][campaign]',
+            options : campaigns,
+            value: campaign is defined and campaign.emailProviderRecipientListId.campaign ? campaign.emailProviderRecipientListId.campaign : null
         })) }}
     
     {% endif %}
@@ -25,7 +25,7 @@
         instructions: "Select one or more mailing lists to send your Email Blasts in this Section."|t,
         errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.checkboxGroup({
-        name: 'emailProviderRecipientListId[list]',
+        name: 'sproutEmail[override][emailProviderRecipientListId][list]',
         options : mailing_list,
         values: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? emailBlastType.emailProviderRecipientListId : null
     })) }}

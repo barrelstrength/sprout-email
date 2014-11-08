@@ -116,6 +116,10 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
             $entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
             $emailSubject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
 
+        // Convert encoded quotes
+        // http://stackoverflow.com/questions/1262038/how-to-replace-microsoft-encoded-quotes-in-php
+        $emailSubject = iconv('UTF-8', 'ASCII//TRANSLIT', $emailSubject);
+
         // Send to mailgun
         
             $recipients = craft()->db->createCommand("SELECT 

@@ -79,6 +79,7 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
                         }
             }
         
+    
         // Merge on the entry level settings 
             $value = json_decode($value,TRUE);
             if(!empty($value))
@@ -114,32 +115,10 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
      * @return void
      */
     public function prepValueFromPost($value)
-    {
-        $fields = array('fromName','fromEmail','replyToEmail','emailProviderRecipientListId');
-        $newValue = array();
-        foreach($fields as $f){
-            $post = craft()->request->getPost('fields.'.$f);
-            if(is_array($post)){
-                foreach($post as $key => $val)
-                {
-                    $i = 0;
-                    if(is_array($val)){
-                        foreach($val as $final)
-                        {
-                            $newValue[$f][$i] = $final;
-                            $i++;
-                        }
-                    }else{
-                        $newValue[$f][$key] = $val;
-                        $i++;
-                    }
-                }
-            }else{
-                $newValue[$f] = $post;
-            }
-        }
-        $value = json_encode($newValue);
-        return $value;
+    {   
+        $overrideFields = craft()->request->getPost('fields.sproutEmail.override');
+
+        return json_encode($overrideFields);
     }
 
     protected function defineSettings()
