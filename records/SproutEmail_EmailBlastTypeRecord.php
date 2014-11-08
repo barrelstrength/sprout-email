@@ -27,7 +27,7 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array (
-			'fieldLayoutId'    => AttributeType::Numbe,
+			'fieldLayoutId'    => AttributeType::Number,
 			'emailProvider'    => AttributeType::String,
 			'name'             => AttributeType::String,
 			'handle'           => AttributeType::String,
@@ -157,7 +157,8 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 		$where_binds = 'templateOption=:templateOption';
 		$where_params = array (
 				':templateOption' => 3 
-
+		);
+		
 		return craft()->db->createCommand()
 					->select( '*' )
 					->from( 'sproutemail_emailblasttypes' )
