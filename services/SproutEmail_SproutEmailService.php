@@ -85,7 +85,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	 */
 	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{
-		$emailBlastTypeModel = craft()->sproutEmail->getEmailBlastType( array (
+		$emailBlastTypeModel = craft()->sproutEmail_emailBlastType->getEmailBlastType( array (
 				'id' => $emailBlastType ['id'] 
 		) );
 		
@@ -144,7 +144,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 			}
 		}
 		
-		if ( $recipientLists = craft()->sproutEmail->getEmailBlastTypeRecipientLists( $emailBlastType ['id'] ) )
+		if ( $recipientLists = craft()->sproutEmail_emailBlastType->getEmailBlastTypeRecipientLists( $emailBlastType ['id'] ) )
 		{
 			foreach ( $recipientLists as $recipientList )
 			{
@@ -175,7 +175,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 						}
 						break;
 					default : // element
-						if ( $results = craft()->sproutEmail->getSubscriptionUsersByElementId( $recipientList->emailProviderRecipientListId ) )
+						if ( $results = craft()->sproutEmail_subscriptions->getSubscriptionUsersByElementId( $recipientList->emailProviderRecipientListId ) )
 						{
 							foreach ( $results as $result )
 							{
@@ -291,7 +291,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 			// check against the model
 			if ( ! $emailBlastType->hasRecipientList( $list ) )
 			{
-				craft()->sproutEmail->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id );
+				craft()->sproutEmail_emailBlastType->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id );
 			}
 		}
 		
@@ -354,7 +354,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		{
 			foreach ( $emailBlastTypeRecord->recipientList as $list )
 			{
-				if ( ! craft()->sproutEmail->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id ) )
+				if ( ! craft()->sproutEmail_emailBlastType->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id ) )
 				{
 					$success = false;
 				}

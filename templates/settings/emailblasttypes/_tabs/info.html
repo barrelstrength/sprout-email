@@ -131,24 +131,30 @@
 			errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProvider') : null)  
 		}) }}
 		
+		{# Provider Specific Settings #}
 		{% for emailProvider in emailProviders %}
-		   {% if craft.sproutEmail.getGeneralSettingsTemplate(emailProvider) %}
-			<div id="{{ emailProvider }}-generalsettings-template" class="generalsettings"   >
-				{% include "sproutemail/_providers/" ~ emailProvider ~ "/generalEmailBlastTypeSettings" %}
-			</div>
-		   {% else %}
-		   <div id="{{ emailProvider }}-generalsettings-template"  class="generalsettings"  >
-				{% include "sproutemail/_partials/generalEmailBlastTypeSettings" %}
-		   </div>
-		   {% endif %}
+
+			{% if craft.sproutEmail.getGeneralSettingsTemplate(emailProvider) %}
+
+				<div id="{{ emailProvider }}-generalsettings-template" class="generalsettings"   >
+					{% include "sproutemail/_providers/" ~ emailProvider ~ "/generalEmailBlastTypeSettings" %}
+				</div>
+			 
+			 {% else %}
+			 
+			 	<div id="{{ emailProvider }}-generalsettings-template"  class="generalsettings"  >
+					{% include "sproutemail/_partials/generalEmailBlastTypeSettings" %}
+			 	</div>
+
+			 {% endif %}
 		{% endfor %}
 	
-		</div>
-		
-		<div class="buttons">
-			<input class="btn" type="submit" value="Save Info">
-			<input class="btn submit save-and-continue" id="info" type="button" value="Save Info & Continue">
-		</div>
+	</div>
+	
+	<div class="buttons">
+		<input class="btn" type="submit" value="Save Info">
+		<input class="btn submit save-and-continue" id="info" type="button" value="Save Info &amp; Continue">
+	</div>
 	
 	{% else %}
 		

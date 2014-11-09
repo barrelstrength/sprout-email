@@ -1,44 +1,44 @@
 
-	{{ forms.textField({
-		label: "Add Recipients"|t,
-		id: 'recipients',
-		name: 'recipients',
-		instructions: "Separate multiple email addresses with a comma"|t,
-		value: (emailBlastType is defined ? emailBlastType.recipients : null),
-		required: true,
-		errors: (emailBlastType is defined ? emailBlastType.getErrors('recipients') : null) 	
-	}) }}
+{{ forms.textField({
+	label: "Add Recipients"|t,
+	id: 'recipients',
+	name: 'recipients',
+	instructions: "Separate multiple email addresses with a comma"|t,
+	value: (emailBlastType is defined ? emailBlastType.recipients : null),
+	required: true,
+	errors: (emailBlastType is defined ? emailBlastType.getErrors('recipients') : null) 	
+}) }}
 
-	<hr>
-	
-	{% set subscriberLists = craft.sproutEmail.getSubscriberList() %}
+<hr>
 
-	{% if(subscriberLists|length > 0) %}
-	
-		<div>
-		   {{ forms.checkbox({
-		        name: 'useRecipientLists',
-		        label: 'Use email lists',
-		        value: 1,
-		        checked: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? true : false
-		    }) }}
-		    
-		    {% for key, subscriber_list in subscriberLists %}
+{% set subscriberLists = craft.sproutEmail.getSubscriberList() %}
 
-			    {{ forms.field({
-			        label: subscriber_list.label|t,
-			        instructions: subscriber_list.description|t,
-			        errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
-			    }, forms.checkboxGroup({
-			        name: 'emailProviderRecipientListId[' ~ key ~ ']',
-			        id: 'emailProviderRecipientListId' ~ key ,
-			        options : subscriber_list.options,
-			        values: emailBlastType.emailProviderRecipientListId[key] is defined ? emailBlastType.emailProviderRecipientListId[key] : null
-			    })) }}
-		    
-		    {% endfor %}
-		    
-		</div>
+{% if(subscriberLists|length > 0) %}
 
-	{% endif %}
-	
+	<div>
+		{{ forms.checkbox({
+			name: 'useRecipientLists',
+			label: 'Use email lists',
+			value: 1,
+			checked: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? true : false
+		}) }}
+			
+		{% for key, subscriber_list in subscriberLists %}
+
+			{{ forms.field({
+				label: subscriber_list.label|t,
+				instructions: subscriber_list.description|t,
+				errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
+			}, forms.checkboxGroup({
+				name: 'emailProviderRecipientListId[' ~ key ~ ']',
+				id: 'emailProviderRecipientListId' ~ key ,
+				options : subscriber_list.options,
+				values: emailBlastType.emailProviderRecipientListId[key] is defined ? emailBlastType.emailProviderRecipientListId[key] : null
+			})) }}
+		
+		{% endfor %}
+		
+	</div>
+
+{% endif %}
+

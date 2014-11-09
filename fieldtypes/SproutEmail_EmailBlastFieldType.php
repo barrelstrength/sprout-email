@@ -57,7 +57,7 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
 			$fields["enabled"] = TRUE;
 							
 			// Get the RecipientListId
-			$list = craft()->sproutEmail->getEmailBlastTypeRecipientLists($sectionEmailBlastType["id"] );
+			$list = craft()->sproutEmail_emailBlastType->getEmailBlastTypeRecipientLists($sectionEmailBlastType["id"] );
 			
 			$fields["emailBlastType"]["emailProviderRecipientListId"] = array();
 			if(isset($list))

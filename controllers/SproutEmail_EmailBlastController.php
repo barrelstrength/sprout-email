@@ -14,7 +14,7 @@ class SproutEmail_EmailBlastController extends BaseController
 		$this->requirePostRequest();
 
 		$emailBlastTypeId = craft()->request->getRequiredPost('emailBlastTypeId');
-		$this->emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
+		$this->emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
 
 		if (!isset($this->emailBlastType)) 
 		{
@@ -164,7 +164,7 @@ class SproutEmail_EmailBlastController extends BaseController
 			$emailBlastTypeId = $variables['emailBlast']->emailBlastTypeId;
 		}
 
-		$variables['emailBlastType'] = craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
+		$variables['emailBlastType'] = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
 		$variables['emailBlastTypeId'] = $emailBlastTypeId;
 		
 		// Tabs

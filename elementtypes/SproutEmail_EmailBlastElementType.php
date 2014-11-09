@@ -79,7 +79,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 		);
 
 		// Prepare the data for our sources sidebar
-		$emailBlastTypes = craft()->sproutEmail->getAllEmailBlastTypes();
+		$emailBlastTypes = craft()->sproutEmail_emailBlastType->getAllEmailBlastTypes();
 
 		foreach ($emailBlastTypes as $emailBlastType) 
 		{	

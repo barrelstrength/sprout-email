@@ -96,7 +96,7 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 		}
 		
 		// get emailBlastType and send
-		$emailBlastType = craft()->sproutEmail->getEmailBlastType( array (
+		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastType( array (
 				'id' => $id 
 		) );
 		$service = 'sproutEmail_' . lcfirst( $emailBlastType->emailProvider );

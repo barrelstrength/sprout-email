@@ -41,7 +41,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($this->emailBlastTypeId);
+		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($this->emailBlastTypeId);
 
 		return $emailBlastType->getFieldLayout();
 	}
@@ -84,7 +84,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 		// email is ready or not.  For now, we'll just check to see if 
 		// it has a service provider and text template.
 		
-		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($this->emailBlastTypeId);
+		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($this->emailBlastTypeId);
 
 		$hasRequiredAttributes = ($emailBlastType->emailProvider && $emailBlastType->template);
 
@@ -152,7 +152,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 
 	public function getType()
 	{
-		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($this->emailBlastTypeId);
+		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($this->emailBlastTypeId);
 		
 		return $emailBlastType;
 	}

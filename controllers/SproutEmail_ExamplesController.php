@@ -234,13 +234,13 @@ class SproutEmail_ExamplesController extends BaseController
 				$emailBlastType->templateCopyPaste = $settings['templateCopyPaste'];
 
 				// Create the Email Blast Type
-				$emailBlastTypeId = craft()->sproutEmail->saveEmailBlastType($emailBlastType);
+				$emailBlastTypeId = craft()->sproutEmail_emailBlastType->saveEmailBlastType($emailBlastType);
 
 				// Assign the id of what we just created to our model
 				$emailBlastType->id = $emailBlastTypeId;
 
 				// Save this again for the templates
-				craft()->sproutEmail->saveEmailBlastType($emailBlastType, 'template');
+				craft()->sproutEmail_emailBlastType->saveEmailBlastType($emailBlastType, 'template');
 
 				//------------------------------------------------------------
 
@@ -295,7 +295,7 @@ class SproutEmail_ExamplesController extends BaseController
 				$emailBlastType->setFieldLayout($fieldLayout);
 
 				// Save our form again with a layout
-				craft()->sproutEmail->saveEmailBlastType($emailBlastType);
+				craft()->sproutEmail_emailBlastType->saveEmailBlastType($emailBlastType);
 			}
 		}
 		catch (\Exception $e)

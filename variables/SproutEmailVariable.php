@@ -47,7 +47,7 @@ class SproutEmailVariable
 	 * return craft()->sproutEmail->getEmailBlastTypes();
 	 */
 	
-		return craft()->sproutEmail->getAllEmailBlastTypes();
+		return craft()->sproutEmail_emailBlastType->getAllEmailBlastTypes();
 	}
 	
 	/**
@@ -58,7 +58,7 @@ class SproutEmailVariable
 	 */
 	public function getEmailBlastTypeById($emailBlastTypeId)
 	{
-		return craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
+		return craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
 	}
 	
 	/**
@@ -68,7 +68,7 @@ class SproutEmailVariable
 	 */
 	public function getAllEmailBlastTypeInfo()
 	{
-		return craft()->sproutEmail->getAllEmailBlastTypeInfo();
+		return craft()->sproutEmail_emailBlastType->getAllEmailBlastTypeInfo();
 	}
 	
 	/**
@@ -152,16 +152,6 @@ class SproutEmailVariable
 	}
 	
 	/**
-	 * Get templates
-	 *
-	 * @return array
-	 */
-	public function getTemplatesDirListing()
-	{
-		return craft()->sproutEmail->getTemplatesDirListing();
-	}
-	
-	/**
 	 * Get plain text field handles
 	 *
 	 * @return array
@@ -207,7 +197,7 @@ class SproutEmailVariable
 	 */
 	public function getNotifications()
 	{
-		return craft()->sproutEmail->getNotifications();
+		return craft()->sproutEmail_notifications->getNotifications();
 	}
 	
 	/**
@@ -224,7 +214,7 @@ class SproutEmailVariable
 		// its execution and keeps the events fresh
 		craft()->sproutEmail_integration->registerEvents();
 		
-		$events = craft()->sproutEmail->getNotificationEvents( $notificationEvent );
+		$events = craft()->sproutEmail_notifications->getNotificationEvents( $notificationEvent );
 		
 		if ( $return_full_objects )
 		{
@@ -255,7 +245,7 @@ class SproutEmailVariable
 	 */
 	public function getNotificationEventById($id)
 	{
-		return craft()->sproutEmail->getNotificationEventById( $id );
+		return craft()->sproutEmail_notifications->getNotificationEventById( $id );
 	}
 	
 	/**
@@ -265,7 +255,7 @@ class SproutEmailVariable
 	 */
 	public function getNotificationEventOptions()
 	{
-		$res = craft()->sproutEmail->getNotificationEventOptions();
+		$res = craft()->sproutEmail_notifications->getNotificationEventOptions();
 		
 		$out = array ();
 		foreach ( $res as $key => $template )

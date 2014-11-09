@@ -46,7 +46,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		$listProviders = array ();
 		
 		// Get our emailBlastType info
-		if ( ! $emailBlastType = craft()->sproutEmail->getEmailBlastTypeByEntryAndEmailBlastTypeId( $entryId, $emailBlastTypeId ) )
+		if ( ! $emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeByEntryAndEmailBlastTypeId( $entryId, $emailBlastTypeId ) )
 		{
 			SproutEmailPlugin::log("EmailBlastType not found");
 
@@ -62,7 +62,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		// Get our recipient list info
 		if($emailBlastType["emailProvider"] != 'CopyPaste')
 		{
-			if ( ! $recipientLists = craft()->sproutEmail->getEmailBlastTypeRecipientLists( $emailBlastType ['id'] ) )
+			if ( ! $recipientLists = craft()->sproutEmail_emailBlastType->getEmailBlastTypeRecipientLists( $emailBlastType ['id'] ) )
 			{
 				SproutEmailPlugin::log("Recipient lists not found");
 
@@ -253,7 +253,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 				// was part of emailBlastType, but now isn't
 				if ( ! in_array( $list->emailProviderRecipientListId, $recipientListIds ) )
 				{
-					craft()->sproutEmail->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id );
+					craft()->sproutEmail_emailBlastType->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id );
 				}
 			}
 		}

@@ -58,7 +58,7 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		$emailBlastTypeId = craft()->request->getRequiredPost('id');
 
 		// @TODO - clean this ugly crap up
-		$emailBlastType = craft()->sproutEmail->getEmailBlastTypeById($emailBlastTypeId);
+		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
 		$emailBlastType->setAttributes( craft()->request->getPost() );
 
 		$useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
@@ -75,7 +75,7 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 
 		$tab = craft()->request->getPost( 'tab' );
 
-		if ( $emailBlastTypeId = craft()->sproutEmail->saveEmailBlastType( $emailBlastType,  $tab) )
+		if ( $emailBlastTypeId = craft()->sproutEmail_emailBlastType->saveEmailBlastType( $emailBlastType,  $tab) )
 		{
 			// if this was called by the child (Notifications), return the model
 			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
@@ -139,7 +139,7 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		$emailBlastTypeId = craft()->request->getRequiredPost('id');
 
 		// @TODO - handle errors
-		if (craft()->sproutEmail->deleteEmailBlastType($emailBlastTypeId)) 
+		if (craft()->sproutEmail_emailBlastType->deleteEmailBlastType($emailBlastTypeId)) 
 		{
 			craft()->userSession->setNotice(Craft::t('Email Blast Type deleted.'));
 
