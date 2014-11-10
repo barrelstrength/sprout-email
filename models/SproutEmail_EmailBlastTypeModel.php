@@ -20,6 +20,12 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			'fieldLayoutId'     => AttributeType::Number,
 			'name'              => AttributeType::String,
 			'handle'            => AttributeType::String ,
+			'type'              => array(
+															AttributeType::Enum, 
+															'values' => array(
+																EmailBlastType::EmailBlast, 
+																EmailBlastType::Notification
+															)),
 			'titleFormat'       => AttributeType::String,
 			'hasUrls'           => array(
 															AttributeType::Bool, 
@@ -36,9 +42,9 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			'replyToEmail'      => AttributeType::Email,
 			'emailProvider'     => AttributeType::String,
 			'notificationEvent' => AttributeType::Number,
+			'dateUpdated'        => AttributeType::DateTime,
 			
 			// email template
-			'subjectHandle'     => AttributeType::String,
 			'template'          => AttributeType::String,
 			'templateCopyPaste' => AttributeType::String,
 			
@@ -49,7 +55,8 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			'useRecipientLists' => AttributeType::Number,
 			
 			// events
-			'notificationEvents' => AttributeType::Enum 
+			'notificationEvents' => AttributeType::Enum,
+			
 		);
 	}
 
