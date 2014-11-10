@@ -1,12 +1,11 @@
 <style type="text/css">
 textarea.text { min-height: 300px; }
 </style>
-<form method="post" action="" accept-charset="UTF-8">
-    <input type="hidden" name="action" value="sproutEmail/notifications/save">
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/notifications/edit/' ~ emailBlastTypeId) }}">
+    <input type="hidden" name="action" value="sproutEmail/notifications/saveNotification">
     <input type="hidden" name="redirect" value="sproutemail/notifications">
     <input type="hidden" name="id" value="{{ emailBlastTypeId }}">
     <input type="hidden" name="continue" value="false">
-    <input type="hidden" name="templateOption" value="2" />
     <input type="hidden" name="tab" value="template">
 
 	<div id="tab-email-template" class="tab-content">

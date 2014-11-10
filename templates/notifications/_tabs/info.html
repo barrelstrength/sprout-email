@@ -1,103 +1,105 @@
-<form method="post" action="" accept-charset="UTF-8">
-    <input type="hidden" name="action" value="sproutEmail/notifications/save">
-    <input type="hidden" name="redirect" value="sproutemail/notifications">
-    <input type="hidden" name="id" value="{{ emailBlastTypeId }}">
-    <input type="hidden" name="continue" value="false">
-    <input type="hidden" name="tab" value="info">
-    <input type="hidden" name="emailProvider" value="SproutEmail">
-    <input type="hidden" name="templateOption" value="2">
-    
-    <div id="tab-emailBlastType-info" class="tab-content" >	
-    	{{ forms.textField({
-    		label: "Notification Name"|t,
-    		id: 'name',
-    		name: 'name',
-    		instructions: "Human readable notification name"|t,
-    		value: (emailBlastType is defined ? emailBlastType.name : null),
-    		autofocus: true,
-    		required: true,
-    		errors: (emailBlastType is defined ? emailBlastType.getErrors('name') : null) 	
-    	}) }}
-    
-    	{{ forms.textField({
-    		label: "Email Subject"|t,
-    		id: 'subject',
-    		name: 'subject',
-    		instructions: "The subject line of your email"|t,
-    		value: (emailBlastType is defined ? emailBlastType.subject : null),
-    		required: true,
-    		errors: (emailBlastType is defined ? emailBlastType.getErrors('subject') : null) 	
-    	}) }}
-    
-    	{{ forms.textField({
-    		label: "From Name"|t,
-    		id: 'fromName',
-    		name: 'fromName',
-    		instructions: "The person or business sending the email"|t,
-    		value: (emailBlastType is defined ? emailBlastType.fromName : null),
-    		required: true,
-    		errors: (emailBlastType is defined ? emailBlastType.getErrors('fromName') : null) 	
-    	}) }}
-    
-    	{{ forms.textField({
-    		label: "From Email"|t,
-    		id: 'fromEmail',
-    		name: 'fromEmail',
-    		instructions: "The email address of the person or business sending the email"|t,
-    		value: (emailBlastType is defined ? emailBlastType.fromEmail : null),
-    		required: true,
-    		errors: (emailBlastType is defined ? emailBlastType.getErrors('fromEmail') : null) 	
-    	}) }}
-    
-    	{{ forms.textField({
-    		label: "Reply To Email"|t,
-    		id: 'replyToEmail',
-    		name: 'replyToEmail',
-    		instructions: "The email address which will be used if any recipients reply to your email"|t,
-    		value: (emailBlastType is defined ? emailBlastType.replyToEmail : null),
-    		required: true,
-    		errors: (emailBlastType is defined ? emailBlastType.getErrors('replyToEmail') : null) 	
-    	}) }}
-    	
-    	{% set events = craft.sproutEmail.getNotificationEvents() %}
-        
-        {% set existingEvent = (emailBlastType is defined and emailBlastType.notificationEvent[0] is defined ? (emailBlastType.notificationEvent[0].registrar == 'craft' ? emailBlastType.notificationEvent[0].event | replace({'.':'---'}) : emailBlastType.notificationEvent[0].id) : null) %}
 
-        {% set notificationEvent = (emailBlastType is defined ? (emailBlastType.getErrors()|length ? emailBlastType.notificationEvent : existingEvent) : null) %}
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/notifications/edit/{id}') }}">
+	<input type="hidden" name="action" value="sproutEmail/notifications/saveNotification">
+	<input type="hidden" name="redirect" value="sproutemail/notifications">
+	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
+	<input type="hidden" name="continue" value="false">
+	<input type="hidden" name="tab" value="info">
+	<input type="hidden" name="emailProvider" value="SproutEmail">
+	
+	<div id="tab-emailBlastType-info" class="tab-content" >
 
-    	{{ forms.selectField({
-    		label: "When would you like to send this email"|t,
-    		id: 'notificationEvent',
-    		name: 'notificationEvent',
-    		instructions: "Select the event on which you would like to send this email."|t,
-    		options : events,
-    		value: notificationEvent,
-    		errors: (emailBlastType is defined ? emailBlastType.getErrors('notificationEvent') : null) 	
-    	}) }}
-    	
-    	{% set eventOptions = craft.sproutEmail.getNotificationEventOptions() %}
-    	
-    	{% if eventOptions.system_options is defined %}
-    		{% for key, val in eventOptions.system_options %}
-    			{% for key2, val2 in val %}
-    				<div class="event_options {{ key | replace({'.':'---'}) }}" >
-    					{% include "sproutemail/notifications/_options/" ~ key ~ "/" ~  val2 %}
-    				</div>
-    			{% endfor %}
-    		{% endfor %}
-    	{% endif %}
-    
-    	{% if eventOptions.plugin_options is defined %}
-    		{% for key, val in eventOptions.plugin_options %}
-    				<div class="event_options {{ key }}" >
-    					{{ include(template_from_string(val.html))  }}
-    				</div>
-    		{% endfor %}	
-    	{% endif %}
-    </div>
-    
-    <div class="buttons">
-    	<input class="btn" type="submit" value="Save Notification Info">
-    	<input class="btn submit save-and-continue" id="info" type="button" value="Save Notification Info & Continue">
-    </div>
+		{{ forms.textField({
+			label: "Notification Name"|t,
+			id: 'name',
+			name: 'name',
+			instructions: "Human readable notification name"|t,
+			value: (emailBlastType is defined ? emailBlastType.name : null),
+			autofocus: true,
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('name') : null) 	
+		}) }}
+	
+		{{ forms.textField({
+			label: "Email Subject"|t,
+			id: 'subject',
+			name: 'subject',
+			instructions: "The subject line of your email"|t,
+			value: (emailBlastType is defined ? emailBlastType.subject : null),
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('subject') : null) 	
+		}) }}
+	
+		{{ forms.textField({
+			label: "From Name"|t,
+			id: 'fromName',
+			name: 'fromName',
+			instructions: "The person or business sending the email"|t,
+			value: (emailBlastType is defined ? emailBlastType.fromName : null),
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('fromName') : null) 	
+		}) }}
+	
+		{{ forms.textField({
+			label: "From Email"|t,
+			id: 'fromEmail',
+			name: 'fromEmail',
+			instructions: "The email address of the person or business sending the email"|t,
+			value: (emailBlastType is defined ? emailBlastType.fromEmail : null),
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('fromEmail') : null) 	
+		}) }}
+	
+		{{ forms.textField({
+			label: "Reply To Email"|t,
+			id: 'replyToEmail',
+			name: 'replyToEmail',
+			instructions: "The email address which will be used if any recipients reply to your email"|t,
+			value: (emailBlastType is defined ? emailBlastType.replyToEmail : null),
+			required: true,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('replyToEmail') : null) 	
+		}) }}
+		
+		{% set events = craft.sproutEmail.getNotificationEvents() %}
+		
+		{% set existingEvent = (emailBlastType is defined and emailBlastType.notificationEvent[0] is defined ? (emailBlastType.notificationEvent[0].registrar == 'craft' ? emailBlastType.notificationEvent[0].event | replace({'.':'---'}) : emailBlastType.notificationEvent[0].id) : null) %}
+
+		{% set notificationEvent = (emailBlastType is defined ? (emailBlastType.getErrors()|length ? emailBlastType.notificationEvent : existingEvent) : null) %}
+
+		{{ forms.selectField({
+			label: "When would you like to send this email"|t,
+			id: 'notificationEvent',
+			name: 'notificationEvent',
+			instructions: "Select the event on which you would like to send this email."|t,
+			options : events,
+			value: notificationEvent,
+			errors: (emailBlastType is defined ? emailBlastType.getErrors('notificationEvent') : null) 	
+		}) }}
+		
+		{% set eventOptions = craft.sproutEmail.getNotificationEventOptions() %}
+		
+		{% if eventOptions.system_options is defined %}
+			{% for key, val in eventOptions.system_options %}
+				{% for key2, val2 in val %}
+					<div class="event_options {{ key | replace({'.':'---'}) }}" >
+						{% include "sproutemail/notifications/_options/" ~ key ~ "/" ~  val2 %}
+					</div>
+				{% endfor %}
+			{% endfor %}
+		{% endif %}
+	
+		{% if eventOptions.plugin_options is defined %}
+			{% for key, val in eventOptions.plugin_options %}
+					<div class="event_options {{ key }}" >
+						{{ include(template_from_string(val.html))  }}
+					</div>
+			{% endfor %}	
+		{% endif %}
+
+	</div>
+	
+	<div class="buttons">
+		<input class="btn" type="submit" value="Save Notification Info">
+		<input class="btn submit save-and-continue" id="info" type="button" value="Save Notification Info & Continue">
+	</div>
 </form>

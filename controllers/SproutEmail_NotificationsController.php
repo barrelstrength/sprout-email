@@ -11,17 +11,17 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 	 *
 	 * @return void
 	 */
-	public function actionSave()
+	public function actionSaveNotification()
 	{
 		// first save the emailBlastType as normally would be done
-		$emailBlastTypeModel = parent::actionSave();
+		$emailBlastTypeModel = parent::actionSaveEmailBlastType();
 		
-		if ( $emailBlastTypeModel->getErrors() )
+		if ($emailBlastTypeModel->getErrors())
 		{
 			// Send the field back to the template
-			craft()->urlManager->setRouteVariables( array (
-					'emailBlastType' => $emailBlastTypeModel 
-			) );
+			craft()->urlManager->setRouteVariables(array(
+				'emailBlastType' => $emailBlastTypeModel 
+			));
 		}
 		else
 		{
@@ -56,13 +56,13 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 				case 'info' :
 					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
 					break;
+
 				case 'recipients' :
 					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
 					break;
+
 				default :
-					$this->redirectToPostedUrl( array (
-							$emailBlastTypeModel 
-					) );
+					$this->redirectToPostedUrl($emailBlastTypeModel);
 					break;
 			}
 		}

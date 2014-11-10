@@ -1,5 +1,5 @@
-<form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/notifications/save">
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/notifications/edit/' ~ emailBlastTypeId) }}">
+	<input type="hidden" name="action" value="sproutEmail/notifications/saveNotification">
 	<input type="hidden" name="redirect" value="sproutemail/notifications">
 	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="hidden" name="tab" value="recipients">
