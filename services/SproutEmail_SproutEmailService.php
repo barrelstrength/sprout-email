@@ -20,37 +20,41 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		// Craft groups
 		if ( $userGroups = craft()->userGroups->getAllGroups() )
 		{
-			$options ['UserGroup'] ['label'] = Craft::t( 'Member Groups' );
-			$options ['UserGroup'] ['description'] = Craft::t( 'Select one or more member groups to send your email blast.' );
+			$options['UserGroup']['label']       = Craft::t( 'Member Groups' );
+			$options['UserGroup']['description'] = Craft::t( 'Select one or more member groups to send your email blast.' );
 			
 			foreach ( $userGroups as $userGroup )
 			{
-				$options ['UserGroup'] ['options'] [$userGroup->id] = $userGroup->name . Craft::t( ' [Craft user group]' );
+				$options['UserGroup']['options'][$userGroup->id] = $userGroup->name . Craft::t( ' [Craft user group]' );
 			}
 		}
 		
 		// SproutReports
 		if ( $reports = craft()->plugins->getPlugin( 'sproutreports' ) )
 		{
-			if ( $list = craft()->sproutReports_reports->getAllReportsByAttributes( array (
-					'isEmailList' => 1 
-			) ) )
+			if ( $list = craft()->sproutReports_reports->getAllReportsByAttributes(array(
+				'isEmailList' => 1 
+			)))
 			{
-				$options ['SproutReport'] ['label'] = Craft::t( 'Sprout Reports Email Lists' );
-				$options ['SproutReport'] ['description'] = Craft::t( 'Select one or more email lists to send your email blast.' );
+				$options['SproutReport']['label'] = Craft::t( 'Sprout Reports Email Lists' );
+				$options['SproutReport']['description'] = Craft::t( 'Select one or more email lists to send your email blast.' );
 				
 				foreach ( $list as $report )
 				{
-					$options ['SproutReport'] ['options'] [$report->id] = $report->name . Craft::t( ' [SproutReport]' );
+					$options['SproutReport']['options'][$report->id] = $report->name . Craft::t( ' [SproutReport]' );
 				}
 			}
 		}
 		
 		// Other elements
+		// @TODO - Consider updating this to just grab Elements that add support via a Hook
+		// Many Elements will just be clutter here so might as well make it opt-in
 		$elementTypes = craft()->elements->getAllElementTypes();
+		
 		$ignore = array (
-				'SproutWorms_Form',
-				'SproutWorms_Entry' 
+			'Asset',
+			'GlobalSet',
+			'MatrixBlock',
 		);
 		
 		foreach ( $elementTypes as $key => $elementType )
@@ -114,10 +118,10 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	{
 		// @TODO - do we need to udpate textBody here?
 		$emailData = array (
-				'fromEmail' => $emailBlastType->fromEmail,
-				'fromName' => $emailBlastType->fromName,
-				'subject' => $emailBlastType->subject,
-				'body' => $emailBlastType->textBody 
+			'fromEmail' => $emailBlastType->fromEmail,
+			'fromName' => $emailBlastType->fromName,
+			'subject' => $emailBlastType->subject,
+			'body' => $emailBlastType->textBody 
 		);
 		
 		// @TODO - do we need to udpate htmlBody here?
@@ -161,6 +165,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 							}
 						}
 						break;
+
 					case 'SproutReport' :
 						if ( $report = craft()->sproutReports_reports->getReportById( $recipientList->emailProviderRecipientListId ) )
 						{
@@ -174,7 +179,9 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 							}
 						}
 						break;
-					default : // element
+
+					// Elements
+					default :
 						if ( $results = craft()->sproutEmail_subscriptions->getSubscriptionUsersByElementId( $recipientList->emailProviderRecipientListId ) )
 						{
 							foreach ( $results as $result )
@@ -193,7 +200,6 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		// remove duplicates & blanks
 		$recipients = array_unique( array_filter( $recipients ) );
 		
-		// Craft::dump($emailData);Craft::dump($recipients);die('<br/>To disable test mode and send emails, remove line 57 in ' . __FILE__);
 		$emailModel = EmailModel::populateModel( $emailData );
 		
 		$post = craft()->request->getPost();
@@ -201,12 +207,13 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		{
 			try
 			{
-				$emailModel->toEmail = craft()->templates->renderString( $recipient, array (
+				$emailModel->toEmail = craft()->templates->renderString($recipient, array(
 						'entry' => $post 
-				) );
-				craft()->email->sendEmail( $emailModel );
+				));
+
+				craft()->email->sendEmail($emailModel);
 			}
-			catch ( \Exception $e )
+			catch (\Exception $e)
 			{
 				// do nothing
 				return false;

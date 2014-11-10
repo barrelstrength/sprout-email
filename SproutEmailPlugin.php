@@ -14,7 +14,7 @@ class SproutEmailPlugin extends BasePlugin
 		
 		// The plugin name override
 		$plugin = craft()->db->createCommand()->select( 'settings' )->from( 'plugins' )->where( 'class=:class', array (
-				':class' => 'SproutEmail' 
+			':class' => 'SproutEmail' 
 		) )->queryScalar();
 		
 		$plugin = json_decode( $plugin, true );
@@ -268,40 +268,36 @@ class SproutEmailPlugin extends BasePlugin
 		
 		foreach ( $events as $event )
 		{
-			craft()->db->createCommand()->insert( 'sproutemail_notification_events', $event );
+			craft()->db->createCommand()->insert( 'sproutemail_notificationevents', $event );
 		}
 		
 		$providers = array (
 			array (
 				'emailProvider' => 'CampaignMonitor',
-				'apiSettings' => '{"client_id":"","api_key":""}',
-				'dateCreated' => '2014-03-10 21:00:00' 
+				'apiSettings' => '{"clientId":"","apiKey":""}'
 			),
 			array (
 				'emailProvider' => 'MailChimp',
-				'apiSettings' => '{"api_key":""}',
+				'apiSettings' => '{"apiKey":""}',
 				'dateCreated' => '2014-03-10 21:00:00' 
 			),
 			array (
 				'emailProvider' => 'SendGrid',
-				'apiSettings' => '{"api_user":"","api_key":""}',
-				'dateCreated' => '2014-07-19 21:00:00' 
+				'apiSettings' => '{"apiUser":"","apiKey":""}'
 			),
 			array (
 				'emailProvider' => 'MailGun',
-				'apiSettings' => '{"api_user":"","domain":""}',
-				'dateCreated' => '2014-09-09 21:00:00' 
+				'apiSettings' => '{"apiUser":"","domain":""}'
 			),
 			array (
 				'emailProvider' => 'CopyPaste',
-				'apiSettings' => '',
-				'dateCreated' => '2014-09-12 21:00:00' 
+				'apiSettings' => '{"enabled":0}'
 			)
 		);
 		
 		foreach ( $providers as $provider )
 		{
-			craft()->db->createCommand()->insert( 'sproutemail_email_provider_settings', $provider );
+			craft()->db->createCommand()->insert( 'sproutemail_providersettings', $provider );
 		}
 
 		/**
@@ -319,6 +315,8 @@ class SproutEmailPlugin extends BasePlugin
 	public function init()
 	{	
 		parent::init();
+
+		Craft::import('plugins.sproutemail.enums.EmailBlastType');
 
 		// events fired by $this->raiseEvent
 		craft()->on( 'entries.saveEntry', array($this,'onSaveEntry'));
