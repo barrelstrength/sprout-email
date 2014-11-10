@@ -56,7 +56,7 @@ class SproutEmail_IntegrationService extends BaseApplicationComponent
 			if ( ! isset( $pluginEvents [$event->registrar] [$event->event] ) || ! $pluginEvents [$event->registrar] [$event->event] )
 			{
 				// delete if the plugin doesn't exist anymore
-				craft()->db->createCommand()->delete( 'sproutemail_notification_events', array (
+				craft()->db->createCommand()->delete( 'sproutemail_notificationevents', array (
 						'registrar' => $event->registrar 
 				) );
 				

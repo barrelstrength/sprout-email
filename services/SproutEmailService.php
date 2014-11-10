@@ -70,7 +70,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function deleteEvent($id)
 	{
-		if ( ! craft()->db->createCommand()->delete( 'sproutemail_notification_events', array (
+		if ( ! craft()->db->createCommand()->delete( 'sproutemail_notificationevents', array (
 				'id' => $id 
 		) ) )
 		{
@@ -78,29 +78,6 @@ class SproutEmailService extends BaseApplicationComponent
 			return false;
 		}
 		return true;
-	}
-	
-	// @TODO - filter these to only include the Text fields 
-	// specific to the override Email Blast Type
-	public function getPlainTextFields()
-	{
-		$fields = array();
-		$fields[""] = "---------";
-
-		foreach (craft()->fields->getAllFields() as $field)
-		{
-			// Grab the plain text fields 
-			// and store them in a key:value array
-			if($field->type == 'PlainText')
-			{
-				$fields[$field->handle] = $field->name;
-			}
-		}
-		
-		// Sort them alphabetically
-		ksort($fields);
-			
-		return $fields;
 	}
 	
 	/**
@@ -111,7 +88,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 * @param sring $prefix            
 	 * @return array
 	 */
-	private function _scan($dir, $prefix = '')
+	public function scan($dir, $prefix = '')
 	{
 		$dir = rtrim( $dir, '\\/' );
 		$result = array ();
@@ -122,7 +99,7 @@ class SproutEmailService extends BaseApplicationComponent
 			{
 				if ( is_dir( "{$dir}/{$f}" ) )
 				{
-					$result = array_merge( $result, $this->_scan( "{$dir}/{$f}", "{$prefix}{$f}/" ) );
+					$result = array_merge( $result, $this->scan( "{$dir}/{$f}", "{$prefix}{$f}/" ) );
 				}
 				else
 				{

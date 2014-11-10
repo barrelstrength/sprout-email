@@ -312,7 +312,10 @@ class SproutEmail_ExamplesController extends BaseController
 	 */
 	private function _handleError($exception)
 	{
+		SproutEmailPlugin::log("Error: Unable to install the examples. " . json_encode($exception));
+
 		craft()->userSession->setError(Craft::t('Unable to install the examples.'));
-			$this->redirect('sproutemail/examples');
+		
+		$this->redirect('sproutemail/examples');
 	}
 }

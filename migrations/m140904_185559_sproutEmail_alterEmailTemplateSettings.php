@@ -13,18 +13,17 @@ class m140904_185559_sproutEmail_alterEmailTemplateSettings extends BaseMigratio
 	 */
 	public function safeUp()
 	{		
-	    $tableName = 'sproutemail_campaigns';
+		$tableName = 'sproutemail_campaigns';
 		$table = $this->dbConnection->schema->getTable('{{' . $tableName . '}}');
 
 		if ($table)
 		{  
-		    $field = 'subjectHandle';
-			
-            $this->addColumnAfter( $tableName, $field, array (
-                    AttributeType::String,
-                    'required' => false 
-            ), 'textBody' );
-
+			$field = 'subjectHandle';
+		
+			$this->addColumnAfter( $tableName, $field, array (
+				AttributeType::String,
+				'required' => false 
+			), 'textBody' );
 		}
 		else
 		{

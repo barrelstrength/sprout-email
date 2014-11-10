@@ -5,7 +5,6 @@
 	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
 	<input type="hidden" name="tab" value="info">
 	<input type="hidden" name="continue" value="false">
-	<input type="hidden" name="templateOption" value="3">
 
 	<div id="tab-emailBlastType-info" class="tab-content" >
 
@@ -86,7 +85,7 @@
 		<hr>
 
 		{{ forms.checkboxField({
-			label: "Additional control over Title and Subject Line"|t,
+			label: "Add a custom format to the Title field?"|t,
 			id: 'hasAdvancedTitles',
 			name: 'hasAdvancedTitles',
 			checked: emailBlastType.hasAdvancedTitles,
@@ -102,18 +101,6 @@
 				name: 'titleFormat',
 				value: (emailBlastType is defined ? emailBlastType.titleFormat : null),
 				errors: (emailBlastType is defined ? emailBlastType.getErrors('titleFormat') : null),
-			}) }}
-
-			{% set fieldOptions = craft.sproutEmail.getPlainTextFields() %}
-			
-			{{ forms.selectField({
-				label: "Subject Field"|t,
-				id: 'subjectHandle',
-				name: 'subjectHandle',
-				instructions: "Select the field that will be your subject field for the emailBlastType"|t,
-				options: fieldOptions,
-				value: (emailBlastType is defined ? emailBlastType.subjectHandle : null),
-				errors: (emailBlastType is defined ? emailBlastType.getErrors('subjectHandle') : null) 	
 			}) }}
 
 		</div>

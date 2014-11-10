@@ -13,7 +13,7 @@ class SproutEmail_RecipientListRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_recipient_lists';
+		return 'sproutemail_recipientlists';
 	}
 	
 	/**

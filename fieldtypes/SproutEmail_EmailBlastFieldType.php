@@ -43,9 +43,6 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
 			"enabled"                       => FALSE,
 		);
 
-		// Get the section emailBlastType settings
-		// $sectionEmailBlastType = SproutEmail_EmailBlastTypeRecord::model()->getEmailBlastTypeBySectionId($fields["sectionId"]);
-
 		if(!$sectionEmailBlastType)
 		{
 			// The section isn't email enabled
