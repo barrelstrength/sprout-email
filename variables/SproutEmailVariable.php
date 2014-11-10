@@ -18,7 +18,7 @@ class SproutEmailVariable
 		$plugin = craft()->plugins->getPlugin( 'sproutemail' );
 		return $plugin->getName();
 	}
-	
+
 	/**
 	 * Get plugin version
 	 *
@@ -31,23 +31,15 @@ class SproutEmailVariable
 	}
 	
 	/**
-	 * Get All EmailBlastTypes
-	 * By default, this returns all emailblasts that are normal emailblasts.
-	 * If you want
-	 * to get only Section-based emailblasts, pass 'true' to the $sectionId paramenter
+	 * Get Email Blast Types
 	 *
 	 * @todo - make this more intuitive, kinda clunky parameter names
 	 *      
 	 * @return mixed EmailBlastType model
 	 */
-	public function getEmailBlastTypes()
+	public function getEmailBlastTypes($blastType = null)
 	{
-		/**
-	 * Get All Section Based EmailBlastTypes
-	 * return craft()->sproutEmail->getEmailBlastTypes();
-	 */
-	
-		return craft()->sproutEmail_emailBlastType->getAllEmailBlastTypes();
+		return craft()->sproutEmail_emailBlastType->getEmailBlastTypes($blastType);
 	}
 	
 	/**
@@ -59,16 +51,6 @@ class SproutEmailVariable
 	public function getEmailBlastTypeById($emailBlastTypeId)
 	{
 		return craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
-	}
-	
-	/**
-	 * Get all EmailBlastType Info (only settings, no related Section EmailBlastTypes)
-	 *
-	 * @return object emailBlastType table records
-	 */
-	public function getAllEmailBlastTypeInfo()
-	{
-		return craft()->sproutEmail_emailBlastType->getAllEmailBlastTypeInfo();
 	}
 	
 	/**
@@ -150,16 +132,6 @@ class SproutEmailVariable
 		$service = 'sproutEmail_' . lcfirst( $provider );
 		return craft()->{$service}->getEmailBlastTypeList();
 	}
-	
-	/**
-	 * Get plain text field handles
-	 *
-	 * @return array
-	 */
-	public function getPlainTextFields()
-	{
-		return craft()->sproutEmail->getPlainTextFields();
-	}
 
 	/**
 	 * Get email providers
@@ -188,16 +160,6 @@ class SproutEmailVariable
 	{
 		$service = 'sproutEmail_' . lcfirst( $provider );
 		return craft()->$service->getSettings();
-	}
-	
-	/**
-	 * Get notifications
-	 *
-	 * @return array
-	 */
-	public function getNotifications()
-	{
-		return craft()->sproutEmail_notifications->getNotifications();
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-{% set emailblasts = craft.sproutEmail.getEmailBlastTypes() %}
+{% set emailblasts = craft.sproutEmail.getEmailBlastTypes('blast') %}
 
 {% if emailblasts|length %}
 	

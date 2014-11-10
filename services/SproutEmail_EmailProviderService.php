@@ -46,9 +46,9 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		$listProviders = array ();
 		
 		// Get our emailBlastType info
-		if ( ! $emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeByEntryAndEmailBlastTypeId( $entryId, $emailBlastTypeId ) )
+		if ( ! $emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId) )
 		{
-			SproutEmailPlugin::log("EmailBlastType not found");
+			SproutEmailPlugin::log("Email Blast Type not found");
 
 			if ( $return )
 			{
@@ -56,7 +56,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			}
 
 			// @TODO - update use of die
-			die( 'EmailBlastType not found' );
+			die( 'Email Blast Type not found' );
 		}
 
 		// Get our recipient list info
@@ -299,7 +299,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	 */
 	public function deleteRecipientList($recipientListId)
 	{
-		return craft()->db->createCommand()->delete( 'sproutemail_recipient_lists', array (
+		return craft()->db->createCommand()->delete( 'sproutemail_recipientlists', array (
 				'id' => $recipientListId 
 		) );
 	}

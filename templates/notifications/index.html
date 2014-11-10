@@ -23,7 +23,7 @@
 	
 	<div class="pane">
 
-	{% set notifications = craft.sproutEmail.getNotifications() %}
+	{% set notifications = craft.sproutEmail.getEmailBlastTypes('notification') %}
 	
 	{% for emailBlastType in notifications %}
 			

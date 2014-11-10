@@ -3,52 +3,103 @@ namespace Craft;
 
 class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 {
-	/**
-	 * Returns all Email Blasts.
-	 *           
-	 * @return array
-	 */
-	public function getAllEmailBlastTypes()
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->order = 'dateCreated DESC';
-		return SproutEmail_EmailBlastTypeRecord::model()->findAll( $criteria );
-	}
 
-	/**
-	 * Returns all EmailBlastType Info (just settings, not related entries).
-	 *
-	 * @return object emailBlastType table records
-	 *        
-	 * @todo - Need a better way to identify between EmailBlastTypes
-	 *       and Notifications: This is not clear and won't be true
-	 *       when we have native EmailBlastTypes: where('emailProvider != "SproutEmail"')
-	 */
-	public function getAllEmailBlastTypeInfo()
-	{
-		$query = craft()->db->createCommand()->from( 'sproutemail_emailblasts' )->queryAll();
+	public function getEmailBlastTypes($blastType = null)
+	{	
+		// Grab All Blast Types by default
+		$query = craft()->db->createCommand()
+					->select( '*' )
+					->from( 'sproutemail_emailblasttypes' )
+					->order( 'dateCreated desc' );
+
+		// If we have a specific $blastType, limit the results
+		if ($blastType == EmailBlastType::EmailBlast OR 
+				$blastType == EmailBlastType::Notification) 
+		{
+			$query->where( 'type=:type', array(':type' => $blastType));
+		}
 		
-		return $query;
-	}
+		$results = $query->queryAll();
 
-	/**
-	 * Returns emailBlastTypeRecipient lists
-	 *
-	 * @param int $emailBlastTypeId            
-	 * @return array
-	 */
-	public function getEmailBlastTypeRecipientLists($emailBlastTypeId)
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->condition = 'emailBlastType.id=:emailBlastTypeId';
-		$criteria->params = array (
-				':emailBlastTypeId' => $emailBlastTypeId 
-		);
+		$emailBlastTypes = SproutEmail_EmailBlastTypeModel::populateModels($results);
 		
-		return SproutEmail_RecipientListRecord::model()->with( 'emailBlastType' )->findAll( $criteria );
+		return $emailBlastTypes;
 	}
 
 	/**
+	 * Gets a emailBlastType
+	 *
+	 * @param
+	 *            array possible conditions: array('id' => <id>, 'handle' => <handle>, ...)
+	 *            as defined in $valid_keys
+	 * @return SproutEmail_EmailBlastTypeModel null
+	 */
+	// public function getEmailBlastType($conditions = array())
+	// {
+	// 	// we can do where clauses on these keys only
+	// 	$valid_keys = array (
+	// 		'id',
+	// 		'handle' 
+	// 	);
+		
+	// 	$criteria = new \CDbCriteria();
+		
+	// 	if ( ! empty( $conditions ) )
+	// 	{
+	// 		$params = array ();
+	// 		foreach ( $conditions as $key => $val )
+	// 		{
+	// 			// only accept our defined keys
+	// 			if ( ! in_array( $key, $valid_keys ) )
+	// 			{
+	// 				continue;
+	// 			}
+				
+	// 			$criteria->addCondition( 't.' . $key . '=:' . $key );
+	// 			$params [':' . $key] = $val;
+	// 		}
+			
+	// 		if ( ! empty( $params ) )
+	// 		{
+	// 			$criteria->params = $params;
+	// 		}
+	// 	}
+		
+	// 	// get emailBlastType record with recipient lists
+	// 	$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->with( 'recipientList', 'emailBlastTypeNotificationEvent' )->find( $criteria );
+		
+	// 	if ( $emailBlastTypeRecord )
+	// 	{
+	// 		// now we need to populate the model
+	// 		$emailBlastTypeModel = SproutEmail_EmailBlastTypeModel::populateModel( $emailBlastTypeRecord );
+			
+	// 		$unserialized = array ();
+	// 		foreach ( $emailBlastTypeRecord->emailBlastTypeNotificationEvent as $event )
+	// 		{
+	// 			$opts = $event->options;
+	// 			$event->options = isset( $opts ['options'] ) ? $opts ['options'] : array ();
+	// 			$unserialized [] = $event;
+	// 		}
+			
+	// 		$emailBlastTypeModel->notificationEvents = $unserialized;
+			
+	// 		// now for the recipient related data
+	// 		if ( count( $emailBlastTypeRecord->recipientList ) > 0 )
+	// 		{
+	// 			$emailProviderRecipientListIdArr = array ();
+	// 			foreach ( $emailBlastTypeRecord->recipientList as $list )
+	// 			{
+	// 				$emailProviderRecipientListIdArr [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
+	// 			}
+				
+	// 			$emailBlastTypeModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
+	// 		}
+			
+	// 		return $emailBlastTypeModel;
+	// 	}
+	// }
+
+		/**
 	 * Returns all section based emailblasts.
 	 *
 	 * @param string|null $indexBy            
@@ -81,76 +132,20 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Gets a emailBlastType
+	 * Returns emailBlastTypeRecipient lists
 	 *
-	 * @param
-	 *            array possible conditions: array('id' => <id>, 'handle' => <handle>, ...)
-	 *            as defined in $valid_keys
-	 * @return SproutEmail_EmailBlastTypeModel null
+	 * @param int $emailBlastTypeId            
+	 * @return array
 	 */
-	public function getEmailBlastType($conditions = array())
+	public function getEmailBlastTypeRecipientLists($emailBlastTypeId)
 	{
-		// we can do where clauses on these keys only
-		$valid_keys = array (
-			'id',
-			'handle' 
+		$criteria = new \CDbCriteria();
+		$criteria->condition = 'emailBlastType.id=:emailBlastTypeId';
+		$criteria->params = array (
+				':emailBlastTypeId' => $emailBlastTypeId 
 		);
 		
-		$criteria = new \CDbCriteria();
-		
-		if ( ! empty( $conditions ) )
-		{
-			$params = array ();
-			foreach ( $conditions as $key => $val )
-			{
-				// only accept our defined keys
-				if ( ! in_array( $key, $valid_keys ) )
-				{
-					continue;
-				}
-				
-				$criteria->addCondition( 't.' . $key . '=:' . $key );
-				$params [':' . $key] = $val;
-			}
-			
-			if ( ! empty( $params ) )
-			{
-				$criteria->params = $params;
-			}
-		}
-		
-		// get emailBlastType record with recipient lists
-		$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->with( 'recipientList', 'emailBlastTypeNotificationEvent' )->find( $criteria );
-		
-		if ( $emailBlastTypeRecord )
-		{
-			// now we need to populate the model
-			$emailBlastTypeModel = SproutEmail_EmailBlastTypeModel::populateModel( $emailBlastTypeRecord );
-			
-			$unserialized = array ();
-			foreach ( $emailBlastTypeRecord->emailBlastTypeNotificationEvent as $event )
-			{
-				$opts = $event->options;
-				$event->options = isset( $opts ['options'] ) ? $opts ['options'] : array ();
-				$unserialized [] = $event;
-			}
-			
-			$emailBlastTypeModel->notificationEvents = $unserialized;
-			
-			// now for the recipient related data
-			if ( count( $emailBlastTypeRecord->recipientList ) > 0 )
-			{
-				$emailProviderRecipientListIdArr = array ();
-				foreach ( $emailBlastTypeRecord->recipientList as $list )
-				{
-					$emailProviderRecipientListIdArr [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
-				}
-				
-				$emailBlastTypeModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
-			}
-			
-			return $emailBlastTypeModel;
-		}
+		return SproutEmail_RecipientListRecord::model()->with( 'emailBlastType' )->findAll( $criteria );
 	}
 
 	/**
@@ -224,6 +219,15 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 			// save the emailBlastType
 			default :
 				
+				if ($emailBlastType->subject) 
+				{
+					$emailBlastType->type = EmailBlastType::Notification;
+				}
+				else
+				{
+					$emailBlastType->type = EmailBlastType::EmailBlast;
+				}
+
 				try
 				{
 					// Save the Email Blast Type
@@ -273,6 +277,7 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 		$emailBlastTypeRecord->fieldLayoutId = $emailBlastType->fieldLayoutId;
 		$emailBlastTypeRecord->name = $emailBlastType->name;
 		$emailBlastTypeRecord->handle = $emailBlastType->handle;
+		$emailBlastTypeRecord->type = $emailBlastType->type;
 		$emailBlastTypeRecord->titleFormat = $emailBlastType->titleFormat;
 		$emailBlastTypeRecord->hasUrls = $emailBlastType->hasUrls;
 		$emailBlastTypeRecord->hasAdvancedTitles = $emailBlastType->hasAdvancedTitles;
@@ -282,7 +287,6 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 		$emailBlastTypeRecord->replyToEmail = $emailBlastType->replyToEmail;
 		$emailBlastTypeRecord->emailProvider = $emailBlastType->emailProvider;
 		
-		$emailBlastTypeRecord->subjectHandle = $emailBlastType->subjectHandle;
 		$emailBlastTypeRecord->template = $emailBlastType->template;
 		$emailBlastTypeRecord->templateCopyPaste = $emailBlastType->templateCopyPaste;
 

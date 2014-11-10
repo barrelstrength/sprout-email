@@ -5,17 +5,7 @@ namespace Craft;
  * Notifications service
  */
 class SproutEmail_NotificationsService extends BaseApplicationComponent
-{
-	/**
-	 * Returns all emailBlastType notifications
-	 *
-	 * @return array
-	 */
-	public function getNotifications()
-	{
-		return SproutEmail_EmailBlastTypeRecord::model()->getNotifications();
-	}
-	
+{	
 	/**
 	 * Returns all supported notification events
 	 *
@@ -57,7 +47,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function getNotificationEventOptions()
 	{
-		$options = $this->_scan( dirname( __FILE__ ) . '/../templates/notifications/_options' );
+		$options = craft()->sproutEmail->scan( dirname( __FILE__ ) . '/../templates/notifications/_options' );
 		
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'registrar!=:registrar';
