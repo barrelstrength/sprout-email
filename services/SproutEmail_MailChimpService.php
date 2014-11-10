@@ -8,8 +8,8 @@ namespace Craft;
 class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	protected $apiSettings;
-	protected $client_key;
-	protected $api_key;
+	protected $clientKey;
+	protected $apiKey;
 	public function __construct()
 	{
 		$criteria = new \CDbCriteria();
@@ -21,7 +21,11 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
-		$this->api_key = isset( $this->apiSettings->api_key ) ? $this->apiSettings->api_key : '';
+		$customConfigSettings = craft()->config->get('sproutEmail');
+		
+		$this->apiKey = (isset($customConfigSettings['apiSettings']['MailChimp']['apiKey'])) ? $customConfigSettings['apiSettings']['MailChimp']['apiKey'] : (isset( $this->apiSettings->apiKey ) ? $this->apiSettings->apiKey : '');
+
+		$this->apiSettings->apiKey = $this->apiKey;
 	}
 	
 	/**
@@ -34,7 +38,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		require_once (dirname( __FILE__ ) . '/../libraries/MailChimp/inc/MCAPI.class.php');
 		$subscriber_lists = array ();
 		
-		$api = new \MCAPI( $this->api_key );
+		$api = new \MCAPI( $this->apiKey );
 		$res = $api->lists();
 		
 		if ( $api->errorCode )
@@ -60,7 +64,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 	{
 		require_once (dirname( __FILE__ ) . '/../libraries/MailChimp/inc/MCAPI.class.php');
 		
-		$api = new \MCAPI( $this->api_key );
+		$api = new \MCAPI( $this->apiKey );
 		
 		$type = 'regular';
 		$opts = array (
@@ -122,7 +126,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 	
 	public function getSettings()
 	{
-		if ( $this->api_key )
+		if ( $this->apiKey )
 		{
 			$this->apiSettings->valid = true;
 		}

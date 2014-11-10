@@ -10,13 +10,27 @@ use Guzzle\Http\Client;
 class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	protected $apiSettings;
+	protected $enabled;
 	
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
-		$this->apiSettings = new \stdClass();
+		$criteria = new \CDbCriteria();
+		$criteria->condition = 'emailProvider=:emailProvider';
+		$criteria->params = array (
+				':emailProvider' => 'CopyPaste' 
+		);
+
+		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
+		$this->apiSettings = json_decode( $res->apiSettings );
+
+		$customConfigSettings = craft()->config->get('sproutEmail');
+		
+		$this->enabled = (isset($customConfigSettings['apiSettings']['CopyPaste']['enabled'])) ? $customConfigSettings['apiSettings']['CopyPaste']['enabled'] : (isset( $this->apiSettings->enabled ) ? $this->apiSettings->enabled : 0);
+
+		$this->apiSettings->enabled = $this->enabled;
 	}
 	
 	/**
@@ -28,23 +42,23 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 	{
 		require_once (dirname( __FILE__ ) . '/../libraries/CopyPaste/CopyPaste/newsletter.php');
 		
-		$subscriber_lists = array ();
+		$subscriberLists = array ();
 		
-		$CopyPaste = new \CopyPasteNewsletter($this->api_user,$this->api_key); 
+		$CopyPaste = new \CopyPasteNewsletter($this->apiUser,$this->apiKey); 
 	
 		$result = $CopyPaste->newsletter_lists_get();
 		
 		if ( ! $result)
 		{
-			return $subscriber_lists;
+			return $subscriberLists;
 		}
 	
 		foreach ( $result as $v )
 		{
-			$subscriber_lists [$v['list']] = $v['list'];
+			$subscriberLists [$v['list']] = $v['list'];
 		}
 		
-		return $subscriber_lists;
+		return $subscriberLists;
 	}
 	
 	/**
@@ -77,7 +91,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		$arr["text"] = trim($response->getBody());
 					
 		// Show name of email, name of selected list and name of sender?     
-		$arr["title"]       = $emailBlastType["title"];
+		$arr["title"]      = $emailBlastType["title"];
 		$arr["fromEmail"]  = $emailBlastType["fromEmail"];
 		$arr["fromName"]   = $emailBlastType["fromName"];
 							

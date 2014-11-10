@@ -8,8 +8,8 @@ namespace Craft;
 class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	protected $apiSettings;
-	protected $client_id;
-	protected $api_key;
+	protected $clientId;
+	protected $apiKey;
 	public function __construct()
 	{
 		$criteria = new \CDbCriteria();
@@ -21,8 +21,13 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
-		$this->client_id = isset( $this->apiSettings->client_id ) ? $this->apiSettings->client_id : '';
-		$this->api_key = isset( $this->apiSettings->api_key ) ? $this->apiSettings->api_key : '';
+		$customConfigSettings = craft()->config->get('sproutEmail');
+		
+		$this->clientId = (isset($customConfigSettings['apiSettings']['CampaignMonitor']['clientId'])) ? $customConfigSettings['apiSettings']['CampaignMonitor']['clientId'] : (isset( $this->apiSettings->clientId ) ? $this->apiSettings->clientId : '');
+		$this->apiKey = (isset($customConfigSettings['apiSettings']['CampaignMonitor']['apiKey'])) ? $customConfigSettings['apiSettings']['CampaignMonitor']['apiKey'] : (isset( $this->apiSettings->apiKey ) ? $this->apiSettings->apiKey : '');
+
+		$this->apiSettings->clientId = $this->clientId;
+		$this->apiSettings->apiKey = $this->apiKey;
 	}
 	/**
 	 * Returns subscriber lists
@@ -33,21 +38,22 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
 		require_once (dirname( __FILE__ ) . '/../libraries/CampaignMonitor/csrest_clients.php');
-		$subscriber_lists = array ();
-		
-		$wrap = new \CS_REST_Clients( $this->client_id, $this->api_key );
+		$subscriberLists = array ();
+
+		$wrap = new \CS_REST_Clients( $this->clientId, $this->apiKey );
 		$result = $wrap->get_lists();
+		
 		if ( ! is_array( $result->response ) || ! isset( $result->response [0]->ListID ) )
 		{
-			return $subscriber_lists;
+			return $subscriberLists;
 		}
 		
 		foreach ( $result->response as $v )
 		{
-			$subscriber_lists [$v->ListID] = $v->Name;
+			$subscriberLists [$v->ListID] = $v->Name;
 		}
 		
-		return $subscriber_lists;
+		return $subscriberLists;
 	}
 	
 	/**
@@ -60,9 +66,9 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 	{
 		// http://www.campaignmonitor.com/api/clients/#subscriber_lists
 		require_once (dirname( __FILE__ ) . '/../libraries/CampaignMonitor/csrest_campaigns.php');
-		$wrap = new \CS_REST_Campaigns( NULL, $this->api_key );
+		$wrap = new \CS_REST_Campaigns( NULL, $this->apiKey );
 		
-		$result = $wrap->create( $this->client_id, array(
+		$result = $wrap->create( $this->clientId, array(
 			'Subject' => $emailBlastType ['title'],
 			'Name' => $emailBlastType ['name'],
 			'FromName' => $emailBlastType ['fromName'],
@@ -80,9 +86,10 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 		
 		die();
 	}
+
 	public function getSettings()
 	{
-		if ( $this->api_key && $this->client_id )
+		if ( $this->apiKey && $this->clientId )
 		{
 			$this->apiSettings->valid = true;
 		}
@@ -90,8 +97,10 @@ class SproutEmail_CampaignMonitorService extends SproutEmail_EmailProviderServic
 		{
 			$this->apiSettings->valid = false;
 		}
+		
 		return $this->apiSettings;
 	}
+
 	public function saveSettings($settings = array())
 	{
 		$criteria = new \CDbCriteria();

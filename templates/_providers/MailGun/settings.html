@@ -7,9 +7,9 @@ SendGrid specific api settings.
 
 {{ forms.textField({
 	label: "API Key"|t,
-	name: 'settings[MailGun][api_key]',
+	name: 'settings[MailGun][apiKey]',
 	instructions: "Enter the API Key from your MailGun control panel dashboard"|t,
-	value: (settings.api_key is defined ? settings.api_key : null)	
+	value: (settings.apiKey is defined ? settings.apiKey : null)	
 }) }}
 
 {{ forms.textField({

@@ -1,6 +1,6 @@
-{% set subscriber_lists = craft.sproutEmail.getSubscriberList('CampaignMonitor') %}
+{% set subscriberLists = craft.sproutEmail.getSubscriberList('CampaignMonitor') %}
 
-{% if(subscriber_lists|length > 0) %}
+{% if(subscriberLists|length > 0) %}
 
 	{{ forms.field({
 		label: "Subscriber Lists"|t,
@@ -8,7 +8,7 @@
 		errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
 	}, forms.checkboxGroup({
 		name: 'emailProviderRecipientListId',
-		options : subscriber_lists,
+		options : subscriberLists,
 		values: emailBlastType is defined ? emailBlastType.emailProviderRecipientListId : null
 	})) }}
 	

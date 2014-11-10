@@ -7,7 +7,7 @@ MailChimp specific api settings.
 
 {{ forms.textField({
 	label: "API Key"|t,
-	name: 'settings[MailChimp][api_key]',
+	name: 'settings[MailChimp][apiKey]',
 	instructions: "API Key"|t,
-	value: (settings.api_key is defined ? settings.api_key : null)
+	value: (settings.apiKey is defined ? settings.apiKey : null)
 }) }}

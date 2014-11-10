@@ -13,7 +13,7 @@ class SproutEmail_EmailProviderSettingsRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_email_provider_settings';
+		return 'sproutemail_providersettings';
 	}
 	
 	/**

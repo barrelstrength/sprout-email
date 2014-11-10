@@ -23,16 +23,16 @@
 			checked: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? true : false
 		}) }}
 			
-		{% for key, subscriber_list in subscriberLists %}
+		{% for key, subscriberList in subscriberLists %}
 
 			{{ forms.field({
-				label: subscriber_list.label|t,
-				instructions: subscriber_list.description|t,
+				label: subscriberList.label|t,
+				instructions: subscriberList.description|t,
 				errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
 			}, forms.checkboxGroup({
 				name: 'emailProviderRecipientListId[' ~ key ~ ']',
 				id: 'emailProviderRecipientListId' ~ key ,
-				options : subscriber_list.options,
+				options : subscriberList.options,
 				values: emailBlastType.emailProviderRecipientListId[key] is defined ? emailBlastType.emailProviderRecipientListId[key] : null
 			})) }}
 		

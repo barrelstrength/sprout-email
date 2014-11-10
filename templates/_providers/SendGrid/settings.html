@@ -6,14 +6,14 @@ SendGrid specific api settings.
 
 {{ forms.textField({
 	label: "API Username"|t,
-	name: 'settings[SendGrid][api_user]',
+	name: 'settings[SendGrid][apiUser]',
 	instructions: "Username"|t,
-	value: (settings.api_user is defined ? settings.api_user : null)	
+	value: (settings.apiUser is defined ? settings.apiUser : null)	
 }) }}
 
 {{ forms.textField({
 	label: "API Key"|t,
-	name: 'settings[SendGrid][api_key]',
+	name: 'settings[SendGrid][apiKey]',
 	instructions: "Password"|t,
-	value: (settings.api_key is defined ? settings.api_key : null)
+	value: (settings.apiKey is defined ? settings.apiKey : null)
 }) }}

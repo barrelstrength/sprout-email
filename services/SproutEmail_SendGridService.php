@@ -12,8 +12,8 @@ use Guzzle\Http\Client;
 class SproutEmail_SendGridService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	protected $apiSettings;
-	protected $api_user;
-	protected $api_key;
+	protected $apiUser;
+	protected $apiKey;
 	
 	/**
 	 * Constructor
@@ -29,8 +29,13 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
-		$this->api_user = isset( $this->apiSettings->api_user ) ? $this->apiSettings->api_user : '';
-		$this->api_key = isset( $this->apiSettings->api_key ) ? $this->apiSettings->api_key : '';
+		$customConfigSettings = craft()->config->get('sproutEmail');
+		
+		$this->apiUser = (isset($customConfigSettings['apiSettings']['SendGrid']['apiUser'])) ? $customConfigSettings['apiSettings']['SendGrid']['apiUser'] : (isset( $this->apiSettings->apiUser ) ? $this->apiSettings->apiUser : '');
+		$this->apiKey = (isset($customConfigSettings['apiSettings']['SendGrid']['apiKey'])) ? $customConfigSettings['apiSettings']['SendGrid']['apiKey'] : (isset( $this->apiSettings->apiKey ) ? $this->apiSettings->apiKey : '');
+
+		$this->apiSettings->apiUser = $this->apiUser;
+		$this->apiSettings->apiKey = $this->apiKey;
 	}
 	
 	/**
@@ -44,7 +49,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		
 		$subscriberLists = array ();
 		
-		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
+		$sendgrid = new \sendgridNewsletter($this->apiUser,$this->apiKey); 
 	
 		$result = $sendgrid->newsletter_lists_get();
 		
@@ -80,7 +85,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		craft()->log->removeRoute('ProfileLogRoute');
 
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
-		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key); 
+		$sendgrid = new \sendgridNewsletter($this->apiUser,$this->apiKey); 
 		
 		// Create an instance of the guzzle client
 		$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -105,7 +110,8 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		$res = $sendgrid->newsletter_get($entry->title);
 		
 		// Get the subject
-		$subject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
+		// @TODO - update this to be the Email Blast Element 
+		$subject = $entry->title;
 						
 		// need to create the template (newsletter)
 		if( ! $res)
@@ -171,7 +177,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	 */
 	public function getSettings()
 	{
-		if ( $this->api_key && $this->api_user )
+		if ( $this->apiKey && $this->apiUser )
 		{
 			$this->apiSettings->valid = true;
 		}
@@ -215,7 +221,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	public function getSenderAddresses()
 	{
 		require_once (dirname( __FILE__ ) . '/../libraries/SendGrid/sendgrid/newsletter.php');
-		$sendgrid = new \sendgridNewsletter($this->api_user,$this->api_key);
+		$sendgrid = new \sendgridNewsletter($this->apiUser,$this->apiKey);
 		
 		$senderAddresses = array();
 		

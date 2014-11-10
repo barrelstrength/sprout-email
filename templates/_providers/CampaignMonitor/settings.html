@@ -6,14 +6,14 @@ CampaignMonitor specific api settings.
 
 {{ forms.textField({
 	label: "Client ID"|t,
-	name: 'settings[CampaignMonitor][client_id]',
+	name: 'settings[CampaignMonitor][clientId]',
 	instructions: "Client ID"|t,
-	value: (settings.client_id is defined ? settings.client_id : null)	
+	value: (settings.clientId is defined ? settings.clientId : null)	
 }) }}
 
 {{ forms.textField({
 	label: "API Key"|t,
-	name: 'settings[CampaignMonitor][api_key]',
+	name: 'settings[CampaignMonitor][apiKey]',
 	instructions: "API Key"|t,
-	value: (settings.api_key is defined ? settings.api_key : null)
+	value: (settings.apiKey is defined ? settings.apiKey : null)
 }) }}

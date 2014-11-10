@@ -14,7 +14,7 @@ use Guzzle\Http\Client;
 class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implements SproutEmail_EmailProviderInterfaceService
 {
 	protected $apiSettings;
-	protected $api_key;
+	protected $apiKey;
 	protected $domain;
 	
 	private $export_once;     # Track that we only run the export once. 
@@ -33,8 +33,13 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 		$res = SproutEmail_EmailProviderSettingsRecord::model()->find( $criteria );
 		$this->apiSettings = json_decode( $res->apiSettings );
 		
-		$this->api_key = isset( $this->apiSettings->api_key ) ? $this->apiSettings->api_key : '';
-		$this->domain = isset( $this->apiSettings->domain ) ? $this->apiSettings->domain : '';
+		$customConfigSettings = craft()->config->get('sproutEmail');
+		
+		$this->apiKey = (isset($customConfigSettings['apiSettings']['MailGun']['apiKey'])) ? $customConfigSettings['apiSettings']['MailGun']['apiKey'] : (isset( $this->apiSettings->apiKey ) ? $this->apiSettings->apiKey : '');
+		$this->domain = (isset($customConfigSettings['apiSettings']['MailGun']['domain'])) ? $customConfigSettings['apiSettings']['MailGun']['domain'] : (isset( $this->apiSettings->domain ) ? $this->apiSettings->domain : '');
+
+		$this->apiSettings->apiKey = $this->apiKey;
+		$this->apiSettings->domain = $this->domain;
 	}
 	
 	/**
@@ -48,7 +53,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 		$subscriber_lists = array ();
 	
 		// List request from Mailgun
-		$mgClient = new Mailgun($this->api_key);
+		$mgClient = new Mailgun($this->apiKey);
 		$result = $mgClient->get("lists");
 		$response = $result->http_response_body;
 
@@ -65,7 +70,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 		$emailblasts = array();
 			
 		// List the emailBlastType options
-		$mgClient = new Mailgun($this->api_key);
+		$mgClient = new Mailgun($this->apiKey);
 		$result = $mgClient->get($this->domain."/emailblasts");
 		$response = $result->http_response_body;        
 
@@ -114,8 +119,9 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 		$textContent = trim($textResponse->getBody());
 
 		// Get the subject of the email from the entry
+		// @TODO update this to use the Email Blast Element
 		$entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
-		$emailSubject = (isset($entry->$emailBlastType["subjectHandle"]) && $entry->$emailBlastType["subjectHandle"] != '') ? $entry->$emailBlastType["subjectHandle"] : $entry->title;
+		$emailSubject = $entry->title;
 
 		// Convert encoded quotes
 		// http://stackoverflow.com/questions/1262038/how-to-replace-microsoft-encoded-quotes-in-php
@@ -152,7 +158,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 
 		foreach($list_email as $send)
 		{
-			$mgClient = new Mailgun($this->api_key);
+			$mgClient = new Mailgun($this->apiKey);
 
 			# Next, instantiate a Message Builder object from the SDK.
 			$msgBldr = $mgClient->MessageBuilder();
@@ -183,7 +189,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 	 */
 	public function getSettings()
 	{
-		if ( $this->api_key && $this->domain )
+		if ( $this->apiKey && $this->domain )
 		{
 			$this->apiSettings->valid = true;
 		}
@@ -234,7 +240,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 
 		// Start with some housecleaning
 		$recipients = craft()->db->createCommand("DELETE FROM 
-																								".DbHelper::addTablePrefix('sproutemail_recipient_lists')."
+																								".DbHelper::addTablePrefix('sproutemail_recipientlists')."
 																							WHERE 
 																								id IN 
 																										(
