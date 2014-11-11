@@ -74,12 +74,14 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 		// Start with an option for everything
 		$sources = array(
 			'*' => array(
-				'label'    => Craft::t('All Email Blasts'),
+				'label'    => Craft::t('All Emails'),
 			)
 		);
 
 		// Prepare the data for our sources sidebar
-		$emailBlastTypes = craft()->sproutEmail_emailBlastType->getEmailBlastTypes();
+		$emailBlastTypes = craft()->sproutEmail_emailBlastType->getEmailBlastTypes('blast');
+
+		$sources[] = array('heading' => 'Campaigns');
 
 		foreach ($emailBlastTypes as $emailBlastType) 
 		{	
@@ -91,6 +93,12 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 				'criteria' => array('emailBlastTypeId' => $emailBlastType->id)
 			);
 		}
+
+		$sources[] = array('heading' => 'Autoresponders');
+
+		$sources['notifications'] = array(
+			'label' => Craft::t('List of Notifications')
+		); 
 
 		return $sources;
 	}
