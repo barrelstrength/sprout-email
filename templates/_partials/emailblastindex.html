@@ -82,9 +82,13 @@
 	
 	jQuery(document).ready(function(){
 
-		jQuery('.export').click(function(){
-				var btn = jQuery(this);
-				var tr = jQuery(this).closest('tr');
+		window.csrfTokenName = "{{ craft.config.csrfTokenName|e('js') }}";
+		window.csrfTokenValue = "{{ craft.request.csrfToken|e('js') }}";
+		
+		var query = 'entryId='+tr.data('entry-id')
+								+'&campaignId='+tr.data('id')
+								+'&action=SproutEmail/campaigns/export'
+								+'&'+csrfTokenName+'='+csrfTokenValue;
 			
 			btn.addClass('disabled');
 			
@@ -111,8 +115,9 @@
 				var tr      = jQuery(this).closest('tr');
 			
 			var query = 'entryId='+tr.data('entry-id')
-									+'&emailBlastTypeId='+tr.data('id')
-												+'&action=SproutEmail/emailblasts/export';
+									+'&campaignId='+tr.data('id')
+									+'&action=SproutEmail/campaigns/export'
+									+'&'+csrfTokenName+'='+csrfTokenValue;
 
 			jQuery.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
 								var myModal = new Garnish.Modal($('<div class="modal" style="padding: 40px;">'+
@@ -133,8 +138,9 @@
 								var btn = jQuery(this);
 								var tr = jQuery(this).closest('tr');            			
 					var query = 'entryId='+tr.data('entry-id')
-											+'&emailBlastTypeId='+tr.data('id')
-														+'&action=SproutEmail/emailblasts/export';
+											+'&campaignId='+tr.data('id')
+											+'&action=SproutEmail/campaigns/export'
+											+'&'+csrfTokenName+'='+csrfTokenValue;
 
 						// Build up our modal
 					var $confirm = $('<div class="modal fitted" />'),
