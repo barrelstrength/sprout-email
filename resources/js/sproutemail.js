@@ -1,51 +1,70 @@
-jQuery(document).ready(function(){
-	mb.init();
+$(document).ready( function() {
+	SproutEmail.init();
 });
 
-var mb = {
-	init: function(){
-		jQuery('select[name=notificationEvent]').change(function(){
-			mb.select_notification_event();
+var SproutEmail = {
+	
+	init: function() 
+	{
+		$('#notificationEvent').change(function(){
+			SproutEmail.selectNotificationEvent();
 		});
-		jQuery('.save-and-continue').click(function(){
-			jQuery(this).closest('form').find('input[name=continue]').val(jQuery(this).attr('id'));
-			jQuery(this).closest('form').submit();
+
+		$('.save-and-continue').click(function(){
+			$(this).closest('form').find('input[name=continue]').val($(this).attr('id'));
+			$(this).closest('form').submit();
 		});
-		jQuery('input[name=useRecipientLists]').change(function(){
-			mb.toggle_recipient_list();
+
+		$('input[name=useRecipientLists]').change(function(){
+			SproutEmail.toggleRecipientList();
 		});
-		jQuery('select[name=emailProvider]').change(function(){
-			mb.select_email_provider();
+
+		$('#emailProvider').change(function(){
+			SproutEmail.selectEmailProvider();
 		});
-		mb.select_notification_event();
-		mb.set_recipient_btns();
-		mb.toggle_recipient_list();
-		mb.select_email_provider();
+
+		SproutEmail.selectNotificationEvent();
+		SproutEmail.setRecipientButtons();
+		SproutEmail.toggleRecipientList();
+		SproutEmail.selectEmailProvider();
 	},
-	toggle_recipient_list: function(){
-		var check_box = jQuery('input[name=useRecipientLists]');
-		if(check_box.is(':checked')){
-			check_box.closest('div').find('.field').show();
-		}else{
-			check_box.closest('div').find('input[type=checkbox]').attr('checked', false);
-			check_box.closest('div').find('.field').hide();
+	
+	toggleRecipientList: function()
+	{
+		var checkBox = $('input[name=useRecipientLists]');
+		
+		if (checkBox.is(':checked'))
+		{
+			checkBox.closest('div').find('.field').show();
+		}
+		else
+		{
+			checkBox.closest('div').find('input[type=checkbox]').attr('checked', false);
+			checkBox.closest('div').find('.field').hide();
 		}
 	},
-	set_recipient_btns: function(){
-		if(jQuery('.recipients-not-defined').length == 0){
-			jQuery('#recipient-btns').removeClass('hidden');
+	
+	setRecipientButtons: function()
+	{
+		if ($('.recipients-not-defined').length == 0)
+		{
+			$('#recipient-btns').removeClass('hidden');
 		}
 	},
-	select_notification_event: function(){
-		jQuery('.event_options').hide();
-		var event = jQuery('select[name=notificationEvent]').val();
-		jQuery('.'+event).show();
+	
+	selectNotificationEvent: function()
+	{
+		$('.event_options').hide();
+		var event = $('#notificationEvent').val();
+		$('.'+event).show();
 	},
-	select_email_provider: function(){
-		var selected = jQuery('select[name=emailProvider]').val();
-		jQuery('.generalsettings').hide();
-		jQuery('.generalsettings').find('input, select').attr('disabled', true);
-		jQuery('#' + selected + '-generalsettings-template').show();
-		jQuery('#' + selected + '-generalsettings-template').find('input, select').attr('disabled', false);
+
+	selectEmailProvider: function()
+	{
+		var selected = $('#emailProvider').val();
+		$('.generalsettings').hide();
+		$('.generalsettings').find('input, select').attr('disabled', true);
+		$('#' + selected + '-generalsettings-template').show();
+		$('#' + selected + '-generalsettings-template').find('input, select').attr('disabled', false);
 	}
 }
