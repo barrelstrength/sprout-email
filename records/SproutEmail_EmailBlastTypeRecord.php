@@ -124,18 +124,21 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	public function rules()
 	{
 		$rules = array (
+			// required fields
 			array (
-				'name,fromName,fromEmail,replyToEmail',
+				'name',
 				'required' 
-			), // required fields
+			),
+			// must be valid emails
 			array (
 				'fromEmail',
 				'email' 
-			), // must be valid emails
+			),
+			// custom
 			array (
 				'emailProvider',
 				'validEmailProvider' 
-			)  // custom
+			)
 		);
 		
 		return array_merge( $rules, $this->rules );
