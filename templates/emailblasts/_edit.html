@@ -3,7 +3,6 @@
 
 {% set crumbs = [
 	{ label: craft.sproutEmail.name|t, url: url('sproutemail') },
-	{ label: "Email Blasts"|t, url: url('sproutemail/emailblasts') },
 ] %}
 
 {% set title = (emailBlast is defined and emailBlast.title is not empty ? emailBlast.title : 'Create a new Email Blast') %}
@@ -13,12 +12,26 @@
 	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/{id}') }}">
 		<input type="hidden" name="action" value="sproutEmail/emailBlast/saveEmailBlast">
 		<input type="hidden" name="redirect" value="sproutemail/emailblasts">
+		
 		<input type="hidden" name="emailBlastTypeId" value="{{ emailBlastTypeId }}">
 		<input type="hidden" name="emailBlastId" value="{{ emailBlastId }}">
 
 		{% if namespace is not defined %}{% set namespace = 'fields' %}{% endif %}
-	
+
 		<div class="grid first">
+
+			{# @TODO - add clear messaging at the top about the status of this blast
+			{% if emailBlast.enabled %}
+			<div class="item" data-colspan="3">
+				<div class="pane" style="font-size:14px;">
+					<p><strong>Active:</strong> This notification is turned on and delivering.</p>
+					<p><strong>Exported:</strong> This campaign was exported to SendGrid on X date.</p>
+					<p><strong>Sent:</strong> This campaign was sent via MailGun on X date.</p>
+				</div>
+			</div>
+			{% endif %}
+			#}
+
 			<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
 				<div id="fields" class="pane">
 
@@ -30,79 +43,172 @@
 
 			<div class="item" data-position="right" data-colspan="1">
 
-				{% if shareUrlHtml is defined and shareUrlText is defined %}
-					<div id="view-btns" class="btngroup">
-						<div id="livepreview-btn" class="btn big">
-							<a href="{{ shareUrlHtml }}" title="{{ 'View the HTML Email'|t }}" target="_blank">{{ "HTML"|t }}</a>
-						</div>
-						<div id="livepreview-btn" class="btn big">
-							<a href="{{ shareUrlText }}" title="{{ 'View the Text Email'|t }}" target="_blank">{{ "Text"|t }}</a>
-						</div>
-						<div class="btn big" id="share-btn" data-icon="share"></div>
-					</div>
-				{% endif %}
-
 				<div class="pane">
 
-					{{ forms.textField({
-						label: "Slug"|t,
-						locale: emailBlast.locale,
-						id: 'slug',
-						name: 'slug',
-						value: emailBlast.slug,
-						errors: (emailBlast ? emailBlast.getErrors('slug')|merge(emailBlast.getErrors('uri'))),
-					}) }}
+					<nav id="tabs" class="tabs">
+						<ul>
+							<li><a class="tab sel" href="#tab-sproutemail-overview">Overview</a></li>
+							<li><a class="tab" href="#tab-sproutemail-sender">Sender</a></li>
+							<li><a class="tab" href="#tab-sproutemail-recipients">Recipients</a></li>
 
-					{# {{ forms.dateTimeField({
-						label: "Post Date"|t,
-						id: 'postDate',
-						name: 'postDate',
-						value: (emailBlast.postDate ? emailBlast.postDate : null),
-						errors: emailBlast.getErrors('postDate'),
-						disabled: isVersion
-					}) }}
+							{% if emailBlastType.type == 'notification' %}
+							<li><a class="tab" href="#tab-sproutemail-trigger">Trigger</a></li>
+							{% endif %}
+						</ul>
+					</nav>
 
-					{{ forms.dateTimeField({
-						label: "Expiration Date"|t,
-						id: 'expiryDate',
-						name: 'expiryDate',
-						value: (emailBlast.expiryDate ? emailBlast.expiryDate : null),
-						errors: emailBlast.getErrors('expiryDate'),
-						disabled: isVersion
-					}) }} #}
+					<div>
+						<div id="tab-sproutemail-overview">
+							{% if shareUrlHtml is defined and shareUrlText is defined %}
+							<h3>Preview: <a href="{{ shareUrlHtml }}">HTML</a> | <a href="{{ shareUrlText }}">Text</a></h3>
+							{% endif %}
 
-					{# {% if canPublish or (not isVersion and canDeleteEntry) %} #}
+							<p>
+								<strong>Sender</strong><br/>
+								Ben Parizek<br/>
+								ben@barrelstrengthdesign.com
+							</p>
 
-						{% set statusInput %}
-							{# {% if canPublish %} #}
-								<div class="left">
-									{{ forms.lightswitch({
-										id: 'enabled',
-										name: 'enabled',
-										on: emailBlast.enabled
-									}) }}
-								</div>
+							<p>
+								<strong>Reply To</strong><br/>
+								ben@barrelstrengthdesign.com
+							</p>
+
+							<strong>Recipents</strong>
+							<ul>
+								<li>List One</li>
+								<li>List Two</li>
+							</ul>
+
+							{% if emailBlastType.type == 'blast' %}
+
+							{{ forms.textField({
+								label: "Slug"|t,
+								locale: emailBlast.locale,
+								id: 'slug',
+								name: 'slug',
+								value: emailBlast.slug,
+								errors: (emailBlast ? emailBlast.getErrors('slug')|merge(emailBlast.getErrors('uri'))),
+							}) }}
+
+							{% endif %}
+
+							{# {% if canPublish or (not isVersion and canDeleteEntry) %} #}
+
+								{% set statusInput %}
+									{# {% if canPublish %} #}
+										<div class="left">
+											{{ forms.lightswitch({
+												id: 'enabled',
+												name: 'enabled',
+												on: emailBlast.enabled
+											}) }}
+										</div>
+									{# {% endif %} #}
+
+									{# {% if not isSingle and not isVersion and canDeleteEntry %} #}
+										<div class="right">
+											<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}" data-action="sproutEmail/emailBlast/deleteEmailBlast" data-confirm="Are you sure you want to delete this Email Blast and all of it's data?" data-redirect="sproutemail/emailblasts">
+										</div>
+									{# {% endif %} #}
+								{% endset %}
+
+								{{ forms.field({
+									label: "Status"|t,
+									id: 'enabled'
+								}, statusInput) }}
 							{# {% endif %} #}
 
-							{# {% if not isSingle and not isVersion and canDeleteEntry %} #}
-								<div class="right">
-									<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}" data-action="sproutEmail/emailBlast/deleteEmailBlast" data-confirm="Are you sure you want to delete this Email Blast and all of it's data?" data-redirect="sproutemail/emailblast">
-								</div>
-							{# {% endif %} #}
-						{% endset %}
+						</div>
 
-						{{ forms.field({
-							label: "Status"|t,
-							id: 'enabled'
-						}, statusInput) }}
-					{# {% endif %} #}
+						<div id="tab-sproutemail-sender" class="hidden">
+
+						{% if craft.sproutEmail.getGeneralSettingsTemplate(emailBlastType.emailProvider) %}
+
+							<div id="{{ emailBlastType.emailProvider }}-generalsettings-template" class="generalsettings"   >
+								{% include "sproutemail/_providers/" ~ emailBlastType.emailProvider ~ "/generalEmailBlastTypeSettings" %}
+							</div>
+
+						{% else %}
+
+							<div id="{{ emailBlastType.emailProvider }}-generalsettings-template"  class="generalsettings"  >
+							{% include "sproutemail/_partials/generalEmailBlastTypeSettings" %}
+							</div>
+
+						{% endif %}
+
+						</div>
+
+						<div id="tab-sproutemail-recipients" class="hidden">
+
+							<style type="text/css">
+							#recipients label {
+								padding-left:2px;
+							}
+							</style>
+
+							<div style="max-height:300px;overflow-y:auto;" id="recipients">
+							{% include "sproutemail/_providers/" ~ emailBlastType.emailProvider ~ "/recipients" %}
+							</div>
+
+						</div>
+
+						{% if emailBlastType.type == 'notification' %}
+						<div id="tab-sproutemail-trigger" class="hidden">
+
+							{% set events = craft.sproutEmail.getNotificationEvents() %}
+							
+							{% set existingEvent = (emailBlastType is defined and emailBlastType.notificationEvent[0] is defined ? (emailBlastType.notificationEvent[0].registrar == 'craft' ? emailBlastType.notificationEvent[0].event | replace({'.':'---'}) : emailBlastType.notificationEvent[0].id) : null) %}
+
+							{% set notificationEvent = (emailBlastType is defined ? (emailBlastType.getErrors()|length ? emailBlastType.notificationEvent : existingEvent) : null) %}
+
+							{{ forms.selectField({
+								label: "When would you like to send this email"|t,
+								id: 'notificationEvent',
+								name: 'sproutEmail[notificationEvent]',
+								instructions: "Select the event on which you would like to send this email."|t,
+								options : events,
+								value: notificationEvent,
+								errors: (emailBlastType is defined ? emailBlastType.getErrors('notificationEvent') : null) 	
+							}) }}
+							
+							{% set eventOptions = craft.sproutEmail.getNotificationEventOptions() %}
+							
+							{% if eventOptions.system_options is defined %}
+								{% for key, val in eventOptions.system_options %}
+									{% for key2, val2 in val %}
+										<div class="event_options {{ key | replace({'.':'---'}) }}" >
+											{% include "sproutemail/settings/notifications/_options/" ~ key ~ "/" ~  val2 %}
+										</div>
+									{% endfor %}
+								{% endfor %}
+							{% endif %}
+							
+							{% if eventOptions.plugin_options is defined %}
+								{% for key, val in eventOptions.plugin_options %}
+										<div class="event_options {{ key }}" >
+											{{ include(template_from_string(val.html))  }}
+										</div>
+								{% endfor %}	
+							{% endif %}
+
+						</div>
+						{% endif %}
+					</div>
+
 				</div>
+				
 
 				<table class="inputs fullwidth">
 					<tr>
 						<td class="thin">
 							<div class="btngroup submit first">
 								<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+							</div>
+							<div id="view-btns" class="btngroup preview-btns">
+								<div class="btn">
+									<a href="#" title="{{ 'Test and prepare delivery'|t }}" target="_blank">{{ "Test and prepare delivery"|t }}</a>
+								</div>
 							</div>
 						</td>
 					</tr>
@@ -114,6 +220,13 @@
 	
 	</form>
 
+
+<style type="text/css">
+	.preview-btns a {
+		color:inherit;
+		text-decoration: none;
+	}
+</style>
 {% endblock %}
 
 
