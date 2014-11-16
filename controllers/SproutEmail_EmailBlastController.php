@@ -56,22 +56,27 @@ class SproutEmail_EmailBlastController extends BaseController
 	}
 
 	/**
-	 * Delete an entry.
+	 * Delete an email blast
 	 * 
 	 * @return void
 	 */
-	public function actionDeleteEntry()
+	public function actionDeleteEmailBlast()
 	{	
 		$this->requirePostRequest();
 		
-		// Get the Entry
-		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry = craft()->sproutForms_entries->getEntryById($entryId);
+		// Get the Email Blast
+		$emailBlastId = craft()->request->getRequiredPost('emailBlastId');
+		$emailBlast = craft()->sproutEmail_emailBlast->getEmailBlastById($emailBlastId);
 		
-		// @TODO - handle errors
-		$success = craft()->sproutForms_entries->deleteEntry($entry);
-
-		$this->redirectToPostedUrl($entry);
+		if (craft()->sproutEmail_emailBlast->deleteEmailBlast($emailBlast))
+		{
+			$this->redirectToPostedUrl($emailBlast);
+		}
+		else
+		{
+			// @TODO - return errors
+			SproutEmailPlugin::log(json_encode($emailBlast->getErrors()));
+		}
 	}
 
 	/**
