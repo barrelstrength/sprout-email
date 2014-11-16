@@ -55,11 +55,11 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 	{
 		$this->requirePostRequest();
 		
-		$emailBlastTypeId = craft()->request->getRequiredPost('id');
+		$emailBlastTypeId = craft()->request->getRequiredPost('sproutEmail.id');
 
-		// @TODO - clean this ugly crap up
+		// @TODO - clean this up
 		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
-		$emailBlastType->setAttributes( craft()->request->getPost() );
+		$emailBlastType->setAttributes( craft()->request->getPost('sproutEmail') );
 
 		$useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
 		$emailBlastType->useRecipientLists = $useRecipientLists;
@@ -78,11 +78,11 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		if ( $emailBlastTypeId = craft()->sproutEmail_emailBlastType->saveEmailBlastType( $emailBlastType,  $tab) )
 		{
 			// if this was called by the child (Notifications), return the model
-			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
-			{
-				$emailBlastType->id = $emailBlastTypeId;
-				return $emailBlastType;
-			}
+			// if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
+			// {
+			// 	$emailBlastType->id = $emailBlastTypeId;
+			// 	return $emailBlastType;
+			// }
 
 			$_POST['redirect'] = str_replace('{id}', $emailBlastType->id, $_POST['redirect']);
 
@@ -110,21 +110,23 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 				$this->redirectToPostedUrl($emailBlastType);
 			}
 		}
-		else // problem
+		else
 		{
+			SproutEmailPlugin::log(json_encode($emailBlastType->getErrors()));
+			
 			craft()->userSession->setError( Craft::t( 'Please correct the errors below.' ) );
 			
 			// if this was called by the child (Notifications), return the model
-			if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
-			{
-				return $emailBlastType;
-			}
+			// if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
+			// {
+			// 	return $emailBlastType;
+			// }
+
+			// Send the field back to the template
+			craft()->urlManager->setRouteVariables(array(
+				'emailBlastType' => $emailBlastType 
+			));
 		}
-		
-		// Send the field back to the template
-		craft()->urlManager->setRouteVariables(array(
-			'emailBlastType' => $emailBlastType 
-		));
 	}
 	
 	/**
@@ -168,5 +170,25 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		
 		craft()->userSession->setNotice( Craft::t( 'Settings successfully saved.' ) );
 		$this->redirectToPostedUrl();
+	}
+
+
+	public function actionEmailBlastTypeSettingsTemplate(array $variables = array())
+	{
+		if (isset($variables['emailBlastTypeId'])) 
+		{
+			// If emailBlastType already exists, we're returning an error object
+			if ( ! isset($variables['emailBlastType']) ) 
+			{
+				$variables['emailBlastType'] = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($variables['emailBlastTypeId']);
+			}
+		}
+		else
+		{	
+			$variables['emailBlastType'] = new SproutEmail_EmailBlastType();
+		}
+		
+		// Load our template
+		$this->renderTemplate('sproutemail/settings/emailblasttypes/_edit', $variables);
 	}
 }
