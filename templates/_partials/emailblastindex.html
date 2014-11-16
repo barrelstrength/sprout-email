@@ -6,22 +6,27 @@
 
 <table id="emailblasts" class="data fullwidth">
 	<thead>
-		<th width="70%">Email Blast</th>
-		<th width="15%">Preview</th>
-		<th width="15%">Deliver</th>
+		<th width="50%">Email Blast</th>
+		<th width="20%">Type</th>
+		<th width="20%">Date Created</th>
+		{# <th width="15%">Preview</th>
+		<th width="15%"></th> #}
 	</thead>
 {% endif %}
 
 	<tr data-id="{{ emailBlast.id }}" data-name="{{ emailBlast.subjectLine|t }}">
 		<td>
 			<span class="status {{ emailBlast.status }}"></span>
-			<a href="{{ url('sproutemail/emailblasts/edit/' ~ emailBlast.id) }}">{{ emailBlast.title ? emailBlast.subjectLine : 'New Email Blast' }}</a><br/>
-			<span style="color: #999;text-transform:uppercase;font-size:.8em">
-				{{ emailBlastType.name }} <span style="color:#121212;">/</span> {{ emailBlast.dateCreated|date('F d, Y') }}
-			</span>
+			<a href="{{ url('sproutemail/emailblasts/edit/' ~ emailBlast.id) }}">{{ emailBlast.title ? emailBlast.subjectLine : 'New Email Blast' }}</a>
+		</td>
+		<td>
+			{{ emailBlastType.type }}
+		</td>
+		<td>
+			{{ emailBlast.dateCreated|date('m/d/Y') }}
 		</td>
 		 
-		{% if emailBlast.emailBlastTypeId and emailBlast.id and emailBlastType.template and emailBlastType.emailProvider %}
+		{# {% if emailBlast.emailBlastTypeId and emailBlast.id and emailBlastType.template and emailBlastType.emailProvider %}
 		<td>		
 			<a href="{{ siteUrl ~ emailBlastType.template }}?id={{emailBlast.id}}" target="_blank">HTML</a> 
 			/ 
@@ -56,16 +61,16 @@
 
 				{% default %}
 			
-					{# Do nothing #}
+					
 			
 			{% endswitch %}
 
 		</td>
 		{% else %}
 		<td colspan="2">
-			<i><a href="{{ url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastType.id ) }}" style="color:inherit;text-decoration:underline;">Update your settings</a> to have full control over your Email Blasts for {{ emailBlastType.name }}.</i>
+			<i><a href="{{ url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastType.id ) }}" style="color:inherit;text-decoration:underline;">Complete settings</a></i>
 		</td>
-		{% endif %}
+		{% endif %} #}
 	</tr>
 
 {% if loop.last %}
