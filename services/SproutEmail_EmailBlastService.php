@@ -95,7 +95,7 @@ class SproutEmail_EmailBlastService extends BaseApplicationComponent
 	 * @param int $id
 	 * @return boolean
 	 */
-	public function deleteEmailBlast(SproutEmail_EmailBlastRecord $emailBlast)
+	public function deleteEmailBlast(SproutEmail_EmailBlastModel $emailBlast)
 	{
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 		try

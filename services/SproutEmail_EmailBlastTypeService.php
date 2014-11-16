@@ -27,79 +27,6 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Gets a emailBlastType
-	 *
-	 * @param
-	 *            array possible conditions: array('id' => <id>, 'handle' => <handle>, ...)
-	 *            as defined in $valid_keys
-	 * @return SproutEmail_EmailBlastTypeModel null
-	 */
-	// public function getEmailBlastType($conditions = array())
-	// {
-	// 	// we can do where clauses on these keys only
-	// 	$valid_keys = array (
-	// 		'id',
-	// 		'handle' 
-	// 	);
-		
-	// 	$criteria = new \CDbCriteria();
-		
-	// 	if ( ! empty( $conditions ) )
-	// 	{
-	// 		$params = array ();
-	// 		foreach ( $conditions as $key => $val )
-	// 		{
-	// 			// only accept our defined keys
-	// 			if ( ! in_array( $key, $valid_keys ) )
-	// 			{
-	// 				continue;
-	// 			}
-				
-	// 			$criteria->addCondition( 't.' . $key . '=:' . $key );
-	// 			$params [':' . $key] = $val;
-	// 		}
-			
-	// 		if ( ! empty( $params ) )
-	// 		{
-	// 			$criteria->params = $params;
-	// 		}
-	// 	}
-		
-	// 	// get emailBlastType record with recipient lists
-	// 	$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->with( 'recipientList', 'emailBlastTypeNotificationEvent' )->find( $criteria );
-		
-	// 	if ( $emailBlastTypeRecord )
-	// 	{
-	// 		// now we need to populate the model
-	// 		$emailBlastTypeModel = SproutEmail_EmailBlastTypeModel::populateModel( $emailBlastTypeRecord );
-			
-	// 		$unserialized = array ();
-	// 		foreach ( $emailBlastTypeRecord->emailBlastTypeNotificationEvent as $event )
-	// 		{
-	// 			$opts = $event->options;
-	// 			$event->options = isset( $opts ['options'] ) ? $opts ['options'] : array ();
-	// 			$unserialized [] = $event;
-	// 		}
-			
-	// 		$emailBlastTypeModel->notificationEvents = $unserialized;
-			
-	// 		// now for the recipient related data
-	// 		if ( count( $emailBlastTypeRecord->recipientList ) > 0 )
-	// 		{
-	// 			$emailProviderRecipientListIdArr = array ();
-	// 			foreach ( $emailBlastTypeRecord->recipientList as $list )
-	// 			{
-	// 				$emailProviderRecipientListIdArr [$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
-	// 			}
-				
-	// 			$emailBlastTypeModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
-	// 		}
-			
-	// 		return $emailBlastTypeModel;
-	// 	}
-	// }
-
-		/**
 	 * Returns all section based emailblasts.
 	 *
 	 * @param string|null $indexBy            
@@ -157,7 +84,7 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 	 */
 	public function saveEmailBlastType(SproutEmail_EmailBlastTypeModel $emailBlastType, $tab = 'info')
 	{
-		if ($emailBlastType->id) 
+		if (is_numeric($emailBlastType->id))
 		{
 			$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->findById( $emailBlastType->id );
 			$oldEmailBlastType = SproutEmail_EmailBlastTypeModel::populateModel($emailBlastTypeRecord);
@@ -175,9 +102,7 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 		{
 			// save & associate the recipient list
 			case 'recipients' :
-				
-				$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->findById( $emailBlastType->id );
-				$emailBlastType->emailProvider = $emailBlastTypeRecord->emailProvider;
+
 				$service = 'sproutEmail_' . lcfirst( $emailBlastTypeRecord->emailProvider );
 
 				if ( ! craft()->{$service}->saveRecipientList( $emailBlastType, $emailBlastTypeRecord ) )
@@ -233,14 +158,58 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 					// Save the Email Blast Type
 					$emailBlastTypeRecord = $this->_saveEmailBlastTypeInfo( $emailBlastType );
 
-					if ( $emailBlastTypeRecord->hasErrors() ) // no good
+					// Rollback if saving fails
+					if ( $emailBlastTypeRecord->hasErrors() )
 					{
 						$transaction->rollBack();
 						return false;
 					}
+
+					// If we have a Notification, also Save the Email Blast
+					if ($emailBlastType->type == EmailBlastType::Notification) 
+					{
+						// Check to see if we have a matching Email Blast by EmailBlastTypeId
+						$criteria = craft()->elements->getCriteria('SproutEmail_EmailBlast');
+						$criteria->emailBlastTypeId = $oldEmailBlastType->id;
+						$emailBlast = $criteria->first();
+						
+						if (isset($emailBlast))
+						{	
+							// if we have a blast already, update it
+							$emailBlast->emailBlastTypeId = $emailBlastTypeRecord->id;
+							$emailBlast->subjectLine = $emailBlastType->subject;
+							$emailBlast->getContent()->title = $emailBlastType->name;
+						}
+						else
+						{
+							// If we don't have a blast yet, create a new entry
+							$emailBlast = new SproutEmail_EmailBlastModel();
+							$emailBlast->emailBlastTypeId = $emailBlastTypeRecord->id;
+							$emailBlast->subjectLine = $emailBlastType->subject;
+							$emailBlast->getContent()->title = $emailBlastType->name;
+						}
+						
+						if (craft()->sproutEmail_emailBlast->saveEmailBlast($emailBlast)) 
+						{
+							// TODO - redirect and such
+						}
+						else
+						{
+							SproutEmailPlugin::log(json_encode($emailBlast->getErrors()));
+
+							echo "<pre>";
+							print_r($emailBlast->getErrors());
+							echo "</pre>";
+							die('fin');
+							
+						}
+					}
+
 				}
 				catch ( \Exception $e )
 				{	
+					SproutEmailPlugin::log(json_encode($e));
+
 					throw new Exception( Craft::t( 'Error: EmailBlastType could not be saved.' ) );
 				}
 				break;
@@ -255,7 +224,8 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 	{
 		$oldEmailBlastTypeEmailProvider = null;
 		
-		if ( isset( $emailBlastType->id ) && $emailBlastType->id ) // this will be an edit
+		// If we already have a numeric ID this will be an edit
+		if ( isset( $emailBlastType->id ) && is_numeric($emailBlastType->id) )
 		{
 			$emailBlastTypeRecord = SproutEmail_EmailBlastTypeRecord::model()->findById( $emailBlastType->id );
 			
@@ -287,6 +257,7 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 		$emailBlastTypeRecord->replyToEmail = $emailBlastType->replyToEmail;
 		$emailBlastTypeRecord->emailProvider = $emailBlastType->emailProvider;
 		
+		$emailBlastTypeRecord->urlFormat = $emailBlastType->urlFormat;
 		$emailBlastTypeRecord->template = $emailBlastType->template;
 		$emailBlastTypeRecord->templateCopyPaste = $emailBlastType->templateCopyPaste;
 

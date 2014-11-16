@@ -113,7 +113,7 @@ class SproutEmail_EmailBlastFieldType extends BaseFieldType
 	 */
 	public function prepValueFromPost($value)
 	{   
-		$overrideFields = craft()->request->getPost('fields.sproutEmail.override');
+		$overrideFields = craft()->request->getPost('fields.sproutEmail');
 
 		return json_encode($overrideFields);
 	}

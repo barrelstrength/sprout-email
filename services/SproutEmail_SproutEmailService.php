@@ -89,9 +89,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 	 */
 	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
 	{
-		$emailBlastTypeModel = craft()->sproutEmail_emailBlastType->getEmailBlastType( array (
-				'id' => $emailBlastType ['id'] 
-		) );
+		$emailBlastTypeModel = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastType['id']);
 		
 		if ( $this->sendEmailBlast( $emailBlastTypeModel, $listIds ) === false )
 		{
@@ -306,6 +304,7 @@ class SproutEmail_SproutEmailService extends SproutEmail_EmailProviderService im
 		
 		// parse and create individual recipients as needed
 		$recipients = array_filter( explode( ",", $emailBlastType->recipients ) );
+
 		if ( ! $emailBlastType->useRecipientLists && ! $recipients )
 		{
 			$emailBlastType->addError( 'recipients', 'You must add at least one valid email.' );

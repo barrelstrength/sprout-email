@@ -155,12 +155,12 @@ class SproutEmail_ListsController extends BaseController
 			switch (craft()->request->getPost( 'continue' ))
 			{
 				case 'info' :
-					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
+					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
 					break;
 
 				case 'template' :
 				
-					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
+					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
 					break;
 
 				default :

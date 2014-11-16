@@ -26,6 +26,10 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	 */
 	public function defineAttributes()
 	{
+		// @TODO - where do we load this smarter? Already in init()
+		// but needed here for install.
+		Craft::import('plugins.sproutemail.enums.EmailBlastType');
+
 		return array (
 			'fieldLayoutId'    => AttributeType::Number,
 			'emailProvider'    => AttributeType::String,
@@ -51,6 +55,7 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 			'fromEmail'        => AttributeType::Email,
 			'replyToEmail'     => AttributeType::Email,
 
+			'urlFormat'        => AttributeType::String,
 			'template'         => AttributeType::String,
 			'templateCopyPaste'=> AttributeType::String,
 			
