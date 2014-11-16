@@ -76,39 +76,26 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerCpRoutes()
 	{
 		return array (
-			'sproutemail/settings/emailblasttypes/new' => 
-			'sproutemail/settings/emailblasttypes/_create',
-			
-			'sproutemail/settings/emailblasttypes/edit\/(?P<emailBlastTypeId>\d+)' => 
-			'sproutemail/settings/emailblasttypes/_edit',
-			
-			'sproutemail/settings/emailblasttypes/edit/(?P<emailBlastTypeId>\d+)/template' => 
-			'sproutemail/settings/emailblasttypes/_edit',
-			
-			'sproutemail/settings/emailblasttypes/edit/(?P<emailBlastTypeId>\d+)/recipients' => 
-			'sproutemail/settings/emailblasttypes/_edit',
 
-			'sproutemail/settings/emailblasttypes/edit/(?P<emailBlastTypeId>\d+)/fields' => 
-			'sproutemail/settings/emailblasttypes/_edit',
-			
-			'sproutemail/notifications/new' => 
-			'sproutemail/notifications/_create',
-			
-			'sproutemail/notifications/edit\/(?P<emailBlastTypeId>\d+)' => 
-			'sproutemail/notifications/_edit',
-			
-			'sproutemail/notifications/edit/(?P<emailBlastTypeId>\d+)/template' => 
-			'sproutemail/notifications/_edit',
-			
-			'sproutemail/notifications/edit/(?P<emailBlastTypeId>\d+)/recipients' => 
-			'sproutemail/notifications/_edit',
-			
-			'sproutemail/events/new' => 
-			'sproutemail/events/_edit',
-			
-			'sproutemail/events/edit/(?P<eventId>\d+)' => 
-			'sproutemail/events/_edit',
+			/*
+			 * Edit Email Blast Type Settings
+			 * @controller SproutEmail_EmailBlastTypeController
+			 * @method     actionEmailBlastTypeSettingsTemplate
+			 * @template   sproutemail/templates/settings/emailblasttypes/_edit.html
+			 */
+			'sproutemail/settings/emailblasttypes/edit\/(?P<emailBlastTypeId>\d+|new)(/(template|recipients|fields))?' => array(
+				'action' => 'sproutEmail/emailBlastType/emailBlastTypeSettingsTemplate'
+			),
 
+			/*
+			 * Edit Notification Settings
+			 * @controller SproutEmail_NotificationsController
+			 * @method     actionNotificationSettingsTemplate
+			 * @template   sproutemail/templates/settings/notifications/_edit.html
+			 */
+			'sproutemail/settings/notifications/edit\/(?P<emailBlastTypeId>\d+|new)(/(template|recipients|fields))?' => array(
+				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
+			),
 
 			/*
 			 * Create New Email Blast
@@ -149,6 +136,14 @@ class SproutEmailPlugin extends BasePlugin
 			 */
 			'sproutemail/examples' => 
 			'sproutemail/_cp/examples',
+
+			// ------------------------------------------------------------
+
+			'sproutemail/events/new' => 
+			'sproutemail/events/_edit',
+			
+			'sproutemail/events/edit/(?P<eventId>\d+)' => 
+			'sproutemail/events/_edit',
 		);
 	}
 
