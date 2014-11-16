@@ -1,17 +1,11 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% if emailBlastType is defined %}
-	{% set title = "Edit Email Blast Type" %}
-	{% set emailBlastTypeId = emailBlastType.id %}
-{% else %}
-	{% set title = "Edit Email Blast Type" %}
-	{% set emailBlastType = craft.sproutEmail.getEmailBlastTypeById(emailBlastTypeId) %}
-	{% set emailBlastTypeId = emailBlastType.id %}	
-{% endif %}
+{% set title = "Edit Email Blast Type" %}
 
 {% set crumbs = [
 	{ label: "Sprout Email"|t, url: url('sproutemail/emailblasts') },
+  { label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
 {% set tabs = {
@@ -39,9 +33,7 @@
 
 {% set content %}
 
-{% if craft.request.getSegment('6') == 'template' %}
-    {% include "sproutemail/settings/emailblasttypes/_tabs/template" %}
-{% elseif craft.request.getSegment('6') == 'recipients' %} 
+{% if craft.request.getSegment('6') == 'recipients' %} 
     {% include "sproutemail/settings/emailblasttypes/_tabs/recipients" %}
 {% elseif craft.request.getSegment('6') == 'fields' %}
     {% include 'sproutemail/settings/emailblasttypes/_tabs/fields' %}
