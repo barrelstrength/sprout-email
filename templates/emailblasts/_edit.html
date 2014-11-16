@@ -9,7 +9,7 @@
 
 {% block main %}
 	
-	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/{id}') }}">
+	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/emailblasts/edit/{id}') }}" data-confirm-unload>
 		<input type="hidden" name="action" value="sproutEmail/emailBlast/saveEmailBlast">
 		<input type="hidden" name="redirect" value="sproutemail/emailblasts">
 		
@@ -52,7 +52,7 @@
 							<li><a class="tab" href="#tab-sproutemail-recipients">Recipients</a></li>
 
 							{% if emailBlastType.type == 'notification' %}
-							<li><a class="tab" href="#tab-sproutemail-trigger">Trigger</a></li>
+							<li><a class="tab" href="#tab-sproutemail-rules">Rules</a></li>
 							{% endif %}
 						</ul>
 					</nav>
@@ -154,7 +154,7 @@
 						</div>
 
 						{% if emailBlastType.type == 'notification' %}
-						<div id="tab-sproutemail-trigger" class="hidden">
+						<div id="tab-sproutemail-rules" class="hidden">
 
 							{% set events = craft.sproutEmail.getNotificationEvents() %}
 							
@@ -202,14 +202,26 @@
 				<table class="inputs fullwidth">
 					<tr>
 						<td class="thin">
+
+							{% if emailBlastType.type == 'notification' %}
+							<div class="btngroup submit first">
+								<input type="submit" class="btn submit" value="{{ 'Save Notification'|t }}">
+							</div>
+							{% endif %}
+
+							{% if emailBlastType.type == 'blast' %}
+
 							<div class="btngroup submit first">
 								<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
 							</div>
+
 							<div id="view-btns" class="btngroup preview-btns">
 								<div class="btn">
 									<a href="#" title="{{ 'Test and prepare delivery'|t }}" target="_blank">{{ "Test and prepare delivery"|t }}</a>
 								</div>
 							</div>
+
+							{% endif %}
 						</td>
 					</tr>
 				</table>
