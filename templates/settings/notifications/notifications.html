@@ -13,7 +13,7 @@
   },
   notifications:  { 
     label: "Notifications"|t, 
-    url: url('sproutemail/notifications') 
+    url: url('sproutemail/settings/notifications') 
   },
 } %} #}
 
@@ -39,17 +39,17 @@
 		
 			<tr data-id="{{ emailBlastType.id }}"  data-name="{{ emailBlastType.name|t }}">
 				<td>
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}">{{ emailBlastType.name }}</a>
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}">{{ emailBlastType.name }}</a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ emailBlastType.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td>
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}">
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}">
 						Notification Info
 					</a> | 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}/template">
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}/template">
 						Templates
 					</a> | 
-					<a href="{{ url('sproutemail/notifications/edit/') }}/{{ emailBlastType.id }}/recipients">
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}/recipients">
 						Define recipients
 					</a>
 				</td>
@@ -68,7 +68,7 @@
 	{% if notifications|length %}
 	 	
 		<div class="buttons">
-			<a class="btn submit add icon" href="{{ url('sproutemail/notifications/new') }}">New Notification</a>
+			<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/new') }}">New Notification</a>
 		</div>
 
 	{% else %}
@@ -80,7 +80,7 @@
 		 	<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on top of user generated content, keep an eye on publish workflows, or be in the know when something happens on your website.</p>
 
 		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutemail/notifications/new') }}">Create a Notification &raquo;</a>
+				<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/new') }}">Create a Notification &raquo;</a>
 			</div>
 
 		</div>

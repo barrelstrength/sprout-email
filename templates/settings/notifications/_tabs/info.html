@@ -1,18 +1,19 @@
 
-<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/notifications/edit/{id}') }}">
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
 	<input type="hidden" name="action" value="sproutEmail/notifications/saveNotification">
-	<input type="hidden" name="redirect" value="sproutemail/notifications">
-	<input type="hidden" name="id" value="{{ emailBlastTypeId }}">
+	<input type="hidden" name="redirect" value="sproutemail/settings#settings-notifications">
 	<input type="hidden" name="continue" value="false">
 	<input type="hidden" name="tab" value="info">
-	<input type="hidden" name="emailProvider" value="SproutEmail">
+
+	<input type="hidden" name="sproutEmail[id]" value="{{ emailBlastTypeId }}">
+	<input type="hidden" name="sproutEmail[emailProvider]" value="SproutEmail">
 	
 	<div id="tab-emailBlastType-info" class="tab-content" >
 
 		{{ forms.textField({
 			label: "Notification Name"|t,
 			id: 'name',
-			name: 'name',
+			name: 'sproutEmail[name]',
 			instructions: "Human readable notification name"|t,
 			value: (emailBlastType is defined ? emailBlastType.name : null),
 			autofocus: true,
@@ -23,7 +24,7 @@
 		{{ forms.textField({
 			label: "Email Subject"|t,
 			id: 'subject',
-			name: 'subject',
+			name: 'sproutEmail[subject]',
 			instructions: "The subject line of your email"|t,
 			value: (emailBlastType is defined ? emailBlastType.subject : null),
 			required: true,
@@ -33,7 +34,7 @@
 		{{ forms.textField({
 			label: "From Name"|t,
 			id: 'fromName',
-			name: 'fromName',
+			name: 'sproutEmail[fromName]',
 			instructions: "The person or business sending the email"|t,
 			value: (emailBlastType is defined ? emailBlastType.fromName : null),
 			required: true,
@@ -43,7 +44,7 @@
 		{{ forms.textField({
 			label: "From Email"|t,
 			id: 'fromEmail',
-			name: 'fromEmail',
+			name: 'sproutEmail[fromEmail]',
 			instructions: "The email address of the person or business sending the email"|t,
 			value: (emailBlastType is defined ? emailBlastType.fromEmail : null),
 			required: true,
@@ -53,7 +54,7 @@
 		{{ forms.textField({
 			label: "Reply To Email"|t,
 			id: 'replyToEmail',
-			name: 'replyToEmail',
+			name: 'sproutEmail[replyToEmail]',
 			instructions: "The email address which will be used if any recipients reply to your email"|t,
 			value: (emailBlastType is defined ? emailBlastType.replyToEmail : null),
 			required: true,
@@ -69,7 +70,7 @@
 		{{ forms.selectField({
 			label: "When would you like to send this email"|t,
 			id: 'notificationEvent',
-			name: 'notificationEvent',
+			name: 'sproutEmail[notificationEvent]',
 			instructions: "Select the event on which you would like to send this email."|t,
 			options : events,
 			value: notificationEvent,
@@ -82,7 +83,7 @@
 			{% for key, val in eventOptions.system_options %}
 				{% for key2, val2 in val %}
 					<div class="event_options {{ key | replace({'.':'---'}) }}" >
-						{% include "sproutemail/notifications/_options/" ~ key ~ "/" ~  val2 %}
+						{% include "sproutemail/settings/notifications/_options/" ~ key ~ "/" ~  val2 %}
 					</div>
 				{% endfor %}
 			{% endfor %}
