@@ -2,7 +2,7 @@
 {{ forms.textField({
 	label: "Add Recipients"|t,
 	id: 'recipients',
-	name: 'recipients',
+	name: 'sproutEmail[recipients]',
 	instructions: "Separate multiple email addresses with a comma"|t,
 	value: (emailBlastType is defined ? emailBlastType.recipients : null),
 	required: true,

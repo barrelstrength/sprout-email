@@ -7,7 +7,7 @@
 		instructions: "Select one or more subscriber lists to send your emailBlastType."|t,
 		errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
 	}, forms.checkboxGroup({
-		name: 'emailProviderRecipientListId',
+		name: 'sproutEmail[emailProviderRecipientListId]',
 		options : subscriberLists,
 		values: emailBlastType is defined ? emailBlastType.emailProviderRecipientListId : null
 	})) }}

@@ -1,22 +1,10 @@
 {% set senderAddresses = craft.sproutEmail.getSendGridSenderAddresses() %}
 
-{{ forms.hidden({
-	id: 'fromEmail',
-	name: 'fromEmail',
-	value: 'na@invalidemail.com' 
-}) }}
-
-{{ forms.hidden({
-	id: 'replyToEmail',
-	name: 'replyToEmail',
-	value: 'na@invalidemail.com'  
-}) }}
-
 {{ forms.selectField({
-	label: "Which SendGrid sender address would you like to use?"|t,
+	label: "Sender address <span class='info'>Select the SendGrid sender address use for this Email.</span>"|t,
 	id: 'fromName',
-	name: 'fromName',
-	instructions: "Select the SendGrid sender address use for this emailBlastType."|t,
+	name: 'sproutEmail[fromName]',
+	instructions: ""|t,
 	options : senderAddresses,
 	value: (emailBlastType is defined ? emailBlastType.fromName : null),
 	errors: (emailBlastType is defined ? emailBlastType.getErrors('fromName') : null)  
