@@ -71,17 +71,36 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	 */
 	public function getSources($context = null)
 	{
+		// Grab all of our Notifications
+		$notifications = craft()->sproutEmail_emailBlastType->getEmailBlastTypes('notification');
+		$notificationIds = array();
+
+		// Create a list of Notification IDs we can use as criteria to filter by
+		foreach ($notifications as $notification)
+		{
+			$notificationIds[] = $notification->id;
+		}
+
 		// Start with an option for everything
 		$sources = array(
 			'*' => array(
 				'label'    => Craft::t('All Emails'),
+			),
+			'notifications' => array(
+				'label' => Craft::t('Notifications'),
+				'criteria' => array(
+					'emailBlastTypeId' => $notificationIds
+				)
 			)
 		);
 
 		// Prepare the data for our sources sidebar
 		$emailBlastTypes = craft()->sproutEmail_emailBlastType->getEmailBlastTypes('blast');
 
-		$sources[] = array('heading' => 'Campaigns');
+		if (count($emailBlastTypes)) 
+		{
+			$sources[] = array('heading' => 'Campaigns');
+		}
 
 		foreach ($emailBlastTypes as $emailBlastType) 
 		{	
@@ -93,12 +112,6 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 				'criteria' => array('emailBlastTypeId' => $emailBlastType->id)
 			);
 		}
-
-		$sources[] = array('heading' => 'Autoresponders');
-
-		$sources['notifications'] = array(
-			'label' => Craft::t('List of Notifications')
-		); 
 
 		return $sources;
 	}
@@ -223,7 +236,8 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 			->addSelect('emailblasts.id AS emailBlastId, 
 									 emailblasts.emailBlastTypeId AS emailBlastTypeId,
 									 emailblasts.subjectLine AS subjectLine, 
-									 emailblasts.sent AS sent
+									 emailblasts.sent AS sent,
+									 emailblasttypes.type AS type,
 				')
 			->join('sproutemail_emailblasts emailblasts', 'emailblasts.id = elements.id')
 			->join('sproutemail_emailblasttypes emailblasttypes', 'emailblasttypes.id = emailblasts.emailBlastTypeId');
