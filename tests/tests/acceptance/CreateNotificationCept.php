@@ -19,7 +19,7 @@ $I->amOnPage('/admin/sproutemail');
 
 // go to notifications
 $I->click('Notifications');
-$I->amOnPage('/admin/sproutemail/notifications');
+$I->amOnPage('/admin/sproutemail/settings/notifications');
 
 // create new notification
 $I->click('a.btn.submit');

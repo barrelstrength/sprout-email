@@ -47,7 +47,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function getNotificationEventOptions()
 	{
-		$options = craft()->sproutEmail->scan( dirname( __FILE__ ) . '/../templates/notifications/_options' );
+		$options = craft()->sproutEmail->scan( dirname( __FILE__ ) . '/../templates/settings/notifications/_options' );
 		
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'registrar!=:registrar';

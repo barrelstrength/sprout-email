@@ -3,13 +3,18 @@
 {% set title  = "Settings"|t %}
 
 {% set crumbs = [
-  { label: "Sprout Email"|t, url: url('sproutemail') }
+  { label: "Sprout Email"|t, url: url('sproutemail') },
+  { label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
 {% set tabs = {
 	general: {
-	    label: "Email Blast Types"|t,
+	    label: "Campaigns"|t,
 	    url: "#settings-general"
+	},
+	notifications: {
+	    label: "Notifications"|t,
+	    url: "#settings-notifications"
 	},
 	api: {
 	    label: "API Info"|t,

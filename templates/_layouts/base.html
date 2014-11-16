@@ -1,19 +1,8 @@
 {% extends "_layouts/cp" %}
 
-{# {% set tabs = {
-    emailblasts:  { 
-      label: "Email Blasts"|t, 
-      url: url('sproutemail/emailblasts') 
-    },
-    notifications:  { 
-      label: "Notifications"|t, 
-      url: url('sproutemail/notifications') 
-    }
-} %} #}
-
 {% set selectedTab = craft.request.segment(2) ? craft.request.segment(2) : 'overview' %}
 
-{% if currentUser.can('editSproutEmailSettings') %}
+{% if currentUser.can('editSproutEmailSettings') and craft.request.segment(2) == "" %}
   {% set extraPageHeaderHtml %}
     <a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
   {% endset %}
