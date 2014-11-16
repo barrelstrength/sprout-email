@@ -12,7 +12,7 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 	 * @return void
 	 */
 	public function actionSaveNotification()
-	{
+	{	
 		// first save the emailBlastType as normally would be done
 		$emailBlastTypeModel = parent::actionSaveEmailBlastType();
 		
@@ -54,11 +54,11 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 			switch (craft()->request->getPost( 'continue' ))
 			{
 				case 'info' :
-					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
+					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
 					break;
 
 				case 'recipients' :
-					$this->redirect( 'sproutemail/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
+					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
 					break;
 
 				default :
@@ -96,12 +96,30 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 		}
 		
 		// get emailBlastType and send
-		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastType( array (
-				'id' => $id 
-		) );
+		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($id);
 		$service = 'sproutEmail_' . lcfirst( $emailBlastType->emailProvider );
 		craft()->{$service}->sendEmailBlast( $emailBlastType );
 		
 		exit( 0 );
+	}
+
+
+	public function actionNotificationSettingsTemplate(array $variables = array())
+	{
+		if (isset($variables['emailBlastTypeId'])) 
+		{
+			// If emailBlastType already exists, we're returning an error object
+			if ( ! isset($variables['emailBlastType']) ) 
+			{
+				$variables['emailBlastType'] = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($variables['emailBlastTypeId']);
+			}
+		}
+		else
+		{	
+			$variables['emailBlastType'] = new SproutEmail_EmailBlastType();
+		}
+		
+		// Load our template
+		$this->renderTemplate('sproutemail/settings/notifications/_edit', $variables);
 	}
 }
