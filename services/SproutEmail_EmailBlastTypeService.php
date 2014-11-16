@@ -130,6 +130,7 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 				$emailBlastType->fieldLayoutId = $fieldLayout->id;				
 				$emailBlastTypeRecord->fieldLayoutId = $fieldLayout->id;
 
+				
 				// Save the Email Blast Type
 				$emailBlastTypeRecord = $this->_saveEmailBlastTypeInfo( $emailBlastType );
 
@@ -144,17 +145,17 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 			// save the emailBlastType
 			default :
 				
-				if ($emailBlastType->subject) 
+				if ($emailBlastType->type == 'notification')
 				{
 					$emailBlastType->type = EmailBlastType::Notification;
 				}
 				else
-				{
+				{	
 					$emailBlastType->type = EmailBlastType::EmailBlast;
 				}
 
 				try
-				{
+				{	
 					// Save the Email Blast Type
 					$emailBlastTypeRecord = $this->_saveEmailBlastTypeInfo( $emailBlastType );
 
@@ -167,17 +168,22 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 
 					// If we have a Notification, also Save the Email Blast
 					if ($emailBlastType->type == EmailBlastType::Notification) 
-					{
+					{	
 						// Check to see if we have a matching Email Blast by EmailBlastTypeId
 						$criteria = craft()->elements->getCriteria('SproutEmail_EmailBlast');
-						$criteria->emailBlastTypeId = $oldEmailBlastType->id;
+
+						if (isset($oldEmailBlastType->id)) 
+						{
+							$criteria->emailBlastTypeId = $oldEmailBlastType->id;
+						}
+						
 						$emailBlast = $criteria->first();
 						
 						if (isset($emailBlast))
 						{	
 							// if we have a blast already, update it
 							$emailBlast->emailBlastTypeId = $emailBlastTypeRecord->id;
-							$emailBlast->subjectLine = $emailBlastType->subject;
+							$emailBlast->subjectLine = ($emailBlast->subjectLine != '') ? $emailBlast->subjectLine : $emailBlastType->name;
 							$emailBlast->getContent()->title = $emailBlastType->name;
 						}
 						else
@@ -217,7 +223,7 @@ class SproutEmail_EmailBlastTypeService extends BaseApplicationComponent
 		
 		$transaction->commit();
 		
-		return $emailBlastTypeRecord->id;
+		return SproutEmail_EmailBlastTypeModel::populateModel($emailBlastTypeRecord);
 	}
 
 	private function _saveEmailBlastTypeInfo(SproutEmail_EmailBlastTypeModel &$emailBlastType)

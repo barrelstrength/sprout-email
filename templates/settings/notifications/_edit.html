@@ -15,38 +15,43 @@
   { label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
-{% set tabs = {
-    general: { 
-      label: "Notification Info"|t,
-      url: url('sproutemail/settings/notifications/edit/' ~ emailBlastTypeId),
-      class: 'notificationinfo'
-    },
-    recipients:    { 
-      label: "Recipients"|t,
-      url: url('sproutemail/settings/notifications/edit/' ~ emailBlastTypeId ~ '/recipients'),
-      class: 'recipients'
-    },
-    template:    { 
-      label: "Fields"|t,
-      url: url('sproutemail/settings/notifications/edit/' ~ emailBlastTypeId ~ '/fields'),
-      class: 'template'
-    },
-} %}
-
-{% if craft.request.getSegment('6') %}
-    {% set selectedTab = craft.request.getSegment('6') %}
-{% endif %}
-
-
 {% set content %}
 
-{% if craft.request.getSegment('6') == 'fields' %}
-    {% include "sproutemail/settings/notifications/_tabs/fields" %}
-{% elseif craft.request.getSegment('6') == 'recipients' %} 
-    {% include "sproutemail/settings/notifications/_tabs/recipients" %}
-{% else %}
-    {% include "sproutemail/settings/notifications/_tabs/info" %}
-{% endif %}
+  <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
+    <input type="hidden" name="action" value="sproutEmail/emailBlast/saveEmailBlast">
+    <input type="hidden" name="redirect" value="sproutemail/emailblasts/edit/{id}">
+    <input type="hidden" name="continue" value="false">
+    <input type="hidden" name="tab" value="fields">
+
+    <input type="hidden" name="sproutEmail[id]" value="{{ emailBlastTypeId }}">
+    <input type="hidden" name="sproutEmail[emailProvider]" value="SproutEmail">
+
+    <input type="hidden" name="sproutEmail[type]" value="notification">
+    
+    <div id="tab-emailBlastType-info" class="tab-content" >
+
+      {{ forms.textField({
+        label: "Notification Name"|t,
+        id: 'name',
+        name: 'sproutEmail[name]',
+        instructions: "Human readable notification name"|t,
+        value: (emailBlastType is defined ? emailBlastType.name : null),
+        autofocus: true,
+        required: true,
+        errors: (emailBlastType is defined ? emailBlastType.getErrors('name') : null)   
+      }) }}
+
+      {% include "_includes/fieldlayoutdesigner" with {
+        fieldLayout: emailBlastType.getFieldLayout()
+      } only %}
+
+    </div>
+    
+    <div class="buttons">
+      <input class="btn" type="submit" value="Save Notification Info">
+      <input class="btn submit save-and-continue" id="info" type="button" value="Save Notification Info & Continue">
+    </div>
+  </form>
 
 {% endset %}
 
