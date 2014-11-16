@@ -60,7 +60,7 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 		// @TODO - clean this up
 		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
 		$emailBlastType->setAttributes( craft()->request->getPost('sproutEmail') );
-
+		
 		$useRecipientLists = craft()->request->getPost( 'useRecipientLists' ) ? 1 : 0;
 		$emailBlastType->useRecipientLists = $useRecipientLists;
 
@@ -75,35 +75,53 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 
 		$tab = craft()->request->getPost( 'tab' );
 
-		if ( $emailBlastTypeId = craft()->sproutEmail_emailBlastType->saveEmailBlastType( $emailBlastType,  $tab) )
-		{
-			// if this was called by the child (Notifications), return the model
-			// if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
-			// {
-			// 	$emailBlastType->id = $emailBlastTypeId;
-			// 	return $emailBlastType;
-			// }
-
+		if ( $emailBlastType = craft()->sproutEmail_emailBlastType->saveEmailBlastType( $emailBlastType,  $tab) )
+		{	
 			$_POST['redirect'] = str_replace('{id}', $emailBlastType->id, $_POST['redirect']);
 
 			craft()->userSession->setNotice( Craft::t( 'Email Blast Type successfully saved.' ) );
 
 			$continue = craft()->request->getPost( 'continue' );
 			
+			// @TODO - review this, removed from saveNotification controller and placed here for review
+			// // convert notificationEvent to id
+			// if ( isset( $_POST ['notificationEvent'] ) && ! is_numeric( $_POST ['notificationEvent'] ) )
+			// {
+			// 	$criteria = new \CDbCriteria();
+			// 	$criteria->condition = 'event=:event';
+			// 	$criteria->params = array (
+			// 			':event' => str_replace( '---', '.', $_POST ['notificationEvent'] ) 
+			// 	);
+				
+			// 	if ( $res = SproutEmail_NotificationEventRecord::model()->find( $criteria ) )
+			// 	{
+			// 		$_POST ['notificationEvent'] = ( int ) $res->id;
+			// 	}
+			// }
+			
+			// if ( isset( $_POST ['notificationEvent'] ) )
+			// {
+			// 	// since this is a notification, we'll make an event/emailblasts association...
+			// 	craft()->sproutEmail_notifications->associateEmailBlastType( $emailBlastType->id, $_POST ['notificationEvent'] );
+				
+			// 	// ... and set notification options
+			// 	craft()->sproutEmail_notifications->setEmailBlastTypeNotificationEventOptions( $emailBlastType->id, $_POST );
+			// }
+
 			if ($continue == 'info')
 			{
 				if(craft()->request->getPost( 'emailProvider' ) == 'CopyPaste')
 				{
-					$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastTypeId . '/template' );
+					$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastType->id . '/template' );
 				}
 				else
 				{
-					$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastTypeId . '/recipients' );
+					$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastType->id . '/recipients' );
 				}
 			}
 			elseif($continue == 'recipients')
 			{
-				$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastTypeId . '/template' );
+				$this->redirect( 'sproutemail/settings/emailblasttypes/edit/' . $emailBlastType->id . '/template' );
 			}
 			else
 			{
@@ -116,12 +134,6 @@ class SproutEmail_EmailBlastTypeController extends BaseController
 			
 			craft()->userSession->setError( Craft::t( 'Please correct the errors below.' ) );
 			
-			// if this was called by the child (Notifications), return the model
-			// if ( get_class( $this ) == 'Craft\SproutEmail_NotificationsController' )
-			// {
-			// 	return $emailBlastType;
-			// }
-
 			// Send the field back to the template
 			craft()->urlManager->setRouteVariables(array(
 				'emailBlastType' => $emailBlastType 

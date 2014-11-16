@@ -5,69 +5,7 @@ namespace Craft;
  * Notifications controller
  */
 class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeController
-{
-	/**
-	 * Save emailBlastType
-	 *
-	 * @return void
-	 */
-	public function actionSaveNotification()
-	{	
-		// first save the emailBlastType as normally would be done
-		$emailBlastTypeModel = parent::actionSaveEmailBlastType();
-		
-		if ($emailBlastTypeModel->getErrors())
-		{
-			// Send the field back to the template
-			craft()->urlManager->setRouteVariables(array(
-				'emailBlastType' => $emailBlastTypeModel 
-			));
-		}
-		else
-		{
-			// convert notificationEvent to id
-			if ( isset( $_POST ['notificationEvent'] ) && ! is_numeric( $_POST ['notificationEvent'] ) )
-			{
-				$criteria = new \CDbCriteria();
-				$criteria->condition = 'event=:event';
-				$criteria->params = array (
-						':event' => str_replace( '---', '.', $_POST ['notificationEvent'] ) 
-				);
-				
-				if ( $res = SproutEmail_NotificationEventRecord::model()->find( $criteria ) )
-				{
-					$_POST ['notificationEvent'] = ( int ) $res->id;
-				}
-			}
-			
-			if ( isset( $_POST ['notificationEvent'] ) )
-			{
-				// since this is a notification, we'll make an event/emailblasts association...
-				craft()->sproutEmail_notifications->associateEmailBlastType( $emailBlastTypeModel->id, $_POST ['notificationEvent'] );
-				
-				// ... and set notification options
-				craft()->sproutEmail_notifications->setEmailBlastTypeNotificationEventOptions( $emailBlastTypeModel->id, $_POST );
-			}
-			
-			craft()->userSession->setNotice( Craft::t( 'Notification successfully saved.' ) );
-			
-			switch (craft()->request->getPost( 'continue' ))
-			{
-				case 'info' :
-					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
-					break;
-
-				case 'recipients' :
-					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
-					break;
-
-				default :
-					$this->redirectToPostedUrl($emailBlastTypeModel);
-					break;
-			}
-		}
-	}
-	
+{	
 	/**
 	 * Trigger notification
 	 */
