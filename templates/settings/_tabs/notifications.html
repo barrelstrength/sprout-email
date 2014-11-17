@@ -8,23 +8,23 @@
 
 {% block main %}
 
-	{% set notifications = craft.sproutEmail.getEmailBlastTypes('notification') %}
+	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
 	
-	{% for emailBlastType in notifications %}
+	{% for campaign in notifications %}
 			
 		{% if loop.first %}
 		<h3>Notifications</h3>
-		<table id="emailblasts" class="data fullwidth">
+		<table id="entries" class="data fullwidth">
 			<thead>
 				<th width="65%"></th>
 				<th class="thin"></th>
 			</thead>
 		{% endif %}
 		
-			<tr data-id="{{ emailBlastType.id }}"  data-name="{{ emailBlastType.name|t }}">
+			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 				<td>
-					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}">{{ emailBlastType.name }}</a>
-					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ emailBlastType.dateUpdated|date('F d, Y') }}</span>
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}">{{ campaign.name }}</a>
+					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td class="thin">
 					<a class="delete icon" title="Delete"></a>
@@ -68,9 +68,9 @@
 
 {% set js %}
 	new Craft.AdminTable({
-		tableSelector: '#emailblasts',
-		noObjectsSelector: '#noemailblasts',
-		deleteAction: 'SproutEmail/emailblasts/delete'
+		tableSelector: '#entries',
+		noObjectsSelector: '#noentries',
+		deleteAction: 'SproutEmail/entries/delete'
 	});
 {% endset %}
 {% includeJs js %}

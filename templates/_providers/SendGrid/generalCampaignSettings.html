@@ -6,6 +6,6 @@
 	name: 'sproutEmail[fromName]',
 	instructions: ""|t,
 	options : senderAddresses,
-	value: (emailBlastType is defined ? emailBlastType.fromName : null),
-	errors: (emailBlastType is defined ? emailBlastType.getErrors('fromName') : null)  
+	value: (campaign is defined ? campaign.fromName : null),
+	errors: (campaign is defined ? campaign.getErrors('fromName') : null)  
 }) }}

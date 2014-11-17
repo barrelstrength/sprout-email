@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_EmailBlastElementType extends BaseElementType
+class SproutEmail_EntryElementType extends BaseElementType
 {
 	/**
 	 * Returns the element type name.
@@ -10,7 +10,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Email Blast');
+		return Craft::t('Sprout Entry');
 	}
 
 	/**
@@ -56,10 +56,10 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_EmailBlastModel::READY     => Craft::t('Ready'),
-			SproutEmail_EmailBlastModel::PENDING   => Craft::t('Pending'),
-			SproutEmail_EmailBlastModel::DISABLED  => Craft::t('Disabled'),
-			SproutEmail_EmailBlastModel::ARCHIVED  => Craft::t('Archived'),
+			SproutEmail_EntryModel::READY     => Craft::t('Ready'),
+			SproutEmail_EntryModel::PENDING   => Craft::t('Pending'),
+			SproutEmail_EntryModel::DISABLED  => Craft::t('Disabled'),
+			SproutEmail_EntryModel::ARCHIVED  => Craft::t('Archived'),
 		);
 	}
 
@@ -72,7 +72,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	public function getSources($context = null)
 	{
 		// Grab all of our Notifications
-		$notifications = craft()->sproutEmail_emailBlastType->getEmailBlastTypes('notification');
+		$notifications = craft()->sproutEmail_campaign->getCampaigns('notification');
 		$notificationIds = array();
 
 		// Create a list of Notification IDs we can use as criteria to filter by
@@ -89,27 +89,27 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 			'notifications' => array(
 				'label' => Craft::t('Notifications'),
 				'criteria' => array(
-					'emailBlastTypeId' => $notificationIds
+					'campaignId' => $notificationIds
 				)
 			)
 		);
 
 		// Prepare the data for our sources sidebar
-		$emailBlastTypes = craft()->sproutEmail_emailBlastType->getEmailBlastTypes('blast');
+		$campaigns = craft()->sproutEmail_campaign->getCampaigns('email');
 
-		if (count($emailBlastTypes)) 
+		if (count($campaigns)) 
 		{
 			$sources[] = array('heading' => 'Campaigns');
 		}
 
-		foreach ($emailBlastTypes as $emailBlastType) 
+		foreach ($campaigns as $campaign) 
 		{	
-			$key = 'emailBlastType:'.$emailBlastType->id;
+			$key = 'campaign:'.$campaign->id;
 			
 			$sources[$key] = array(
-				'label' => $emailBlastType->name,
-				'data' => array('emailBlastTypeId' => $emailBlastType->id),
-				'criteria' => array('emailBlastTypeId' => $emailBlastType->id)
+				'label' => $campaign->name,
+				'data' => array('campaignId' => $campaign->id),
+				'criteria' => array('campaignId' => $campaign->id)
 			);
 		}
 
@@ -125,7 +125,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 
 			$source = $this->getSource($sourceKey, $context);
 
-			return craft()->templates->render('sproutemail/emailblasts/_emailblastindex', array(
+			return craft()->templates->render('sproutemail/entries/_entryindex', array(
 				'context'             => $context,
 				'elementType'         => new ElementTypeVariable($this),
 				'disabledElementIds'  => $disabledElementIds,
@@ -163,7 +163,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 		return array(
 			'title' => AttributeType::String,
 			'subjectLine' => AttributeType::String,
-			'emailBlastTypeId' => AttributeType::Number,
+			'campaignId' => AttributeType::Number,
 		);
 	}
 
@@ -179,33 +179,33 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	{
 		switch ($status)
 		{
-			case SproutEmail_EmailBlastModel::DISABLED:
+			case SproutEmail_EntryModel::DISABLED:
 			{
-				return 'emailblasttypes.template IS NULL';
+				return 'campaigns.template IS NULL';
 			}
 
-			case SproutEmail_EmailBlastModel::PENDING:
+			case SproutEmail_EntryModel::PENDING:
 			{
 				return array('and',
 					'elements.enabled = 0',
-					'emailblasttypes.template IS NOT NULL',
-					'emailblasts.sent = 0',
+					'campaigns.template IS NOT NULL',
+					'entries.sent = 0',
 				);
 			}
 
-			case SproutEmail_EmailBlastModel::READY:
+			case SproutEmail_EntryModel::READY:
 			{
 				return array('and',
 					'elements.enabled = 1',
 					'elements_i18n.enabled = 1',
-					'emailblasttypes.template IS NOT NULL',
-					'emailblasts.sent = 0',
+					'campaigns.template IS NOT NULL',
+					'entries.sent = 0',
 				);
 			}
 
-			case SproutEmail_EmailBlastModel::ARCHIVED:
+			case SproutEmail_EntryModel::ARCHIVED:
 			{
-				return 'emailblasts.sent = 1';
+				return 'entries.sent = 1';
 			}
 		}
 	}
@@ -218,7 +218,7 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	public function defineSearchableAttributes()
 	{
 		return array(
-			// 'emailBlastId', 
+			// 'entryId', 
 			'title',
 		);
 	}
@@ -233,18 +233,18 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		$query
-			->addSelect('emailblasts.id AS emailBlastId, 
-									 emailblasts.emailBlastTypeId AS emailBlastTypeId,
-									 emailblasts.subjectLine AS subjectLine, 
-									 emailblasts.sent AS sent,
-									 emailblasttypes.type AS type,
+			->addSelect('entries.id AS entryId, 
+									 entries.campaignId AS campaignId,
+									 entries.subjectLine AS subjectLine, 
+									 entries.sent AS sent,
+									 campaigns.type AS type,
 				')
-			->join('sproutemail_emailblasts emailblasts', 'emailblasts.id = elements.id')
-			->join('sproutemail_emailblasttypes emailblasttypes', 'emailblasttypes.id = emailblasts.emailBlastTypeId');
+			->join('sproutemail_entries entries', 'entries.id = elements.id')
+			->join('sproutemail_campaigns campaigns', 'campaigns.id = entries.campaignId');
 
-		if ($criteria->emailBlastTypeId) 
+		if ($criteria->campaignId) 
 		{
-			$query->andWhere(DbHelper::parseParam('emailblasts.emailBlastTypeId', $criteria->emailBlastTypeId, $query->params));
+			$query->andWhere(DbHelper::parseParam('entries.campaignId', $criteria->campaignId, $query->params));
 		}
 	}
 
@@ -256,6 +256,6 @@ class SproutEmail_EmailBlastElementType extends BaseElementType
 	 */
 	public function populateElementModel($row)
 	{
-		return SproutEmail_EmailBlastModel::populateModel($row);
+		return SproutEmail_EntryModel::populateModel($row);
 	}
 }

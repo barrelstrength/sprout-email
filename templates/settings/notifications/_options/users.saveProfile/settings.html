@@ -1,15 +1,15 @@
 <hr>
 <h3>Send notification when entries are saved by selected user groups.  If none selected, all groups will apply.</h3>
 
-{% if emailBlastType.notificationEvents[0].options.userGroupIds is defined %}
-{% set userSavedAssignedGroups = emailBlastType.notificationEvents[0].options.userGroupIds %}
+{% if campaign.notificationEvents[0].options.userGroupIds is defined %}
+{% set userSavedAssignedGroups = campaign.notificationEvents[0].options.userGroupIds %}
 {% endif %}
 
 
 	{{ forms.field({
 		label: "User Groups"|t,
 		instructions: "Select one or more user groups."|t,
-		errors: (emailBlastType is defined ? emailBlastType.getErrors('sectionIds') : null) ,
+		errors: (campaign is defined ? campaign.getErrors('sectionIds') : null) ,
 	}, forms.checkboxGroup({
 		name: 'usersSaveProfileUseroptIds',
 		options : craft.sproutEmail.getAllUserGroups(),

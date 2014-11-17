@@ -107,20 +107,20 @@ class SproutEmail_ListsController extends BaseController
 	}
 	
 	/**
-	 * Save emailBlastType
+	 * Save campaign
 	 *
 	 * @return void
 	 */
 	public function actionSave()
 	{
-		// first save the emailBlastType as normally would be done
-		$emailBlastTypeModel = parent::actionSave();
+		// first save the campaign as normally would be done
+		$campaignModel = parent::actionSave();
 		
-		if ( $emailBlastTypeModel->getErrors() )
+		if ( $campaignModel->getErrors() )
 		{
 			// Send the field back to the template
 			craft()->urlManager->setRouteVariables( array (
-					'emailBlastType' => $emailBlastTypeModel 
+					'campaign' => $campaignModel 
 			) );
 		}
 		else
@@ -143,11 +143,11 @@ class SproutEmail_ListsController extends BaseController
 			if ( isset( $_POST ['notificationEvent'] ) )
 			{
 				
-				// since this is a notification, we'll make an event/emailblasts association...
-				craft()->sproutEmail_notifications->associateEmailBlastType( $emailBlastTypeModel->id, $_POST ['notificationEvent'] );
+				// since this is a notification, we'll make an event/entries association...
+				craft()->sproutEmail_notifications->associateCampaign( $campaignModel->id, $_POST ['notificationEvent'] );
 				
 				// ... and set notification options
-				craft()->sproutEmail_notifications->setEmailBlastTypeNotificationEventOptions( $emailBlastTypeModel->id, $_POST );
+				craft()->sproutEmail_notifications->setCampaignNotificationEventOptions( $campaignModel->id, $_POST );
 			}
 			
 			craft()->userSession->setNotice( Craft::t( 'Notification successfully saved.' ) );
@@ -155,18 +155,18 @@ class SproutEmail_ListsController extends BaseController
 			switch (craft()->request->getPost( 'continue' ))
 			{
 				case 'info' :
-					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/template' );
+					$this->redirect( 'sproutemail/settings/notifications/edit/' . $campaignModel->id . '/template' );
 					break;
 
 				case 'template' :
 				
-					$this->redirect( 'sproutemail/settings/notifications/edit/' . $emailBlastTypeModel->id . '/recipients' );
+					$this->redirect( 'sproutemail/settings/notifications/edit/' . $campaignModel->id . '/recipients' );
 					break;
 
 				default :
 					
 					$this->redirectToPostedUrl( array (
-							$emailBlastTypeModel 
+							$campaignModel 
 					) );
 
 					break;

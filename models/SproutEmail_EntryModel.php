@@ -1,16 +1,16 @@
 <?php
 namespace Craft;
 
-class SproutEmail_EmailBlastModel extends BaseElementModel
+class SproutEmail_EntryModel extends BaseElementModel
 {
-	protected $elementType = 'SproutEmail_EmailBlast';
+	protected $elementType = 'SproutEmail_Entry';
 	
 	private $_fields;
 
 	/**
-	 * Disabled - Email Blast Type isn't even setup properly
-	 * Pending -  Email Blast Type is setup but Email Blast is disabled
-	 * Ready -    Email Blast Type is setup and is enabled
+	 * Disabled - Campaign isn't even setup properly
+	 * Pending -  Campaign is setup but Entry is disabled
+	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 * 
 	 */
@@ -28,7 +28,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	{
 		return array_merge(parent::defineAttributes(), array(
 			'id'               => AttributeType::Number,
-			'emailBlastTypeId' => AttributeType::Number,
+			'campaignId' => AttributeType::Number,
 			'subjectLine'      => AttributeType::String,
 			'sent'             => AttributeType::Bool,
 		));
@@ -41,22 +41,22 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($this->emailBlastTypeId);
+		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
 
-		return $emailBlastType->getFieldLayout();
+		return $campaign->getFieldLayout();
 	}
 
 	public function getUrlFormat($template = null)
 	{
-		$emailBlastType = $this->getType();
+		$campaign = $this->getType();
 		
-		if ($emailBlastType && $emailBlastType->hasUrls)
+		if ($campaign && $campaign->hasUrls)
 		{
 			// @TODO
 			// - need to sort out locales
 			// - need to determine if HTML/Text tempalte is needed
 			
-			return $emailBlastType->template;
+			return $campaign->template;
 		}
 		
 	}
@@ -71,8 +71,8 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	{
 		$status = parent::getStatus();
 
-		// Required attributes :$emailBlastType->emailProvider && 
-		// 											$emailBlastType->template
+		// Required attributes :$campaign->emailProvider && 
+		// 											$campaign->template
 		// Enabled : static::ENABLED
 		// Disabled : static::DISABLED
 		// Archived : static::ARCHIVED
@@ -84,9 +84,9 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 		// email is ready or not.  For now, we'll just check to see if 
 		// it has a service provider and text template.
 		
-		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($this->emailBlastTypeId);
+		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
 
-		$hasRequiredAttributes = ($emailBlastType->emailProvider && $emailBlastType->template);
+		$hasRequiredAttributes = ($campaign->emailProvider && $campaign->template);
 
 		$hasBeenSent = $this->sent; // @TODO - hard coded
 
@@ -152,9 +152,9 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 
 	public function getType()
 	{
-		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($this->emailBlastTypeId);
+		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
 		
-		return $emailBlastType;
+		return $campaign;
 	}
 
 	/**
@@ -164,7 +164,7 @@ class SproutEmail_EmailBlastModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/emailblasts/edit/'. $this->id);
+		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/'. $this->id);
 
 		return $url;
 	}

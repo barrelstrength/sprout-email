@@ -4,9 +4,9 @@
 	id: 'recipients',
 	name: 'sproutEmail[recipients]',
 	instructions: "Separate multiple email addresses with a comma"|t,
-	value: (emailBlastType is defined ? emailBlastType.recipients : null),
+	value: (campaign is defined ? campaign.recipients : null),
 	required: true,
-	errors: (emailBlastType is defined ? emailBlastType.getErrors('recipients') : null) 	
+	errors: (campaign is defined ? campaign.getErrors('recipients') : null) 	
 }) }}
 
 <hr>
@@ -20,7 +20,7 @@
 			name: 'useRecipientLists',
 			label: 'Use email lists',
 			value: 1,
-			checked: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? true : false
+			checked: campaign is defined and campaign.emailProviderRecipientListId ? true : false
 		}) }}
 			
 		{% for key, subscriberList in subscriberLists %}
@@ -28,12 +28,12 @@
 			{{ forms.field({
 				label: subscriberList.label|t,
 				instructions: subscriberList.description|t,
-				errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
+				errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
 			}, forms.checkboxGroup({
 				name: 'emailProviderRecipientListId[' ~ key ~ ']',
 				id: 'emailProviderRecipientListId' ~ key ,
 				options : subscriberList.options,
-				values: emailBlastType.emailProviderRecipientListId[key] is defined ? emailBlastType.emailProviderRecipientListId[key] : null
+				values: campaign.emailProviderRecipientListId[key] is defined ? campaign.emailProviderRecipientListId[key] : null
 			})) }}
 		
 		{% endfor %}

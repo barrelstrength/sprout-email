@@ -78,13 +78,13 @@ class SproutEmailPlugin extends BasePlugin
 		return array (
 
 			/*
-			 * Edit Email Blast Type Settings
-			 * @controller SproutEmail_EmailBlastTypeController
-			 * @method     actionEmailBlastTypeSettingsTemplate
-			 * @template   sproutemail/templates/settings/emailblasttypes/_edit.html
+			 * Edit Campaign Settings
+			 * @controller SproutEmail_CampaignController
+			 * @method     actionCampaignSettingsTemplate
+			 * @template   sproutemail/templates/settings/campaigns/_edit.html
 			 */
-			'sproutemail/settings/emailblasttypes/edit\/(?P<emailBlastTypeId>\d+|new)(/(template|recipients|fields))?' => array(
-				'action' => 'sproutEmail/emailBlastType/emailBlastTypeSettingsTemplate'
+			'sproutemail/settings/campaigns/edit\/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
+				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
 			),
 
 			/*
@@ -93,32 +93,32 @@ class SproutEmailPlugin extends BasePlugin
 			 * @method     actionNotificationSettingsTemplate
 			 * @template   sproutemail/templates/settings/notifications/_edit.html
 			 */
-			'sproutemail/settings/notifications/edit\/(?P<emailBlastTypeId>\d+|new)(/(template|recipients|fields))?' => array(
+			'sproutemail/settings/notifications/edit\/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
 			),
 
 			/*
-			 * Create New Email Blast
-			 * @controller SproutEmail_EmailBlastController
-			 * @method     actionEditEmailBlastTemplate
-			 * @template   sproutemail/templates/emailblasts/_edit.html
+			 * Create New Email
+			 * @controller SproutEmail_EntryController
+			 * @method     actionEditEntryTemplate
+			 * @template   sproutemail/templates/entries/_edit.html
 			 */
-			'sproutemail/emailblasts/new' => array(
-				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
+			'sproutemail/entries/new' => array(
+				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
 
-			'sproutemail/emailblasts/edit/(?P<emailBlastId>\d+)' => array(
-				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
+			'sproutemail/entries/edit/(?P<entryId>\d+)' => array(
+				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
 
 			/*
-			 * Create New Email Blast
-			 * @controller SproutEmail_EmailBlastController
-			 * @method     actionEditEmailBlastTemplate
-			 * @template   sproutemail/templates/emailblasts/_edit.html
+			 * Create New Email
+			 * @controller SproutEmail_EntryController
+			 * @method     actionEditEntryTemplate
+			 * @template   sproutemail/templates/entries/_edit.html
 			 */
-			'sproutemail/emailblasts/(?P<emailBlastTypeId>\d)/new' => array(
-				'action' => 'sproutEmail/emailBlast/editEmailBlastTemplate'
+			'sproutemail/entries/(?P<campaignId>\d)/new' => array(
+				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
 
 			/*
@@ -311,7 +311,7 @@ class SproutEmailPlugin extends BasePlugin
 	{	
 		parent::init();
 
-		Craft::import('plugins.sproutemail.enums.EmailBlastType');
+		Craft::import('plugins.sproutemail.enums.Campaign');
 
 		// events fired by $this->raiseEvent
 		craft()->on( 'entries.saveEntry', array($this,'onSaveEntry'));

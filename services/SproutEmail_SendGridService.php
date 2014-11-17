@@ -73,12 +73,12 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	}
 	
 	/**
-	 * Exports emailBlastType (no send)
+	 * Exports campaign (no send)
 	 *
-	 * @param array $emailBlastType            
+	 * @param array $campaign            
 	 * @param array $listIds            
 	 */
-	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
+	public function exportEntry($campaign = array(), $listIds = array(), $return = false)
 	{	
 		// Turn off devMode output (@TODO - this doesn't work)
 		craft()->log->removeRoute('WebLogRoute');
@@ -93,30 +93,30 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		$client = new Client($endpoint);
 
 		// Get the HTML
-		$request = $client->get('/'.$emailBlastType["htmlTemplate"].'?entryId='.$emailBlastType["entryId"]);
+		$request = $client->get('/'.$campaign["htmlTemplate"].'?entryId='.$campaign["entryId"]);
 		$response = $request->send();
 		$html = trim($response->getBody());
 
 		// Get the text
-		$request = $client->get("/".$emailBlastType ['textTemplate'] . "?entryId={$emailBlastType['entryId']}");
+		$request = $client->get("/".$campaign ['textTemplate'] . "?entryId={$campaign['entryId']}");
 		$response = $request->send();
 		$text = trim($response->getBody());
 
 		// Get the Entry
-		$entry = craft()->entries->getEntryById($emailBlastType["entryId"]);
+		$entry = craft()->entries->getEntryById($campaign["entryId"]);
 
 
 		// check if newsletter exists
 		$res = $sendgrid->newsletter_get($entry->title);
 		
 		// Get the subject
-		// @TODO - update this to be the Email Blast Element 
+		// @TODO - update this to be the Entry Element 
 		$subject = $entry->title;
 						
 		// need to create the template (newsletter)
 		if( ! $res)
 		{
-			$res = $sendgrid->newsletter_add($emailBlastType ['fromName'], $entry->title , $subject , $text , $html);
+			$res = $sendgrid->newsletter_add($campaign ['fromName'], $entry->title , $subject , $text , $html);
 		}
 		
 		if( $error = $sendgrid->getLastResponseError())
@@ -125,9 +125,9 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 		
 		// if sender address has changed, update the newsletter
-		if(isset($res['identity']) && $res['identity'] != $emailBlastType['fromName'])
+		if(isset($res['identity']) && $res['identity'] != $campaign['fromName'])
 		{
-			$res = $sendgrid->newsletter_edit($emailBlastType ['fromName'], $res['name'] , $entry->title, $entry->title , $text , $html);
+			$res = $sendgrid->newsletter_edit($campaign ['fromName'], $res['name'] , $entry->title, $entry->title , $text , $html);
 						
 			if( $error = $sendgrid->getLastResponseError())
 			{
@@ -144,7 +144,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 		}
 		
 		// schedule
-		// $res = $sendgrid->newsletter_schedule_add($emailBlastType ['name']);
+		// $res = $sendgrid->newsletter_schedule_add($campaign ['name']);
 
 		// if( $error = $sendgrid->getLastResponseError())
 		// {
@@ -157,7 +157,7 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 			switch($res['message'])
 			{
 				case 'success':
-					$msg["response"] = 'Your emailBlastType has been successfully exported. Please login to SendGrid to complete your email blast.';
+					$msg["response"] = 'Your campaign has been successfully exported. Please login to SendGrid to complete your Entry.';
 					break;
 		
 				default:
@@ -208,12 +208,12 @@ class SproutEmail_SendGridService extends SproutEmail_EmailProviderService imple
 	}
 	
 	/**
-	 * Exports emailBlastType (with send)
+	 * Exports campaign (with send)
 	 *
-	 * @param array $emailBlastType            
+	 * @param array $campaign            
 	 * @param array $listIds            
 	 */
-	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
+	public function sendEntry($campaign = array(), $listIds = array())
 	{
 		
 	}

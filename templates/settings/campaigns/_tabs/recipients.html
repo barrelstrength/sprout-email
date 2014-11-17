@@ -1,0 +1,22 @@
+
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/campaigns/edit/{id}/recipients') }}">
+
+	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+	<input type="hidden" name="redirect" value="sproutemail/entries">
+  <input type="hidden" name="tab" value="recipients">
+  <input type="hidden" name="continue" value="false">
+
+  <input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
+
+	<div id="tab-recipients" class="tab-content">
+	  <div id="{{ campaign.emailProvider }}-recipients-template"  >
+			{% include "sproutemail/_providers/" ~ campaign.emailProvider ~ "/recipients" %}
+		</div>
+	</div>
+
+	<div class="buttons hidden" id="recipient-btns" >
+		<input class="btn" type="submit" value="Save Recipients">
+		<input class="btn submit save-and-continue" id="recipients" type="submit" value="Save Recipients & Continue">
+	</div>
+
+</form>

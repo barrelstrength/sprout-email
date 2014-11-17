@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * EmailBlastType notification event record
+ * Campaign notification event record
  */
-class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
+class SproutEmail_CampaignNotificationEventRecord extends BaseRecord
 {
 	/**
 	 * Return table name corresponding to this record
@@ -13,7 +13,7 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_emailblasttypes_notificationevents';
+		return 'sproutemail_campaigns_notificationevents';
 	}
 	
 	/**
@@ -25,7 +25,7 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 	{
 		return array (
 			'notificationEventId' => AttributeType::Number,
-			'emailBlastTypeId'    => AttributeType::Number,
+			'campaignId'    => AttributeType::Number,
 			'options'             => AttributeType::Mixed,
 			'dateCreated'         => AttributeType::DateTime,
 			'dateUpdated'         => AttributeType::DateTime 
@@ -49,37 +49,37 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 	}
 	
 	/**
-	 * Associates a notification emailBlastType with an event
+	 * Associates a notification campaign with an event
 	 *
-	 * @param int $emailBlastTypeId            
+	 * @param int $campaignId            
 	 * @param int $notificationEventId            
 	 */
-	public function associateEmailBlastTypeEvent($emailBlastTypeId, $notificationEventId)
+	public function associateCampaignEvent($campaignId, $notificationEventId)
 	{
 		// try to get it, if exists, update else create new
 		$criteria = new \CDbCriteria();
-		$criteria->condition = 'emailBlastTypeId=:emailBlastTypeId';
+		$criteria->condition = 'campaignId=:campaignId';
 		$criteria->params = array (
-				':emailBlastTypeId' => $emailBlastTypeId 
+				':campaignId' => $campaignId 
 		);
-		if ( ! $emailBlastTypeNotification = SproutEmail_EmailBlastTypeNotificationEventRecord::model()->find( $criteria ) )
+		if ( ! $campaignNotification = SproutEmail_CampaignNotificationEventRecord::model()->find( $criteria ) )
 		{
-			$emailBlastTypeNotification = new SproutEmail_EmailBlastTypeNotificationEventRecord();
+			$campaignNotification = new SproutEmail_CampaignNotificationEventRecord();
 		}
 		
-		$emailBlastTypeNotification->emailBlastTypeId = $emailBlastTypeId;
-		$emailBlastTypeNotification->notificationEventId = $notificationEventId;
-		return $emailBlastTypeNotification->save( false );
+		$campaignNotification->campaignId = $campaignId;
+		$campaignNotification->notificationEventId = $notificationEventId;
+		return $campaignNotification->save( false );
 	}
 	
 	/**
-	 * Returns emailblasts which meet the event and event options criteria
+	 * Returns entries which meet the event and event options criteria
 	 *
 	 * @param string $event            
 	 * @param obj $entry            
-	 * @return array of SproutEmail_EmailBlastTypeRecord objects
+	 * @return array of SproutEmail_CampaignRecord objects
 	 */
-	public function getEmailBlastTypeEventNotifications($event, $entry)
+	public function getCampaignEventNotifications($event, $entry)
 	{
 		$criteria = new \CDbCriteria();
 		$criteria->condition = 'event=:event';
@@ -87,20 +87,20 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 				':event' => $event 
 		);
 		
-		$res = SproutEmail_NotificationEventRecord::model()->with( 'emailBlastType', 'emailBlastType.recipientList', 'emailBlastTypeNotificationEvent' )->find( $criteria );
+		$res = SproutEmail_NotificationEventRecord::model()->with( 'campaign', 'campaign.recipientList', 'campaignNotificationEvent' )->find( $criteria );
 		
-		if ( ! isset( $res->emailBlastType ) || ! $res->emailBlastType )
+		if ( ! isset( $res->campaign ) || ! $res->campaign )
 		{
 			return false;
 		}
 		
-		$notificationEmailBlastTypeIds = array ();
+		$notificationCampaignIds = array ();
 		
 		// these match the event; now we need to narrow down by event options
-		foreach ( $res->emailBlastTypeNotificationEvent as $key => $emailBlastTypeNotification )
+		foreach ( $res->campaignNotificationEvent as $key => $campaignNotification )
 		{
-			$notificationEmailBlastTypeIds [$key] = $emailBlastTypeNotification->emailBlastTypeId; // assume it's a match
-			if ( $opts = $emailBlastTypeNotification->options ) // get options, if any
+			$notificationCampaignIds [$key] = $campaignNotification->campaignId; // assume it's a match
+			if ( $opts = $campaignNotification->options ) // get options, if any
 			{
 				foreach ( $opts ['options'] as $option_key => $option ) // process each option set associated with the campagin
 				{
@@ -123,14 +123,14 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 									{
 										if ( ! in_array( $group->id, $option ) )
 										{
-											unset( $notificationEmailBlastTypeIds [$key] );
+											unset( $notificationCampaignIds [$key] );
 											continue;
 										}
 									}
 								}
 								else
 								{
-									unset( $notificationEmailBlastTypeIds [$key] );
+									unset( $notificationCampaignIds [$key] );
 									continue;
 								}
 							}
@@ -141,7 +141,7 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 								
 								if ( ! in_array( $entry->sectionId, $option ) )
 								{
-									unset( $notificationEmailBlastTypeIds [$key] );
+									unset( $notificationCampaignIds [$key] );
 									continue;
 								}
 							}
@@ -153,7 +153,7 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 							{
 								if ( ! in_array( $entry->sectionId, $option ) )
 								{
-									unset( $notificationEmailBlastTypeIds [$key] );
+									unset( $notificationCampaignIds [$key] );
 									continue;
 								}
 							}
@@ -163,27 +163,27 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 			}
 		}
 		
-		// compile an array of emailBlastType objects and return
-		$notificationEmailBlastTypes = array ();
-		foreach ( $res->emailBlastType as $emailBlastType )
+		// compile an array of campaign objects and return
+		$notificationCampaigns = array ();
+		foreach ( $res->campaign as $campaign )
 		{
-			if ( in_array( $emailBlastType->id, $notificationEmailBlastTypeIds ) )
+			if ( in_array( $campaign->id, $notificationCampaignIds ) )
 			{
-				$notificationEmailBlastTypes [] = $emailBlastType;
+				$notificationCampaigns [] = $campaign;
 			}
 		}
 		
-		return $notificationEmailBlastTypes;
+		return $notificationCampaigns;
 	}
 	
 	/**
-	 * Sets an event and event options for specified emailBlastType
+	 * Sets an event and event options for specified campaign
 	 *
-	 * @param int $emailBlastTypeId            
+	 * @param int $campaignId            
 	 * @param array $data            
 	 * @return bool
 	 */
-	public function setEmailBlastTypeNotificationEventOptions($emailBlastTypeId, $data)
+	public function setCampaignNotificationEventOptions($campaignId, $data)
 	{
 		// handle options
 		$options = array ();
@@ -233,16 +233,16 @@ class SproutEmail_EmailBlastTypeNotificationEventRecord extends BaseRecord
 		}
 		
 		$criteria = new \CDbCriteria();
-		$criteria->condition = 'emailBlastTypeId=:emailBlastTypeId';
+		$criteria->condition = 'campaignId=:campaignId';
 		$criteria->params = array (
-				':emailBlastTypeId' => $emailBlastTypeId 
+				':campaignId' => $campaignId 
 		);
-		if ( ! $emailBlastTypeNotification = SproutEmail_EmailBlastTypeNotificationEventRecord::model()->find( $criteria ) )
+		if ( ! $campaignNotification = SproutEmail_CampaignNotificationEventRecord::model()->find( $criteria ) )
 		{
 			return false;
 		}
 		
-		$emailBlastTypeNotification->options = $options;
-		return $emailBlastTypeNotification->save( false );
+		$campaignNotification->options = $options;
+		return $campaignNotification->save( false );
 	}
 }

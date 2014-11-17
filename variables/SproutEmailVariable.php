@@ -31,26 +31,26 @@ class SproutEmailVariable
 	}
 	
 	/**
-	 * Get Email Blast Types
+	 * Get Campaigns
 	 *
 	 * @todo - make this more intuitive, kinda clunky parameter names
 	 *      
-	 * @return mixed EmailBlastType model
+	 * @return mixed Campaign model
 	 */
-	public function getEmailBlastTypes($blastType = null)
+	public function getCampaigns($type = null)
 	{
-		return craft()->sproutEmail_emailBlastType->getEmailBlastTypes($blastType);
+		return craft()->sproutEmail_campaign->getCampaigns($type);
 	}
 	
 	/**
-	 * Get a EmailBlastType by id *
+	 * Get a Campaign by id *
 	 *
-	 * @param int $emailBlastTypeId            
-	 * @return object emailBlastType record
+	 * @param int $campaignId            
+	 * @return object campaign record
 	 */
-	public function getEmailBlastTypeById($emailBlastTypeId)
+	public function getCampaignById($campaignId)
 	{
-		return craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId);
+		return craft()->sproutEmail_campaign->getCampaignById($campaignId);
 	}
 	
 	/**
@@ -122,15 +122,15 @@ class SproutEmailVariable
 	
 	
 	/**
-	 * Get emailBlastType list for specified provider
+	 * Get campaign list for specified provider
 	 *
 	 * @param string $provider            
 	 * @return array
 	 */
-	public function getEmailBlastTypeList($provider = 'SproutEmail')
+	public function getCampaignList($provider = 'SproutEmail')
 	{
 		$service = 'sproutEmail_' . lcfirst( $provider );
-		return craft()->{$service}->getEmailBlastTypeList();
+		return craft()->{$service}->getCampaignList();
 	}
 
 	/**
@@ -305,7 +305,7 @@ class SproutEmailVariable
 	
 	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
-		$customTemplate = 'sproutemail/_providers/' . $emailProvider . '/generalEmailBlastTypeSettings';
+		$customTemplate = 'sproutemail/_providers/' . $emailProvider . '/generalCampaignSettings';
 		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
 		
 		// if there is a custom set of general settings for this provider, return those; if not, return the default

@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_EmailBlastRecord extends BaseRecord
+class SproutEmail_EntryRecord extends BaseRecord
 {
 	/**
 	 * Return table name
@@ -10,7 +10,7 @@ class SproutEmail_EmailBlastRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_emailblasts';
+		return 'sproutemail_entries';
 	}
 	
 	/**
@@ -33,7 +33,7 @@ class SproutEmail_EmailBlastRecord extends BaseRecord
 	{
 		return array(
 			'element' => array(static::BELONGS_TO, 'ElementRecord', 'id', 'required' => true, 'onDelete' => static::CASCADE),
-			'emailBlastType' => array(static::BELONGS_TO, 'SproutEmail_EmailBlastTypeRecord', 'required' => true, 'onDelete' => static::CASCADE),
+			'campaign' => array(static::BELONGS_TO, 'SproutEmail_CampaignRecord', 'required' => true, 'onDelete' => static::CASCADE),
 		);
 	}
 }

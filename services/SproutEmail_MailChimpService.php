@@ -55,12 +55,12 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 	}
 	
 	/**
-	 * Exports emailBlastType (no send)
+	 * Exports campaign (no send)
 	 *
-	 * @param array $emailBlastType            
+	 * @param array $campaign            
 	 * @param array $listIds            
 	 */
-	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
+	public function exportEntry($campaign = array(), $listIds = array(), $return = false)
 	{
 		require_once (dirname( __FILE__ ) . '/../libraries/MailChimp/inc/MCAPI.class.php');
 		
@@ -68,11 +68,11 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		
 		$type = 'regular';
 		$opts = array (
-				'subject' => $emailBlastType ['title'],
-				'title' => $emailBlastType ['name'],
-				'from_name' => $emailBlastType ['fromName'],
+				'subject' => $campaign ['title'],
+				'title' => $campaign ['name'],
+				'from_name' => $campaign ['fromName'],
 				
-				'from_email' => $emailBlastType ['fromEmail'],
+				'from_email' => $campaign ['fromEmail'],
 				
 				// need to look into this
 				'tracking' => array (
@@ -89,11 +89,11 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		curl_setopt( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13' );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
 		
-		$html_url = craft()->getBaseUrl( true ) . '/' . $emailBlastType ['htmlTemplate'] . "?sectionId={$emailBlastType['sectionId']}" . "&handle={$emailBlastType['handle']}" . "&entryId={$emailBlastType['entryId']}" . "&slug={$emailBlastType['slug']}";
+		$html_url = craft()->getBaseUrl( true ) . '/' . $campaign ['htmlTemplate'] . "?sectionId={$campaign['sectionId']}" . "&handle={$campaign['handle']}" . "&entryId={$campaign['entryId']}" . "&slug={$campaign['slug']}";
 		curl_setopt( $ch, CURLOPT_URL, $html_url );
 		$html = curl_exec( $ch );
 		
-		$text_url = craft()->getBaseUrl( true ) . '/' . $emailBlastType ['textTemplate'] . "?sectionId={$emailBlastType['sectionId']}" . "&handle={$emailBlastType['handle']}" . "&entryId={$emailBlastType['entryId']}" . "&slug={$emailBlastType['slug']}";
+		$text_url = craft()->getBaseUrl( true ) . '/' . $campaign ['textTemplate'] . "?sectionId={$campaign['sectionId']}" . "&handle={$campaign['handle']}" . "&entryId={$campaign['entryId']}" . "&slug={$campaign['slug']}";
 		curl_setopt( $ch, CURLOPT_URL, $text_url );
 		$text = curl_exec( $ch );
 		
@@ -102,7 +102,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 				'text' => $text 
 		);
 		
-		$result = $api->emailBlastTypeCreate( $type, $opts, $content );
+		$result = $api->campaignCreate( $type, $opts, $content );
 		
 		if ( ! $api->errorCode )
 			echo "Created with ID " . $result;
@@ -137,12 +137,12 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		return $this->apiSettings;
 	}
 	/**
-	 * Exports emailBlastType (with send)
+	 * Exports campaign (with send)
 	 *
-	 * @param array $emailBlastType            
+	 * @param array $campaign            
 	 * @param array $listIds            
 	 */
-	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
+	public function sendEntry($campaign = array(), $listIds = array())
 	{
 		// future feature
 	}

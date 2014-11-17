@@ -1,12 +1,12 @@
 {% if loop.first %}
 
 {% if craft.request.getSegment(2) == "" %}
-<h3>{{ "Email Blasts"|t }}</h3>
+<h3>{{ "Entries"|t }}</h3>
 {% endif %}
 
-<table id="emailblasts" class="data fullwidth">
+<table id="entries" class="data fullwidth">
 	<thead>
-		<th width="50%">Email Blast</th>
+		<th width="50%">Entry</th>
 		<th width="20%">Type</th>
 		<th width="20%">Date Created</th>
 		{# <th width="15%">Preview</th>
@@ -14,31 +14,31 @@
 	</thead>
 {% endif %}
 
-	<tr data-id="{{ emailBlast.id }}" data-name="{{ emailBlast.subjectLine|t }}">
+	<tr data-id="{{ entry.id }}" data-name="{{ entry.subjectLine|t }}">
 		<td>
-			<span class="status {{ emailBlast.status }}"></span>
-			<a href="{{ url('sproutemail/emailblasts/edit/' ~ emailBlast.id) }}">{{ emailBlast.title ? emailBlast.subjectLine : 'New Email Blast' }}</a>
+			<span class="status {{ entry.status }}"></span>
+			<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.subjectLine : 'New Entry' }}</a>
 		</td>
 		<td>
-			{{ emailBlastType.type }}
+			{{ campaign.type }}
 		</td>
 		<td>
-			{{ emailBlast.dateCreated|date('m/d/Y') }}
+			{{ entry.dateCreated|date('m/d/Y') }}
 		</td>
 		 
-		{# {% if emailBlast.emailBlastTypeId and emailBlast.id and emailBlastType.template and emailBlastType.emailProvider %}
+		{# {% if entry.campaignId and entry.id and campaign.template and campaign.emailProvider %}
 		<td>		
-			<a href="{{ siteUrl ~ emailBlastType.template }}?id={{emailBlast.id}}" target="_blank">HTML</a> 
+			<a href="{{ siteUrl ~ campaign.template }}?id={{entry.id}}" target="_blank">HTML</a> 
 			/ 
-			<a href="{{ siteUrl ~ emailBlastType.template }}.txt?entryId={{emailBlast.id}}" target="_blank">Text</a>
+			<a href="{{ siteUrl ~ campaign.template }}.txt?entryId={{entry.id}}" target="_blank">Text</a>
 		</td>
 		<td>
-			{% switch emailBlastType.emailProvider %}
+			{% switch campaign.emailProvider %}
 			
 				{% case "SproutEmail" %}
 			
 					<a href="#" class="export btn small" >
-						Send Email Blast
+						Send Entry
 					</a>
 			
 				{% case "CopyPaste" %}
@@ -50,13 +50,13 @@
 				{% case "SendGrid" %}
 			
 					<a href="#" class="export btn small" >
-						Export to {{ emailBlast.emailProvider }} 
+						Export to {{ entry.emailProvider }} 
 					</a>
 			
 				{% case "MailGun" %}
 			
 					<a href="#" class="confirm btn small" >
-						Prepare {{ emailBlast.emailProvider }} Blast
+						Prepare {{ entry.emailProvider }}
 					</a>
 
 				{% default %}
@@ -68,7 +68,7 @@
 		</td>
 		{% else %}
 		<td colspan="2">
-			<i><a href="{{ url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastType.id ) }}" style="color:inherit;text-decoration:underline;">Complete settings</a></i>
+			<i><a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}" style="color:inherit;text-decoration:underline;">Complete settings</a></i>
 		</td>
 		{% endif %} #}
 	</tr>
@@ -80,9 +80,9 @@
 
 {% set js %}
 	new Craft.AdminTable({
-		tableSelector: '#emailblasts',
-		noObjectsSelector: '#noemailblasts',
-		deleteAction: 'sproutEmail/emailBlast/deleteEmailBlast'
+		tableSelector: '#entries',
+		noObjectsSelector: '#noentries',
+		deleteAction: 'sproutEmail/entry/deleteEntry'
 	});
 	
 	jQuery(document).ready(function(){
@@ -97,15 +97,15 @@
 			
 			btn.addClass('disabled');
 			
-			var query = 'emailBlastId='+tr.data('id')
-									+'&emailBlastTypeId='+tr.data('id')
-												+'&action=sproutEmail/emailBlast/export';
+			var query = 'entryId='+tr.data('id')
+									+'&campaignId='+tr.data('id')
+												+'&action=sproutEmail/entry/export';
 
-			$.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
+			$.post('{{ url('sproutEmail/entry/export') }}',query, function(data){
 					btn.removeClass('disabled');
 					var sgConfirmModal = new Garnish.Modal($('<div class="modal fitted" style="padding: 40px;">'+
 																						'<div class="body"><h1>SendGrid</h1><p>'+data.response+'</p>'+
-																						'<p><strong>SendGrid:</strong> <a href="https://sendgrid.com/newsletter" target="_blank">View all EmailBlastTypes</a>'+
+																						'<p><strong>SendGrid:</strong> <a href="https://sendgrid.com/newsletter" target="_blank">View all Campaigns</a>'+
 																						'<div class="buttons right"><input type="submit" id="sendGridClose" class="btn submit" value="'+Craft.t('Close')+'" /></div>'+
 																						'</div></div>'));
 					 $('#sendGridClose').unbind().bind('click',function(){
@@ -124,7 +124,7 @@
 									+'&action=SproutEmail/campaigns/export'
 									+'&'+csrfTokenName+'='+csrfTokenValue;
 
-			jQuery.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
+			jQuery.post('{{ url('sproutEmail/entry/export') }}',query, function(data){
 								var myModal = new Garnish.Modal($('<div class="modal" style="padding: 40px;">'+
 																									'<p><strong>Title:</strong> '+data.title+'</p>'+
 																									'<p><strong>From:</strong> '+data.fromName+' &lt;'+data.fromEmail+'&gt;</p>'+
@@ -151,7 +151,7 @@
 					var $confirm = $('<div class="modal fitted" />'),
 							$body = $('<div class="body" />').appendTo($confirm),
 							$message = $('<h1>Send Via MailGun</h1>'+
-																 '<p id="modalMessage">You are about to send the emailBlastType to the configured list of recipients</p>').appendTo($body),
+																 '<p id="modalMessage">You are about to send the campaign to the configured list of recipients</p>').appendTo($body),
 										$buttons  = $('<div class="buttons right"/>').appendTo($body);
 						$cancelBtn = $('<div class="btn">'+Craft.t('Cancel')+'</div>').appendTo($buttons),
 						$submitBtn = $('<input type="submit" class="btn submit" value="'+Craft.t('Send email now')+'" />').appendTo($buttons);                               
@@ -181,7 +181,7 @@
 										// Show Spinner    
 												$spinner.removeClass('hidden');
 												
-										$.post('{{ url('sproutEmail/emailBlast/export') }}',query, function(data){
+										$.post('{{ url('sproutEmail/entry/export') }}',query, function(data){
 									$('#modalMessage').html(data);
 												$closeBtn.removeClass('hidden');
 												$spinner.addClass('hidden');

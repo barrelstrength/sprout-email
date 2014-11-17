@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * Run email emailBlastType task
+ * Run email campaign task
  */
-class SproutEmail_RunEmailBlastTypeTask extends BaseTask
+class SproutEmail_RunCampaignTask extends BaseTask
 {
 	/**
 	 * Defines the settings.
@@ -15,7 +15,7 @@ class SproutEmail_RunEmailBlastTypeTask extends BaseTask
 	protected function defineSettings()
 	{
 		return array (
-			'emailBlastTypeId' => AttributeType::String,
+			'campaignId' => AttributeType::String,
 			'entryId' => AttributeType::String 
 		);
 	}
@@ -27,7 +27,7 @@ class SproutEmail_RunEmailBlastTypeTask extends BaseTask
 	 */
 	public function getDescription()
 	{
-		return Craft::t( 'Running email emailBlastType' );
+		return Craft::t( 'Running email campaign' );
 	}
 	
 	/**
@@ -37,7 +37,7 @@ class SproutEmail_RunEmailBlastTypeTask extends BaseTask
 	 */
 	public function getTotalSteps()
 	{
-		// a single emailBlastType is one run, regardless of number of recipients
+		// a single campaign is one run, regardless of number of recipients
 		return 1;
 	}
 	
@@ -50,6 +50,6 @@ class SproutEmail_RunEmailBlastTypeTask extends BaseTask
 	public function runStep($step)
 	{
 		$settings = $this->getSettings();
-		return craft()->sproutEmail_emailProvider->exportEmailBlast( $settings->entryId, $settings->emailBlastTypeId, true );
+		return craft()->sproutEmail_emailProvider->exportEntry( $settings->entryId, $settings->campaignId, true );
 	}
 }

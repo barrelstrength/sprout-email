@@ -4,12 +4,12 @@
 
 	{{ forms.field({
 		label: "Subscriber Lists"|t,
-		instructions: "Select one or more subscriber lists to send your emailBlastType."|t,
-		errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
+		instructions: "Select one or more subscriber lists to send your campaign."|t,
+		errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
 	}, forms.checkboxGroup({
 		name: 'sproutEmail[emailProviderRecipientListId]',
 		options : subscriberLists,
-		values: emailBlastType is defined ? emailBlastType.emailProviderRecipientListId : null
+		values: campaign is defined ? campaign.emailProviderRecipientListId : null
 	})) }}
 	
 {% else %}

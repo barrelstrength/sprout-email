@@ -40,16 +40,16 @@ class SproutEmail_RecipientListRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array (
-			'emailBlastTypeRecipientList' => array (
+			'campaignRecipientList' => array (
 				self::HAS_MANY,
-				'SproutEmail_EmailBlastTypeRecipientListRecord',
+				'SproutEmail_CampaignRecipientListRecord',
 				'recipientListId' 
 			),
-			'emailBlastType' => array (
+			'campaign' => array (
 				self::HAS_MANY,
-				'SproutEmail_EmailBlastTypeRecord',
-				'emailBlastTypeId',
-				'through' => 'emailBlastTypeRecipientList' 
+				'SproutEmail_CampaignRecord',
+				'campaignId',
+				'through' => 'campaignRecipientList' 
 			) 
 		);
 	}

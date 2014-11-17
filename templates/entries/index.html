@@ -1,12 +1,12 @@
 {% extends "sproutemail/_layouts/elementindex" %}
 {% set title = "Email"|t %}
-{% set elementType = 'SproutEmail_EmailBlast' %}
+{% set elementType = 'SproutEmail_Entry' %}
 
-{% set emailBlastTypes = craft.sproutEmail.getEmailBlastTypes('blast') %}
+{% set campaigns = craft.sproutEmail.getCampaigns('email') %}
 
 {% block sidebar %}
 	
-	{% if emailBlastTypes|length %}
+	{% if campaigns|length %}
 
     <div class="buttons">
       <div class="btngroup submit">
@@ -14,9 +14,9 @@
         <div class="menu">
           <ul>
 
-            {% if emailBlastTypes|length > 1 %}
-              {% for emailBlastType in emailBlastTypes %}
-                <li><a href="{{ url('sproutemail/emailblasts/'~emailBlastType.id~'/new') }}">{{ emailBlastType.name|t }}</a></li>
+            {% if campaigns|length > 1 %}
+              {% for campaign in campaigns %}
+                <li><a href="{{ url('sproutemail/entries/'~campaign.id~'/new') }}">{{ campaign.name|t }}</a></li>
               {% endfor %}
             {% endif %}
 
@@ -31,7 +31,7 @@
   {% else %}
       
     <div class="buttons">
-      <a class="btn submit add icon" href="{{ url('sproutemail/settings/emailblasttypes/edit/new') }}">{{ "New Email Type"|t }}</a>
+      <a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Email Type"|t }}</a>
     </div>
 
   {% endif %}

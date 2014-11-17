@@ -8,10 +8,10 @@ namespace Craft;
 interface SproutEmail_EmailProviderInterfaceService
 {
 	public function getSubscriberList();
-	public function exportEmailBlast($emailBlastType, $listIds, $return);
-	public function sendEmailBlast($emailBlastType, $listIds);
-	public function saveRecipientList(SproutEmail_EmailBlastTypeModel &$emailBlastType, SproutEmail_EmailBlastTypeRecord &$emailBlastTypeRecord);
-	public function cleanUpRecipientListOrphans(&$emailBlastTypeRecord);
+	public function exportEntry($campaign, $listIds, $return);
+	public function sendEntry($campaign, $listIds);
+	public function saveRecipientList(SproutEmail_CampaignModel &$campaign, SproutEmail_CampaignRecord &$campaignRecord);
+	public function cleanUpRecipientListOrphans(&$campaignRecord);
 	public function getSettings();
 	public function saveSettings($settings = array());
 }

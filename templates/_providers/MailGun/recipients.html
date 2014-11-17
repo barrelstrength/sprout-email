@@ -1,11 +1,11 @@
-{% set emailblasts = craft.sproutEmail.getEmailBlastTypeList('MailGun') %}
+{% set entries = craft.sproutEmail.getCampaignList('MailGun') %}
 
-    {% if(emailblasts|length > 0) %}
+    {% if(entries|length > 0) %}
     
         {{ forms.field({
-            label: "EmailBlastTypes (optional)"|t,
-            instructions: "Select a emailBlastType to associate with this section."|t,
-            errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
+            label: "Campaigns (optional)"|t,
+            instructions: "Select a campaign to associate with this section."|t,
+            errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
         }, forms.select({
             name: 'sproutEmail[emailProviderRecipientListId][campaign]',
             options : campaigns,
@@ -22,12 +22,12 @@
 
     {{ forms.field({
         label: "Mailing Lists"|t,
-        instructions: "Select one or more mailing lists to send your Email Blasts in this Section."|t,
-        errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
+        instructions: "Select one or more mailing lists to send your Entries in this Section."|t,
+        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.checkboxGroup({
         name: 'sproutEmail[emailProviderRecipientListId][list]',
         options : mailing_list,
-        values: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? emailBlastType.emailProviderRecipientListId : null
+        values: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId : null
     })) }}
 
 {% else %}

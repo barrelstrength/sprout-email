@@ -1,27 +1,27 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Edit Email Blast Type" %}
+{% set title = "Edit Campaign" %}
 
 {% set crumbs = [
-	{ label: "Sprout Email"|t, url: url('sproutemail/emailblasts') },
+	{ label: "Sprout Email"|t, url: url('sproutemail/entries') },
   { label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
 {% set tabs = {
     general: { 
-      label: "Email Blast Type"|t,
-      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId),
-      class: 'emailBlastTypeinfo'
+      label: "Campaign"|t,
+      url: url('sproutemail/settings/campaigns/edit/' ~ campaignId),
+      class: 'campaigninfo'
     },
     recipients:    { 
       label: "Recipients"|t,
-      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId ~ '/recipients'),
+      url: url('sproutemail/settings/campaigns/edit/' ~ campaignId ~ '/recipients'),
       class: 'recipients'
     },
     fields: {
       label: "Fields"|t,
-      url: url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastTypeId ~ '/fields'),
+      url: url('sproutemail/settings/campaigns/edit/' ~ campaignId ~ '/fields'),
       class: 'fields'
     }
 } %}
@@ -34,11 +34,11 @@
 {% set content %}
 
 {% if craft.request.getSegment('6') == 'recipients' %} 
-    {% include "sproutemail/settings/emailblasttypes/_tabs/recipients" %}
+    {% include "sproutemail/settings/campaigns/_tabs/recipients" %}
 {% elseif craft.request.getSegment('6') == 'fields' %}
-    {% include 'sproutemail/settings/emailblasttypes/_tabs/fields' %}
+    {% include 'sproutemail/settings/campaigns/_tabs/fields' %}
 {% else %}
-    {% include "sproutemail/settings/emailblasttypes/_tabs/info" %}
+    {% include "sproutemail/settings/campaigns/_tabs/info" %}
 {% endif %}
 
 {% endset %}

@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * EmailBlastType record
+ * Campaign record
  */
-class SproutEmail_EmailBlastTypeRecord extends BaseRecord
+class SproutEmail_CampaignRecord extends BaseRecord
 {
 	public $rules = array ();
 	public $sectionRecord;
@@ -16,7 +16,7 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_emailblasttypes';
+		return 'sproutemail_campaigns';
 	}
 	
 	/**
@@ -28,7 +28,7 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 	{
 		// @TODO - where do we load this smarter? Already in init()
 		// but needed here for install.
-		Craft::import('plugins.sproutemail.enums.EmailBlastType');
+		Craft::import('plugins.sproutemail.enums.Campaign');
 
 		return array (
 			'fieldLayoutId'    => AttributeType::Number,
@@ -38,8 +38,8 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 			'type'             => array(
 														AttributeType::Enum, 
 														'values' => array(
-															EmailBlastType::EmailBlast, 
-															EmailBlastType::Notification
+															Campaign::Email, 
+															Campaign::Notification
 														)),
 			'titleFormat'      => AttributeType::String,
 			'hasUrls'          => array(
@@ -78,27 +78,27 @@ class SproutEmail_EmailBlastTypeRecord extends BaseRecord
 				'FieldLayoutRecord', 
 				'onDelete' => static::SET_NULL
 			),
-			'emailBlastTypeRecipientList' => array (
+			'campaignRecipientList' => array (
 				self::HAS_MANY,
-				'SproutEmail_EmailBlastTypeRecipientListRecord',
-				'emailBlastTypeId' 
+				'SproutEmail_CampaignRecipientListRecord',
+				'campaignId' 
 			),
 			'recipientList' => array (
 				self::HAS_MANY,
 				'SproutEmail_RecipientListRecord',
 				'recipientListId',
-				'through' => 'emailBlastTypeRecipientList' 
+				'through' => 'campaignRecipientList' 
 			),
-			'emailBlastTypeNotificationEvent' => array (
+			'campaignNotificationEvent' => array (
 				self::HAS_MANY,
-				'SproutEmail_EmailBlastTypeNotificationEventRecord',
-				'emailBlastTypeId' 
+				'SproutEmail_CampaignNotificationEventRecord',
+				'campaignId' 
 			),
 			'notificationEvent' => array (
 				self::HAS_MANY,
 				'SproutEmail_NotificationEventRecord',
 				'notificationEventId',
-				'through' => 'emailBlastTypeNotificationEvent' 
+				'through' => 'campaignNotificationEvent' 
 			) 
 		);
 	}

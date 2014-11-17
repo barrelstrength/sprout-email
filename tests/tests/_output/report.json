@@ -5,11 +5,11 @@
 }{
     "event": "testStart",
     "suite": "acceptance",
-    "test": "create a notification, verify successful creation, and delete (CreateEmailBlastTypeCept)"
+    "test": "create a notification, verify successful creation, and delete (CreateCampaignCept)"
 }{
     "event": "test",
     "suite": "acceptance",
-    "test": "create a notification, verify successful creation, and delete (CreateEmailBlastTypeCept)",
+    "test": "create a notification, verify successful creation, and delete (CreateCampaignCept)",
     "status": "pass",
     "time": 5.5715041160583,
     "trace": [

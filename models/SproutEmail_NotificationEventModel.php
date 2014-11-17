@@ -14,7 +14,7 @@ class SproutEmail_NotificationEventModel extends BaseModel
 	public function defineAttributes()
 	{
 		return array (
-			// emailBlastType info
+			// campaign info
 			'id'          => AttributeType::Number,
 			'registrar'   => AttributeType::String,
 			'event'       => AttributeType::String,

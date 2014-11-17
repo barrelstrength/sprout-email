@@ -1,20 +1,20 @@
 {% import "_includes/forms" as forms %}
 
-{% set emailblasts = craft.sproutEmail.getEmailBlastTypes('blast') %}
+{% set entries = craft.sproutEmail.getCampaigns('email') %}
 
-{% if emailblasts|length %}
+{% if entries|length %}
 	
 	<h3>
-		Email Blast Types
+		Campaigns
 		<span class="info">
-			<p>Create multiple Email Blast Types with unique fields, layouts, and email service provider integrations.</p>
+			<p>Create multiple Campaigns with unique fields, layouts, and email service provider integrations.</p>
 		</span>
 	</h3>
 
-	{% for emailBlastType in emailblasts %}
+	{% for campaign in entries %}
 		{% if loop.first %}
 
-		<table id="emailblasts" class="data fullwidth">
+		<table id="entries" class="data fullwidth">
 			<thead>
 				<th width="40%"></th>
 				<th width="20%"></th>
@@ -23,7 +23,7 @@
 			</thead>
 		{% endif %}
 			<tr>
-				<td><a href="{{ url('sproutemail/settings/emailblasttypes/edit/' ~ emailBlastType.id ) }}">{{ emailBlastType.name }}</a></td>
+				<td><a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -35,19 +35,19 @@
 	{% endfor %}
  	
 	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutemail/settings/emailblasttypes/edit/new') }}">New Email Blast Types</a>
+		<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">New Campaigns</a>
 	</div>
 
 {% else %}
  	
  	<div style="width:40%;">
 
-	 	<h2>Create your first Email Blast Type</h2>
+	 	<h2>Create your first Campaign</h2>
 
-	 	<p>Email Blast Types are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
+	 	<p>Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
 
 	 	<div class="buttons">
-			<a class="btn submit icon" href="{{ url('sproutemail/settings/emailblasttypes/edit/new') }}">Create an Email Blast Type &raquo;</a>
+			<a class="btn submit icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">Create an Campaign &raquo;</a>
 		</div>
 
 	</div>

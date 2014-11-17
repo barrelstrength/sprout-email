@@ -50,7 +50,7 @@ class SproutEmail_ExamplesController extends BaseController
 			
 			$user = craft()->userSession->getUser();
 
-			$emailBlastTypeSettings = array(
+			$campaignSettings = array(
 				array(
 					'name' => 'Marketing Email',
 					'handle' => 'marketingemail',
@@ -218,29 +218,29 @@ class SproutEmail_ExamplesController extends BaseController
 			);
 		
 			// Create Forms and their Content Tables
-			foreach ($emailBlastTypeSettings as $settings) 
+			foreach ($campaignSettings as $settings) 
 			{
-				$emailBlastType = new SproutEmail_EmailBlastTypeModel();
+				$campaign = new SproutEmail_CampaignModel();
 				
-				// Assign our Email Blast Type settings
-				$emailBlastType->name = $settings['name'];
-				$emailBlastType->handle = $settings['handle'];
-				$emailBlastType->subject = $settings['subject'];
-				$emailBlastType->fromName = $settings['fromName'];
-				$emailBlastType->fromEmail = $settings['fromEmail'];
-				$emailBlastType->replyToEmail = $settings['replyToEmail'];
-				$emailBlastType->emailProvider = $settings['emailProvider'];
-				$emailBlastType->template = $settings['template'];
-				$emailBlastType->templateCopyPaste = $settings['templateCopyPaste'];
+				// Assign our Campaign settings
+				$campaign->name = $settings['name'];
+				$campaign->handle = $settings['handle'];
+				$campaign->subject = $settings['subject'];
+				$campaign->fromName = $settings['fromName'];
+				$campaign->fromEmail = $settings['fromEmail'];
+				$campaign->replyToEmail = $settings['replyToEmail'];
+				$campaign->emailProvider = $settings['emailProvider'];
+				$campaign->template = $settings['template'];
+				$campaign->templateCopyPaste = $settings['templateCopyPaste'];
 
-				// Create the Email Blast Type
-				$emailBlastTypeId = craft()->sproutEmail_emailBlastType->saveEmailBlastType($emailBlastType);
+				// Create the Campaign
+				$campaignId = craft()->sproutEmail_campaign->saveCampaign($campaign);
 
 				// Assign the id of what we just created to our model
-				$emailBlastType->id = $emailBlastTypeId;
+				$campaign->id = $campaignId;
 
 				// Save this again for the templates
-				craft()->sproutEmail_emailBlastType->saveEmailBlastType($emailBlastType, 'template');
+				craft()->sproutEmail_campaign->saveCampaign($campaign, 'template');
 
 				//------------------------------------------------------------
 
@@ -291,11 +291,11 @@ class SproutEmail_ExamplesController extends BaseController
 				// Set the field layout
 				$fieldLayout = craft()->fields->assembleLayout($fieldLayout, $requiredFields);
 				
-				$fieldLayout->type = 'SproutEmail_EmailBlastType';
-				$emailBlastType->setFieldLayout($fieldLayout);
+				$fieldLayout->type = 'SproutEmail_Campaign';
+				$campaign->setFieldLayout($fieldLayout);
 
 				// Save our form again with a layout
-				craft()->sproutEmail_emailBlastType->saveEmailBlastType($emailBlastType);
+				craft()->sproutEmail_campaign->saveCampaign($campaign);
 			}
 		}
 		catch (\Exception $e)

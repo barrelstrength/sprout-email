@@ -37,18 +37,18 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	 * Base function for exporting section based emails
 	 *
 	 * @param int $entryId            
-	 * @param int $emailBlastTypeId            
+	 * @param int $campaignId            
 	 */
-	public function exportEmailBlast($entryId, $emailBlastTypeId, $return = false)
+	public function exportEntry($entryId, $campaignId, $return = false)
 	{
 		// Define our variables
 		$listIds = array ();
 		$listProviders = array ();
 		
-		// Get our emailBlastType info
-		if ( ! $emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($emailBlastTypeId) )
+		// Get our campaign info
+		if ( ! $campaign = craft()->sproutEmail_campaign->getCampaignById($campaignId) )
 		{
-			SproutEmailPlugin::log("Email Blast Type not found");
+			SproutEmailPlugin::log("Campaign not found");
 
 			if ( $return )
 			{
@@ -56,13 +56,13 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			}
 
 			// @TODO - update use of die
-			die( 'Email Blast Type not found' );
+			die( 'Campaign not found' );
 		}
 
 		// Get our recipient list info
-		if($emailBlastType["emailProvider"] != 'CopyPaste')
+		if($campaign["emailProvider"] != 'CopyPaste')
 		{
-			if ( ! $recipientLists = craft()->sproutEmail_emailBlastType->getEmailBlastTypeRecipientLists( $emailBlastType ['id'] ) )
+			if ( ! $recipientLists = craft()->sproutEmail_campaign->getCampaignRecipientLists( $campaign ['id'] ) )
 			{
 				SproutEmailPlugin::log("Recipient lists not found");
 
@@ -80,7 +80,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			SproutEmailPlugin::log("Exporting Copy/Paste Email");
 
 			// We can't check for a recipients list on CopyPaste since one doesn't exist
-			craft()->sproutEmail_copyPaste->exportEmailBlast( $emailBlastType );
+			craft()->sproutEmail_copyPaste->exportEntry( $campaign );
 
 			// @TODO - update use of die
 			die();
@@ -97,10 +97,10 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 
 		foreach ($entryFields as $field) 
 		{
-			// If we have an Email EmailBlastType Field, grab the handle of the first one that matches
-			if ($field->getField()->type == 'SproutEmail_EmailEmailBlastType')
+			// If we have an Email Campaign Field, grab the handle of the first one that matches
+			if ($field->getField()->type == 'SproutEmail_EmailCampaign')
 			{
-				SproutEmailPlugin::log('We have a EmailBlastType Override field');
+				SproutEmailPlugin::log('We have a Campaign Override field');
 				SproutEmailPlugin::log('Override Field Handle: ' . $field->getField()->handle);
 
 				$overrideHandle = $field->getField()->handle;
@@ -111,28 +111,28 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		// If the entry has an override handle assigned to it
 		if ($overrideHandle != "")
 		{
-			// Grab our Email EmailBlastType override settings
+			// Grab our Email Campaign override settings
 			$entryOverrideSettings = $entry->{$overrideHandle};
 			$entryOverrideSettings = json_decode($entryOverrideSettings,TRUE);
 			
 			SproutEmailPlugin::log('Our override settings: ' . $entry->{$overrideHandle});
 
-			// Merge the entry level settings with our emailBlastType
+			// Merge the entry level settings with our campaign
 			$emailProviderRecipientListId = '';
 
 			if( isset($entryOverrideSettings) )
 			{
 				foreach($entryOverrideSettings as $key => $value)
 				{
-					// Override our emailBlastType settings
-					$emailBlastType[$key] = $value;
+					// Override our campaign settings
+					$campaign[$key] = $value;
 
 					if($key == 'emailProviderRecipientListId')
 					{
 						// Make sure our $emailProviderRecipientListId is an array
 						// @TODO - clarify what this value is for.  Is it only for Mailgun?
 						$emailProviderRecipientListId = (array) $value;
-						$emailBlastType[$key] = $emailProviderRecipientListId;
+						$campaign[$key] = $emailProviderRecipientListId;
 					}
 
 					SproutEmailPlugin::log('Entry override ' . $key . ': ' . $value);
@@ -164,7 +164,7 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 		foreach ( $listProviders as $provider )
 		{
 			$provider_service = 'sproutEmail_' . lcfirst( $provider );
-			craft()->{$provider_service}->exportEmailBlast( $emailBlastType, $listIds [$provider], $return );
+			craft()->{$provider_service}->exportEntry( $campaign, $listIds [$provider], $return );
 		}
 		
 		if ( $return )
@@ -177,40 +177,40 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	}
 	
 	/**
-	 * Saves recipient list for emailBlastType
+	 * Saves recipient list for campaign
 	 *
-	 * @param SproutEmail_EmailBlastTypeModel $emailBlastType            
-	 * @param SproutEmail_EmailBlastTypeRecord $emailBlastTypeRecord            
+	 * @param SproutEmail_CampaignModel $campaign            
+	 * @param SproutEmail_CampaignRecord $campaignRecord            
 	 * @throws Exception
 	 * @return void
 	 */
-	public function saveRecipientList(SproutEmail_EmailBlastTypeModel &$emailBlastType, SproutEmail_EmailBlastTypeRecord &$emailBlastTypeRecord)
+	public function saveRecipientList(SproutEmail_CampaignModel &$campaign, SproutEmail_CampaignRecord &$campaignRecord)
 	{
 		// an email provider is required
-		if ( ! isset( $emailBlastType->emailProvider ) || ! $emailBlastType->emailProvider )
+		if ( ! isset( $campaign->emailProvider ) || ! $campaign->emailProvider )
 		{
-			$emailBlastType->addError( 'emailProvider', 'Unsupported email provider.' );
+			$campaign->addError( 'emailProvider', 'Unsupported email provider.' );
 		}
 		
 		// at least one recipient list is required
-		if ( ! isset( $emailBlastType->emailProviderRecipientListId ) || ! $emailBlastType->emailProviderRecipientListId )
+		if ( ! isset( $campaign->emailProviderRecipientListId ) || ! $campaign->emailProviderRecipientListId )
 		{
-			$emailBlastType->addError( 'emailProviderRecipientListId', 'You must select at least one recipient list.' );
+			$campaign->addError( 'emailProviderRecipientListId', 'You must select at least one recipient list.' );
 		}
 		
 		// if we have what we need up to this point,
 		// get the recipient list(s) by emailProvider and emailProviderRecipientListId
-		if ( ! $emailBlastType->hasErrors() )
+		if ( ! $campaign->hasErrors() )
 		{
 			$criteria = new \CDbCriteria();
 			$criteria->condition = 'emailProvider=:emailProvider';
 			$criteria->params = array (
-				':emailProvider' => $emailBlastType->emailProvider 
+				':emailProvider' => $campaign->emailProvider 
 			);
 			
-			$recipientListIds = ( array ) $emailBlastType->emailProviderRecipientListId;
+			$recipientListIds = ( array ) $campaign->emailProviderRecipientListId;
 			
-			// process each recipient listEmailBlastTypes
+			// process each recipient listCampaigns
 			foreach ( $recipientListIds as $list_id )
 			{
 				$criteria->condition = 'emailProviderRecipientListId=:emailProviderRecipientListId';
@@ -227,33 +227,33 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 					// save record
 					$recipientListRecord = new SproutEmail_RecipientListRecord();
 					$recipientListRecord->emailProviderRecipientListId = $list_id;
-					$recipientListRecord->emailProvider = $emailBlastType->emailProvider;
+					$recipientListRecord->emailProvider = $campaign->emailProvider;
 				}
 				
 				// we already did our validation, so just save
 				if ( $recipientListRecord->save() )
 				{
-					// associate with emailBlastType, if not already done so
-					if ( SproutEmail_EmailBlastTypeRecipientListRecord::model()->count( 'recipientListId=:recipientListId AND emailBlastTypeId=:emailBlastTypeId', array (
+					// associate with campaign, if not already done so
+					if ( SproutEmail_CampaignRecipientListRecord::model()->count( 'recipientListId=:recipientListId AND campaignId=:campaignId', array (
 						':recipientListId' => $recipientListRecord->id,
-						':emailBlastTypeId' => $emailBlastTypeRecord->id 
+						':campaignId' => $campaignRecord->id 
 					) ) == 0 )
 					{
-						$emailBlastTypeRecipientListRecord = new SproutEmail_EmailBlastTypeRecipientListRecord();
-						$emailBlastTypeRecipientListRecord->recipientListId = $recipientListRecord->id;
-						$emailBlastTypeRecipientListRecord->emailBlastTypeId = $emailBlastTypeRecord->id;
-						$emailBlastTypeRecipientListRecord->save( false );
+						$campaignRecipientListRecord = new SproutEmail_CampaignRecipientListRecord();
+						$campaignRecipientListRecord->recipientListId = $recipientListRecord->id;
+						$campaignRecipientListRecord->campaignId = $campaignRecord->id;
+						$campaignRecipientListRecord->save( false );
 					}
 				}
 			}
 			
 			// now we need to disassociate recipient lists as needed
-			foreach ( $emailBlastTypeRecord->recipientList as $list )
+			foreach ( $campaignRecord->recipientList as $list )
 			{
-				// was part of emailBlastType, but now isn't
+				// was part of campaign, but now isn't
 				if ( ! in_array( $list->emailProviderRecipientListId, $recipientListIds ) )
 				{
-					craft()->sproutEmail_emailBlastType->deleteEmailBlastTypeRecipientList( $list->id, $emailBlastTypeRecord->id );
+					craft()->sproutEmail_campaign->deleteCampaignRecipientList( $list->id, $campaignRecord->id );
 				}
 			}
 		}
@@ -262,28 +262,28 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			return false;
 		}
 		
-		$this->cleanUpRecipientListOrphans( $emailBlastTypeRecord );
+		$this->cleanUpRecipientListOrphans( $campaignRecord );
 		
 		return true;
 	}
 	
 	/**
-	 * Deletes recipients for specified emailBlastType
+	 * Deletes recipients for specified campaign
 	 *
-	 * @param SproutEmail_EmailBlastTypeRecord $emailBlastTypeRecord            
+	 * @param SproutEmail_CampaignRecord $campaignRecord            
 	 * @return bool
 	 */
-	public function deleteRecipients(SproutEmail_EmailBlastTypeRecord $emailBlastTypeRecord)
+	public function deleteRecipients(SproutEmail_CampaignRecord $campaignRecord)
 	{
 		// delete associated recipient lists
-		if ( ! craft()->db->createCommand()->delete( 'sproutemail_emailblasttypes_recipientlists', array (
-				'emailBlastTypeId' => $emailBlastTypeRecord->id 
+		if ( ! craft()->db->createCommand()->delete( 'sproutemail_campaigns_recipientlists', array (
+				'campaignId' => $campaignRecord->id 
 		) ) )
 		{
 			return false;
 		}
 		
-		if ( ! $this->cleanUpRecipientListOrphans( $emailBlastTypeRecord ) )
+		if ( ! $this->cleanUpRecipientListOrphans( $campaignRecord ) )
 		{
 			return false;
 		}
@@ -307,17 +307,17 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 	/**
 	 * Cleans up the recipient list after saving
 	 *
-	 * @param SproutEmail_EmailBlastTypeRecord $emailBlastTypeRecord            
+	 * @param SproutEmail_CampaignRecord $campaignRecord            
 	 * @return boolean
 	 */
-	public function cleanUpRecipientListOrphans(&$emailBlastTypeRecord)
+	public function cleanUpRecipientListOrphans(&$campaignRecord)
 	{
 		// clean up recipient lists if orphaned
-		if ( ! empty( $emailBlastTypeRecord->recipientList ) )
+		if ( ! empty( $campaignRecord->recipientList ) )
 		{
 			// first let's prep our data
 			$recipientListIds = array ();
-			foreach ( $emailBlastTypeRecord->recipientList as $list )
+			foreach ( $campaignRecord->recipientList as $list )
 			{
 				$recipientListIds [] = $list->id;
 			}
@@ -325,9 +325,9 @@ class SproutEmail_EmailProviderService extends BaseApplicationComponent
 			// now check if there are any orphans
 			$criteria = new \CDbCriteria();
 			$criteria->addInCondition( 't.id', $recipientListIds );
-			$criteria->condition = 'emailBlastType.id is null';
+			$criteria->condition = 'campaign.id is null';
 			
-			$orphans = SproutEmail_RecipientListRecord::model()->with( 'emailBlastType' )->findAll( $criteria );
+			$orphans = SproutEmail_RecipientListRecord::model()->with( 'campaign' )->findAll( $criteria );
 			
 			if ( $orphans )
 			{

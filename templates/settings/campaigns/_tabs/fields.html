@@ -1,7 +1,7 @@
 
-<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/' ~ campaignId) }}">
-	<input type="hidden" name="action" value="sproutEmail/notifications/saveNotification">
-	<input type="hidden" name="redirect" value="sproutemail/settings#settings-notifications">
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/campaigns/edit/{id}/fields') }}">
+	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+	<input type="hidden" name="redirect" value="sproutemail/entries">
 	<input type="hidden" name="tab" value="fields">
 	<input type="hidden" name="continue" value="false">
 

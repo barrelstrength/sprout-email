@@ -3,12 +3,12 @@
 {% if (subscriberLists|length > 0) %}
 
     {{ forms.field({
-        label: "Subscriber Lists <span class='info'>Select one subscriber list to send your Email Blasts in this Section.</span>"|t,
-        errors: (emailBlastType is defined ? emailBlastType.getErrors('emailProviderRecipientListId') : null) ,
+        label: "Subscriber Lists <span class='info'>Select one subscriber list to send your Entries in this Section.</span>"|t,
+        errors: (campaign is defined ? campaign.getErrors('emailProviderRecipientListId') : null) ,
     }, forms.radioGroup({
         name: 'sproutEmail[emailProviderRecipientListId][list]',
         options : subscriberLists,
-        value: emailBlastType is defined and emailBlastType.emailProviderRecipientListId ? emailBlastType.emailProviderRecipientListId|first : null
+        value: campaign is defined and campaign.emailProviderRecipientListId ? campaign.emailProviderRecipientListId|first : null
     })) }}
 	
 

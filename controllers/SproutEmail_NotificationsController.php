@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * Notifications controller
  */
-class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeController
+class SproutEmail_NotificationsController extends SproutEmail_CampaignController
 {	
 	/**
 	 * Trigger notification
@@ -17,26 +17,26 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 		}
 		
 		$parts = explode( '-', $id );
-		$emailBlastTypeId = array_shift( $parts );
+		$campaignId = array_shift( $parts );
 		
 		// get the notification
-		$emailBlastTypeNotification = craft()->sproutEmail_notifications->getEmailBlastTypeNotificationByEmailBlastTypeId( $id );
+		$campaignNotification = craft()->sproutEmail_notifications->getCampaignNotificationByCampaignId( $id );
 		
 		// authenticate
-		if( ! $emailBlastTypeNotification->options || ! isset($emailBlastTypeNotification->options['options']['cronHash']))
+		if( ! $campaignNotification->options || ! isset($campaignNotification->options['options']['cronHash']))
 		{
 			die('Invalid Request');
 		}
 
-		if ( $emailBlastTypeNotification->options['options']['cronHash'] != $id || $emailBlastTypeNotification->notificationEvent->event != 'cron' )
+		if ( $campaignNotification->options['options']['cronHash'] != $id || $campaignNotification->notificationEvent->event != 'cron' )
 		{
 			die( 'Invalid request' );
 		}
 		
-		// get emailBlastType and send
-		$emailBlastType = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($id);
-		$service = 'sproutEmail_' . lcfirst( $emailBlastType->emailProvider );
-		craft()->{$service}->sendEmailBlast( $emailBlastType );
+		// get campaign and send
+		$campaign = craft()->sproutEmail_campaign->getCampaignById($id);
+		$service = 'sproutEmail_' . lcfirst( $campaign->emailProvider );
+		craft()->{$service}->sendEntry( $campaign );
 		
 		exit( 0 );
 	}
@@ -44,17 +44,17 @@ class SproutEmail_NotificationsController extends SproutEmail_EmailBlastTypeCont
 
 	public function actionNotificationSettingsTemplate(array $variables = array())
 	{
-		if (isset($variables['emailBlastTypeId'])) 
+		if (isset($variables['campaignId'])) 
 		{
-			// If emailBlastType already exists, we're returning an error object
-			if ( ! isset($variables['emailBlastType']) ) 
+			// If campaign already exists, we're returning an error object
+			if ( ! isset($variables['campaign']) ) 
 			{
-				$variables['emailBlastType'] = craft()->sproutEmail_emailBlastType->getEmailBlastTypeById($variables['emailBlastTypeId']);
+				$variables['campaign'] = craft()->sproutEmail_campaign->getCampaignById($variables['campaignId']);
 			}
 		}
 		else
 		{	
-			$variables['emailBlastType'] = new SproutEmail_EmailBlastType();
+			$variables['campaign'] = new SproutEmail_Campaign();
 		}
 		
 		// Load our template

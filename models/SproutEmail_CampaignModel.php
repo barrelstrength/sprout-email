@@ -2,9 +2,9 @@
 namespace Craft;
 
 /**
- * EmailBlastType model
+ * Campaign model
  */
-class SproutEmail_EmailBlastTypeModel extends BaseModel
+class SproutEmail_CampaignModel extends BaseModel
 {
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
@@ -15,7 +15,7 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 	{
 		return array (
 				
-			// emailBlastType info
+			// campaign info
 			'id'                => AttributeType::Number,
 			'fieldLayoutId'     => AttributeType::Number,
 			'name'              => AttributeType::String,
@@ -23,8 +23,8 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 			'type'              => array(
 															AttributeType::Enum, 
 															'values' => array(
-																EmailBlastType::EmailBlast, 
-																EmailBlastType::Notification
+																Campaign::Email, 
+																Campaign::Notification
 															)),
 			'titleFormat'       => AttributeType::String,
 			'hasUrls'           => array(
@@ -66,7 +66,7 @@ class SproutEmail_EmailBlastTypeModel extends BaseModel
 	public function behaviors()
 	{
 		return array(
-			'fieldLayout' => new FieldLayoutBehavior('SproutEmail_EmailBlast'),
+			'fieldLayout' => new FieldLayoutBehavior('SproutEmail_Entry'),
 		);
 	}
 

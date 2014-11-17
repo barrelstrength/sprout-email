@@ -62,18 +62,18 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 	}
 	
 	/**
-	 * Exports emailBlastType (no send)
+	 * Exports campaign (no send)
 	 *
-	 * @param array $emailBlastType            
+	 * @param array $campaign            
 	 * @param array $listIds            
 	 */
-	public function exportEmailBlast($emailBlastType = array(), $listIds = array(), $return = false)
+	public function exportEntry($campaign = array(), $listIds = array(), $return = false)
 	{	
 		$arr = array();
 		$client = new Client('http://'.$_SERVER["HTTP_HOST"]);
 
 		// Get the HTML version
-		$request = $client->get('/'.$emailBlastType['templateCopyPaste'].'?entryId='.$emailBlastType['entryId']);
+		$request = $client->get('/'.$campaign['templateCopyPaste'].'?entryId='.$campaign['entryId']);
 													
 		// send request / get response
 		$response = $request->send();
@@ -82,7 +82,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		$arr["html"] = trim($response->getBody());
 
 		// Get the Text Version
-		$request = $client->get('/'.$emailBlastType['templateCopyPaste'].'.txt?entryId='.$emailBlastType['entryId']);
+		$request = $client->get('/'.$campaign['templateCopyPaste'].'.txt?entryId='.$campaign['entryId']);
 													
 		// send request / get response
 		$response = $request->send();
@@ -91,9 +91,9 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		$arr["text"] = trim($response->getBody());
 					
 		// Show name of email, name of selected list and name of sender?     
-		$arr["title"]      = $emailBlastType["title"];
-		$arr["fromEmail"]  = $emailBlastType["fromEmail"];
-		$arr["fromName"]   = $emailBlastType["fromName"];
+		$arr["title"]      = $campaign["title"];
+		$arr["fromEmail"]  = $campaign["fromEmail"];
+		$arr["fromName"]   = $campaign["fromName"];
 							
 		echo json_encode($arr);
 		unset($client);
@@ -130,7 +130,7 @@ class SproutEmail_CopyPasteService extends SproutEmail_EmailProviderService impl
 		return $record->save();
 	}
 
-	public function sendEmailBlast($emailBlastType = array(), $listIds = array())
+	public function sendEntry($campaign = array(), $listIds = array())
 	{
 		
 	}

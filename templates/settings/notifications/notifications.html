@@ -7,9 +7,9 @@
 
 {# @TODO - this doens't work... ug
 {% set tabs = {
-  emailblasts:  { 
-    label: "Email Blasts"|t, 
-    url: url('sproutemail/emailblasts') 
+  entries:  { 
+    label: "Entries"|t, 
+    url: url('sproutemail/entries') 
   },
   notifications:  { 
     label: "Notifications"|t, 
@@ -23,13 +23,13 @@
 	
 	<div class="pane">
 
-	{% set notifications = craft.sproutEmail.getEmailBlastTypes('notification') %}
+	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
 	
-	{% for emailBlastType in notifications %}
+	{% for campaign in notifications %}
 			
 		{% if loop.first %}
 		<h3>Notifications</h3>
-		<table id="emailblasts" class="data fullwidth">
+		<table id="entries" class="data fullwidth">
 			<thead>
 				<th width="65%"></th>
 				<th width="30%"></th>
@@ -37,19 +37,19 @@
 			</thead>
 		{% endif %}
 		
-			<tr data-id="{{ emailBlastType.id }}"  data-name="{{ emailBlastType.name|t }}">
+			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 				<td>
-					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}">{{ emailBlastType.name }}</a>
-					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ emailBlastType.dateUpdated|date('F d, Y') }}</span>
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}">{{ campaign.name }}</a>
+					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
 				<td>
-					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}">
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}">
 						Notification Info
 					</a> | 
-					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}/template">
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}/template">
 						Templates
 					</a> | 
-					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ emailBlastType.id }}/recipients">
+					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}/recipients">
 						Define recipients
 					</a>
 				</td>
@@ -97,9 +97,9 @@
 
 {% set js %}
 	new Craft.AdminTable({
-		tableSelector: '#emailblasts',
-		noObjectsSelector: '#noemailblasts',
-		deleteAction: 'SproutEmail/emailblasts/delete'
+		tableSelector: '#entries',
+		noObjectsSelector: '#noentries',
+		deleteAction: 'SproutEmail/entries/delete'
 	});
 {% endset %}
 {% includeJs js %}
