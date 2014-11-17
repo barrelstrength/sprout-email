@@ -41,6 +41,18 @@
         errors: (campaign is defined ? campaign.getErrors('name') : null)   
       }) }}
 
+      {{ forms.textField({
+        label: "Entry Template"|t,
+        id: 'template',
+        name: 'sproutEmail[template]',
+        instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+        placeholder: 'email/_emailtemplate',
+        value: (campaign is defined ? campaign.template : null),
+        errors: (campaign is defined ? campaign.getErrors('template') : null)   
+      }) }}
+
+      <hr />
+      
       {% include "_includes/fieldlayoutdesigner" with {
         fieldLayout: campaign.getFieldLayout()
       } only %}
