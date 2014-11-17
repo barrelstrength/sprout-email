@@ -71,7 +71,7 @@ class SproutEmail_MailGunService extends SproutEmail_EmailProviderService implem
 			
 		// List the campaign options
 		$mgClient = new Mailgun($this->apiKey);
-		$result = $mgClient->get($this->domain."/entries");
+		$result = $mgClient->get($this->domain."/campaigns");
 		$response = $result->http_response_body;        
 
 		$entries[] = array(
