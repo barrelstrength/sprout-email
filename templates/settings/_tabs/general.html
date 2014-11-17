@@ -19,14 +19,23 @@
 				<th width="40%"></th>
 				<th width="20%"></th>
 				<th width="10%"></th>
-				<th width="15%"></th>
+				<th class="thin"></th>
 			</thead>
 		{% endif %}
 			<tr>
 				<td><a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a></td>
 				<td></td>
 				<td></td>
-				<td></td>
+				<td class="thin">
+					<a class="delete icon" title="Delete"></a>
+					
+					{# <form method="post" action="" accept-charset="UTF-8">
+					  <input type="hidden" name="action" value="sproutEmail/campaign/deleteCampaign">
+					  <input type="hidden" name="redirect" value="sproutemail/entries">
+					  <input type="hidden" name="id" value="{{ campaignId }}">
+					  <input type="submit" class="btn small" value="Delete">
+					</form> #}
+				</td>
 			</tr>
 		{% if loop.last %}
 		</table>
