@@ -4,7 +4,7 @@ namespace Craft;
 class SproutEmail_EntryModel extends BaseElementModel
 {
 	protected $elementType = 'SproutEmail_Entry';
-	
+
 	private $_fields;
 
 	/**
@@ -12,13 +12,12 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 * Pending -  Campaign is setup but Entry is disabled
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
-	 * 
+	 *
 	 */
-	const DISABLED = 'expired'; // this doesn't behave properly when named 'disabled'
-	const PENDING  = 'pending';
-	const READY    = 'live';
-	const ARCHIVED = 'setup';
-
+	const READY     = 'live';
+	const PENDING   = 'pending';
+	const DISABLED  = 'expired'; // this doesn't behave properly when named 'disabled'
+	const ARCHIVED  = 'setup';
 
 	/**
 	 * @access protected
@@ -26,12 +25,14 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	protected function defineAttributes()
 	{
-		return array_merge(parent::defineAttributes(), array(
-			'id'               => AttributeType::Number,
-			'campaignId' => AttributeType::Number,
-			'subjectLine'      => AttributeType::String,
-			'sent'             => AttributeType::Bool,
-		));
+		return array_merge(
+			parent::defineAttributes(), array(
+				'id'          => AttributeType::Number,
+				'campaignId'  => AttributeType::Number,
+				'subjectLine' => AttributeType::String,
+				'sent'        => AttributeType::Bool,
+			)
+		);
 	}
 
 	/*
@@ -49,21 +50,16 @@ class SproutEmail_EntryModel extends BaseElementModel
 	public function getUrlFormat($template = null)
 	{
 		$campaign = $this->getType();
-		
+
 		if ($campaign && $campaign->hasUrls)
 		{
-			// @TODO
-			// - need to sort out locales
-			// - need to determine if HTML/Text tempalte is needed
-			
-			return $campaign->template;
+			return $campaign->template.'/{slug}';
 		}
-		
 	}
 
 	/**
-	 * Pending -  has all required attributes and is disabled or 
-	 * 	          does not have all required attributes
+	 * Pending -  has all required attributes and is disabled or
+	 *              does not have all required attributes
 	 * Ready -    has all required attributes, and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 */
@@ -83,7 +79,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 		// specific things about each service provider to decide if an
 		// email is ready or not.  For now, we'll just check to see if 
 		// it has a service provider and text template.
-		
+
 		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
 
 		$hasRequiredAttributes = ($campaign->emailProvider && $campaign->template);
@@ -99,11 +95,11 @@ class SproutEmail_EntryModel extends BaseElementModel
 		// Ready and Pending
 		if ($hasRequiredAttributes && $status == static::ENABLED)
 		{
-			return static::READY;	
+			return static::READY;
 		}
 		else
 		{
-			if ($hasRequiredAttributes) 
+			if ($hasRequiredAttributes)
 			{
 				return static::PENDING;
 			}
@@ -131,7 +127,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field = $fieldLayoutField->getField();
+				$field           = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
 				$this->_fields[] = $field;
 			}
@@ -153,7 +149,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	public function getType()
 	{
 		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
-		
+
 		return $campaign;
 	}
 
@@ -164,7 +160,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/'. $this->id);
+		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/'.$this->id);
 
 		return $url;
 	}

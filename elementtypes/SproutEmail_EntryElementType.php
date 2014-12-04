@@ -56,10 +56,10 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_EntryModel::READY     => Craft::t('Ready'),
-			SproutEmail_EntryModel::PENDING   => Craft::t('Pending'),
-			SproutEmail_EntryModel::DISABLED  => Craft::t('Disabled'),
-			SproutEmail_EntryModel::ARCHIVED  => Craft::t('Archived'),
+			SproutEmail_EntryModel::READY    => Craft::t('Ready'),
+			SproutEmail_EntryModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled'),
+			SproutEmail_EntryModel::ARCHIVED => Craft::t('Archived'),
 		);
 	}
 
@@ -67,12 +67,13 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 * Returns this element type's sources.
 	 *
 	 * @param string|null $context
+	 *
 	 * @return array|false
 	 */
 	public function getSources($context = null)
 	{
 		// Grab all of our Notifications
-		$notifications = craft()->sproutEmail_campaign->getCampaigns('notification');
+		$notifications   = craft()->sproutEmail_campaign->getCampaigns('notification');
 		$notificationIds = array();
 
 		// Create a list of Notification IDs we can use as criteria to filter by
@@ -83,13 +84,13 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		// Start with an option for everything
 		$sources = array(
-			'*' => array(
-				'label'    => Craft::t('All Emails'),
+			'*'             => array(
+				'label'     => Craft::t('All Emails'),
 			),
-			'notifications' => array(
-				'label' => Craft::t('Notifications'),
-				'criteria' => array(
-					'campaignId' => $notificationIds
+			'notifications'         => array(
+				'label'             => Craft::t('Notifications'),
+				'criteria'          => array(
+					'campaignId'    => $notificationIds
 				)
 			)
 		);
@@ -97,18 +98,18 @@ class SproutEmail_EntryElementType extends BaseElementType
 		// Prepare the data for our sources sidebar
 		$campaigns = craft()->sproutEmail_campaign->getCampaigns('email');
 
-		if (count($campaigns)) 
+		if (count($campaigns))
 		{
 			$sources[] = array('heading' => 'Campaigns');
 		}
 
-		foreach ($campaigns as $campaign) 
-		{	
+		foreach ($campaigns as $campaign)
+		{
 			$key = 'campaign:'.$campaign->id;
-			
+
 			$sources[$key] = array(
-				'label' => $campaign->name,
-				'data' => array('campaignId' => $campaign->id),
+				'label'    => $campaign->name,
+				'data'     => array('campaignId' => $campaign->id),
 				'criteria' => array('campaignId' => $campaign->id)
 			);
 		}
@@ -116,25 +117,45 @@ class SproutEmail_EntryElementType extends BaseElementType
 		return $sources;
 	}
 
-	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context)
-	{
+	/**
+	 * @param ElementCriteriaModel $criteria
+	 * @param array                $disabledElementIds
+	 * @param array                $viewState
+	 * @param null|string          $sourceKey
+	 * @param null|string          $context
+	 * @param                      $includeContainer
+	 * @param                      $showCheckboxes
+	 *
+	 * @return string
+	 */
+	public function getIndexHtml(
+		$criteria,
+		$disabledElementIds,
+		$viewState,
+		$sourceKey,
+		$context,
+		$includeContainer,
+		$showCheckboxes
+	) {
 		if ($context == 'index')
 		{
 			$criteria->offset = 0;
-			$criteria->limit = null;
+			$criteria->limit  = null;
 
 			$source = $this->getSource($sourceKey, $context);
 
-			return craft()->templates->render('sproutemail/entries/_entryindex', array(
-				'context'             => $context,
-				'elementType'         => new ElementTypeVariable($this),
-				'disabledElementIds'  => $disabledElementIds,
-				'elements'            => $criteria->find(),
-			));
+			return craft()->templates->render(
+				'sproutemail/entries/_entryindex', array(
+					'context'            => $context,
+					'elementType'        => new ElementTypeVariable($this),
+					'disabledElementIds' => $disabledElementIds,
+					'elements'           => $criteria->find(),
+				)
+			);
 		}
 		else
 		{
-			return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context);
+			return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 		}
 	}
 
@@ -142,14 +163,15 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 * Returns the attributes that can be shown/sorted by in table views.
 	 *
 	 * @param string|null $source
+	 *
 	 * @return array
 	 */
 	public function defineTableAttributes($source = null)
 	{
 		return array(
-			'title'        => Craft::t('Title'),
-			'dateCreated'  => Craft::t('Date Created'),
-			'dateUpdated'  => Craft::t('Date Updated'),
+			'title'       => Craft::t('Title'),
+			'dateCreated' => Craft::t('Date Created'),
+			'dateUpdated' => Craft::t('Date Updated'),
 		);
 	}
 
@@ -161,9 +183,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'title' => AttributeType::String,
+			'title'       => AttributeType::String,
 			'subjectLine' => AttributeType::String,
-			'campaignId' => AttributeType::Number,
+			'campaignId'  => AttributeType::Number,
 		);
 	}
 
@@ -186,7 +208,8 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 			case SproutEmail_EntryModel::PENDING:
 			{
-				return array('and',
+				return array(
+					'and',
 					'elements.enabled = 0',
 					'campaigns.template IS NOT NULL',
 					'entries.sent = 0',
@@ -195,7 +218,8 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 			case SproutEmail_EntryModel::READY:
 			{
-				return array('and',
+				return array(
+					'and',
 					'elements.enabled = 1',
 					'elements_i18n.enabled = 1',
 					'campaigns.template IS NOT NULL',
@@ -226,23 +250,26 @@ class SproutEmail_EntryElementType extends BaseElementType
 	/**
 	 * Modifies an element query targeting elements of this type.
 	 *
-	 * @param DbCommand $query
+	 * @param DbCommand            $query
 	 * @param ElementCriteriaModel $criteria
+	 *
 	 * @return mixed
 	 */
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		$query
-			->addSelect('entries.id AS entryId, 
+			->addSelect(
+				'entries.id AS entryId,
 									 entries.campaignId AS campaignId,
 									 entries.subjectLine AS subjectLine, 
 									 entries.sent AS sent,
 									 campaigns.type AS type,
-				')
+				'
+			)
 			->join('sproutemail_entries entries', 'entries.id = elements.id')
 			->join('sproutemail_campaigns campaigns', 'campaigns.id = entries.campaignId');
 
-		if ($criteria->campaignId) 
+		if ($criteria->campaignId)
 		{
 			$query->andWhere(DbHelper::parseParam('entries.campaignId', $criteria->campaignId, $query->params));
 		}
@@ -252,6 +279,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 * Populates an element model based on a query result.
 	 *
 	 * @param array $row
+	 *
 	 * @return array
 	 */
 	public function populateElementModel($row)
