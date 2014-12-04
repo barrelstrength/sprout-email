@@ -7,7 +7,7 @@
 {% else %}
 	{% set title = "Edit Notification" %}
 	{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
-	{% set campaignId = campaign.id %}	
+	{% set campaignId = campaign.id %}
 {% endif %}
 
 {% set crumbs = [
@@ -18,8 +18,8 @@
 {% set content %}
 
   <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
-    <input type="hidden" name="action" value="sproutEmail/entry/saveEntry">
-    <input type="hidden" name="redirect" value="sproutemail/entries/edit/{id}">
+    <input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+    <input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
     <input type="hidden" name="continue" value="false">
     <input type="hidden" name="tab" value="fields">
 
@@ -27,7 +27,7 @@
     <input type="hidden" name="sproutEmail[emailProvider]" value="SproutEmail">
 
     <input type="hidden" name="sproutEmail[type]" value="notification">
-    
+
     <div id="tab-campaign-info" class="tab-content" >
 
       {{ forms.textField({
@@ -38,7 +38,7 @@
         value: (campaign is defined ? campaign.name : null),
         autofocus: true,
         required: true,
-        errors: (campaign is defined ? campaign.getErrors('name') : null)   
+        errors: (campaign is defined ? campaign.getErrors('name') : null)
       }) }}
 
       {{ forms.textField({
@@ -48,17 +48,17 @@
         instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
         placeholder: 'email/_emailtemplate',
         value: (campaign is defined ? campaign.template : null),
-        errors: (campaign is defined ? campaign.getErrors('template') : null)   
+        errors: (campaign is defined ? campaign.getErrors('template') : null)
       }) }}
 
       <hr />
-      
+
       {% include "_includes/fieldlayoutdesigner" with {
         fieldLayout: campaign.getFieldLayout()
       } only %}
 
     </div>
-    
+
     <div class="buttons">
       <input class="btn" type="submit" value="Save Notification Info">
       <input class="btn submit save-and-continue" id="info" type="button" value="Save Notification Info & Continue">

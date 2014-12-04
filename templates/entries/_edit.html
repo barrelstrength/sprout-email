@@ -8,11 +8,10 @@
 {% set title = (entry is defined and entry.title is not empty ? entry.title : 'Create a new Entry') %}
 
 {% block main %}
-	
 	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/entries/edit/{id}') }}" data-confirm-unload>
 		<input type="hidden" name="action" value="sproutEmail/entry/saveEntry">
 		<input type="hidden" name="redirect" value="sproutemail/entries">
-		
+
 		<input type="hidden" name="campaignId" value="{{ campaignId }}">
 		<input type="hidden" name="entryId" value="{{ entryId }}">
 
@@ -243,7 +242,7 @@
 
 
 {% if not entry.slug %}
-	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');" %}
+	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#subjectLine', '#slug');" %}
 {% endif %}
 
 {# @TODO - need to customize live preview for emails
