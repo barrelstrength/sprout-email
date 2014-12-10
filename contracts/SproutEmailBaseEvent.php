@@ -57,7 +57,7 @@ class SproutEmailBaseEvent
 	 *
 	 * @example
 	 * <h3>Select Sections</h3>
-	 * <p>Please select what sections you whant the save entry event to trigger on</p>
+	 * <p>Please select what sections you want the save entry event to trigger on</p>
 	 * <input type="checkbox" id="sectionIds[]" value="1">
 	 * <input type="checkbox" id="sectionsIds[]" value="2">
 	 *
@@ -75,6 +75,21 @@ class SproutEmailBaseEvent
 	 */
 	public function prepareOptions() {}
 
+	/**
+	 * Returns whether the campaign entry options are valid for this model
+	 *
+	 * @example
+	 * Let $options be an array containing section ids (1,3)
+	 * Let $model be an EntryModel with section id (1)
+	 * Result is true
+	 *
+	 * @note
+	 * This is used when determining whether a campaign should be sent
+	 *
+	 * @param mixed $options
+	 * @param BaseModel $model
+	 */
+	public function validateOptions($options, BaseModel $model) {}
 	/**
 	 * Returns the data passed in by the triggered event
 	 *
