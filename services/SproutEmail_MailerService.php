@@ -26,7 +26,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				$record = new SproutEmail_MailerSettingsRecord();
 
 				$record->setAttribute('name', $mailer->getId());
-				$record->setAttribute('enabled', true);
 				$record->setAttribute('settings', $mailer->getDefaultSettings());
 				$record->save();
 			}
