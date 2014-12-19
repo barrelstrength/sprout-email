@@ -20,7 +20,7 @@ class SproutEmailBaseEvent
 	 *
 	 * @return string
 	 */
-	public function getId()
+	final public function getId()
 	{
 		return str_replace('.', '-', $this->getName());
 	}
@@ -90,6 +90,7 @@ class SproutEmailBaseEvent
 	 * @param BaseModel $model
 	 */
 	public function validateOptions($options, BaseModel $model) {}
+
 	/**
 	 * Returns the data passed in by the triggered event
 	 *
@@ -103,5 +104,17 @@ class SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		return $event->params;
+	}
+
+	/**
+	 * Gives the event a chance to attach the value to the right field id before outputting it
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	public function prepareValue($value)
+	{
+		return $value;
 	}
 }
