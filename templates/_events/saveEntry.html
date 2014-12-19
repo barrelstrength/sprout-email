@@ -1,0 +1,15 @@
+
+{% set sections = craft.sproutEmail.getAllSections() %}
+
+{{
+	forms.field({
+		label: "Sections"|t,
+		instructions: "Select one or more sections."|t,
+		errors: errors is defined ? errors : null,
+	},
+	forms.checkboxGroup({
+		name: "entriesSaveEntrySectionIds",
+		options : sections,
+		values: options.entriesSaveEntrySectionIds is defined ? options.entriesSaveEntrySectionIds : null
+	}))
+}}
