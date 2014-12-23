@@ -1,70 +1,77 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% if campaign is defined %}
-	{% set title = "Edit Notification" %}
-	{% set campaignId = campaign.id %}
-{% else %}
-	{% set title = "Edit Notification" %}
-	{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
-	{% set campaignId = campaign.id %}
-{% endif %}
+{% set title = "Edit Notification" %}
+{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
 
 {% set crumbs = [
-  { label: "Sprout Email"|t, url: url('sproutemail') },
-  { label: "Settings"|t, url: url('sproutemail/settings') },
+	{ label: "Sprout Email"|t, url: url('sproutemail') },
+	{ label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
 {% set content %}
 
-  <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
-    <input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
-    <input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
-    <input type="hidden" name="continue" value="false">
-    <input type="hidden" name="tab" value="fields">
+	<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
+		{{ getCsrfInput() }}
+		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+		<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
+		<input type="hidden" name="continue" value="false">
+		<input type="hidden" name="tab" value="fields">
 
-    <input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
-    <input type="hidden" name="sproutEmail[emailProvider]" value="SproutEmail">
+		<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
+		<input type="hidden" name="sproutEmail[mailer]" value="sproutemail">
+		<input type="hidden" name="sproutEmail[type]" value="notification">
 
-    <input type="hidden" name="sproutEmail[type]" value="notification">
+		<div id="tab-campaign-info" class="tab-content" >
 
-    <div id="tab-campaign-info" class="tab-content" >
+			{{ forms.textField({
+				label: "Notification Name"|t,
+				id: 'name',
+				name: 'sproutEmail[name]',
+				instructions: "Human readable notification name"|t,
+				value: (campaign is defined ? campaign.name : null),
+				autofocus: true,
+				required: true,
+				errors: (campaign is defined ? campaign.getErrors('name') : null)
+			}) }}
 
-      {{ forms.textField({
-        label: "Notification Name"|t,
-        id: 'name',
-        name: 'sproutEmail[name]',
-        instructions: "Human readable notification name"|t,
-        value: (campaign is defined ? campaign.name : null),
-        autofocus: true,
-        required: true,
-        errors: (campaign is defined ? campaign.getErrors('name') : null)
-      }) }}
+			{{ forms.textField({
+				label: "Entry Template"|t,
+				id: 'template',
+				name: 'sproutEmail[template]',
+				instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+				placeholder: 'email/_emailtemplate',
+				value: (campaign is defined ? campaign.template : null),
+				errors: (campaign is defined ? campaign.getErrors('template') : null)
+			}) }}
+		</div>
 
-      {{ forms.textField({
-        label: "Entry Template"|t,
-        id: 'template',
-        name: 'sproutEmail[template]',
-        instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
-        placeholder: 'email/_emailtemplate',
-        value: (campaign is defined ? campaign.template : null),
-        errors: (campaign is defined ? campaign.getErrors('template') : null)
-      }) }}
+		<div class="associated-notification-entry">
+			{% if campaign.type is defined and campaign.type == "notification"%}
+				{% set entry = craft.sproutemail.getNotificationEntryByCampaignId(campaign.id) %}
 
-      <hr />
+				{# @todo Move inline styles into resource file #}
+				<div style="margin: 20px 0; padding: 20px 0; border-bottom: 1px dotted #ddd;">
+					{% if entry.id is defined %}
+						<h3>
+							<a class="btn" href="{{ cpUrl('sproutemail/entries/edit/' ~ entry.id) }}" title="{{ entry.title }}">Edit Notification Entry</a>
+						</h3>
+					{% else %}
+						<h3>
+							<a class="btn icon add" href="{{ cpUrl('sproutemail/entries/' ~ campaignId) }}/new" title="Add Notification Entry">Add Notification Entry</a>
+						<h3>
+					{% endif %}
+				</div>
+			{% endif %}
+		</div>
 
-      {% include "_includes/fieldlayoutdesigner" with {
-        fieldLayout: campaign.getFieldLayout()
-      } only %}
+		{% include "_includes/fieldlayoutdesigner" with {fieldLayout: campaign.getFieldLayout() } only %}
 
-    </div>
-
-    <div class="buttons">
-      <input class="btn" type="submit" value="Save Notification Info">
-      <input class="btn submit save-and-continue" id="info" type="button" value="Save Notification Info & Continue">
-    </div>
-  </form>
-
+		<div class="buttons">
+			<input class="btn" type="submit" value="Save Notification Info">
+			<input class="btn submit save-and-continue" id="info" type="button" value="Save &amp; Continue">
+		</div>
+	</form>
 {% endset %}
 
 {% includeJsResource "sproutemail/js/sproutemail.js" %}

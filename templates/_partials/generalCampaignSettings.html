@@ -1,27 +1,27 @@
 
 {{ forms.field({
     label: "From Name <span class='info'>The person or business sending the email</span>"|t,
-		errors: (campaign is defined ? campaign.getErrors('fromName') : null),
+		errors: (entry is defined ? entry.getErrors('fromName') : null),
 		required: true,  
 	}, forms.textField({
 		name: 'sproutEmail[fromName]',
-		value: (campaign is defined ? campaign.fromName : null),
+		value: (entry is defined ? entry.fromName : 'Selvin Ortiz'),
 })) }}
 
 {{ forms.field({
     label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
     required: true,  
-		errors: (campaign is defined ? campaign.getErrors('fromEmail') : null),
+		errors: (entry is defined ? entry.getErrors('fromEmail') : null),
 	}, forms.textField({
 		name: 'sproutEmail[fromEmail]',
-		value: (campaign is defined ? campaign.fromEmail : null),
+		value: (entry is defined ? entry.fromEmail : 'selvin@selvin.co'),
 })) }}
 
 {{ forms.field({
     label: "Reply To Email <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
     required: true,  
-		errors: (campaign is defined ? campaign.getErrors('replyToEmail') : null),
+		errors: (entry is defined ? entry.getErrors('replyTo') : null),
 	}, forms.textField({
-		name: 'sproutEmail[replyToEmail]',
-		value: (campaign is defined ? campaign.replyToEmail : null),
+		name: 'sproutEmail[replyTo]',
+		value: (entry is defined ? entry.replyTo : 'selvin@selvin.co'),
 })) }}

@@ -54,9 +54,8 @@ var SproutEmail = {
 	
 	selectNotificationEvent: function()
 	{
-		$('.event_options').hide();
-		var event = $('#notificationEvent').val();
-		$('.'+event).show();
+		$('.event-options-block').hide();
+		$('.' + $('#notificationEvent').val()).show();
 	},
 
 	selectEmailProvider: function()

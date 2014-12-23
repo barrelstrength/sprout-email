@@ -1,41 +1,27 @@
 {% extends "sproutemail/_layouts/elementindex" %}
-{% set title = "Email"|t %}
-{% set elementType = 'SproutEmail_Entry' %}
-
-{% set campaigns = craft.sproutEmail.getCampaigns('email') %}
+{% set title            = "Email"|t %}
+{% set elementType      = "SproutEmail_Entry" %}
+{% set campaigns        = craft.sproutEmail.getCampaigns('email') %}
+{% set notifications    = craft.sproutEmail.getCampaigns('notification') %}
 
 {% block sidebar %}
-	
-	{% if campaigns|length %}
+	<div class="buttons">
+		<div class="btngroup submit">
+			<div class="btn submit menubtn add icon">{{ "New Email"|t }}</div>
+			<div class="menu">
+				<ul>
+					<li><a href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "Campaign"|t }}</a></li>
+					<li><a href="{{ url('sproutemail/settings/notifications/edit/new') }}">Notification</a></li>
+					{% if campaigns|length %}
+						<hr>
+						{% for campaign in campaigns %}
+							<li><a href="{{ url('sproutemail/entries/' ~ campaign.id ~ '/new') }}">{{ campaign.name|t }}</a></li>
+						{% endfor %}
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+	</div>
 
-    <div class="buttons">
-      <div class="btngroup submit">
-        <div class="btn submit menubtn add icon">{{ "New Email"|t }}</div>
-        <div class="menu">
-          <ul>
-
-            {% if campaigns|length > 1 %}
-              {% for campaign in campaigns %}
-                <li><a href="{{ url('sproutemail/entries/'~campaign.id~'/new') }}">{{ campaign.name|t }}</a></li>
-              {% endfor %}
-            {% endif %}
-
-            <li style="border-top:1px solid #eee;"></li>
-            <li><a href="{{ url('sproutemail/settings/notifications/edit/new') }}">Notification</a></li>
-
-          </ul>
-        </div>
-      </div>
-    </div>
-  
-  {% else %}
-      
-    <div class="buttons">
-      <a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Email Type"|t }}</a>
-    </div>
-
-  {% endif %}
-
-  {{ parent() }}
-
+	{{ parent() }}
 {% endblock %}

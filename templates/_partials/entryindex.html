@@ -14,10 +14,10 @@
 	</thead>
 {% endif %}
 
-	<tr data-id="{{ entry.id }}" data-name="{{ entry.subjectLine|t }}">
+	<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
 		<td>
 			<span class="status {{ entry.status }}"></span>
-			<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.subjectLine : 'New Entry' }}</a>
+			<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry' }}</a>
 		</td>
 		<td>
 			{{ campaign.type }}
@@ -25,52 +25,6 @@
 		<td>
 			{{ entry.dateCreated|date('m/d/Y') }}
 		</td>
-		 
-		{# {% if entry.campaignId and entry.id and campaign.template and campaign.emailProvider %}
-		<td>		
-			<a href="{{ siteUrl ~ campaign.template }}?id={{entry.id}}" target="_blank">HTML</a> 
-			/ 
-			<a href="{{ siteUrl ~ campaign.template }}.txt?entryId={{entry.id}}" target="_blank">Text</a>
-		</td>
-		<td>
-			{% switch campaign.emailProvider %}
-			
-				{% case "SproutEmail" %}
-			
-					<a href="#" class="export btn small" >
-						Send Entry
-					</a>
-			
-				{% case "CopyPaste" %}
-			
-					<a href="#" data-format="html" class="copy btn small" >
-						Display Source
-					</a>
-
-				{% case "SendGrid" %}
-			
-					<a href="#" class="export btn small" >
-						Export to {{ entry.emailProvider }} 
-					</a>
-			
-				{% case "MailGun" %}
-			
-					<a href="#" class="confirm btn small" >
-						Prepare {{ entry.emailProvider }}
-					</a>
-
-				{% default %}
-			
-					
-			
-			{% endswitch %}
-
-		</td>
-		{% else %}
-		<td colspan="2">
-			<i><a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}" style="color:inherit;text-decoration:underline;">Complete settings</a></i>
-		</td>
-		{% endif %} #}
 	</tr>
 
 {% if loop.last %}

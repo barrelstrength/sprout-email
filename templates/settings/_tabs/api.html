@@ -1,19 +1,15 @@
 {% import "_includes/forms" as forms %}
 
-{% set emailProviders = craft.sproutEmail.getEmailProviders() %}
+{% set mailers = craft.sproutEmail.getMailers() %}
 
 <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings#settings-api') }}">
-	<input type="hidden" name="action" value="sproutEmail/campaign/saveSettings">
+	<input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
 	<input type="hidden" name="redirect" value="sproutemail/settings">
 
-	<div id="tab-campaign-info" class="tab-content" >	
-		{% for key, val in emailProviders %}
-			{% if key != 'SproutEmail' %}
-			<div id="{{ key }}-recipients-template" class="recipient-templates" >
-				{% include "sproutemail/_providers/" ~ key ~ "/settings" %}
-				<hr/>
-			</div>
-			{% endif %}
+	<div id="tab-campaign-info" class="tab-content">
+		{% for mailer in mailers %}
+			<h3>{{ mailer.getTitle() }}</h3>
+			{{ mailer.getSettingsHtml({forms: forms}) }}
 		{% endfor %}
 	</div>
 

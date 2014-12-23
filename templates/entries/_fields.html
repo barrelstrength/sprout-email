@@ -1,6 +1,6 @@
 {% from "_includes/forms" import textField %}
 
-{% if entry.getErrors('subjectLine') or entry.getErrors('title') %}
+{% if entry.getErrors('subjectLine') %}
 	{% set subjectLineError = ['Subject Line cannot be blank.'|t] %}
 {% endif %}
 

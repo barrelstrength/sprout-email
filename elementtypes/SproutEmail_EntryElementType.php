@@ -4,18 +4,14 @@ namespace Craft;
 class SproutEmail_EntryElementType extends BaseElementType
 {
 	/**
-	 * Returns the element type name.
-	 *
 	 * @return string
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Entry');
+		return Craft::t('Sprout Email Entry');
 	}
 
 	/**
-	 * Returns whether this element type has content.
-	 *
 	 * @return bool
 	 */
 	public function hasContent()
@@ -24,8 +20,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns whether this element type has titles.
-	 *
 	 * @return bool
 	 */
 	public function hasTitles()
@@ -34,8 +28,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns whether this element type stores data on a per-locale basis.
-	 *
 	 * @return bool
 	 */
 	public function isLocalized()
@@ -73,45 +65,48 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function getSources($context = null)
 	{
 		// Grab all of our Notifications
-		$notifications   = craft()->sproutEmail_campaign->getCampaigns('notification');
+		$notifications   = sproutEmail()->campaigns->getCampaigns('notification');
 		$notificationIds = array();
 
-		// Create a list of Notification IDs we can use as criteria to filter by
-		foreach ($notifications as $notification)
-		{
-			$notificationIds[] = $notification->id;
-		}
-
-		// Start with an option for everything
 		$sources = array(
 			'*'             => array(
 				'label'     => Craft::t('All Emails'),
 			),
-			'notifications'         => array(
+		);
+
+		if (count($notifications))
+		{
+			// Create a list of Notification IDs we can use as criteria to filter by
+			foreach ($notifications as $notification)
+			{
+				$notificationIds[] = $notification->id;
+			}
+
+			$sources['notifications'] = array(
 				'label'             => Craft::t('Notifications'),
 				'criteria'          => array(
 					'campaignId'    => $notificationIds
 				)
-			)
-		);
+			);
+ 		}
 
 		// Prepare the data for our sources sidebar
-		$campaigns = craft()->sproutEmail_campaign->getCampaigns('email');
+		$campaigns = sproutEmail()->campaigns->getCampaigns('email');
 
 		if (count($campaigns))
 		{
 			$sources[] = array('heading' => 'Campaigns');
-		}
 
-		foreach ($campaigns as $campaign)
-		{
-			$key = 'campaign:'.$campaign->id;
+			foreach ($campaigns as $campaign)
+			{
+				$key = 'campaign:'.$campaign->id;
 
-			$sources[$key] = array(
-				'label'    => $campaign->name,
-				'data'     => array('campaignId' => $campaign->id),
-				'criteria' => array('campaignId' => $campaign->id)
-			);
+				$sources[$key] = array(
+					'label'    => $campaign->name,
+					'data'     => array('campaignId' => $campaign->id),
+					'criteria' => array('campaignId' => $campaign->id)
+				);
+			}
 		}
 
 		return $sources;
@@ -153,10 +148,8 @@ class SproutEmail_EntryElementType extends BaseElementType
 				)
 			);
 		}
-		else
-		{
-			return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
-		}
+
+		return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 	}
 
 	/**
@@ -184,7 +177,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	{
 		return array(
 			'title'       => AttributeType::String,
-			'subjectLine' => AttributeType::String,
 			'campaignId'  => AttributeType::Number,
 		);
 	}
@@ -242,7 +234,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function defineSearchableAttributes()
 	{
 		return array(
-			// 'entryId', 
 			'title',
 		);
 	}
@@ -259,14 +250,16 @@ class SproutEmail_EntryElementType extends BaseElementType
 	{
 		$query
 			->addSelect(
-				'entries.id AS entryId,
-									 entries.campaignId AS campaignId,
-									 entries.subjectLine AS subjectLine, 
-									 entries.sent AS sent,
-									 campaigns.type AS type,
-				'
+				'entries.id
+				, entries.subjectLine as subjectLine
+				, entries.campaignId as campaignId
+				, entries.fromName as fromName
+				, entries.fromEmail as fromEmail
+				, entries.replyTo as replyTo
+				, entries.sent as sent
+				, campaigns.type as type'
 			)
-			->join('sproutemail_entries entries', 'entries.id = elements.id')
+			->join('sproutemail_campaigns_entries entries', 'entries.id = elements.id')
 			->join('sproutemail_campaigns campaigns', 'campaigns.id = entries.campaignId');
 
 		if ($criteria->campaignId)
@@ -284,6 +277,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function populateElementModel($row)
 	{
+		\ChromePhp::log($row);
 		return SproutEmail_EntryModel::populateModel($row);
 	}
 }

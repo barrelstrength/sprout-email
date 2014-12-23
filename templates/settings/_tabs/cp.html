@@ -1,24 +1,23 @@
-
 <form method="post" accept-charset="UTF-8">
-  <input type="hidden" name="action" value="sproutEmail/settings/saveSettings">
-  <input type="hidden" name="redirect" value="sproutemail/settings">
+	<input type="hidden" name="action" value="sproutEmail/savePluginSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings">
 
-  {% namespace 'settings' %}
-  
-    {{ forms.textField({
-      label: "Plugin Name"|t,
-      id: 'pluginNameOverride',
-      name: 'pluginNameOverride',
-      instructions: "Intuitive, human-readable plugin name for the end user."|t,
-      value: settings.pluginNameOverride,
-      autofocus: true,
-      first: true,
-      errors: ''  
-    }) }}
+	{% namespace 'settings' %}
 
-  {% endnamespace %}
+	{{ forms.textField({
+		label: "Plugin Name"|t,
+		id: 'pluginNameOverride',
+		name: 'pluginNameOverride',
+		instructions: "Intuitive, human-readable plugin name for the end user."|t,
+		value: settings.pluginNameOverride ? settings.pluginNameOverride : 'Sprout Email',
+		autofocus: true,
+		first: true,
+		errors: ''
+	}) }}
 
-  <div class="buttons">
-    <input class="btn submit" type="submit" value="{{ 'Save'|t }}">
-  </div>
+	{% endnamespace %}
+
+	<div class="buttons">
+	<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
+	</div>
 </form>

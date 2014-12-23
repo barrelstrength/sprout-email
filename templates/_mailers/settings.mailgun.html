@@ -1,0 +1,14 @@
+
+{{ forms.textField({
+	label: "API Key"|t,
+	name: 'mailgun[apiKey]',
+	instructions: "Enter the API Key from your MailGun control panel dashboard"|t,
+	value: (settings.apiKey is defined ? settings.apiKey : null)
+}) }}
+
+{{ forms.textField({
+	label: "Domain"|t,
+	name: 'mailgun[domain]',
+	instructions: "Enter the MailGun domain name"|t,
+	value: (settings.domain is defined ? settings.domain : null)
+}) }}

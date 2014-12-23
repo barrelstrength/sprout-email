@@ -1,0 +1,13 @@
+{
+    "name": "barrelstrengthdesign/sproutemail",
+    "require": {
+        "mailgun/mailgun-php": "~1.7",
+	    "ccampbell/chromephp": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "Selvin Ortiz",
+            "email": "selvin@selvin.co"
+        }
+    ]
+}

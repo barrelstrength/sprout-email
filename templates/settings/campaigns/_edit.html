@@ -1,181 +1,146 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
-
 {% set title = "Edit Campaign" %}
 
 {% set crumbs = [
 	{ label: "Sprout Email"|t, url: url('sproutemail/entries') },
-  { label: "Settings"|t, url: url('sproutemail/settings') },
+	{ label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
-{% if craft.request.getSegment('6') %}
-    {% set selectedTab = craft.request.getSegment('6') %}
+{% if craft.request.getSegment(6) %}
+	{% set selectedTab = craft.request.getSegment(6) %}
 {% endif %}
 
+{% set savaAndContinueUrl = craft.request.getSegment(4) == 'notifications' ? 'sproutemail/settings/notifications/edit/{id}' : 'sproutemail/settings/campaigns/edit/{id}' %}
 
 {% set content %}
+<form method="post" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url(savaAndContinueUrl) }}" data-confirm-unload>
+	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+	<input type="hidden" name="redirect" value="sproutemail/entries">
+	<input type="hidden" name="tab" value="fields">
+	<input type="hidden" name="continue" value="false">
+	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
+	<input type="hidden" name="sproutEmail[type]" value="email">
 
-<form method="post" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/campaigns/edit/{id}') }}" data-confirm-unload>
-  <input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
-  <input type="hidden" name="redirect" value="sproutemail/entries">
-  <input type="hidden" name="tab" value="fields">
-  <input type="hidden" name="continue" value="false">
+	{% set mailers = craft.sproutemail.getMailers() %}
+	{% if mailers %}
+		{{ forms.textField({
+			label: "Campaign Name"|t,
+			id: 'name',
+			name: 'sproutEmail[name]',
+			instructions: "Human readable name for this type of Entry"|t,
+			value: (campaign is defined ? campaign.name : null),
+			autofocus: true,
+			required: true,
+			errors: (campaign is defined ? campaign.getErrors('name') : null)
+		}) }}
+		{{ forms.textField({
+			label: "Campaign Handle"|t,
+			id: 'handle',
+			name: 'sproutEmail[handle]',
+			instructions: "How you'll refer to this section in the templates."|t,
+			value: (campaign is defined ? campaign.handle : null),
+			required: true,
+			errors: (campaign is defined ? campaign.getErrors('handle') : null)
+		}) }}
+		{{ forms.selectField({
+			label: "How would you like to send this email"|t,
+			instructions: 'Select the platform you will use to send your Entries. Add support for more services via your <a href="' ~ url('sproutemail/settings#settings-api') ~ '">API settings</a>'|t,
+			id: 'mailer',
+			name: 'sproutEmail[mailer]',
+			required: true,
+			options : mailers,
+			value: (campaign is defined ? campaign.mailer : null),
+			errors: (campaign is defined ? campaign.getErrors('mailer') : null)
+		}) }}
+		{{ forms.textField({
+			label: "Entry Template"|t,
+			id: 'template',
+			name: 'sproutEmail[template]',
+			instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+			placeholder: 'email/_emailtemplate',
+			value: (campaign is defined ? campaign.template : null),
+			errors: (campaign is defined ? campaign.getErrors('template') : null)
+		}) }}
+		{% if campaign.mailer == 'copypaste' %}
+			{{ forms.textField({
+				label: "Entry Copy/Paste Template"|t,
+				id: 'templateCopyPaste',
+				name: 'sproutEmail[templateCopyPaste]',
+				instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
+				placeholder: 'email/copypaste-template',
+				value: (campaign is defined ? campaign.templateCopyPaste : null),
+				errors: (campaign is defined ? campaign.getErrors('templateCopyPaste') : null)
+			}) }}
+		{% endif %}
+		<hr>
+		{{ forms.checkboxField({
+			label: "Entries of this type have their own URLs"|t,
+			id: 'hasUrls',
+			name: 'sproutEmail[hasUrls]',
+			checked: (campaign is defined ? campaign.hasUrls : 0),
+			toggle: 'url-settings'
+		}) }}
+		<div id="url-settings" class="nested-fields{% if not campaign.hasUrls %} hidden{% endif %}">
+		{{ forms.textField({
+			label: "Entry URL Format"|t,
+			instructions: 'What the online version of the Entry URLs should look like. You can include tags that output entry properties, such as {slug} or {postDate|date("Y")}.'|t,
+			placeholder: 'email/{slug}',
+			name: 'sproutEmail[urlFormat]',
+			value: (campaign is defined ? campaign.urlFormat : null),
+			errors: (campaign is defined ? campaign.getErrors('urlFormat') : null)
+		}) }}
+	</div>
+	<hr>
+	{{ forms.checkboxField({
+		label: "Add a custom format to the Title field?"|t,
+		id: 'hasAdvancedTitles',
+		name: 'sproutEmail[hasAdvancedTitles]',
+		checked: (campaign is defined ? campaign.hasUrls : 0),
+		toggle: 'advancedtitle-settings'
+	}) }}
+	<div id="advancedtitle-settings" class="nested-fields{% if not campaign.hasAdvancedTitles %} hidden{% endif %}">
+	{{ forms.textField({
+		label: "Title Format"|t,
+		instructions: "What the auto-generated Entry titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
+		id: 'titleFormat',
+		name: 'sproutEmail[titleFormat]',
+		value: (campaign is defined ? campaign.titleFormat : null),
+		errors: (campaign is defined ? campaign.getErrors('titleFormat') : null),
+	}) }}
+	</div>
 
-  <input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
+	<hr>
+	{% include "_includes/fieldlayoutdesigner" with {fieldLayout: campaign.getFieldLayout()} only %}
+	<hr>
 
-  {% set emailProviders = craft.sproutEmail.getEmailProviders(true) %}
-  
-  {% if emailProviders %}
-  
-    {{ forms.textField({
-      label: "Campaign Name"|t,
-      id: 'name',
-      name: 'sproutEmail[name]',
-      instructions: "Human readable name for this type of Entry"|t,
-      value: (campaign is defined ? campaign.name : null),
-      autofocus: true,
-      required: true,
-      errors: (campaign is defined ? campaign.getErrors('name') : null)   
-    }) }}
-
-    {{ forms.textField({
-      label: "Campaign Handle"|t,
-      id: 'handle',
-      name: 'sproutEmail[handle]',
-      instructions: "How you'll refer to this section in the templates."|t,
-      value: (campaign is defined ? campaign.handle : null),
-      required: true,
-      errors: (campaign is defined ? campaign.getErrors('handle') : null)   
-    }) }}
-
-    {{ forms.selectField({
-      label: "How would you like to send this email"|t,
-      instructions: 'Select the platform you will use to send your Entries. Add support for more services via your <a href="' ~ url('sproutemail/settings#settings-api') ~ '">API settings</a>'|t,
-      id: 'emailProvider',
-      name: 'sproutEmail[emailProvider]',
-      required: true,
-      options : emailProviders,
-      value: (campaign is defined ? campaign.emailProvider : null),
-      errors: (campaign is defined ? campaign.getErrors('emailProvider') : null)  
-    }) }}
-
-    {{ forms.textField({
-      label: "Entry Template"|t,
-      id: 'template',
-      name: 'sproutEmail[template]',
-      instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
-      placeholder: 'email/_emailtemplate',
-      value: (campaign is defined ? campaign.template : null),
-      errors: (campaign is defined ? campaign.getErrors('template') : null)   
-    }) }}
-
-    {% if campaign.emailProvider == 'CopyPaste' %}
-      
-      {{ forms.textField({
-        label: "Entry Copy/Paste Template"|t,
-        id: 'templateCopyPaste',
-        name: 'sproutEmail[templateCopyPaste]',
-        instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
-        placeholder: 'email/copypaste-template',
-        value: (campaign is defined ? campaign.templateCopyPaste : null),
-        errors: (campaign is defined ? campaign.getErrors('templateCopyPaste') : null)  
-      }) }}
-
-    {% endif %}
-
-    <hr>
-
-    {{ forms.checkboxField({
-      label: "Entries of this type have their own URLs"|t,
-      id: 'hasUrls',
-      name: 'sproutEmail[hasUrls]',
-      checked: (campaign is defined ? campaign.hasUrls : 0),
-      toggle: 'url-settings'
-    }) }}
-
-    <div id="url-settings" class="nested-fields{% if not campaign.hasUrls %} hidden{% endif %}">
-
-      {{ forms.textField({
-        label: "Entry URL Format"|t,
-        instructions: 'What the online version of the Entry URLs should look like. You can include tags that output entry properties, such as {slug} or {postDate|date("Y")}.'|t,
-        placeholder: 'email/{slug}',
-        name: 'sproutEmail[urlFormat]',
-        value: (campaign is defined ? campaign.urlFormat : null),
-        errors: (campaign is defined ? campaign.getErrors('urlFormat') : null)  
-      }) }}
-
-  </div>
-
-  <hr>
-
-  {{ forms.checkboxField({
-    label: "Add a custom format to the Title field?"|t,
-    id: 'hasAdvancedTitles',
-    name: 'sproutEmail[hasAdvancedTitles]',
-    checked: (campaign is defined ? campaign.hasUrls : 0),
-    toggle: 'advancedtitle-settings'
-  }) }}
-
-  <div id="advancedtitle-settings" class="nested-fields{% if not campaign.hasAdvancedTitles %} hidden{% endif %}">
-
-    {{ forms.textField({
-      label: "Title Format"|t,
-      instructions: "What the auto-generated Entry titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
-      id: 'titleFormat',
-      name: 'sproutEmail[titleFormat]',
-      value: (campaign is defined ? campaign.titleFormat : null),
-      errors: (campaign is defined ? campaign.getErrors('titleFormat') : null),
-    }) }}
-
-  </div>
-
-  <hr>
-
-  {% include "_includes/fieldlayoutdesigner" with {
-    fieldLayout: campaign.getFieldLayout()
-  } only %}
-
-  <hr>
-  
-  <div class="buttons">
-    <input class="btn submit" type="submit" value="Save Campaign">
-  </div>
-  
-  {% else %}
-    
-    <p>Manage and send your email marketing and notification emails directly from Craft.</p>
-    <ul>
-      <li>Sprout Email</li>
-    </ul>
-
-    <p>In you want to set up an Campaign to send via a third party, you must first provide valid API settings for one of the supported email service providers.</p>
-
-    <ul>
-      <li>Campaign Monitor</li>
-      <li>MailChimp</li>
-      <li>MailGun</li>
-      <li>SendGrid</li>
-    </ul>
-
-    <p>Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?</p>
-
-    <ul>
-      <li>Copy &amp; Paste</li>
-    </ul>
-    
-    <p><a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
-  
-  {% endif %}
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="Save Campaign">
+	</div>
+{% else %}
+	<p>Manage and send your email marketing and notification emails directly from Craft.</p>
+	<ul>
+		<li>Sprout Email</li>
+	</ul>
+	<p>In you want to set up an Campaign to send via a third party, you must first provide valid API settings for one of the supported email service providers.</p>
+	<ul>
+		<li>Campaign Monitor</li>
+		<li>MailChimp</li>
+		<li>MailGun</li>
+		<li>SendGrid</li>
+	</ul>
+	<p>Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?</p>
+	<ul>
+		<li>Copy &amp; Paste</li>
+	</ul>
+	<p><a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
+{% endif %}
 </form>
-
 {% endset %}
-
-{% includeJsResource "sproutemail/js/sproutemail.js" %}
-
+	{% includeJsResource "sproutemail/js/sproutemail.js" %}
 {% set js %}
-  {% if campaign is not defined or not campaign.handle %}
-    new Craft.HandleGenerator('#name', '#handle');
-  {% endif %}
+{% if campaign is not defined or not campaign.handle %}
+	new Craft.HandleGenerator('#name', '#handle');
+{% endif %}
 {% endset %}
-
 {% includeJs js %}

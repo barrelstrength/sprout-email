@@ -11,3 +11,7 @@ footer.bsd-branding a {
     color:#999;
     font-weight:bold;
 }
+
+.event-options-block {
+	margin: 20px 0;
+}
