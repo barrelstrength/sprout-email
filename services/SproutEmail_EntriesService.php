@@ -1,32 +1,27 @@
 <?php
 namespace Craft;
 
-class SproutEmail_EntryService extends BaseApplicationComponent
+class SproutEmail_EntriesService extends BaseApplicationComponent
 {
 	protected $entryRecord;
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param object $entryRecord
 	 */
 	public function __construct($entryRecord = null)
 	{
 		$this->entryRecord = $entryRecord;
-		if (is_null($this->entryRecord)) {
+
+		if (is_null($this->entryRecord))
+		{
 			$this->entryRecord = SproutEmail_EntryRecord::model();
 		}
 	}
-	
-	/**
-	 * Saves a entry.
-	 *
-	 * @param SproutEmail_EntryRecord $entry
-	 * @throws \Exception
-	 * @return bool
-	 */
-	public function saveEntry(SproutEmail_EntryModel $entry)
-	{	
+
+	public function saveEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	{
 		$isNewEntry = !$entry->id;
 
 		if ($entry->id)
@@ -45,17 +40,20 @@ class SproutEmail_EntryService extends BaseApplicationComponent
 			$entryRecord = new SproutEmail_EntryRecord();
 		}
 
-		$entryRecord->campaignId = $entry->campaignId;
+		$entryRecord->campaignId  = $entry->campaignId;
 		$entryRecord->subjectLine = $entry->subjectLine;
 
+		$entryRecord->setAttributes($entry->getAttributes());
+
 		$entryRecord->validate();
+
 		$entry->addErrors($entryRecord->getErrors());
 
 		if (!$entry->hasErrors())
 		{
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 			try
-			{	
+			{
 				if (craft()->elements->saveElement($entry))
 				{
 					// Now that we have an element ID, save it on the other stuff
@@ -64,15 +62,17 @@ class SproutEmail_EntryService extends BaseApplicationComponent
 						$entryRecord->id = $entry->id;
 					}
 
-					// Save our Entry Settings
 					$entryRecord->save(false);
 
-					if ($transaction !== null)
+					if (sproutEmail()->mailers->saveRecipientList($campaign, $entry))
 					{
-						$transaction->commit();
-					}
+						if ($transaction !== null)
+						{
+							$transaction->commit();
+						}
 
-					return true;
+						return true;
+					}
 				}
 			}
 			catch (\Exception $e)
@@ -89,12 +89,6 @@ class SproutEmail_EntryService extends BaseApplicationComponent
 		return false;
 	}
 
-	/**
-	 * Deletes an Entry
-	 * 
-	 * @param int $id
-	 * @return boolean
-	 */
 	public function deleteEntry(SproutEmail_EntryModel $entry)
 	{
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
@@ -123,8 +117,9 @@ class SproutEmail_EntryService extends BaseApplicationComponent
 
 	/**
 	 * Return Entry by id
-	 * 
+	 *
 	 * @param int $id
+	 *
 	 * @return object
 	 */
 	public function getEntryById($entryId)

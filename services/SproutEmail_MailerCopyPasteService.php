@@ -4,7 +4,7 @@ namespace Craft;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 
-class SproutEmail_CopyPasteMailerService extends BaseApplicationComponent
+class SproutEmail_MailerCopyPasteService extends BaseApplicationComponent
 {
 	/**
 	 * @var array
