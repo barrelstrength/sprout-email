@@ -2,118 +2,112 @@
 namespace Craft;
 
 /**
- * Campaign record
+ * Class SproutEmail_CampaignRecord
+ *
+ * @package Craft
+ * --
+ * @property int    $id
+ * @property string $name
+ * @property string $handle
+ * @property string $type
+ * @property string $mailer
+ * @property string $titleFormat
+ * @property string $urlFormat
+ * @property bool   $hasUrls
+ * @property bool   $hasAdvancedTitles
+ * @property string $template
+ * @property string $templateCopyPaste
+ * @property int    $fieldLayoutId
  */
 class SproutEmail_CampaignRecord extends BaseRecord
 {
-	public $rules = array ();
 	public $sectionRecord;
-	
+
 	/**
-	 * Return table name corresponding to this record
+	 * Custom validation rules
 	 *
+	 * @var array
+	 */
+	public $rules = array();
+
+	/**
 	 * @return string
 	 */
 	public function getTableName()
 	{
 		return 'sproutemail_campaigns';
 	}
-	
+
 	/**
-	 * These have to be explicitly defined in order for the plugin to install
-	 *
-	 * @return multitype:multitype:string multitype:boolean string
+	 * @return array
 	 */
 	public function defineAttributes()
 	{
-		// @TODO - where do we load this smarter? Already in init()
-		// but needed here for install.
-		Craft::import('plugins.sproutemail.enums.Campaign');
-
-		return array (
-			'fieldLayoutId'    => AttributeType::Number,
-			'emailProvider'    => AttributeType::String,
-			'name'             => AttributeType::String,
-			'handle'           => AttributeType::String,
-			'type'             => array(
-														AttributeType::Enum, 
-														'values' => array(
-															Campaign::Email, 
-															Campaign::Notification
-														)),
-			'titleFormat'      => AttributeType::String,
-			'hasUrls'          => array(
-															AttributeType::Bool, 
-															'default' => true,
-														),
+		return array(
+			'name'              => AttributeType::String,
+			'handle'            => AttributeType::String,
+			'type'              => array(
+				AttributeType::Enum,
+				'values' => array(
+					Campaign::Email,
+					Campaign::Notification
+				)
+			),
+			'mailer'            => AttributeType::String,
+			'titleFormat'       => AttributeType::String,
+			'urlFormat'         => AttributeType::String,
+			'hasUrls'           => array(
+				AttributeType::Bool,
+				'default' => true,
+			),
 			'hasAdvancedTitles' => array(
-															AttributeType::Bool, 
-															'default' => true,
-														 ),
-			'subject'          => AttributeType::String,
-			'fromName'         => AttributeType::String,
-			'fromEmail'        => AttributeType::Email,
-			'replyToEmail'     => AttributeType::Email,
-
-			'urlFormat'        => AttributeType::String,
-			'template'         => AttributeType::String,
-			'templateCopyPaste'=> AttributeType::String,
-			
-			'recipients'       => AttributeType::Mixed,
-			'dateCreated'      => AttributeType::DateTime,
-			'dateUpdated'      => AttributeType::DateTime 
+				AttributeType::Bool,
+				'default' => true,
+			),
+			'template'          => AttributeType::String,
+			'templateCopyPaste' => AttributeType::String,
+			'dateCreated'       => AttributeType::DateTime,
+			'dateUpdated'       => AttributeType::DateTime,
+			// @related
+			'fieldLayoutId'     => AttributeType::Number,
+			'notifications'     => AttributeType::Mixed,
 		);
 	}
-	
+
 	/**
-	 * Record relationships
-	 *
 	 * @return array
 	 */
 	public function defineRelations()
 	{
-		return array (
-			'fieldLayout' => array(
-				static::BELONGS_TO, 
-				'FieldLayoutRecord', 
+		return array(
+			'fieldLayout'   => array(
+				static::BELONGS_TO,
+				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL
 			),
-			'campaignRecipientList' => array (
-				self::HAS_MANY,
-				'SproutEmail_CampaignRecipientListRecord',
-				'campaignId' 
+			'entries'       => array(
+				static::HAS_MANY,
+				'SproutEmail_EntryRecord',
+				'campaignId'
 			),
-			'recipientList' => array (
+			'notifications' => array(
 				self::HAS_MANY,
-				'SproutEmail_RecipientListRecord',
-				'recipientListId',
-				'through' => 'campaignRecipientList' 
-			),
-			'campaignNotificationEvent' => array (
-				self::HAS_MANY,
-				'SproutEmail_CampaignNotificationEventRecord',
-				'campaignId' 
-			),
-			'notificationEvent' => array (
-				self::HAS_MANY,
-				'SproutEmail_NotificationEventRecord',
-				'notificationEventId',
-				'through' => 'campaignNotificationEvent' 
-			) 
+				'SproutEmail_NotificationRecord',
+				'campaignId'
+			)
 		);
 	}
-	
+
 	/**
-	 * Function for adding rules
+	 * @param array $rules
 	 *
-	 * @param array $rules            
 	 * @return void
 	 */
 	public function addRules($rules = array())
 	{
 		$this->rules [] = $rules;
 	}
-	
+
 	/**
 	 * Yii style validation rules;
 	 * These are the 'base' rules but specific ones are added in the service based on
@@ -123,39 +117,34 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 */
 	public function rules()
 	{
-		$rules = array (
+		$rules = array(
 			// required fields
-			array (
+			array(
 				'name',
-				'required' 
-			),
-			// must be valid emails
-			array (
-				'fromEmail',
-				'email' 
+				'required'
 			),
 			// custom
-			array (
-				'emailProvider',
-				'validEmailProvider' 
+			array(
+				'mailer',
+				'validMailer'
 			)
 		);
-		
-		return array_merge( $rules, $this->rules );
+
+		return array_merge($rules, $this->rules);
 	}
-	
+
 	/**
 	 * Custom email provider validator
 	 *
-	 * @param string $attr            
-	 * @param array $params            
+	 * @param string $attribute
+	 *
 	 * @return void
 	 */
-	public function validEmailProvider($attr, $params)
+	public function validMailer($attribute)
 	{
-		if ( $this->{$attr} != 'SproutEmail' && ! array_key_exists( $this->{$attr}, craft()->sproutEmail_emailProvider->getEmailProviders() ) )
+		if (!array_key_exists($this->$attribute, sproutEmail()->mailers->getMailers()))
 		{
-			$this->addError( $attr, 'Invalid email provider.' );
+			$this->addError($attribute, 'Invalid email provider.');
 		}
 	}
 }
