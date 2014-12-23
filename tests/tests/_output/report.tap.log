@@ -1,4 +1,0 @@
-TAP version 13
-ok 1 - create a notification, verify successful creation, and delete (CreateCampaignCept)
-ok 2 - create a notification, verify successful creation, and delete (CreateNotificationCept)
-1..2
