@@ -1,48 +1,62 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmail_EntryModel
+ *
+ * @package Craft
+ * --
+ * @property int    $id
+ * @property string $subjectLine
+ * @property int    $campaignId
+ * @property string $fromName
+ * @property string $fromEmail
+ * @property string $replyTo
+ * @property bool   $sent
+ */
 class SproutEmail_EntryModel extends BaseElementModel
 {
+	protected $fields;
 	protected $elementType = 'SproutEmail_Entry';
-
-	private $_fields;
 
 	/**
 	 * Disabled - Campaign isn't even setup properly
 	 * Pending -  Campaign is setup but Entry is disabled
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
-	 *
 	 */
-	const READY     = 'live';
-	const PENDING   = 'pending';
-	const DISABLED  = 'expired'; // this doesn't behave properly when named 'disabled'
-	const ARCHIVED  = 'setup';
+	const READY = 'live';
+	const PENDING = 'pending';
+	const DISABLED = 'expired'; // this doesn't behave properly when named 'disabled'
+	const ARCHIVED = 'setup';
 
 	/**
-	 * @access protected
 	 * @return array
 	 */
 	protected function defineAttributes()
 	{
-		return array_merge(
-			parent::defineAttributes(), array(
-				'id'          => AttributeType::Number,
-				'campaignId'  => AttributeType::Number,
-				'subjectLine' => AttributeType::String,
-				'sent'        => AttributeType::Bool,
-			)
+		$defaults   = parent::defineAttributes();
+		$attributes = array(
+			'subjectLine'     => array(AttributeType::String, 'required' => true),
+			'campaignId'      => array(AttributeType::Number, 'required' => true),
+			'fromName'        => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => true),
+			'fromEmail'       => array(AttributeType::Email, 'required' => true),
+			'replyTo'         => array(AttributeType::Email, 'required' => false),
+			'sent'            => AttributeType::Bool,
+			// @related
+			'recipientListId' => AttributeType::Number,
+			'recipientList'   => Attributetype::Mixed,
 		);
+
+		return array_merge($defaults, $attributes);
 	}
 
 	/*
-	 * Returns the field layout used by this element.
-	 *
 	 * @return FieldLayoutModel|null
 	 */
 	public function getFieldLayout()
 	{
-		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
 		return $campaign->getFieldLayout();
 	}
@@ -67,22 +81,21 @@ class SproutEmail_EntryModel extends BaseElementModel
 	{
 		$status = parent::getStatus();
 
-		// Required attributes :$campaign->emailProvider && 
-		// 											$campaign->template
+		// Required attributes :$campaign->mailer && $campaign->template
 		// Enabled : static::ENABLED
 		// Disabled : static::DISABLED
 		// Archived : static::ARCHIVED
 		// Sent (track sent dates in a sent log table)
-		// 
+		//
 		// @TODO - we can make this conditional statement more
 		// advanced and check for the Service Provider and determine
 		// specific things about each service provider to decide if an
 		// email is ready or not.  For now, we'll just check to see if 
 		// it has a service provider and text template.
 
-		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
-		$hasRequiredAttributes = ($campaign->emailProvider && $campaign->template);
+		$hasRequiredAttributes = ($campaign->mailer && $campaign->template);
 
 		$hasBeenSent = $this->sent; // @TODO - hard coded
 
@@ -119,9 +132,9 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getFields()
 	{
-		if (!isset($this->_fields))
+		if (!isset($this->fields))
 		{
-			$this->_fields = array();
+			$this->fields = array();
 
 			$fieldLayoutFields = $this->getFieldLayout()->getFields();
 
@@ -129,11 +142,11 @@ class SproutEmail_EntryModel extends BaseElementModel
 			{
 				$field           = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->_fields[] = $field;
+				$this->fields[]  = $field;
 			}
 		}
 
-		return $this->_fields;
+		return $this->fields;
 	}
 
 	/*
@@ -143,12 +156,12 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function setFields($fields)
 	{
-		$this->_fields = $fields;
+		$this->fields = $fields;
 	}
 
 	public function getType()
 	{
-		$campaign = craft()->sproutEmail_campaign->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
 		return $campaign;
 	}

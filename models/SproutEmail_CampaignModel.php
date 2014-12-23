@@ -2,10 +2,27 @@
 namespace Craft;
 
 /**
- * Campaign model
+ * Class SproutEmail_CampaignModel
+ *
+ * @package Craft
+ * --
+ * @property int    $id
+ * @property string $name
+ * @property string $handle
+ * @property string $type
+ * @property string $mailer
+ * @property string $titleFormat
+ * @property string $urlFormat
+ * @property bool   $hasUrls
+ * @property bool   $hasAdvancedTitles
+ * @property string $template
+ * @property string $templateCopyPaste
+ * @property int    $fieldLayoutId
  */
 class SproutEmail_CampaignModel extends BaseModel
 {
+	protected $fields;
+
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *
@@ -13,50 +30,35 @@ class SproutEmail_CampaignModel extends BaseModel
 	 */
 	public function defineAttributes()
 	{
-		return array (
-				
-			// campaign info
+		return array(
 			'id'                => AttributeType::Number,
-			'fieldLayoutId'     => AttributeType::Number,
 			'name'              => AttributeType::String,
-			'handle'            => AttributeType::String ,
+			'handle'            => AttributeType::String,
 			'type'              => array(
-															AttributeType::Enum, 
-															'values' => array(
-																Campaign::Email, 
-																Campaign::Notification
-															)),
+				AttributeType::Enum,
+				'values' => array(
+					Campaign::Email,
+					Campaign::Notification
+				)
+			),
+			'mailer'            => AttributeType::String,
 			'titleFormat'       => AttributeType::String,
-			'hasUrls'           => array(
-															AttributeType::Bool, 
-															'default' => true,
-														 ),
-			'hasAdvancedTitles' => array(
-															AttributeType::Bool, 
-															'default' => true,
-														 ),
 			'urlFormat'         => AttributeType::String,
-			'subject'           => AttributeType::String,
-			'fromName'          => AttributeType::String,
-			'fromEmail'         => AttributeType::Email,
-			'replyToEmail'      => AttributeType::Email,
-			'emailProvider'     => AttributeType::String,
-			'notificationEvent' => AttributeType::Number,
-			'dateUpdated'        => AttributeType::DateTime,
-			
-			// email template
+			'hasUrls'           => array(
+				AttributeType::Bool,
+				'default' => true,
+			),
+			'hasAdvancedTitles' => array(
+				AttributeType::Bool,
+				'default' => true,
+			),
 			'template'          => AttributeType::String,
 			'templateCopyPaste' => AttributeType::String,
-			
-			// recipients
-			'recipientOption'   => AttributeType::Number,
-			'emailProviderRecipientListId' => AttributeType::Enum,
-			'recipients'        => AttributeType::String,
-			'useRecipientLists' => AttributeType::Number,
-			
-			// events
-			'notificationEvents' => AttributeType::Enum,
-			
+			// @defaults
+			'dateCreate'        => AttributeType::DateTime,
+			'dateUpdated'       => AttributeType::DateTime,
+			// @related
+			'fieldLayoutId'     => AttributeType::Number,
 		);
 	}
 
@@ -74,7 +76,7 @@ class SproutEmail_CampaignModel extends BaseModel
 	{
 		return $this->asa('fieldLayout')->getFieldLayout();
 	}
-	
+
 	/**
 	 * Returns the fields associated with this form.
 	 *
@@ -82,21 +84,21 @@ class SproutEmail_CampaignModel extends BaseModel
 	 */
 	public function getFields()
 	{
-		if (!isset($this->_fields))
+		if (!isset($this->fields))
 		{
-			$this->_fields = array();
+			$this->fields = array();
 
 			$fieldLayoutFields = $this->getFieldLayout()->getFields();
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field = $fieldLayoutField->getField();
+				$field           = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->_fields[] = $field;
+				$this->fields[]  = $field;
 			}
 		}
 
-		return $this->_fields;
+		return $this->fields;
 	}
 
 	/*
@@ -106,25 +108,6 @@ class SproutEmail_CampaignModel extends BaseModel
 	 */
 	public function setFields($fields)
 	{
-		$this->_fields = $fields;
-	}
-
-	/**
-	 * Check if specified list is set in this model instance
-	 *
-	 * @param SproutEmail_RecipientListRecord $list            
-	 */
-	public function hasRecipientList(SproutEmail_RecipientListRecord $list)
-	{
-		if ( ! isset( $this->emailProviderRecipientListId [$list->type] ) || ! $this->emailProviderRecipientListId [$list->type])
-			return false;
-		
-		foreach ( $this->emailProviderRecipientListId [$list->type] as $listId )
-		{
-			if ( $list->emailProviderRecipientListId == $listId )
-				return true;
-		}
-				
-		return false;
+		$this->fields = $fields;
 	}
 }
