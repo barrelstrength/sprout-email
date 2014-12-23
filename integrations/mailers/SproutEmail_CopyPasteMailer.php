@@ -29,7 +29,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 	{
 		$context['settings'] = $this->getSettings();
 
-		$html = craft()->templates->render('sproutemail/_providers/settings.copypaste.html', $context);
+		$html = craft()->templates->render('sproutemail/_mailers/settings.copypaste.html', $context);
 
 		return TemplateHelper::getRaw($html);
 	}
@@ -55,7 +55,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 
 	public function exportEntry($campaign, $listIds = array())
 	{
-		$service = craft()->getComponent('sproutEmail_copyPasteMailer');
+		$service = craft()->getComponent('sproutEmail_mailerCopyPaste');
 
 		if ($service)
 		{

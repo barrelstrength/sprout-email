@@ -10,7 +10,7 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return 'Craft On User Login';
+		return 'User Login';
 	}
 
 	public function getDescription()
@@ -21,10 +21,5 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		return array('value' => $event->params['username']);
-	}
-
-	public function prepareValue($value)
-	{
-		return array('entriesSaveEntrySectionIds' => $value);
 	}
 }

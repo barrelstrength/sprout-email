@@ -10,7 +10,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return 'Craft On Save Entry';
+		return 'Save Entry';
 	}
 
 	public function getDescription()
@@ -26,6 +26,11 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	public function prepareOptions()
 	{
 		return craft()->request->getPost('entriesSaveEntrySectionIds');
+	}
+
+	public function validateOptions($options, EntryModel $entry)
+	{
+		return in_array($entry->getSection()->id, $options);
 	}
 
 	public function prepareParams(Event $event)
