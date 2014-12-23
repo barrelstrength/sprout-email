@@ -5,20 +5,22 @@ class SproutEmailBaseMailer
 {
 	/**
 	 * The settings for this mailer, stored in sproutemail_mailers
+	 *
 	 * @var array
 	 */
 	protected $settings;
 
 	/**
 	 * Whether this mailer has been initialized
+	 *
 	 * @var bool
 	 */
 	protected $initialized = false;
 
 	public function init()
 	{
-		$this->settings		= sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-		$this->initialized	= true;
+		$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
+		$this->initialized = true;
 	}
 
 	/**
@@ -54,13 +56,15 @@ class SproutEmailBaseMailer
 	/**
 	 * Returns the qualified service name
 	 *
-	 * @todo Consider removing once all templates are using proper settings handling
+	 * @todo    Consider removing once all templates are using proper settings handling
 	 *
 	 * @example SproutEmail
 	 *
 	 * @return string
 	 */
-	public function getName() {}
+	public function getName()
+	{
+	}
 
 	/**
 	 * Returns the service title to use when displaying a label or similar use case
@@ -69,7 +73,9 @@ class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getTitle() {}
+	public function getTitle()
+	{
+	}
 
 	/**
 	 * Returns a short description of this mailer
@@ -78,7 +84,9 @@ class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getDescription() {}
+	public function getDescription()
+	{
+	}
 
 	/**
 	 * Returns the settings for this mailer
@@ -110,7 +118,9 @@ class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getSettingsHtml() {}
+	public function getSettingsHtml()
+	{
+	}
 
 	/**
 	 * Returns the value that should be saved to settings for this mailer
@@ -135,5 +145,21 @@ class SproutEmailBaseMailer
 	public function prepareValue($value)
 	{
 		return $value;
+	}
+
+	public function getSubscriberList()
+	{
+	}
+
+	public function saveRecipientList(SproutEmail_CampaignModel $campaign)
+	{
+	}
+
+	public function sendEntry(SproutEmail_Campaign $campaign)
+	{
+	}
+
+	public function exportEntry(SproutEmail_Campaign $campaign)
+	{
 	}
 }
