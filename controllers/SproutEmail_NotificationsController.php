@@ -42,7 +42,6 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignController
 		exit(0);
 	}
 
-
 	public function actionNotificationSettingsTemplate(array $variables = array())
 	{
 		if (isset($variables['campaignId']))
@@ -50,7 +49,7 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignController
 			// If campaign already exists, we're returning an error object
 			if (!isset($variables['campaign']))
 			{
-				$variables['campaign'] = craft()->sproutEmail_campaign->getCampaignById($variables['campaignId']);
+				$variables['campaign'] = sproutEmail()->campaigns->getCampaignById($variables['campaignId']);
 			}
 		}
 		else

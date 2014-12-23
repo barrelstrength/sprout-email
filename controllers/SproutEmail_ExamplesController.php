@@ -47,7 +47,7 @@ class SproutEmail_ExamplesController extends BaseController
 		{
 			// Create Example Forms
 			// ------------------------------------------------------------
-			
+
 			$user = craft()->userSession->getUser();
 
 			$campaignSettings = array(
@@ -233,15 +233,6 @@ class SproutEmail_ExamplesController extends BaseController
 				$campaign->template = $settings['template'];
 				$campaign->templateCopyPaste = $settings['templateCopyPaste'];
 
-				// Create the Campaign
-				$campaignId = craft()->sproutEmail_campaign->saveCampaign($campaign);
-
-				// Assign the id of what we just created to our model
-				$campaign->id = $campaignId;
-
-				// Save this again for the templates
-				craft()->sproutEmail_campaign->saveCampaign($campaign, 'template');
-
 				//------------------------------------------------------------
 
 				// Do we have a new field that doesn't exist yet?  
@@ -290,12 +281,12 @@ class SproutEmail_ExamplesController extends BaseController
 
 				// Set the field layout
 				$fieldLayout = craft()->fields->assembleLayout($fieldLayout, $requiredFields);
-				
+
 				$fieldLayout->type = 'SproutEmail_Campaign';
 				$campaign->setFieldLayout($fieldLayout);
 
 				// Save our form again with a layout
-				craft()->sproutEmail_campaign->saveCampaign($campaign);
+				sproutEmail()->campaings->saveCampaign($campaign);
 			}
 		}
 		catch (\Exception $e)
@@ -303,7 +294,7 @@ class SproutEmail_ExamplesController extends BaseController
 			$this->_handleError($e);
 		}
 	}
-	
+
 	/**
 	 * Handle installation errors
 	 * 

@@ -22,15 +22,15 @@ class SproutEmail_EntryController extends BaseController
 		$this->requirePostRequest();
 
 		$campaignId     = craft()->request->getRequiredPost('campaignId');
-		$this->campaign = craft()->sproutEmail_campaign->getCampaignById($campaignId);
+		$this->campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
 
 		if (!isset($this->campaign))
 		{
 			throw new Exception(Craft::t('No Campaign exists with the id “{id}”', array('id' => $campaignId)));
 		}
 
-		$entry = $this->_getEntryModel();
-		$entry = $this->_populateEntryModel($entry);
+		$entry = $this->getEntryModel();
+		$entry = $this->populateEntryModel($entry);
 
 		// Only use the Title Format if it exists
 		// @TODO - hide Title Format by default, only show it if 
@@ -40,7 +40,7 @@ class SproutEmail_EntryController extends BaseController
 			$entry->getContent()->title = craft()->templates->renderObjectTemplate($this->campaign->titleFormat, $entry);
 		}
 
-		if (craft()->sproutEmail_entry->saveEntry($entry))
+		if (sproutEmail()->entries->saveEntry($entry, $this->campaign))
 		{
 			craft()->userSession->setNotice(Craft::t('Entry saved.'));
 
@@ -50,10 +50,8 @@ class SproutEmail_EntryController extends BaseController
 		}
 		else
 		{
-			// make errors available to variable
-			craft()->userSession->setError(Craft::t('Couldn’t save Entry.'));
+			craft()->userSession->setError(Craft::t('Could not save Entry.'));
 
-			// Return the form as an 'entry' variable if in the cp
 			craft()->urlManager->setRouteVariables(
 				array(
 					'entry' => $entry
@@ -73,9 +71,9 @@ class SproutEmail_EntryController extends BaseController
 
 		// Get the Entry
 		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry   = craft()->sproutEmail_entry->getEntryById($entryId);
+		$entry   = sproutEmail()->entries->getEntryById($entryId);
 
-		if (craft()->sproutEmail_entry->deleteEntry($entry))
+		if (sproutEmail()->entries->deleteEntry($entry))
 		{
 			$this->redirectToPostedUrl($entry);
 		}
@@ -89,17 +87,16 @@ class SproutEmail_EntryController extends BaseController
 	/**
 	 * Fetch or create a SproutEmail_EntryModel
 	 *
-	 * @access private
 	 * @throws Exception
 	 * @return SproutEmail_EntryModel
 	 */
-	private function _getEntryModel()
+	protected function getEntryModel()
 	{
 		$entryId = craft()->request->getPost('entryId');
 
 		if ($entryId)
 		{
-			$entry = craft()->sproutEmail_entry->getEntryById($entryId);
+			$entry = sproutEmail()->entries->getEntryById($entryId);
 
 			if (!$entry)
 			{
@@ -117,24 +114,25 @@ class SproutEmail_EntryController extends BaseController
 	/**
 	 * Populate a SproutEmail_EntryModel with post data
 	 *
-	 * @access private
-	 *
 	 * @param SproutEmail_EntryModel $entry
 	 *
 	 * @return \Craft\SproutEmail_EntryModel
 	 */
-	private function _populateEntryModel(SproutEmail_EntryModel $entry)
+	protected function populateEntryModel(SproutEmail_EntryModel $entry)
 	{
-		$entry->campaignId          = $this->campaign->id;
-		$entry->slug                = craft()->request->getPost('slug', $entry->slug);
-		$entry->enabled             = (bool) craft()->request->getPost('enabled', $entry->enabled);
-		$entry->subjectLine         = craft()->request->getRequiredPost('subjectLine');
+		$entry->campaignId  = $this->campaign->id;
+		$entry->slug        = craft()->request->getPost('slug', $entry->slug);
+		$entry->enabled     = (bool) craft()->request->getPost('enabled', $entry->enabled);
+		$entry->fromName    = craft()->request->getRequiredPost('sproutEmail.fromName');
+		$entry->fromEmail   = craft()->request->getRequiredPost('sproutEmail.fromEmail');
+		$entry->replyTo     = craft()->request->getRequiredPost('sproutEmail.replyTo');
+		$entry->subjectLine = craft()->request->getRequiredPost('subjectLine');
+
 		$entry->getContent()->title = $entry->subjectLine;
 
-		// @todo Look into issue where the slug is not being auto generated via JS on entry edit page
 		if (empty($entry->slug))
 		{
-			$entry->slug = ElementHelper::createSlug($entry->subjectLine);
+			$entry->slug = ElementHelper::createSlug($this->subjectLine);
 		}
 
 		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
@@ -153,13 +151,14 @@ class SproutEmail_EntryController extends BaseController
 	 * @throws HttpException
 	 * @throws Exception
 	 */
+
 	public function actionEditEntryTemplate(array $variables = array())
 	{
 		$entryId    = craft()->request->getSegment(4);
 		$campaignId = craft()->request->getSegment(3);
 
 		// Check if we already have an entry route variable
-		// If so it's probably due to a bad form submission and has an error object 
+		// If so it's probably due to a bad form submission and has an error object
 		// that we don't want to overwrite.
 		if (!isset($variables['entry']))
 		{
@@ -171,14 +170,7 @@ class SproutEmail_EntryController extends BaseController
 			else
 			{
 				$variables['entry'] = new SproutEmail_EntryModel();
-
-				// @TODO - fix error
-				$variables['entryId'] = "";
 			}
-		}
-		else
-		{
-			$variables['entryId'] = "";
 		}
 
 		if (!is_numeric($campaignId))
@@ -186,7 +178,7 @@ class SproutEmail_EntryController extends BaseController
 			$campaignId = $variables['entry']->campaignId;
 		}
 
-		$variables['campaign']   = craft()->sproutEmail_campaign->getCampaignById($campaignId);
+		$variables['campaign']   = sproutEmail()->campaigns->getCampaignById($campaignId);
 		$variables['campaignId'] = $campaignId;
 
 		// Tabs
@@ -237,10 +229,8 @@ class SproutEmail_EntryController extends BaseController
 			$variables['shareUrlText'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
 		}
 
-
 		$this->renderTemplate('sproutemail/entries/_edit', $variables);
 	}
-
 
 	/**
 	 * Redirects the client to a URL for viewing an entry/draft on the front end.
@@ -336,6 +326,28 @@ class SproutEmail_EntryController extends BaseController
 		{
 			Craft::log('Attempting to preview an Entry that does not exist', LogLevel::Error);
 			throw new HttpException(404);
+		}
+	}
+
+	/**
+	 * @param SproutEmail_CampaignModel $campaign
+	 *
+	 * @throws Exception
+	 */
+	protected function saveNotificationRules($campaign)
+	{
+		$notificationEvent = craft()->request->getPost('sproutEmail.notificationEvent');
+
+		if ($notificationEvent)
+		{
+			$events = sproutEmail()->notifications->getAvailableEvents();
+
+			if (!isset($events[$notificationEvent]))
+			{
+				throw new Exception(Craft::t('The {e} is not available for subscription.', array('e' => $notificationEvent)));
+			}
+
+			sproutEmail()->notifications->save($events[$notificationEvent], $campaign->id, craft()->request->getPost());
 		}
 	}
 }
