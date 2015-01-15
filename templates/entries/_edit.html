@@ -49,7 +49,7 @@
 					<div>
 						<div id="tab-sproutemail-overview">
 							{% if shareUrlHtml is defined and shareUrlText is defined %}
-							<h3>Preview: <a href="{{ shareUrlHtml }}">HTML</a> | <a href="{{ shareUrlText }}">Text</a></h3>
+							<h3>Preview: <a href="{{ shareUrlHtml|replace({'.html': ''}) }}">HTML</a> | <a href="{{ shareUrlText }}">Text</a></h3>
 							{% endif %}
 
 							{{ forms.textField({
@@ -170,12 +170,7 @@
 
 							<div class="btngroup submit first">
 								<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
-							</div>
-
-							<div id="view-btns" class="btngroup preview-btns">
-								<div class="btn">
-									<a href="#" title="{{ 'Test and prepare delivery'|t }}" target="_blank">{{ "Test and prepare delivery"|t }}</a>
-								</div>
+								<a class="btn" href="{{ actionUrl('sproutEmail/') }}" title="{{ 'Test and prepare delivery'|t }}" target="_blank">{{ "Test and prepare delivery"|t }}</a>
 							</div>
 
 							{% endif %}
@@ -188,14 +183,6 @@
 		</div>
 
 	</form>
-
-
-<style type="text/css">
-	.preview-btns a {
-		color:inherit;
-		text-decoration: none;
-	}
-</style>
 {% endblock %}
 
 {% if not entry.slug %}

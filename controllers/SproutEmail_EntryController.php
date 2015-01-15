@@ -208,32 +208,26 @@ class SproutEmail_EntryController extends BaseController
 			);
 		}
 
-		// Share Email (if not Live)
-		if (false)
+		// @todo Figure out whay this was in a conditional and what the condition should be
+		$shareParamsHtml = array(
+			'entryId'  => $variables['entry']->id,
+			'template' => 'html'
+		);
+
+		$shareParamsText = array(
+			'entryId'  => $variables['entry']->id,
+			'template' => 'txt'
+		);
+
+		if ($variables['campaign']->type == 'notification')
 		{
-			//$variables['shareUrl'] = $variables['entry']->url;
+			$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
+			$variables['notificationEvent'] = $notification->eventId;
 		}
-		else
-		{
-			$shareParamsHtml = array(
-				'entryId'  => $variables['entry']->id,
-				'template' => 'html'
-			);
 
-			$shareParamsText = array(
-				'entryId'  => $variables['entry']->id,
-				'template' => 'text'
-			);
-
-			if ($variables['campaign']->type == 'notification')
-			{
-				$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
-				$variables['notificationEvent'] = $notification->eventId;
-			}
-
-			$variables['shareUrlHtml']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
-			$variables['shareUrlText']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
-		}
+		$variables['shareUrlHtml']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
+		$variables['shareUrlText']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
+		// end <
 
 		$variables['recipientLists']		= sproutEmail()->entries->getRecipientListsByEntryId($variables['entryId']);
 
@@ -253,7 +247,7 @@ class SproutEmail_EntryController extends BaseController
 	{
 		if ($entryId)
 		{
-			$entry = craft()->sproutEmail_entry->getEntryById($entryId);
+			$entry = sproutEmail()->entries->getEntryById($entryId);
 
 			if (!$entry)
 			{
@@ -261,7 +255,8 @@ class SproutEmail_EntryController extends BaseController
 			}
 
 			$params = array(
-				'entryId' => $entryId
+				'entryId' => $entryId,
+				'template' => $template,
 			);
 		}
 		else
@@ -286,13 +281,13 @@ class SproutEmail_EntryController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionViewSharedEntry($entryId = null)
+	public function actionViewSharedEntry($entryId = null, $template = null)
 	{
 		$this->requireToken();
 
 		if ($entryId)
 		{
-			$entry = craft()->sproutEmail_entry->getEntryById($entryId);
+			$entry = sproutEmail()->entries->getEntryById($entryId);
 		}
 
 		if (!$entry)
@@ -300,7 +295,7 @@ class SproutEmail_EntryController extends BaseController
 			throw new HttpException(404);
 		}
 
-		$this->_showEntry($entry);
+		$this->_showEntry($entry, $template);
 	}
 
 	/**
@@ -308,7 +303,7 @@ class SproutEmail_EntryController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	private function _showEntry(SproutEmail_EntryModel $entry)
+	private function _showEntry(SproutEmail_EntryModel $entry, $template = null)
 	{
 		// @TODO
 		// Grab Campaign
@@ -325,7 +320,7 @@ class SproutEmail_EntryController extends BaseController
 			craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
 
 			$this->renderTemplate(
-				$campaign->template, array(
+				$campaign->template.'.'.$template, array(
 					'entry' => $entry
 				)
 			);
