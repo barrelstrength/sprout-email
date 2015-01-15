@@ -120,7 +120,7 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	 *
 	 * @param int $entryId
 	 *
-	 * @return object
+	 * @return SproutEmail_EntryModel
 	 */
 	public function getEntryById($entryId)
 	{

@@ -176,4 +176,23 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		return false;
 	}
+
+	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	{
+		$mailer = $this->getMailerByName($campaign->mailer);
+
+		if (!$mailer)
+		{
+			throw new Exception(Craft::t('No service provider with id {id} was found.', array('id' => $campaign->mailer)));
+		}
+
+		try
+		{
+			$mailer->exportEntry($entry, $campaign);
+		}
+		catch (\Exception $e)
+		{
+			throw $e;
+		}
+	}
 }

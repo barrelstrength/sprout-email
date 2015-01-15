@@ -221,15 +221,15 @@ class SproutEmail_EntryController extends BaseController
 
 		if ($variables['campaign']->type == 'notification')
 		{
-			$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
+			$notification                   = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
 			$variables['notificationEvent'] = $notification->eventId;
 		}
 
-		$variables['shareUrlHtml']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
-		$variables['shareUrlText']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
+		$variables['shareUrlHtml'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
+		$variables['shareUrlText'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
 		// end <
 
-		$variables['recipientLists']		= sproutEmail()->entries->getRecipientListsByEntryId($variables['entryId']);
+		$variables['recipientLists'] = sproutEmail()->entries->getRecipientListsByEntryId($variables['entryId']);
 
 		$this->renderTemplate('sproutemail/entries/_edit', $variables);
 	}
@@ -255,7 +255,7 @@ class SproutEmail_EntryController extends BaseController
 			}
 
 			$params = array(
-				'entryId' => $entryId,
+				'entryId'  => $entryId,
 				'template' => $template,
 			);
 		}
@@ -296,6 +296,30 @@ class SproutEmail_EntryController extends BaseController
 		}
 
 		$this->_showEntry($entry, $template);
+	}
+
+	public function actionExport()
+	{
+		$this->requirePostRequest();
+
+		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
+
+		if ($entry && ($campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId)))
+		{
+			try
+			{
+				sproutEmail()->mailers->exportEntry($entry, $campaign);
+
+				// @todo Handle success message
+				craft()->end();
+			}
+			catch (\Exception $e)
+			{
+				// @todo Handle display of errors based on $e
+			}
+		}
+
+		// @todo Handle display of errors when entry or campaign is missing
 	}
 
 	/**
