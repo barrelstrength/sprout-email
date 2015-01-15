@@ -11,7 +11,7 @@ class SproutEmail_MailerController extends BaseController
 
 		foreach ($mailers as $mailer)
 		{
-			$record = sproutEmail()->mailers->getSettingsRecordByMailerName($mailer->getId());
+			$record = sproutEmail()->mailers->getMailerRecordByName($mailer->getId());
 
 			if ($record)
 			{

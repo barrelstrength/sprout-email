@@ -61,8 +61,8 @@ class SproutEmail_EntryRecord extends BaseRecord
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
-			'recipientList' => array(
-				static::HAS_ONE,
+			'recipientLists' => array(
+				static::HAS_MANY,
 				'SproutEmail_EntryRecipientListRecord',
 				'entryId'
 			)

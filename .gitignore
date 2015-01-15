@@ -1,4 +1,7 @@
-builder
+etc
+.tmp
+.temp
 .idea
 .DS_Store
+builder
 vendor

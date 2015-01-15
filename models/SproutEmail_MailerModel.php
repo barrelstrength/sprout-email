@@ -2,14 +2,14 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_MailerSettingsModel
+ * Class SproutEmail_MailerModel
  *
  * @package Craft
  *--
  * @property string $name
  * @property array  $settings
  */
-class SproutEmail_MailerSettingsModel extends BaseModel
+class SproutEmail_MailerModel extends BaseModel
 {
 	public function defineAttributes()
 	{

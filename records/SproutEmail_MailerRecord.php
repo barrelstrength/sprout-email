@@ -2,18 +2,18 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_MailerSettingsRecord
+ * Class SproutEmail_MailerRecord
  *
  * @package Craft
  * --
  * @property string $name
  * @property array  $settings
  */
-class SproutEmail_MailerSettingsRecord extends BaseRecord
+class SproutEmail_MailerRecord extends BaseRecord
 {
 	public function getTableName()
 	{
-		return 'sproutemail_campaigns_mailers';
+		return 'sproutemail_mailers';
 	}
 
 	public function defineAttributes()

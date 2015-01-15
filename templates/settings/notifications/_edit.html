@@ -15,11 +15,10 @@
 		{{ getCsrfInput() }}
 		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
 		<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
-		<input type="hidden" name="continue" value="false">
 		<input type="hidden" name="tab" value="fields">
 
 		<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
-		<input type="hidden" name="sproutEmail[mailer]" value="sproutemail">
+		<input type="hidden" name="sproutEmail[mailer]" value="coremailer">
 		<input type="hidden" name="sproutEmail[type]" value="notification">
 
 		<div id="tab-campaign-info" class="tab-content" >
@@ -59,7 +58,7 @@
 					{% else %}
 						<h3>
 							<a class="btn icon add" href="{{ cpUrl('sproutemail/entries/' ~ campaignId) }}/new" title="Add Notification Entry">Add Notification Entry</a>
-						<h3>
+						</h3>
 					{% endif %}
 				</div>
 			{% endif %}

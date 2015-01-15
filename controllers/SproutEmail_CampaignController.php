@@ -103,8 +103,9 @@ class SproutEmail_CampaignController extends BaseController
 		}
 		else
 		{
-			craft()->userSession->setError(Craft::t('Please correct the errors below.'));
+			craft()->userSession->setError(Craft::t('Unable to save campaign.'));
 
+			Craft::dd($campaign->getErrors());
 			// Send the field back to the template
 			craft()->urlManager->setRouteVariables(
 				array(

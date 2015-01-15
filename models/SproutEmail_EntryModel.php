@@ -44,8 +44,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 			'replyTo'         => array(AttributeType::Email, 'required' => false),
 			'sent'            => AttributeType::Bool,
 			// @related
-			'recipientListId' => AttributeType::Number,
-			'recipientList'   => Attributetype::Mixed,
+			'recipientLists'   => Attributetype::Mixed,
 		);
 
 		return array_merge($defaults, $attributes);
@@ -90,7 +89,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 		// @TODO - we can make this conditional statement more
 		// advanced and check for the Service Provider and determine
 		// specific things about each service provider to decide if an
-		// email is ready or not.  For now, we'll just check to see if 
+		// email is ready or not.  For now, we'll just check to see if
 		// it has a service provider and text template.
 
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);

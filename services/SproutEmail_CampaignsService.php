@@ -33,7 +33,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	public function getCampaignById($campaignId)
 	{
 		$campaignRecord = SproutEmail_CampaignRecord::model();
-		$campaignRecord = $campaignRecord->findById($campaignId);
+		$campaignRecord = $campaignRecord->with('entries')->findById($campaignId);
 
 		if ($campaignRecord)
 		{
@@ -107,7 +107,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 				// save the campaign
 			}
 			default:
-				{
+			{
 				if ($campaign->type == 'notification')
 				{
 					$campaign->type = Campaign::Notification;
@@ -178,7 +178,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 				}
 
 				break;
-				}
+			}
 		}
 
 		if ($transaction)

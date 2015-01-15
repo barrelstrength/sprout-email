@@ -12,7 +12,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.8.0';
+		return '0.8.1';
 	}
 
 	public function getDeveloper()
@@ -51,7 +51,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function registerCpRoutes()
 	{
-		return array (
+		return array(
 			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
 			),
@@ -337,9 +337,9 @@ class SproutEmailPlugin extends BasePlugin
 	public function defineSproutEmailMailers()
 	{
 		return array(
-			'mailgun'	    => new SproutEmail_MailGunMailer(),
-			'copypaste'		=> new SproutEmail_CopyPasteMailer(),
-			'sproutemail'	=> new SproutEmail_SproutEmailMailer(),
+//			'mailgun'	    => new SproutEmail_MailGunMailer(),
+//			'copypaste'		=> new SproutEmail_CopyPasteMailer(),
+//			'sproutemail'	=> new SproutEmail_SproutEmailMailer(),
 		);
 	}
 

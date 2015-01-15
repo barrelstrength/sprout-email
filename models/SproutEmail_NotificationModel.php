@@ -6,9 +6,11 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property string $eventId
- * @property int    $campaignId
- * @property array  $options
+ * @property string                    $eventId
+ * @property int                       $campaignId
+ * @property array                     $options
+ * @property SproutEmail_CampaignModel $campaign
+ * @property array                     $recipients
  */
 class SproutEmail_NotificationModel extends BaseModel
 {
@@ -21,6 +23,8 @@ class SproutEmail_NotificationModel extends BaseModel
 			'eventId'    => array(AttributeType::String, 'require' => true),
 			'campaignId' => array(AttributeType::Number, 'require' => true),
 			'options'    => AttributeType::Mixed,
+			'campaign'   => AttributeType::Mixed,
+			'recipients' => AttributeType::Mixed,
 		);
 	}
 }

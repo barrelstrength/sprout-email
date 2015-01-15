@@ -6,7 +6,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	protected $availableEvents;
 	protected $registeredEvents;
 	protected $dynamicallyRegisteredEvents = array();
-	protected $notificationsWithCampaignsAndRecipients = array();
+	protected $notificationsWithCampaignAndRecipients = array();
 
 	public function init()
 	{
@@ -63,13 +63,22 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	/**
 	 * Save a notification event to the database
 	 *
-	 * @param int                  $campaignId
-	 * @param SproutEmailBaseEvent $event
+	 * @param SproutEmailBaseEvent|string $eventId
 	 *
+	 * @param int                         $campaignId
+	 *
+	 * @throws Exception
 	 * @return bool
 	 */
-	public function save($event, $campaignId)
+	public function save($eventId, $campaignId)
 	{
+		$event = $this->getEventById($eventId);
+
+		if (!$event)
+		{
+			throw new Exception(Craft::t('The event with id ({id}) does not exist.', array('id' => $eventId)));
+		}
+
 		$attributes   = array('eventId' => $event->getId(), 'campaignId' => $campaignId);
 		$notification = SproutEmail_NotificationRecord::model()->findByAttributes($attributes);
 
@@ -94,16 +103,18 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	/**
 	 * Returns all campaign notifications based on the passed event
 	 *
-	 * @param string    $eventId
-	 * @param BaseModel $element
+	 * @param string $eventId
 	 *
-	 * @return array
+	 * @return SproutEmail_NotificationModel[]|null
 	 */
-	public function getNotifications($eventId, $element = null)
+	public function getNotifications($eventId)
 	{
 		$attributes = array('eventId' => $eventId);
 
-		return SproutEmail_NotificationRecord::model()->findAllByAttributes($attributes);
+		if (($notifications = SproutEmail_NotificationRecord::model()->findAllByAttributes($attributes)))
+		{
+			return SproutEmail_NotificationModel::populateModels($notifications);
+		}
 	}
 
 	/**
@@ -189,89 +200,53 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function handleDynamicEvent($eventId, Event $event, SproutEmailBaseEvent $listener)
 	{
-		$notifications  = $this->getNotificationsWithCampaignsAndRecipients($eventId);
-		$preparedParams = $listener->prepareParams($event);
-		$model          = isset($preparedParams['value']) ? $preparedParams['value'] : null;
+		$params  = $listener->prepareParams($event);
+		$element = isset($params['value']) ? $params['value'] : null;
 
-		if ($notifications)
+		if (($notifications = $this->getNotifications($eventId)))
 		{
-			foreach ($notifications as $categoryId => $notification)
+			foreach ($notifications as $notification)
 			{
-				if (!$notification['recipients'])
+				if ($listener->validateOptions($notification['options'], $element))
 				{
-					continue;
-				}
+					$campaign = sproutEmail()->campaigns->getCampaignById($notification->campaignId);
 
-				if ($listener->validateOptions($notification['options'], $model))
-				{
-					return $this->relayNotificationThroughEmailProvider($notification, $model);
+					return $this->relayNotificationThroughAssignedMailer($campaign, $element);
 				}
 			}
 		}
-	}
-
-	protected function getNotificationsWithCampaignsAndRecipients($eventId)
-	{
-		if (!isset($this->notificationsWithCampaignsAndRecipients[$eventId]))
-		{
-			$prefix = craft()->config->get('tablePrefix', ConfigFile::Db);
-
-			$query = " SELECT"
-				." n.eventId, n.campaignId, n.options,"
-				." c.name, c.handle, c.mailer, c.type, c.titleFormat, c.template"
-				." FROM {$prefix}_sproutemail_campaigns_notifications n"
-				." JOIN {$prefix}_sproutemail_campaigns c ON c.id = n.campaignId"
-				." WHERE n.eventId = '{$eventId}'";
-
-			$results = craft()->db->createCommand($query)->queryAll();
-
-			if ($results)
-			{
-				foreach ($results as $result)
-				{
-					$result['options']    = json_decode($result['options']);
-					$result['recipients'] = json_decode($result['recipients']);
-
-					$this->notificationsWithCampaignsAndRecipients[$eventId][$result['campaignId']] = $result;
-				}
-			}
-		}
-
-		return isset($this->notificationsWithCampaignsAndRecipients[$eventId]) ? $this->notificationsWithCampaignsAndRecipients[$eventId] : array();
 	}
 
 	/**
-	 * @param array     $notification
-	 * @param BaseModel $model
+	 * @param SproutEmail_CampaignModel $campaign
+	 * @param BaseElementModel          $element
 	 *
 	 * @throws Exception
 	 * @throws \Exception
 	 * @return mixed
 	 */
-	protected function relayNotificationThroughEmailProvider($notification, BaseModel $model)
+	protected function relayNotificationThroughAssignedMailer(SproutEmail_CampaignModel $campaign,BaseElementModel $element)
 	{
-		if (!isset($notification['emailProvider']))
+		if (!isset($campaign->mailer))
 		{
 			throw new Exception('An email provider is required to send the notification.');
 		}
 
-		$provider = 'sproutEmail_'.lcfirst($notification['emailProvider']);
+		$mailer = sproutEmail()->mailers->getMailerByName($campaign->mailer);
 
-		if (!craft()->hasComponent($provider))
+		if (!$mailer)
 		{
-			throw new Exception(Craft::t('The email provider {p} is not available.', array('p' => $provider)));
+			throw new Exception(Craft::t('The email provider {mailer} is not available.', array('mailer' => $campaign->mailer)));
 		}
 
-		$provider = craft()->getComponent($provider);
-
-		if (!method_exists($provider, 'sendNotification'))
+		if (!method_exists($mailer, 'sendNotification'))
 		{
-			throw new Exception(Craft::t('The {p} does not have a sendNotification() method.', array('p' => get_class($provider))));
+			throw new Exception(Craft::t('The {mailer} does not have a sendNotification() method.', array('mailer' => get_class($mailer))));
 		}
 
 		try
 		{
-			return $provider->sendNotification($notification, $model);
+			return $mailer->sendNotification($campaign, $element);
 		}
 		catch (\Exception $e)
 		{

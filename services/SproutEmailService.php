@@ -27,9 +27,4 @@ class SproutEmailService extends BaseApplicationComponent
 		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
 	}
-
-	public function canRunTests()
-	{
-		return true;
-	}
 }

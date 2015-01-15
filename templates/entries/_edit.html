@@ -123,7 +123,7 @@
 						<div id="tab-sproutemail-recipients" class="hidden">
 
 							<div style="max-height:300px;overflow-y:auto;" id="recipients">
-								{{ craft.sproutemail.getMailer(campaign.mailer).getRecipientListsHtml() }}
+								{{ craft.sproutemail.getMailer(campaign.mailer).getRecipientListsHtml(recipientLists) }}
 							</div>
 
 						</div>
@@ -138,8 +138,8 @@
 								name: "notificationEvent",
 								label: "Trigger On",
 								instructions: "The event your notification will trigger on.",
-								options: {label: "Select event..."}|merge(events),
-								value: ""
+								options: [{label: "Select event...", value: null}]|merge(events),
+								value: notificationEvent is defined ? notificationEvent : null,
 							}) }}
 
 							{% for id, event in events %}
@@ -197,7 +197,6 @@
 	}
 </style>
 {% endblock %}
-
 
 {% if not entry.slug %}
 	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#subjectLine', '#slug');" %}

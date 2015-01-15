@@ -24,7 +24,7 @@ class SproutEmail_EntryController extends BaseController
 		$campaignId     = craft()->request->getRequiredPost('campaignId');
 		$this->campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
 
-		if (!isset($this->campaign))
+		if (!$this->campaign)
 		{
 			throw new Exception(Craft::t('No Campaign exists with the id “{id}”', array('id' => $campaignId)));
 		}
@@ -33,7 +33,7 @@ class SproutEmail_EntryController extends BaseController
 		$entry = $this->populateEntryModel($entry);
 
 		// Only use the Title Format if it exists
-		// @TODO - hide Title Format by default, only show it if 
+		// @TODO - hide Title Format by default, only show it if
 		// Has auto-generated Title field is checked
 		if ($this->campaign->titleFormat)
 		{
@@ -225,9 +225,17 @@ class SproutEmail_EntryController extends BaseController
 				'template' => 'text'
 			);
 
-			$variables['shareUrlHtml'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
-			$variables['shareUrlText'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
+			if ($variables['campaign']->type == 'notification')
+			{
+				$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
+				$variables['notificationEvent'] = $notification->eventId;
+			}
+
+			$variables['shareUrlHtml']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
+			$variables['shareUrlText']      = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
 		}
+
+		$variables['recipientLists']		= sproutEmail()->entries->getRecipientListsByEntryId($variables['entryId']);
 
 		$this->renderTemplate('sproutemail/entries/_edit', $variables);
 	}

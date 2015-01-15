@@ -43,7 +43,7 @@ class SproutEmailController extends BaseController
 
 	public function actionSandbox()
 	{
-		$record = SproutEmail_RecipientGroupRecord::model()->findById(1);
+		$record = SproutEmail_CoreMailerRecipientListRecord::model()->findById(1);
 
 		if ($record)
 		{

@@ -1,7 +1,10 @@
 <?php
 namespace Craft;
 
-class SproutEmailBaseMailer
+use Guzzle\Http\Url;
+use Symfony\Component\EventDispatcher\Tests\TestEventSubscriberWithMultipleListeners;
+
+abstract class SproutEmailBaseMailer
 {
 	/**
 	 * The settings for this mailer, stored in sproutemail_mailers
@@ -53,6 +56,19 @@ class SproutEmailBaseMailer
 		return preg_replace('/[^a-z]+/i', '', strtolower($this->getName()));
 	}
 
+	final public function getCpTitle()
+	{
+		$t = $this->getTitle();
+
+		if ($this->hasCpSection())
+		{
+			$t = sprintf('<a href="%s/%s" title="%s">%s</a>', UrlHelper::getCpUrl('sproutemail'), $this->getId(), $t, $t);
+			$t = TemplateHelper::getRaw($t);
+		}
+
+		return $t;
+	}
+
 	/**
 	 * Returns the qualified service name
 	 *
@@ -75,6 +91,15 @@ class SproutEmailBaseMailer
 	 */
 	public function getTitle()
 	{
+	}
+
+	/**
+	 * Returns whether a plugin needs to display a tab within Sprout Email to accomplish their tasks
+	 * @return bool
+	 */
+	public function hasCpSection()
+	{
+		return false;
 	}
 
 	/**
@@ -147,10 +172,6 @@ class SproutEmailBaseMailer
 		return $value;
 	}
 
-	public function getSubscriberList()
-	{
-	}
-
 	public function saveRecipientList(SproutEmail_CampaignModel $campaign)
 	{
 	}
@@ -162,4 +183,6 @@ class SproutEmailBaseMailer
 	public function exportEntry(SproutEmail_Campaign $campaign)
 	{
 	}
+
+	abstract public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign);
 }

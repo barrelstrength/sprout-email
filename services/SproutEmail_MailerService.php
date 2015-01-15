@@ -5,6 +5,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 {
 	/**
 	 * Sprout Email file configs
+	 *
 	 * @var array
 	 */
 	protected $fileConfigs;
@@ -25,14 +26,14 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		foreach ($mailers as $mailer)
 		{
-			$record = $this->getSettingsRecordByMailerName($mailer->getId());
+			$record = $this->getMailerRecordByName($mailer->getId());
 
 			if (!$record)
 			{
-				$record = new SproutEmail_MailerSettingsRecord();
+				$record = new SproutEmail_MailerRecord();
 
 				$record->setAttribute('name', $mailer->getId());
-				$record->setAttribute('settings', $mailer->getDefaultSettings());
+				$record->setAttribute('settings', $mailer->getSettings());
 				$record->save();
 			}
 		}
@@ -80,11 +81,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	/**
 	 * @param $name
 	 *
-	 * @return SproutEmail_MailerSettingsRecord
+	 * @return SproutEmail_MailerRecord
 	 */
-	public function getSettingsRecordByMailerName($name)
+	public function getMailerRecordByName($name)
 	{
-		return SproutEmail_MailerSettingsRecord::model()->findByAttributes(array('name' => $name));
+		return SproutEmail_MailerRecord::model()->findByAttributes(array('name' => $name));
 	}
 
 	/**
@@ -104,10 +105,17 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			return $this->fileConfigs['apiSettings'][$name];
 		}
 
-		if (($record = $this->getSettingsRecordByMailerName($name)))
+		if (($mailer = $this->getMailerByName($name)))
 		{
-			return $record->settings;
+			$settings = new Model($mailer->defineSettings());
 		}
+
+		if (($record = $this->getMailerRecordByName($name)))
+		{
+			$settings->setAttributes($record->settings);
+		}
+
+		return $settings;
 	}
 
 	/**
@@ -115,9 +123,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * @param SproutEmail_EntryModel    $entry
 	 *
 	 * @throws Exception
+	 * @throws \Exception
 	 * @return bool
 	 */
-	public function saveRecipientList(SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry)
+	public function saveRecipientLists(SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 
@@ -126,27 +135,30 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			throw new Exception(Craft::t('The {m} mailer is not supported.', array('m' => $campaign->mailer)));
 		}
 
-		$model = $mailer->prepareRecipientList($entry, $campaign);
+		sproutEmail()->entries->deleteRecipientListsByEntryId($entry->id);
 
-		if ($model)
+		$lists = $mailer->prepareRecipientLists($entry, $campaign);
+
+		if ($lists && is_array($lists) && count($lists))
 		{
-			$record = SproutEmail_EntryRecipientListRecord::model()->findByAttributes(array('entryId' => $entry->id));
-			$record = $record ? $record : new SproutEmail_EntryRecipientListRecord();
-
-			$record->entryId = $model->entryId;
-			$record->mailer  = $model->mailer;
-			$record->list    = $model->list;
-			$record->type    = $model->type;
-
-			try
+			foreach ($lists as $list)
 			{
-				$record->save();
+				$record = SproutEmail_EntryRecipientListRecord::model()->findByAttributes(array('entryId' => $entry->id, 'list' => $list->list));
+				$record = $record ? $record : new SproutEmail_EntryRecipientListRecord();
 
-				return true;
-			}
-			catch(\Exception $e)
-			{
-				throw $e;
+				$record->entryId = $list->entryId;
+				$record->mailer  = $list->mailer;
+				$record->list    = $list->list;
+				$record->type    = $list->type;
+
+				try
+				{
+					$record->save();
+				}
+				catch (\Exception $e)
+				{
+					throw $e;
+				}
 			}
 		}
 

@@ -58,6 +58,7 @@ class SproutEmail_CampaignModel extends BaseModel
 			'dateCreate'        => AttributeType::DateTime,
 			'dateUpdated'       => AttributeType::DateTime,
 			// @related
+			'entries'           => AttributeType::Mixed,
 			'fieldLayoutId'     => AttributeType::Number,
 		);
 	}

@@ -32,8 +32,6 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 			{
 				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $entry->id)));
 			}
-
-			$oldEntry = SproutEmail_EntryModel::populateModel($entryRecord);
 		}
 		else
 		{
@@ -64,7 +62,9 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 					$entryRecord->save(false);
 
-					if (sproutEmail()->mailers->saveRecipientList($campaign, $entry))
+					$notificationEvent = craft()->request->getPost('notificationEvent');
+
+					if (($notificationEvent && sproutEmail()->notifications->save($notificationEvent, $campaign->id)) || sproutEmail()->mailers->saveRecipientLists($campaign, $entry))
 					{
 						if ($transaction !== null)
 						{
@@ -118,12 +118,31 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	/**
 	 * Return Entry by id
 	 *
-	 * @param int $id
+	 * @param int $entryId
 	 *
 	 * @return object
 	 */
 	public function getEntryById($entryId)
 	{
 		return craft()->elements->getElementById($entryId, 'SproutEmail_Entry');
+	}
+
+	public function getRecipientListsByEntryId($id)
+	{
+		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $id))))
+		{
+			return SproutEmail_EntryRecipientListModel::populateModels($lists);
+		}
+	}
+
+	public function deleteRecipientListsByEntryId($id)
+	{
+		if ( ($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $id))) )
+		{
+			foreach ($lists as $list)
+			{
+				$list->delete();
+			}
+		}
 	}
 }

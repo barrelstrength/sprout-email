@@ -277,7 +277,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function populateElementModel($row)
 	{
-		\ChromePhp::log($row);
 		return SproutEmail_EntryModel::populateModel($row);
 	}
 }

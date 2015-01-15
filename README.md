@@ -1,4 +1,4 @@
-Requirements:
+# Requirements:
 
 - Integration file must be placed inside the plugins/<plugin>/integrations/sproutemail directory
 - Integration file must be named SproutEmail_<pluginName>.php
@@ -6,15 +6,15 @@ Requirements:
 - Integration class must implement the getHooks() method returning the following array:
 		array(
 			'commerceAddEventListener' => array( // plugin's hook to be called
-				'hooks' => array( 
+				'hooks' => array(
 					array(
 						'event' => 'checkoutEnd',
 						'description' => 'Commerce: when an order is submitted',
 						'optionsTemplate' => '', // template with event options
-						'optionsHtml' => 
+						'optionsHtml' =>
 							'<hr>
 							<h3>Custom options for Commerce.</h3>
-							
+
 							{% set opts = campaign.notificationEvents[0].options %}
 
 							{{ forms.textField({
@@ -41,6 +41,4 @@ The function signature is: return function($event, BaseModel $entity, $success =
 will be passed three params: String $event, BaseModel $entry, array $options
 e.g.
 
-If the function returns false, the notification will NOT be sent 
-
-
+If the function returns false, the notification will NOT be sent
