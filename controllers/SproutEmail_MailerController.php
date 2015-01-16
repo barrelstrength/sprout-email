@@ -3,6 +3,15 @@ namespace Craft;
 
 class SproutEmail_MailerController extends BaseController
 {
+	public function actionInstallMailers()
+	{
+		sproutEmail()->mailers->installMailers();
+
+		craft()->userSession->setNotice(Craft::t('Mailers refreshed successfully.'));
+
+		$this->redirect(UrlHelper::getCpUrl('sproutemail/settings'));
+	}
+
 	public function actionSaveSettings()
 	{
 		$this->requirePostRequest();

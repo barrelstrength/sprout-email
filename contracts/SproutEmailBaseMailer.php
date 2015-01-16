@@ -184,5 +184,17 @@ abstract class SproutEmailBaseMailer
 	{
 	}
 
-	abstract public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign);
+	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	{
+	}
+
+	public function getRecipientLists()
+	{
+		return array();
+	}
+
+	public function getRecipientListsHtml()
+	{
+		return TemplateHelper::getRaw('<p>'.Craft::t('This service does not require recipient.').'</p>');
+	}
 }

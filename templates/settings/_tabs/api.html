@@ -9,12 +9,15 @@
 	<div id="tab-campaign-info" class="tab-content">
 		{% for mailer in mailers %}
 			<h3>{{ mailer.getCpTitle() }}</h3>
+			{{ mailer.getDescription()|markdown }}
 			{{ mailer.getSettingsHtml({forms: forms}) }}
+			<hr>
 		{% endfor %}
 	</div>
 
 	<div class="buttons">
 		<input class="btn submit" type="submit" value="Save API Settings">
+		<a class="btn" href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" title="Refresh List">Refresh List</a>
 	</div>
 
 </form>

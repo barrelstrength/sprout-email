@@ -187,4 +187,15 @@ class SproutEmailService extends BaseApplicationComponent
 
 		return $rendered;
 	}
+
+	public function returnJson($variables=array())
+	{
+		JsonHelper::sendJsonHeaders();
+
+		// Output it into a buffer, in case TasksService wants to close the connection prematurely
+		ob_start();
+		echo JsonHelper::encode($variables);
+
+		craft()->end();
+	}
 }
