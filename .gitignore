@@ -5,3 +5,5 @@ etc
 .DS_Store
 builder
 vendor
+sync.sh
+docs.sh
