@@ -1,6 +1,11 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmailBaseEvent
+ *
+ * @package Craft
+ */
 class SproutEmailBaseEvent
 {
 	/**
@@ -26,7 +31,7 @@ class SproutEmailBaseEvent
 	}
 
 	/**
-	 * Returns the qualified event name to use when registering with crat()->on
+	 * Returns the qualified event name to use when registering with craft()->on
 	 *
 	 * @example entries.saveEntry
 	 *
@@ -53,7 +58,7 @@ class SproutEmailBaseEvent
 	public function getDescription() {}
 
 	/**
-	 * Returns a rendered html string to use for capturing user
+	 * Returns a rendered html string to use for capturing user input
 	 *
 	 * @example
 	 * <h3>Select Sections</h3>
