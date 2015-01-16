@@ -1,9 +1,12 @@
-etc
 .tmp
 .temp
 .idea
 .DS_Store
-builder
+# --
+etc
+docs
+build
 vendor
 sync.sh
 docs.sh
+apigen.neon
