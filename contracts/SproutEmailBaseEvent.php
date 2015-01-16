@@ -2,6 +2,8 @@
 namespace Craft;
 
 /**
+ * The official API for dynamic event registration and handling
+ *
  * Class SproutEmailBaseEvent
  *
  * @package Craft
@@ -37,7 +39,9 @@ class SproutEmailBaseEvent
 	 *
 	 * @return string
 	 */
-	public function getName() {}
+	public function getName()
+	{
+	}
 
 	/**
 	 * Returns the event title to use when displaying a label or similar use case
@@ -46,7 +50,9 @@ class SproutEmailBaseEvent
 	 *
 	 * @return string
 	 */
-	public function getTitle() {}
+	public function getTitle()
+	{
+	}
 
 	/**
 	 * Returns a short description of this event
@@ -55,7 +61,9 @@ class SproutEmailBaseEvent
 	 *
 	 * @return string
 	 */
-	public function getDescription() {}
+	public function getDescription()
+	{
+	}
 
 	/**
 	 * Returns a rendered html string to use for capturing user input
@@ -68,7 +76,9 @@ class SproutEmailBaseEvent
 	 *
 	 * @return string
 	 */
-	public function getOptionsHtml() {}
+	public function getOptionsHtml()
+	{
+	}
 
 	/**
 	 * Returns the value that should be saved to options for the notification (registered event)
@@ -78,7 +88,9 @@ class SproutEmailBaseEvent
 	 *
 	 * @return mixed
 	 */
-	public function prepareOptions() {}
+	public function prepareOptions()
+	{
+	}
 
 	/**
 	 * Returns whether the campaign entry options are valid for this model
@@ -91,10 +103,14 @@ class SproutEmailBaseEvent
 	 * @note
 	 * This is used when determining whether a campaign should be sent
 	 *
-	 * @param mixed $options
+	 * @param mixed     $options
 	 * @param BaseModel $model
+	 *
+	 * @return bool
 	 */
-	public function validateOptions($options, BaseModel $model) {}
+	public function validateOptions($options, BaseModel $model)
+	{
+	}
 
 	/**
 	 * Returns the data passed in by the triggered event
