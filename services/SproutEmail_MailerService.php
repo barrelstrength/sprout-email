@@ -91,7 +91,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	/**
 	 * @param $name
 	 *
-	 * @return array
+	 * @return Model|null
 	 */
 	public function getSettingsByMailerName($name)
 	{
@@ -110,12 +110,12 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$settings = new Model($mailer->defineSettings());
 		}
 
-		if (($record = $this->getMailerRecordByName($name)))
+		if ($mailer && $settings && ($record = $this->getMailerRecordByName($name)))
 		{
 			$settings->setAttributes($record->settings);
-		}
 
-		return $settings;
+			return $settings;
+		}
 	}
 
 	/**
