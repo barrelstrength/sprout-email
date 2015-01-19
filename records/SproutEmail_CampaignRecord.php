@@ -142,7 +142,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 */
 	public function validMailer($attribute)
 	{
-		if (!array_key_exists($this->$attribute, sproutEmail()->mailers->getMailers()))
+		if (!($mailers = sproutEmail()->mailers->getMailers()) || !array_key_exists($this->$attribute, $mailers))
 		{
 			$this->addError($attribute, 'Invalid email provider.');
 		}

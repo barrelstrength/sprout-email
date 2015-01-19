@@ -57,6 +57,8 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignController
 			$variables['campaign'] = new SproutEmail_Campaign();
 		}
 
+		$variables['isMailerInstalled'] =  (bool) sproutEmail()->mailers->getMailerByName('coremailer');
+
 		// Load our template
 		$this->renderTemplate('sproutemail/settings/notifications/_edit', $variables);
 	}

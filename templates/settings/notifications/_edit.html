@@ -11,7 +11,8 @@
 
 {% set content %}
 
-	<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
+	{% if isMailerInstalled %}
+		<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
 		{{ getCsrfInput() }}
 		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
 		<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
@@ -71,6 +72,14 @@
 			<input class="btn submit save-and-continue" id="info" type="button" value="Save &amp; Continue">
 		</div>
 	</form>
+	{% else %}
+		<h2>Sprout Mailer Required</h2>
+		<p>Before you can create notifications, please install our mailer.</p>
+
+		<hr>
+		<p><a class="btn" href="{{ url('settings/plugins') }}" >Plugin Installation</a></p>
+
+	{% endif %}
 {% endset %}
 
 {% includeJsResource "sproutemail/js/sproutemail.js" %}
