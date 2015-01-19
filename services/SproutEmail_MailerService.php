@@ -28,9 +28,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			foreach ($mailers as $mailer)
 			{
-				$record = $this->getMailerRecordByName($mailer->getId());
-
-				if (!$record)
+				if (!$this->isInstalled($mailer->getId()))
 				{
 					$record = new SproutEmail_MailerRecord();
 
@@ -40,6 +38,20 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns whether or not the mailer is installed
+	 *
+	 * @param $name
+	 *
+	 * @return bool
+	 */
+	public function isInstalled($name)
+	{
+		$record = $this->getMailerRecordByName($name);
+
+		return ($record && $record->name == $name);
 	}
 
 	/**

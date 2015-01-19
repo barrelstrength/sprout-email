@@ -8,10 +8,12 @@
 
 	<div id="tab-campaign-info" class="tab-content">
 		{% for mailer in mailers %}
-			<h3>{{ mailer.getCpTitle() }}</h3>
-			{{ mailer.getDescription()|markdown }}
-			{{ mailer.getSettingsHtml({forms: forms}) }}
-			<hr>
+			{% if mailer.isInstalled() %}
+				<h3>{{ mailer.getCpTitle() }}</h3>
+				{{ mailer.getDescription()|markdown }}
+				{{ mailer.getSettingsHtml({forms: forms}) }}
+				<hr>
+			{% endif %}
 		{% endfor %}
 	</div>
 

@@ -37,7 +37,7 @@ abstract class SproutEmailBaseMailer
 	public function init()
 	{
 		$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-		$this->installed   = is_null($this->settings) ? false : true;
+		$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
 		$this->initialized = true;
 	}
 
@@ -54,6 +54,8 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function isInstalled()
 	{
+		$this->init();
+
 		return $this->installed;
 	}
 
