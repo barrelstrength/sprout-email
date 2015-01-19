@@ -52,6 +52,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
+	 * @param string $tab
 	 *
 	 * @throws \Exception
 	 * @return int CampaignRecordId

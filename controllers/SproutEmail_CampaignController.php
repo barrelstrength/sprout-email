@@ -30,46 +30,18 @@ class SproutEmail_CampaignController extends BaseController
 
 		if (($campaign = sproutEmail()->campaigns->saveCampaign($campaign, $tab)) && !$campaign->hasErrors())
 		{
-			$_POST['redirect'] = str_replace('{id}', $campaign->id, $_POST['redirect']);
-
 			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));
-
-			$continue = craft()->request->getPost('continue');
-
-			// @TODO - review this, removed from saveNotification controller and placed here for review
-
-			if ($continue == 'info')
-			{
-				if (craft()->request->getPost('mailer') == 'copypaste')
-				{
-					$this->redirect('sproutemail/settings/campaigns/edit/'.$campaign->id.'/template');
-				}
-				else
-				{
-					$this->redirect('sproutemail/settings/campaigns/edit/'.$campaign->id.'/recipients');
-				}
-			}
-			elseif ($continue == 'recipients')
-			{
-				$this->redirect('sproutemail/settings/campaigns/edit/'.$campaign->id.'/template');
-			}
-			else
-			{
-				$this->redirectToPostedUrl($campaign);
-			}
+			$this->redirectToPostedUrl($campaign);
+			craft()->end();
 		}
-		else
-		{
-			craft()->userSession->setError(Craft::t('Unable to save campaign.'));
 
-			Craft::dd($campaign->getErrors());
-			// Send the field back to the template
-			craft()->urlManager->setRouteVariables(
-				array(
-					'campaign' => $campaign
-				)
-			);
-		}
+		craft()->userSession->setError(Craft::t('Unable to save campaign.'));
+
+		craft()->urlManager->setRouteVariables(
+			array(
+				'campaign' => $campaign
+			)
+		);
 	}
 
 	/**

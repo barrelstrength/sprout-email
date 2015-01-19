@@ -104,6 +104,19 @@ class SproutEmailPlugin extends BasePlugin
 		sproutEmail()->notifications->registerDynamicEventHandler();
 	}
 
+	/**
+	 * Using our own API to register native Craft events
+	 *
+	 * @return array
+	 */
+	public function defineSproutEmailEvents()
+	{
+		return array(
+			'entries.saveEntry' => new SproutEmail_EntriesSaveEntryEvent(),
+			'userSession.login' => new SproutEmail_UserSessionLoginEvent(),
+		);
+	}
+
 	public function onBeforeInstall()
 	{
 		Craft::import('plugins.sproutemail.enums.Campaign');

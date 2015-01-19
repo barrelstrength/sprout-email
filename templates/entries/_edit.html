@@ -133,23 +133,25 @@
 
 							{% set events = craft.sproutemail.getAvailableEvents() %}
 
-							{{ forms.selectField({
-								id: "notificationEvent",
-								name: "notificationEvent",
-								label: "Trigger On",
-								instructions: "The event your notification will trigger on.",
-								options: [{label: "Select event...", value: null}]|merge(events),
-								value: notificationEvent is defined ? notificationEvent : null,
-							}) }}
+							{% if events|length %}
+								{{ forms.selectField({
+									id: "notificationEvent",
+									name: "notificationEvent",
+									label: "Trigger On",
+									instructions: "The event your notification will trigger on.",
+									options: [{label: "Select event...", value: null}]|merge(events),
+									value: notificationEvent is defined ? notificationEvent : null,
+								}) }}
 
-							{% for id, event in events %}
-								{% if event.getId is defined and event.getOptionsHtml is defined %}
-									<div class="event-options-block {{ event.getId() }}">
-										{% set options = craft.sproutemail.getSelectedOptions(event, campaignId) %}
-										{{ event.getOptionsHtml({forms: forms, options: options})|raw }}
-									</div>
-								{% endif %}
-							{% endfor %}
+								{% for id, event in events %}
+									{% if event.getId is defined and event.getOptionsHtml is defined %}
+										<div class="event-options-block {{ event.getId() }}">
+											{% set options = craft.sproutemail.getSelectedOptions(event, campaignId) %}
+											{{ event.getOptionsHtml({forms: forms, options: options})|raw }}
+										</div>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
 						</div>
 						{% endif %}
 					</div>

@@ -221,15 +221,22 @@ class SproutEmail_EntryController extends BaseController
 
 		if ($variables['campaign']->type == 'notification')
 		{
-			$notification                   = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
-			$variables['notificationEvent'] = $notification->eventId;
+			$notificationId = null;
+			$notification   = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
+
+			if ($notification)
+			{
+				$notificationId = $notification->eventId;
+			}
+
+			$variables['notificationEvent'] = $notificationId;
 		}
 
 		$variables['shareUrlHtml'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
 		$variables['shareUrlText'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
 		// end <
 
-		$variables['recipientLists'] = sproutEmail()->entries->getRecipientListsByEntryId($variables['entryId']);
+		$variables['recipientLists'] = sproutEmail()->entries->getRecipientListsByEntryId($entryId);
 
 		$this->renderTemplate('sproutemail/entries/_edit', $variables);
 	}
