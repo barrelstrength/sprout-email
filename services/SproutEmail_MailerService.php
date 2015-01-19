@@ -24,17 +24,20 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	{
 		$mailers = $this->getMailers();
 
-		foreach ($mailers as $mailer)
+		if ($mailers && count($mailers))
 		{
-			$record = $this->getMailerRecordByName($mailer->getId());
-
-			if (!$record)
+			foreach ($mailers as $mailer)
 			{
-				$record = new SproutEmail_MailerRecord();
+				$record = $this->getMailerRecordByName($mailer->getId());
 
-				$record->setAttribute('name', $mailer->getId());
-				$record->setAttribute('settings', $mailer->getSettings());
-				$record->save();
+				if (!$record)
+				{
+					$record = new SproutEmail_MailerRecord();
+
+					$record->setAttribute('name', $mailer->getId());
+					$record->setAttribute('settings', $mailer->getSettings());
+					$record->save();
+				}
 			}
 		}
 	}
