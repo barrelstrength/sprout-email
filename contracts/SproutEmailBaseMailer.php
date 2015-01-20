@@ -116,7 +116,7 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns the mailertitle to use when displaying a label or similar use case
+	 * Returns the mailer title to use when displaying a label or similar use case
 	 *
 	 * @example Sprout Email Service
 	 *

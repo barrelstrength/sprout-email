@@ -16,6 +16,8 @@ class SproutEmail_MailerController extends BaseController
 	{
 		$this->requirePostRequest();
 
+		$models  = array();
+		$success = true;
 		$mailers = sproutEmail()->mailers->getMailers();
 
 		foreach ($mailers as $mailer)
@@ -24,12 +26,33 @@ class SproutEmail_MailerController extends BaseController
 
 			if ($record)
 			{
-				$record->setAttribute('settings', $mailer->prepareSettings());
-				$record->save();
+				$model = sproutEmail()->mailers->getSettingsByMailerName($mailer->getId());
+
+				$model->setAttributes($mailer->prepareSettings());
+
+				$canSave = $model->validate();
+
+				$models[$mailer->getId()] = $model;
+
+				if ($canSave)
+				{
+					$record->setAttribute('settings', $model->getAttributes());
+					$record->save();
+				}
+				else
+				{
+					$success = false;
+				}
 			}
 		}
 
-		craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
-		$this->redirectToPostedUrl();
+		if ($success)
+		{
+			craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
+			$this->redirectToPostedUrl();
+		}
+
+		craft()->userSession->setError(Craft::t('Settings could not be saved.'));
+		craft()->userSession->setFlash('models', $models);
 	}
 }

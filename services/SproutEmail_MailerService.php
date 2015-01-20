@@ -117,7 +117,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (isset($this->fileConfigs['apiSettings'][$name]))
 		{
-			return $this->fileConfigs['apiSettings'][$name];
+			$configs = $this->fileConfigs['apiSettings'][$name];
 		}
 
 		if (($mailer = $this->getMailerByName($name)))
@@ -127,7 +127,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if ($mailer && $settings && ($record = $this->getMailerRecordByName($name)))
 		{
-			$settings->setAttributes($record->settings);
+			$settingsFromDb   = $record->settings ? $record->settings : array();
+			$settingsFromFile = isset($configs) ? $configs : array();
+
+			$settings->setAttributes(array_merge($settingsFromDb, $settingsFromFile));
 
 			return $settings;
 		}

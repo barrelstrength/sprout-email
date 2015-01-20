@@ -11,9 +11,11 @@
 	<div id="tab-campaign-info" class="tab-content">
 		{% for mailer in mailers %}
 			{% if mailer.isInstalled() %}
+				{% set settings = models[mailer.getId()] is defined ? models[mailer.getId()] : null %}
+
 				<h3>{{ mailer.getCpTitle() }}</h3>
 				{{ mailer.getDescription()|markdown }}
-				{{ mailer.getSettingsHtml({forms: forms}) }}
+				{{ mailer.getSettingsHtml({forms: forms, settings: settings}) }}
 				<hr>
 			{% endif %}
 		{% endfor %}
