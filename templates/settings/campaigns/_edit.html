@@ -97,7 +97,7 @@
 		label: "Add a custom format to the Title field?"|t,
 		id: 'hasAdvancedTitles',
 		name: 'sproutEmail[hasAdvancedTitles]',
-		checked: (campaign is defined ? campaign.hasUrls : 0),
+		checked: (campaign is defined ? campaign.hasAdvancedTitles : 0),
 		toggle: 'advancedtitle-settings'
 	}) }}
 	<div id="advancedtitle-settings" class="nested-fields{% if not campaign.hasAdvancedTitles %} hidden{% endif %}">

@@ -46,11 +46,11 @@ class SproutEmail_CampaignModel extends BaseModel
 			'urlFormat'         => AttributeType::String,
 			'hasUrls'           => array(
 				AttributeType::Bool,
-				'default' => true,
+				'default' => false,
 			),
 			'hasAdvancedTitles' => array(
 				AttributeType::Bool,
-				'default' => true,
+				'default' => false,
 			),
 			'template'          => AttributeType::String,
 			'templateCopyPaste' => AttributeType::String,
