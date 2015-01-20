@@ -7,22 +7,24 @@
   { label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
+{% set selectedTab = tab %}
+
 {% set tabs = {
 	general: {
-	    label: "Campaigns"|t,
-	    url: "#settings-general"
+		label: "Campaigns"|t,
+		url: "#settings-general"
 	},
 	notifications: {
-	    label: "Notifications"|t,
-	    url: "#settings-notifications"
+		label: "Notifications"|t,
+		url: "#settings-notifications"
 	},
-	api: {
-	    label: "Mailers"|t,
-	    url: "#settings-api"
+	mailers: {
+		label: "Mailers"|t,
+		url: "#settings-mailers"
 	},
-	settings: {
-	    label: "Control Panel"|t,
-	    url: "#settings-cp"
+	cp: {
+		label: "Control Panel"|t,
+		url: "#settings-cp"
 	}
 } %}
 

@@ -4,7 +4,9 @@
 
 <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings#settings-api') }}">
 	<input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
-	<input type="hidden" name="redirect" value="sproutemail/settings">
+	<input type="hidden" name="redirect" value="sproutemail/settings?tab=mailers">
+
+	{{ getCsrfInput() }}
 
 	<div id="tab-campaign-info" class="tab-content">
 		{% for mailer in mailers %}

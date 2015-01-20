@@ -9,9 +9,9 @@
 {% block main %}
 
 	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
-	
+
 	{% for campaign in notifications %}
-			
+
 		{% if loop.first %}
 		<h3>Notifications</h3>
 		<table id="entries" class="data fullwidth">
@@ -45,7 +45,7 @@
 		</div>
 
 	{% else %}
-	 	
+
 	 	<div style="width:40%;">
 
 		 	<h2>Create your first Notification</h2>

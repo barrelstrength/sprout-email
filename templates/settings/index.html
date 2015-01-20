@@ -1,27 +1,29 @@
 {% extends "sproutemail/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
+{% set tab = craft.request.getQuery('tab', 'general') %}
+
 {% set body %}
 
-	<div id="settings-general">
+	<div id="settings-general" class="{{- tab == 'general' ?: 'hidden' -}}">
 
     {% include 'sproutemail/settings/_tabs/general' %}
 
 	</div>
 
-	<div id="settings-notifications" class="hidden">
+	<div id="settings-notifications" class="{{- tab == 'notifications' ?: 'hidden' -}}">
 
     {% include 'sproutemail/settings/_tabs/notifications' %}
 
 	</div>
 
-	<div id="settings-api" class="hidden">
+	<div id="settings-mailers"class="{{- tab == 'mailers' ?: 'hidden' -}}">
 
-    {% include 'sproutemail/settings/_tabs/api' %}
+    {% include 'sproutemail/settings/_tabs/mailers' %}
 
 	</div>
 	
-	<div id="settings-cp" class="hidden">
+	<div id="settings-cp"class="{{- tab == 'cp' ?: 'hidden' -}}">
 
     {% include 'sproutemail/settings/_tabs/cp' %}
 

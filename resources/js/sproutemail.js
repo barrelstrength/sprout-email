@@ -3,8 +3,8 @@ $(document).ready( function() {
 });
 
 var SproutEmail = {
-	
-	init: function() 
+
+	init: function()
 	{
 		$('#notificationEvent').change(function(){
 			SproutEmail.selectNotificationEvent();
@@ -28,11 +28,11 @@ var SproutEmail = {
 		SproutEmail.toggleRecipientList();
 		SproutEmail.selectEmailProvider();
 	},
-	
+
 	toggleRecipientList: function()
 	{
 		var checkBox = $('input[name=useRecipientLists]');
-		
+
 		if (checkBox.is(':checked'))
 		{
 			checkBox.closest('div').find('.field').show();
@@ -43,7 +43,7 @@ var SproutEmail = {
 			checkBox.closest('div').find('.field').hide();
 		}
 	},
-	
+
 	setRecipientButtons: function()
 	{
 		if ($('.recipients-not-defined').length == 0)
@@ -51,7 +51,7 @@ var SproutEmail = {
 			$('#recipient-btns').removeClass('hidden');
 		}
 	},
-	
+
 	selectNotificationEvent: function()
 	{
 		$('.event-options-block').hide();

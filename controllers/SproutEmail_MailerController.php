@@ -9,7 +9,7 @@ class SproutEmail_MailerController extends BaseController
 
 		craft()->userSession->setNotice(Craft::t('Mailers refreshed successfully.'));
 
-		$this->redirect(UrlHelper::getCpUrl('sproutemail/settings'));
+		$this->redirect(UrlHelper::getCpUrl('sproutemail/settings?tab=mailers'));
 	}
 
 	public function actionSaveSettings()

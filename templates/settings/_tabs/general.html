@@ -3,7 +3,7 @@
 {% set entries = craft.sproutEmail.getCampaigns('email') %}
 
 {% if entries|length %}
-	
+
 	<h3>
 		Campaigns
 		<span class="info">
@@ -24,11 +24,9 @@
 		{% endif %}
 			<tr>
 				<td><a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a></td>
-				<td></td>
-				<td></td>
-				<td class="thin">
+				<td colspan="3" class="thin">
 					<a class="delete icon" title="Delete"></a>
-					
+
 					{# <form method="post" action="" accept-charset="UTF-8">
 					  <input type="hidden" name="action" value="sproutEmail/campaign/deleteCampaign">
 					  <input type="hidden" name="redirect" value="sproutemail/entries">
@@ -42,13 +40,13 @@
 		{% endif %}
 
 	{% endfor %}
- 	
+
 	<div class="buttons">
 		<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">New Campaigns</a>
 	</div>
 
 {% else %}
- 	
+
  	<div style="width:40%;">
 
 	 	<h2>Create your first Campaign</h2>
@@ -61,7 +59,5 @@
 
 	</div>
 
-	<br/>
-	<br/>
-	
+	<br/><br/>
 {% endif %}
