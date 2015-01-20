@@ -180,6 +180,7 @@ class SproutEmailService extends BaseApplicationComponent
 			}
 			catch (\Exception $e)
 			{
+				$this->error($e->getMessage());
 			}
 		}
 
@@ -197,5 +198,24 @@ class SproutEmailService extends BaseApplicationComponent
 		echo JsonHelper::encode($variables);
 
 		craft()->end();
+	}
+
+	/**
+	 * Logs an error in cases where it makes more sense than to throw an exception
+	 *
+	 * @param mixed $msg
+	 */
+	public function error($msg)
+	{
+		if (is_string($msg))
+		{
+			$msg = Craft::t($msg);
+		}
+		else
+		{
+			$msg = print_r($msg, true);
+		}
+
+		SproutEmailPlugin::log($msg, LogLevel::Error);
 	}
 }
