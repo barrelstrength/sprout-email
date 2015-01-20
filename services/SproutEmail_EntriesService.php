@@ -66,7 +66,7 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 					if (($notificationEvent && sproutEmail()->notifications->save($notificationEvent, $campaign->id)) || sproutEmail()->mailers->saveRecipientLists($campaign, $entry))
 					{
-						if ($transaction !== null)
+						if ($transaction && $transaction->active)
 						{
 							$transaction->commit();
 						}
@@ -77,7 +77,7 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 			}
 			catch (\Exception $e)
 			{
-				if ($transaction !== null)
+				if ($transaction && $transaction->active)
 				{
 					$transaction->rollback();
 				}
