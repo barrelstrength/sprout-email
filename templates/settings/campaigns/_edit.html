@@ -21,6 +21,8 @@
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 	<input type="hidden" name="sproutEmail[type]" value="email">
 
+	{{ getCsrfInput() }}
+
 	{% set mailers = craft.sproutemail.getMailers() %}
 	{% if mailers %}
 		{{ forms.textField({

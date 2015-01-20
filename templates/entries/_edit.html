@@ -12,6 +12,8 @@
 		<input type="hidden" name="action" value="sproutEmail/entry/saveEntry">
 		<input type="hidden" name="redirect" value="sproutemail/entries">
 
+		{{ getCsrfInput() }}
+
 		{% if entryId is defined and entryId %}
 		<input type="hidden" name="entryId" value="{{ entryId }}">
 		{% endif %}

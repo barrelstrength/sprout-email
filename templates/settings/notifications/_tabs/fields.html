@@ -4,13 +4,14 @@
 	<input type="hidden" name="redirect" value="sproutemail/settings#settings-notifications">
 	<input type="hidden" name="tab" value="fields">
 	<input type="hidden" name="continue" value="false">
-
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
+
+	{{ getCsrfInput() }}
 
 	{% include "_includes/fieldlayoutdesigner" with {
 		fieldLayout: campaign.getFieldLayout()
 	} only %}
-	
+
 	<hr>
 
 	<div class="buttons">

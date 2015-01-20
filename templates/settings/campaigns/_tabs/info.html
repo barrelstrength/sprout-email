@@ -4,8 +4,9 @@
 	<input type="hidden" name="redirect" value="sproutemail/entries">
 	<input type="hidden" name="tab" value="info">
 	<input type="hidden" name="continue" value="false">
-
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
+
+	{{ getCsrfInput() }}
 
 	<div id="tab-campaign-info" class="tab-content" >
 
@@ -178,6 +179,8 @@
 	<input type="hidden" name="redirect" value="sproutemail/entries">
 	<input type="hidden" name="id" value="{{ campaignId }}">
 	<input type="submit" class="btn small" value="Delete">
+
+	{{ getCsrfInput() }}
 </form>
 
 {% set js %}

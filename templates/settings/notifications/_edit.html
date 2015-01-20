@@ -13,14 +13,14 @@
 
 	{% if isMailerInstalled %}
 		<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/{id}') }}">
-		{{ getCsrfInput() }}
 		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
 		<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
 		<input type="hidden" name="tab" value="fields">
-
 		<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 		<input type="hidden" name="sproutEmail[mailer]" value="coremailer">
 		<input type="hidden" name="sproutEmail[type]" value="notification">
+
+		{{ getCsrfInput() }}
 
 		<div id="tab-campaign-info" class="tab-content" >
 
