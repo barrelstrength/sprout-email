@@ -99,7 +99,7 @@
 									required: true,
 								}, forms.textField({
 									name: 'sproutEmail[fromName]',
-									value: (entry.fromName is not empty ? entry.fromName : 'Selvin Ortiz'),
+									value: (entry.fromName is not empty ? entry.fromName : ''),
 							})) }}
 
 							{{ forms.field({
@@ -108,7 +108,7 @@
 									errors: (entry is defined ? entry.getErrors('fromEmail') : null),
 								}, forms.textField({
 									name: 'sproutEmail[fromEmail]',
-									value: (entry.fromEmail is not empty ? entry.fromEmail : 'selvin@selv.in'),
+									value: (entry.fromEmail is not empty ? entry.fromEmail : ''),
 							})) }}
 
 							{{ forms.field({
@@ -117,7 +117,7 @@
 									errors: (entry is defined ? entry.getErrors('replyTo') : null),
 								}, forms.textField({
 									name: 'sproutEmail[replyTo]',
-									value: (entry.replyTo is not empty ? entry.replyTo : 'selvin@selv.in'),
+									value: (entry.replyTo is not empty ? entry.replyTo : ''),
 							})) }}
 
 						</div>
@@ -174,7 +174,6 @@
 
 							<div class="btngroup submit first">
 								<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
-								<a class="btn" href="{{ actionUrl('sproutEmail/') }}" title="{{ 'Test and prepare delivery'|t }}" target="_blank">{{ "Test and prepare delivery"|t }}</a>
 							</div>
 
 							{% endif %}
