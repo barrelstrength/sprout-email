@@ -319,15 +319,13 @@ class SproutEmail_EntryController extends BaseController
 				{
 					$this->returnJson($result);
 				}
-				// @todo Handle success message
 				craft()->end();
 			}
 			catch (\Exception $e)
 			{
-				// @todo Handle display of errors based on $e
+				$this->returnJson(array('content' => $e->getMessage()));
 			}
 		}
-
 		// @todo Handle display of errors when entry or campaign is missing
 	}
 
