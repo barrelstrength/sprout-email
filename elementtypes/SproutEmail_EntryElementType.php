@@ -291,6 +291,11 @@ class SproutEmail_EntryElementType extends BaseElementType
 			$extension = in_array(strtolower($type), array('txt', 'text')) ? 'text' : null;
 		}
 
+		if (!craft()->templates->doesTemplateExist($campaign->template.$extension))
+		{
+			sproutEmail()->error('The template could not be found '.$campaign->template.$extension);
+		}
+
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
