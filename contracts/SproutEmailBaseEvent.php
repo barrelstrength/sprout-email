@@ -105,10 +105,11 @@ class SproutEmailBaseEvent
 	 *
 	 * @param mixed     $options
 	 * @param BaseModel $model
+	 * @param array     $params
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, BaseModel $model)
+	public function validateOptions($options, BaseModel $model, array $params = array())
 	{
 	}
 
