@@ -25,12 +25,23 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function prepareOptions()
 	{
-		return craft()->request->getPost('entriesSaveEntrySectionIds');
+		return array(
+			'entriesSaveEntrySectionIds'  => craft()->request->getPost('entriesSaveEntrySectionIds'),
+			'entriesSaveEntryOnlyWhenNew' => craft()->request->getPost('entriesSaveEntryOnlyWhenNew'),
+		);
 	}
 
-	public function validateOptions($options, EntryModel $entry)
+	public function validateOptions($options, EntryModel $entry, array $params = array())
 	{
-		return in_array($entry->getSection()->id, $options);
+		$isNewEntry  = isset($params['isNewEntry']) && $params['isNewEntry'];
+		$onlyWhenNew = isset($options['onlyWhenNew']) && $options['onlyWhenNew'];
+
+		if (in_array($entry->getSection()->id, $options))
+		{
+			return (!$onlyWhenNew || $isNewEntry);
+		}
+
+		return false;
 	}
 
 	public function prepareParams(Event $event)
@@ -40,6 +51,6 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function prepareValue($value)
 	{
-		return array('entriesSaveEntrySectionIds' => $value);
+		return $value;
 	}
 }
