@@ -28,6 +28,11 @@ class SproutEmailVariable
 		return sproutEmail()->mailers->getMailers();
 	}
 
+	/**
+	 * @param string $mailer
+	 *
+	 * @return SproutEmail_BaseMailer|null
+	 */
 	public function getMailer($mailer)
 	{
 		return sproutEmail()->mailers->getMailerByName($mailer);
@@ -50,8 +55,10 @@ class SproutEmailVariable
 			return $event->prepareOptions();
 		}
 
-		$notification = sproutEmail()->notifications->getNotification(array('eventId'    => $event->getId(),
-		                                                                    'campaignId' => $campaignId
+		$notification = sproutEmail()->notifications->getNotification(
+			array(
+				'eventId'    => $event->getId(),
+				'campaignId' => $campaignId
 			)
 		);
 
