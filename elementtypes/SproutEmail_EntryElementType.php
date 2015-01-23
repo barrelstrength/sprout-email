@@ -286,9 +286,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		$extension = null;
 
-		if (($type = craft()->request->getPost('type')))
+		if (($type = craft()->request->getQuery('type')))
 		{
-			$extension = in_array(strtolower($type), array('txt', 'text')) ? 'text' : null;
+			$extension = in_array(strtolower($type), array('txt', 'text')) ? '.txt' : null;
 		}
 
 		if (!craft()->templates->doesTemplateExist($campaign->template.$extension))
