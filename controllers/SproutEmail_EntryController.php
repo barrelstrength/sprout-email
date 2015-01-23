@@ -32,9 +32,6 @@ class SproutEmail_EntryController extends BaseController
 		$entry = $this->getEntryModel();
 		$entry = $this->populateEntryModel($entry);
 
-		// Only use the Title Format if it exists
-		// @TODO - hide Title Format by default, only show it if
-		// Has auto-generated Title field is checked
 		if ($this->campaign->titleFormat)
 		{
 			$entry->getContent()->title = craft()->templates->renderObjectTemplate($this->campaign->titleFormat, $entry);
@@ -112,7 +109,7 @@ class SproutEmail_EntryController extends BaseController
 	}
 
 	/**
-	 * Populate a SproutEmail_EntryModel with post data
+	 * Populates a SproutEmail_EntryModel with post data
 	 *
 	 * @param SproutEmail_EntryModel $entry
 	 *
@@ -132,7 +129,7 @@ class SproutEmail_EntryController extends BaseController
 
 		if (empty($entry->slug))
 		{
-			$entry->slug = ElementHelper::createSlug($this->subjectLine);
+			$entry->slug = ElementHelper::createSlug($entry->subjectLine);
 		}
 
 		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
@@ -308,6 +305,7 @@ class SproutEmail_EntryController extends BaseController
 	public function actionExport()
 	{
 		$this->requirePostRequest();
+		$this->requireAjaxRequest();
 
 		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
 
@@ -315,8 +313,41 @@ class SproutEmail_EntryController extends BaseController
 		{
 			try
 			{
-				sproutEmail()->mailers->exportEntry($entry, $campaign);
+				$result = sproutEmail()->mailers->exportEntry($entry, $campaign);
 
+				if (craft()->request->isAjaxRequest())
+				{
+					$this->returnJson($result);
+				}
+				// @todo Handle success message
+				craft()->end();
+			}
+			catch (\Exception $e)
+			{
+				// @todo Handle display of errors based on $e
+			}
+		}
+
+		// @todo Handle display of errors when entry or campaign is missing
+	}
+
+	public function actionPreview()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
+
+		if ($entry && ($campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId)))
+		{
+			try
+			{
+				$result = sproutEmail()->mailers->previewEntry($entry, $campaign);
+
+				if (craft()->request->isAjaxRequest())
+				{
+					$this->returnJson($result);
+				}
 				// @todo Handle success message
 				craft()->end();
 			}
@@ -360,28 +391,6 @@ class SproutEmail_EntryController extends BaseController
 		{
 			Craft::log('Attempting to preview an Entry that does not exist', LogLevel::Error);
 			throw new HttpException(404);
-		}
-	}
-
-	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 *
-	 * @throws Exception
-	 */
-	protected function saveNotificationRules($campaign)
-	{
-		$notificationEvent = craft()->request->getPost('sproutEmail.notificationEvent');
-
-		if ($notificationEvent)
-		{
-			$events = sproutEmail()->notifications->getAvailableEvents();
-
-			if (!isset($events[$notificationEvent]))
-			{
-				throw new Exception(Craft::t('The {e} is not available for subscription.', array('e' => $notificationEvent)));
-			}
-
-			sproutEmail()->notifications->save($events[$notificationEvent], $campaign->id, craft()->request->getPost());
 		}
 	}
 }

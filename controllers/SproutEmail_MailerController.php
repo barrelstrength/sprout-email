@@ -3,6 +3,11 @@ namespace Craft;
 
 class SproutEmail_MailerController extends BaseController
 {
+	/**
+	 * Allows Sprout Email to officially register mailers already installed via Craft
+	 *
+	 * @note This is called onAfterInstall() and on sproutemail/settings/?tab=mailers [Refresh List]
+	 */
 	public function actionInstallMailers()
 	{
 		sproutEmail()->mailers->installMailers();
@@ -12,6 +17,11 @@ class SproutEmail_MailerController extends BaseController
 		$this->redirect(UrlHelper::getCpUrl('sproutemail/settings?tab=mailers'));
 	}
 
+	/**
+	 * Provides a consistent way of validating and saving settings across mailers
+	 *
+	 * @throws HttpException
+	 */
 	public function actionSaveSettings()
 	{
 		$this->requirePostRequest();
@@ -54,5 +64,43 @@ class SproutEmail_MailerController extends BaseController
 
 		craft()->userSession->setError(Craft::t('Settings could not be saved.'));
 		craft()->userSession->setFlash('models', $models);
+	}
+
+	/**
+	 * Provides a way for mailers to render content to perform actions inside a our modal window
+	 *
+	 * @throws HttpException
+	 */
+	public function actionGetPrepareModal()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$mailer     = craft()->request->getRequiredPost('mailer');
+		$entryId    = craft()->request->getRequiredPost('entryId');
+		$campaignId = craft()->request->getRequiredPost('campaignId');
+
+		$modal = sproutEmail()->mailers->getPrepareModal($mailer, $entryId, $campaignId);
+
+		$this->returnJson($modal->getAttributes());
+	}
+
+	/**
+	 * Provides a way for mailers to render content to perform actions inside a modal window
+	 *
+	 * @throws HttpException
+	 */
+	public function actionGetPreviewModal()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$mailer     = craft()->request->getRequiredPost('mailer');
+		$entryId    = craft()->request->getRequiredPost('entryId');
+		$campaignId = craft()->request->getRequiredPost('campaignId');
+
+		$modal = sproutEmail()->mailers->getPreviewModal($mailer, $entryId, $campaignId);
+
+		$this->returnJson($modal->getAttributes());
 	}
 }
