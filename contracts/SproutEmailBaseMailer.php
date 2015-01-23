@@ -218,7 +218,7 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function getActionForPrepareModal()
 	{
-		return 'sproutEmail/mailer/getMailerPrepareModal';
+		return 'sproutEmail/mailer/getPrepareModal';
 	}
 
 	/**
@@ -232,7 +232,7 @@ abstract class SproutEmailBaseMailer
 	{
 		craft()->deprecator->log(__FUNCTION__, 'Deprecated since version 0.8.3 in favor of using ElementTypeModel::routeRequestForMatchedElement()');
 
-		return 'sproutEmail/mailer/getMailerPreviewModal';
+		return 'sproutEmail/mailer/getPreviewModal';
 	}
 
 	/**
