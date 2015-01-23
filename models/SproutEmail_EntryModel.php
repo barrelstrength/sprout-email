@@ -6,13 +6,17 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property int    $id
- * @property string $subjectLine
- * @property int    $campaignId
- * @property string $fromName
- * @property string $fromEmail
- * @property string $replyTo
- * @property bool   $sent
+ * @property int            $id
+ * @property string         $subjectLine
+ * @property int            $campaignId
+ * @property string         $fromName
+ * @property string         $fromEmail
+ * @property string         $replyTo
+ * @property bool           $sent
+ * --
+ * @property string|null    $uri
+ * @property string         $slug
+ * @property bool           $enabled
  */
 class SproutEmail_EntryModel extends BaseElementModel
 {
@@ -20,6 +24,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	protected $elementType = 'SproutEmail_Entry';
 
 	/**
+	 * @todo Clean up this status mess before 0.9.0
 	 * Disabled - Campaign isn't even setup properly
 	 * Pending -  Campaign is setup but Entry is disabled
 	 * Ready -    Campaign is setup and is enabled
@@ -37,14 +42,14 @@ class SproutEmail_EntryModel extends BaseElementModel
 	{
 		$defaults   = parent::defineAttributes();
 		$attributes = array(
-			'subjectLine'     => array(AttributeType::String, 'required' => true),
-			'campaignId'      => array(AttributeType::Number, 'required' => true),
-			'fromName'        => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => true),
-			'fromEmail'       => array(AttributeType::Email, 'required' => true),
-			'replyTo'         => array(AttributeType::Email, 'required' => false),
-			'sent'            => AttributeType::Bool,
+			'subjectLine'    => array(AttributeType::String, 'required' => true),
+			'campaignId'     => array(AttributeType::Number, 'required' => true),
+			'fromName'       => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => true),
+			'fromEmail'      => array(AttributeType::Email, 'required' => true),
+			'replyTo'        => array(AttributeType::Email, 'required' => false),
+			'sent'           => AttributeType::Bool,
 			// @related
-			'recipientLists'   => Attributetype::Mixed,
+			'recipientLists' => Attributetype::Mixed,
 		);
 
 		return array_merge($defaults, $attributes);
@@ -60,13 +65,18 @@ class SproutEmail_EntryModel extends BaseElementModel
 		return $campaign->getFieldLayout();
 	}
 
+	/**
+	 * @param null $template
+	 *
+	 * @return null|string
+	 */
 	public function getUrlFormat($template = null)
 	{
 		$campaign = $this->getType();
 
 		if ($campaign && $campaign->hasUrls)
 		{
-			return $campaign->template.'/{slug}';
+			return $campaign->urlFormat;
 		}
 	}
 
@@ -86,7 +96,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 		// Archived : static::ARCHIVED
 		// Sent (track sent dates in a sent log table)
 		//
-		// @TODO - we can make this conditional statement more
+		// @todo We can make this conditional statement more
 		// advanced and check for the Service Provider and determine
 		// specific things about each service provider to decide if an
 		// email is ready or not.  For now, we'll just check to see if
@@ -158,6 +168,9 @@ class SproutEmail_EntryModel extends BaseElementModel
 		$this->fields = $fields;
 	}
 
+	/**
+	 * @return SproutEmail_CampaignModel
+	 */
 	public function getType()
 	{
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
