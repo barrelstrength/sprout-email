@@ -207,7 +207,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		{
 			foreach ($notifications as $notification)
 			{
-				if ($listener->validateOptions($notification['options'], $element))
+				if ($listener->validateOptions($notification['options'], $element, $params))
 				{
 					$campaign = sproutEmail()->campaigns->getCampaignById($notification->campaignId);
 
