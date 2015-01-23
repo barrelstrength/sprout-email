@@ -64,7 +64,9 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 					$notificationEvent = craft()->request->getPost('notificationEvent');
 
-					if (($notificationEvent && sproutEmail()->notifications->save($notificationEvent, $campaign->id)) || sproutEmail()->mailers->saveRecipientLists($campaign, $entry))
+					sproutEmail()->mailers->saveRecipientLists($campaign, $entry);
+
+					if (($notificationEvent && sproutEmail()->notifications->save($notificationEvent, $campaign->id)))
 					{
 						if ($transaction && $transaction->active)
 						{
