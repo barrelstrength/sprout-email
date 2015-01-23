@@ -14,7 +14,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	/**
 	 * @return bool
 	 */
-	public function hasContent()
+	public function hasTitles()
 	{
 		return true;
 	}
@@ -22,7 +22,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	/**
 	 * @return bool
 	 */
-	public function hasTitles()
+	public function hasContent()
 	{
 		return true;
 	}
@@ -69,8 +69,8 @@ class SproutEmail_EntryElementType extends BaseElementType
 		$notificationIds = array();
 
 		$sources = array(
-			'*'             => array(
-				'label'     => Craft::t('All Emails'),
+			'*' => array(
+				'label' => Craft::t('All Emails'),
 			),
 		);
 
@@ -83,12 +83,12 @@ class SproutEmail_EntryElementType extends BaseElementType
 			}
 
 			$sources['notifications'] = array(
-				'label'             => Craft::t('Notifications'),
-				'criteria'          => array(
-					'campaignId'    => $notificationIds
+				'label'    => Craft::t('Notifications'),
+				'criteria' => array(
+					'campaignId' => $notificationIds
 				)
 			);
- 		}
+		}
 
 		// Prepare the data for our sources sidebar
 		$campaigns = sproutEmail()->campaigns->getCampaigns('email');
@@ -176,8 +176,8 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'title'       => AttributeType::String,
-			'campaignId'  => AttributeType::Number,
+			'title'      => AttributeType::String,
+			'campaignId' => AttributeType::Number,
 		);
 	}
 
@@ -266,6 +266,46 @@ class SproutEmail_EntryElementType extends BaseElementType
 		{
 			$query->andWhere(DbHelper::parseParam('entries.campaignId', $criteria->campaignId, $query->params));
 		}
+	}
+
+	/**
+	 * Gives us the ability to render campaign previews by using the Craft API and templates/render
+	 *
+	 * @param BaseElementModel $element
+	 *
+	 * @return array|bool|mixed
+	 */
+	public function routeRequestForMatchedElement(BaseElementModel $element)
+	{
+		$campaign  = sproutEmail()->campaigns->getCampaignById($element->campaignId);
+
+		if (!$campaign)
+		{
+			return false;
+		}
+
+		$extension = null;
+
+		if (($type = craft()->request->getPost('type')))
+		{
+			$extension = in_array(strtolower($type), array('txt', 'text')) ? 'text' : null;
+		}
+
+		return array(
+			'action' => 'templates/render',
+			'params' => array(
+				'template'  => $campaign->template.$extension,
+				'variables' => array(
+					'entry'     => $element,
+					'campaign'  => $campaign,
+					'recipient' => array(
+						'firstName' => 'John',
+						'lastName'  => 'Doe',
+						'email'     => 'john@doe.com'
+					)
+				)
+			)
+		);
 	}
 
 	/**
