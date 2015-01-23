@@ -317,7 +317,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if ($entry && $campaign)
 		{
-			$modal->content = $mailer->getModalPreviewHtml($entry, $campaign);
+			$modal->content = $mailer->getPreviewModalHtml($entry, $campaign);
 
 			return $modal;
 		}
