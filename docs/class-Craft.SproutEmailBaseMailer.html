@@ -139,7 +139,7 @@
 		<b>Namespace:</b> <a href="namespace-Craft.html">Craft</a><br>
 		<b>Package:</b> Craft<br>
 
-			<b>Located at</b> <a href="source-class-Craft.SproutEmailBaseMailer.html#4-336" title="Go to source code">SproutEmailBaseMailer.php</a>
+			<b>Located at</b> <a href="source-class-Craft.SproutEmailBaseMailer.html#4-339" title="Go to source code">SproutEmailBaseMailer.php</a>
 		<br>
 	</div>
 
@@ -158,7 +158,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_init">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#34-42" title="Go to source code">init</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#34-45" title="Go to source code">init</a>( )</code>
 
 			<div class="description short">
 				<p>Initializes the mailer by fetching its settings and loading necessary configs</p>
@@ -187,7 +187,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#___toString">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#44-52" title="Go to source code">__toString</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#47-55" title="Go to source code">__toString</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the mailer title when used in string context</p>
@@ -220,7 +220,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_isInitialized">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#54-62" title="Go to source code">isInitialized</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#57-65" title="Go to source code">isInitialized</a>( )</code>
 
 			<div class="description short">
 				<p>Returns whether or not the mailer has been properly initialized by Sprout Email</p>
@@ -253,7 +253,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_isInstalled">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#64-74" title="Go to source code">isInstalled</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#67-77" title="Go to source code">isInstalled</a>( )</code>
 
 			<div class="description short">
 				<p>Returns whether or not the mailer has been installed and additionally registered with Sprout Email</p>
@@ -286,7 +286,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getId">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#76-86" title="Go to source code">getId</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#79-89" title="Go to source code">getId</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the mailer id to use as the formal identifier</p>
@@ -315,7 +315,7 @@
 		<tr data-order="getName" id="_getName">
 
 			<td class="attributes"><code>
-				 public 
+				abstract public 
 				string
 				
 				</code>
@@ -323,7 +323,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getName">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#88-97" title="Go to source code">getName</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#91-98" title="Go to source code">getName</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the qualified mailer name</p>
@@ -352,7 +352,7 @@
 		<tr data-order="getTitle" id="_getTitle">
 
 			<td class="attributes"><code>
-				 public 
+				abstract public 
 				string
 				
 				</code>
@@ -360,7 +360,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getTitle">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#99-108" title="Go to source code">getTitle</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#100-107" title="Go to source code">getTitle</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the mailer title to use when displaying a label or similar use case</p>
@@ -397,7 +397,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getCpTitle">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#110-131" title="Go to source code">getCpTitle</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#109-127" title="Go to source code">getCpTitle</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the mailer title optionally wrapped in a link pointing to /sproutemail/mailer</p>
@@ -427,6 +427,39 @@
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="getPluginName" id="_getPluginName">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getPluginName">#</a>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#129-136" title="Go to source code">getPluginName</a>( )</code>
+
+			<div class="description short">
+				<p>Returns the name of the plugin this mailer is associated with</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Returns the name of the plugin this mailer is associated with</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="hasCpSection" id="_hasCpSection">
 
 			<td class="attributes"><code>
@@ -438,7 +471,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_hasCpSection">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#133-141" title="Go to source code">hasCpSection</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#138-146" title="Go to source code">hasCpSection</a>( )</code>
 
 			<div class="description short">
 				<p>Returns whether or not the mailer has registered routes to accomplish tasks within Sprout Email</p>
@@ -463,7 +496,7 @@
 		<tr data-order="getDescription" id="_getDescription">
 
 			<td class="attributes"><code>
-				 public 
+				abstract public 
 				string
 				
 				</code>
@@ -471,7 +504,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getDescription">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#143-152" title="Go to source code">getDescription</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#148-155" title="Go to source code">getDescription</a>( )</code>
 
 			<div class="description short">
 				<p>Returns a short description of this mailer</p>
@@ -508,7 +541,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getSettings">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#154-167" title="Go to source code">getSettings</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#157-170" title="Go to source code">getSettings</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the settings model for this mailer</p>
@@ -541,7 +574,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getDefaultSettings">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#169-183" title="Go to source code">getDefaultSettings</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#172-186" title="Go to source code">getDefaultSettings</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the settings and default values that should be stored when first installed</p>
@@ -582,7 +615,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getSettingsHtml">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#185-192" title="Go to source code">getSettingsHtml</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#188-195" title="Go to source code">getSettingsHtml</a>( )</code>
 
 			<div class="description short">
 				<p>Returns a rendered html string to use for capturing settings input</p>
@@ -615,7 +648,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getRecipientLists">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#194-202" title="Go to source code">getRecipientLists</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#197-205" title="Go to source code">getRecipientLists</a>( )</code>
 
 			<div class="description short">
 				<p>Returns a list of recipients from the mailer to be used primarily by getRecipientListsHtml()</p>
@@ -648,7 +681,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getRecipientListsHtml">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#204-212" title="Go to source code">getRecipientListsHtml</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#207-215" title="Go to source code">getRecipientListsHtml</a>( )</code>
 
 			<div class="description short">
 				<p>Returns a rendered string with inputs to select a recipient lists if available/required by this mailer</p>
@@ -681,7 +714,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getActionForPrepareModal">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#214-222" title="Go to source code">getActionForPrepareModal</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#217-225" title="Go to source code">getActionForPrepareModal</a>( )</code>
 
 			<div class="description short">
 				<p>Gives a mailer the ability to register an action to post to when a [prepare] modal is launched</p>
@@ -714,7 +747,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getActionForPreviewModal">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#224-236" title="Go to source code">getActionForPreviewModal</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#227-239" title="Go to source code">getActionForPreviewModal</a>( )</code>
 
 			<div class="description short">
 				<p>Gives a mailer the ability to register an action to post to when a [preview] modal is launched</p>
@@ -751,7 +784,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_defineSettings">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#238-246" title="Go to source code">defineSettings</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#241-249" title="Go to source code">defineSettings</a>( )</code>
 
 			<div class="description short">
 				<p>Enables mailers to define their own settings and validation for them</p>
@@ -784,7 +817,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_prepareSettings">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#248-259" title="Go to source code">prepareSettings</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#251-262" title="Go to source code">prepareSettings</a>( )</code>
 
 			<div class="description short">
 				<p>Returns the value that should be saved to the settings column for this mailer</p>
@@ -821,7 +854,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_prepareValue">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#261-271" title="Go to source code">prepareValue</a>( <span> <var>$value</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#264-274" title="Go to source code">prepareValue</a>( <span> <var>$value</var></span> )</code>
 
 			<div class="description short">
 				<p>Gives the mailer chance to attach the value to the right field id before outputting it</p>
@@ -859,7 +892,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_prepareRecipientLists">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#273-286" title="Go to source code">prepareRecipientLists</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#276-289" title="Go to source code">prepareRecipientLists</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				<p>Returns an entry model to be stored and used by Sprout Email for sending via this mailer</p>
@@ -903,7 +936,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_saveRecipientList">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#288-295" title="Go to source code">saveRecipientList</a>( <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#291-298" title="Go to source code">saveRecipientList</a>( <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				
@@ -941,7 +974,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_sendCampaign">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#297-305" title="Go to source code">sendCampaign</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#300-308" title="Go to source code">sendCampaign</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				<p>Gives a mailer the responsibility to send campaigns if they implement SproutEmailCampaignSenderInterface</p>
@@ -977,7 +1010,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_sendNotification">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#307-315" title="Go to source code">sendNotification</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#310-318" title="Go to source code">sendNotification</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				<p>Gives a mailer the responsibility to send notifications if they implement SproutEmailNotificationSenderInterface</p>
@@ -1013,7 +1046,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_sendEntry">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#317-325" title="Go to source code">sendEntry</a>( <span>Craft\SproutEmail_Campaign <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#320-328" title="Go to source code">sendEntry</a>( <span>Craft\SproutEmail_Campaign <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1051,7 +1084,7 @@
 
 			<td class="name"><div>
 			<a class="anchor" href="#_exportEntry">#</a>
-			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#327-335" title="Go to source code">exportEntry</a>( <span>Craft\SproutEmail_Campaign <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailBaseMailer.html#330-338" title="Go to source code">exportEntry</a>( <span>Craft\SproutEmail_Campaign <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				

@@ -150,7 +150,7 @@ Craft\BaseApplicationComponent
 		<b>Namespace:</b> <a href="namespace-Craft.html">Craft</a><br>
 		<b>Package:</b> Craft<br>
 
-			<b>Located at</b> <a href="source-class-Craft.SproutEmailService.html#4-218" title="Go to source code">SproutEmailService.php</a>
+			<b>Located at</b> <a href="source-class-Craft.SproutEmailService.html#4-115" title="Go to source code">SproutEmailService.php</a>
 		<br>
 	</div>
 
@@ -187,57 +187,39 @@ Craft\BaseApplicationComponent
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="exportEntry" id="_exportEntry">
-
-			<td class="attributes"><code>
-				 public 
-				
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_exportEntry">#</a>
-			<code><a href="source-class-Craft.SproutEmailService.html#31-166" title="Go to source code">exportEntry</a>( <span> <var>$entryId</var></span>, <span> <var>$campaignId</var></span>, <span> <var>$return</var> = <span class="php-keyword1">false</span></span> )</code>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-
-
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
 		<tr data-order="renderSiteTemplateIfExists" id="_renderSiteTemplateIfExists">
 
 			<td class="attributes"><code>
 				 public 
-				
+				null|string
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_renderSiteTemplateIfExists">#</a>
-			<code><a href="source-class-Craft.SproutEmailService.html#168-187" title="Go to source code">renderSiteTemplateIfExists</a>( <span> <var>$template</var></span>, <span>array <var>$variables</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-Craft.SproutEmailService.html#31-58" title="Go to source code">renderSiteTemplateIfExists</a>( <span>string <var>$template</var></span>, <span>array <var>$variables</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
-				
+				<p>Renders a site template when using it in control panel context</p>
 			</div>
 
 			<div class="description detailed hidden">
-				
+				<p>Renders a site template when using it in control panel context</p>
 
 
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$template</var></dt>
+						<dd></dd>
+						<dt><var>$variables</var></dt>
+						<dd></dd>
+					</dl></div>
 
+					<h4>Returns</h4>
+					<div class="list">
+						null|string
+					</div>
 
 
 
@@ -256,16 +238,57 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_returnJson">#</a>
-			<code><a href="source-class-Craft.SproutEmailService.html#189-198" title="Go to source code">returnJson</a>( <span> <var>$variables</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-Craft.SproutEmailService.html#60-74" title="Go to source code">returnJson</a>( <span>array <var>$variables</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
-				
+				<p>Outputs JSON encoded data to standard output stream, useful during AJAX requests</p>
 			</div>
 
 			<div class="description detailed hidden">
+				<p>Outputs JSON encoded data to standard output stream, useful during AJAX requests</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$variables</var></dt>
+						<dd></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="info" id="_info">
+
+			<td class="attributes"><code>
+				 public 
 				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_info">#</a>
+			<code><a href="source-class-Craft.SproutEmailService.html#76-94" title="Go to source code">info</a>( <span>mixed <var>$msg</var></span>, <span>array <var>$vars</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				<p>Logs an info message to the plugin logs</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Logs an info message to the plugin logs</p>
 
 
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$msg</var></dt>
+						<dd></dd>
+						<dt><var>$vars</var></dt>
+						<dd></dd>
+					</dl></div>
 
 
 
@@ -285,7 +308,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_error">#</a>
-			<code><a href="source-class-Craft.SproutEmailService.html#200-217" title="Go to source code">error</a>( <span>mixed <var>$msg</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmailService.html#96-114" title="Go to source code">error</a>( <span>mixed <var>$msg</var></span>, <span>array <var>$vars</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				<p>Logs an error in cases where it makes more sense than to throw an exception</p>
@@ -298,6 +321,8 @@ Craft\BaseApplicationComponent
 					<h4>Parameters</h4>
 					<div class="list"><dl>
 						<dt><var>$msg</var></dt>
+						<dd></dd>
+						<dt><var>$vars</var></dt>
 						<dd></dd>
 					</dl></div>
 

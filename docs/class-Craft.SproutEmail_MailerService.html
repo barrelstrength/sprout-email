@@ -119,6 +119,11 @@
 	<h1>Class SproutEmail_MailerService</h1>
 
 
+	<div class="description">
+	<p>Mailer plugin manager service</p>
+
+<p>Class SproutEmail_MailerService</p>
+	</div>
 
 	<dl class="tree well">
 		<dd style="padding-left:0px">
@@ -145,9 +150,9 @@ Craft\BaseApplicationComponent
 		
 		
 		<b>Namespace:</b> <a href="namespace-Craft.html">Craft</a><br>
-		
+		<b>Package:</b> Craft<br>
 
-			<b>Located at</b> <a href="source-class-Craft.SproutEmail_MailerService.html#4-334" title="Go to source code">SproutEmail_MailerService.php</a>
+			<b>Located at</b> <a href="source-class-Craft.SproutEmail_MailerService.html#4-471" title="Go to source code">SproutEmail_MailerService.php</a>
 		<br>
 	</div>
 
@@ -166,43 +171,14 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_init">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#18-21" title="Go to source code">init</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#25-31" title="Go to source code">init</a>( )</code>
 
 			<div class="description short">
-				
+				<p>Loads all mailers for later use</p>
 			</div>
 
 			<div class="description detailed hidden">
-				
-
-
-
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="installMailers" id="_installMailers">
-
-			<td class="attributes"><code>
-				 public 
-				
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_installMailers">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#23-41" title="Go to source code">installMailers</a>( )</code>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
+				<p>Loads all mailers for later use</p>
 
 
 
@@ -224,7 +200,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_isInstalled">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#43-55" title="Go to source code">isInstalled</a>( <span> <var>$name</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#33-45" title="Go to source code">isInstalled</a>( <span> <var>$name</var></span> )</code>
 
 			<div class="description short">
 				<p>Returns whether or not the mailer is installed</p>
@@ -262,7 +238,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getMailers">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#57-84" title="Go to source code">getMailers</a>( )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#47-74" title="Go to source code">getMailers</a>( )</code>
 
 			<div class="description short">
 				<p>Returns all the available email services that sprout email can use</p>
@@ -288,14 +264,14 @@ Craft\BaseApplicationComponent
 
 			<td class="attributes"><code>
 				 public 
-				SproutEmail_BaseMailer|null
+				<code><a href="class-Craft.SproutEmailBaseMailer.html">Craft\SproutEmailBaseMailer</a></code>|null
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getMailerByName">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#86-94" title="Go to source code">getMailerByName</a>( <span> <var>$name</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#76-84" title="Go to source code">getMailerByName</a>( <span> <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -313,7 +289,7 @@ Craft\BaseApplicationComponent
 
 					<h4>Returns</h4>
 					<div class="list">
-						SproutEmail_BaseMailer|null
+						<code><a href="class-Craft.SproutEmailBaseMailer.html">Craft\SproutEmailBaseMailer</a></code>|null
 					</div>
 
 
@@ -333,7 +309,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getMailerRecordByName">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#96-104" title="Go to source code">getMailerRecordByName</a>( <span> <var>$name</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#86-94" title="Go to source code">getMailerRecordByName</a>( <span> <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -371,7 +347,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getSettingsByMailerName">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#106-137" title="Go to source code">getSettingsByMailerName</a>( <span> <var>$name</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#96-127" title="Go to source code">getSettingsByMailerName</a>( <span> <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -398,6 +374,73 @@ Craft\BaseApplicationComponent
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="getMailerCpSectionLink" id="_getMailerCpSectionLink">
+
+			<td class="attributes"><code>
+				 public 
+				string|Twig_Markup
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getMailerCpSectionLink">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#129-158" title="Go to source code">getMailerCpSectionLink</a>( <span><code><a href="class-Craft.SproutEmailBaseMailer.html">Craft\SproutEmailBaseMailer</a></code> <var>$mailer</var></span> )</code>
+
+			<div class="description short">
+				<p>Returns a link to the control panel section for the mailer passed in</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Returns a link to the control panel section for the mailer passed in</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$mailer</var></dt>
+						<dd></dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						string|Twig_Markup
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getRecipientLists" id="_getRecipientLists">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getRecipientLists">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#160-170" title="Go to source code">getRecipientLists</a>( <span> <var>$mailer</var></span> )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="saveRecipientLists" id="_saveRecipientLists">
 
 			<td class="attributes"><code>
@@ -409,7 +452,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_saveRecipientLists">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#139-189" title="Go to source code">saveRecipientLists</a>( <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span>, <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#172-222" title="Go to source code">saveRecipientLists</a>( <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span>, <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span> )</code>
 
 			<div class="description short">
 				
@@ -443,35 +486,6 @@ Craft\BaseApplicationComponent
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="getRecipientLists" id="_getRecipientLists">
-
-			<td class="attributes"><code>
-				 public 
-				
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_getRecipientLists">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#191-201" title="Go to source code">getRecipientLists</a>( <span> <var>$mailer</var></span> )</code>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-
-
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
 		<tr data-order="exportEntry" id="_exportEntry">
 
 			<td class="attributes"><code>
@@ -483,7 +497,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_exportEntry">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#203-229" title="Go to source code">exportEntry</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#224-250" title="Go to source code">exportEntry</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				
@@ -528,7 +542,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_previewEntry">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#232-258" title="Go to source code">previewEntry</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#252-278" title="Go to source code">previewEntry</a>( <span><code><a href="class-Craft.SproutEmail_EntryModel.html">Craft\SproutEmail_EntryModel</a></code> <var>$entry</var></span>, <span><code><a href="class-Craft.SproutEmail_CampaignModel.html">Craft\SproutEmail_CampaignModel</a></code> <var>$campaign</var></span> )</code>
 
 			<div class="description short">
 				
@@ -573,7 +587,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getPrepareModal">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#260-296" title="Go to source code">getPrepareModal</a>( <span> <var>$mailerName</var></span>, <span> <var>$entryId</var></span>, <span> <var>$campaignId</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#280-315" title="Go to source code">getPrepareModal</a>( <span> <var>$mailerName</var></span>, <span> <var>$entryId</var></span>, <span> <var>$campaignId</var></span> )</code>
 
 			<div class="description short">
 				
@@ -619,7 +633,7 @@ Craft\BaseApplicationComponent
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getPreviewModal">#</a>
-			<code><a href="source-class-Craft.SproutEmail_MailerService.html#298-333" title="Go to source code">getPreviewModal</a>( <span> <var>$mailerName</var></span>, <span> <var>$entryId</var></span>, <span> <var>$campaignId</var></span> )</code>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#317-352" title="Go to source code">getPreviewModal</a>( <span> <var>$mailerName</var></span>, <span> <var>$entryId</var></span>, <span> <var>$campaignId</var></span> )</code>
 
 			<div class="description short">
 				
@@ -654,6 +668,171 @@ Craft\BaseApplicationComponent
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="installMailers" id="_installMailers">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_installMailers">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#354-366" title="Go to source code">installMailers</a>( )</code>
+
+			<div class="description short">
+				<p>Installs all available mailers and their settings if not already installed</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Installs all available mailers and their settings if not already installed</p>
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="installMailer" id="_installMailer">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_installMailer">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#368-389" title="Go to source code">installMailer</a>( <span> <var>$name</var></span> )</code>
+
+			<div class="description short">
+				<p>Installs the mailer and its settings if not already installed</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Installs the mailer and its settings if not already installed</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="uninstallMailer" id="_uninstallMailer">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_uninstallMailer">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#391-412" title="Go to source code">uninstallMailer</a>( <span> <var>$name</var></span> )</code>
+
+			<div class="description short">
+				<p>Installs the mailer and its settings if not already installed</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Installs the mailer and its settings if not already installed</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="createMailerRecord" id="_createMailerRecord">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_createMailerRecord">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#414-439" title="Go to source code">createMailerRecord</a>( <span><code><a href="class-Craft.SproutEmailBaseMailer.html">Craft\SproutEmailBaseMailer</a></code> <var>$mailer</var></span> )</code>
+
+			<div class="description short">
+				<p>Creates a new record for a mailer with its name and settings</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Creates a new record for a mailer with its name and settings</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$mailer</var></dt>
+						<dd></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="deleteMailerRecord" id="_deleteMailerRecord">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_deleteMailerRecord">#</a>
+			<code><a href="source-class-Craft.SproutEmail_MailerService.html#441-470" title="Go to source code">deleteMailerRecord</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				<p>Deletes a mailer record by name</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Deletes a mailer record by name</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		</table>
 
 
@@ -669,14 +848,14 @@ Craft\BaseApplicationComponent
 
 		<h2>Properties summary</h2>
 		<table class="summary table table-bordered table-striped properties" id="properties">
-		<tr data-order="fileConfigs" id="$fileConfigs">
+		<tr data-order="configs" id="$configs">
 			<td class="attributes"><code>
 				protected  
 				array
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-Craft.SproutEmail_MailerService.html#6-11" title="Go to source code"><var>$fileConfigs</var></a>
+					<a href="source-class-Craft.SproutEmail_MailerService.html#13-18" title="Go to source code"><var>$configs</var></a>
 
 				<div class="description short">
 					<p>Sprout Email file configs</p>
@@ -689,7 +868,7 @@ Craft\BaseApplicationComponent
 			</td>
 			<td class="value">
 				<div>
-					<a href="#$fileConfigs" class="anchor">#</a>
+					<a href="#$configs" class="anchor">#</a>
 					<code></code>
 				</div>
 			</td>
@@ -697,11 +876,11 @@ Craft\BaseApplicationComponent
 		<tr data-order="mailers" id="$mailers">
 			<td class="attributes"><code>
 				protected  
-				SproutEmail_BaseMailer[]
+				<code><a href="class-Craft.SproutEmailBaseMailer.html">Craft\SproutEmailBaseMailer</a>[]</code>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-Craft.SproutEmail_MailerService.html#13-16" title="Go to source code"><var>$mailers</var></a>
+					<a href="source-class-Craft.SproutEmail_MailerService.html#20-23" title="Go to source code"><var>$mailers</var></a>
 
 				<div class="description short">
 					
