@@ -74,6 +74,26 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Logs an info message to the plugin logs
+	 *
+	 * @param mixed $msg
+	 * @param array $vars
+	 */
+	public function info($msg, array $vars = array())
+	{
+		if (is_string($msg))
+		{
+			$msg = Craft::t($msg, $vars);
+		}
+		else
+		{
+			$msg = print_r($msg, true);
+		}
+
+		SproutEmailPlugin::log($msg, LogLevel::Info);
+	}
+
+	/**
 	 * Logs an error in cases where it makes more sense than to throw an exception
 	 *
 	 * @param mixed $msg
