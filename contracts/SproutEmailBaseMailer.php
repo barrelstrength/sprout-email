@@ -36,9 +36,12 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function init()
 	{
-		$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-		$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
-		$this->initialized = true;
+		if (!$this->initialized)
+		{
+			$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
+			$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
+			$this->initialized = true;
+		}
 	}
 
 	/**
@@ -92,9 +95,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getName()
-	{
-	}
+	abstract public function getName();
 
 	/**
 	 * Returns the mailer title to use when displaying a label or similar use case
@@ -103,9 +104,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getTitle()
-	{
-	}
+	abstract public function getTitle();
 
 	/**
 	 * Returns the mailer title optionally wrapped in a link pointing to /sproutemail/mailer
@@ -119,15 +118,21 @@ abstract class SproutEmailBaseMailer
 	 */
 	final public function getCpTitle()
 	{
-		$t = $this->getTitle();
-
 		if ($this->hasCpSection())
 		{
-			$t = sprintf('<a href="%s/%s" title="%s">%s</a>', UrlHelper::getCpUrl('sproutemail'), $this->getId(), $t, $t);
-			$t = TemplateHelper::getRaw($t);
+			return sproutEmail()->mailers->getMailerCpSectionLink($this);
 		}
 
-		return $t;
+		return $this->getTitle();
+	}
+
+	/**
+	 * Returns the name of the plugin this mailer is associated with
+	 *
+	 * @return string
+	 */
+	public function getPluginName()
+	{
 	}
 
 	/**
@@ -147,9 +152,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getDescription()
-	{
-	}
+	abstract public function getDescription();
 
 	/**
 	 * Returns the settings model for this mailer
