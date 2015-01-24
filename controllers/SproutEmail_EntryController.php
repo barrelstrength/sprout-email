@@ -1,14 +1,25 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmail_EntryController
+ *
+ * @package Craft
+ */
 class SproutEmail_EntryController extends BaseController
 {
+	/**
+	 * List of actions allowed to be called from outside the Control Panel
+	 * @var array
+	 */
+	protected $allowAnonymous = array('actionViewSharedEntry');
+
 	/**
 	 * The campaign that this entry is associated with if any
 	 *
 	 * @var SproutEmail_Campaign
 	 */
-	private $campaign;
+	protected $campaign;
 
 	/**
 	 * Saves a campaign entry
@@ -299,7 +310,7 @@ class SproutEmail_EntryController extends BaseController
 			throw new HttpException(404);
 		}
 
-		$this->_showEntry($entry, $template);
+		$this->showEntry($entry, $template);
 	}
 
 	public function actionExport()
@@ -363,7 +374,7 @@ class SproutEmail_EntryController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	private function _showEntry(SproutEmail_EntryModel $entry, $template = null)
+	protected function showEntry(SproutEmail_EntryModel $entry, $template = null)
 	{
 		// @TODO
 		// Grab Campaign
