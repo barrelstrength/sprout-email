@@ -28,143 +28,14 @@ class SproutEmailService extends BaseApplicationComponent
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
 	}
 
-	public function exportEntry($entryId, $campaignId, $return = false)
-	{
-		// Define our variables
-		$listIds = array ();
-		$listProviders = array ();
-
-		// Get our campaign info
-		if ( ! $campaign = craft()->sproutEmail_campaign->getCampaignById($campaignId) )
-		{
-			SproutEmailPlugin::log("Campaign not found");
-
-			if ( $return )
-			{
-				return false;
-			}
-
-			// @TODO - update use of die
-			die( 'Campaign not found' );
-		}
-
-		// Get our recipient list info
-		if($campaign["emailProvider"] != 'CopyPaste')
-		{
-			if ( ! $recipientLists = craft()->sproutEmail_campaign->getCampaignRecipientLists( $campaign ['id'] ) )
-			{
-				SproutEmailPlugin::log("Recipient lists not found");
-
-				if ( $return )
-				{
-					return false;
-				}
-
-				// @TODO - update use of die
-				die( 'Recipient lists not found' );
-			}
-		}
-		else
-		{
-			SproutEmailPlugin::log("Exporting Copy/Paste Email");
-
-			// We can't check for a recipients list on CopyPaste since one doesn't exist
-			craft()->sproutEmail_copyPaste->exportEntry( $campaign );
-
-			// @TODO - update use of die
-			die();
-		}
-
-		// Check to see if we have entry level settings and update
-		// before shuffling off to the individual service connectors.
-
-		$entry = craft()->entries->getEntryById($entryId);
-		$entryFields = $entry->getFieldLayout()->getFields();
-
-		// Assume we have no override, and update overrideHandle if we do
-		$overrideHandle = "";
-
-		foreach ($entryFields as $field)
-		{
-			// If we have an Email Campaign Field, grab the handle of the first one that matches
-			if ($field->getField()->type == 'SproutEmail_EmailCampaign')
-			{
-				SproutEmailPlugin::log('We have a Campaign Override field');
-				SproutEmailPlugin::log('Override Field Handle: ' . $field->getField()->handle);
-
-				$overrideHandle = $field->getField()->handle;
-				continue;
-			}
-		}
-
-		// If the entry has an override handle assigned to it
-		if ($overrideHandle != "")
-		{
-			// Grab our Email Campaign override settings
-			$entryOverrideSettings = $entry->{$overrideHandle};
-			$entryOverrideSettings = json_decode($entryOverrideSettings,TRUE);
-
-			SproutEmailPlugin::log('Our override settings: ' . $entry->{$overrideHandle});
-
-			// Merge the entry level settings with our campaign
-			$emailProviderRecipientListId = '';
-
-			if( isset($entryOverrideSettings) )
-			{
-				foreach($entryOverrideSettings as $key => $value)
-				{
-					// Override our campaign settings
-					$campaign[$key] = $value;
-
-					if($key == 'emailProviderRecipientListId')
-					{
-						// Make sure our $emailProviderRecipientListId is an array
-						// @TODO - clarify what this value is for.  Is it only for Mailgun?
-						$emailProviderRecipientListId = (array) $value;
-						$campaign[$key] = $emailProviderRecipientListId;
-					}
-
-					SproutEmailPlugin::log('Entry override ' . $key . ': ' . $value);
-
-				}
-			}
-
-			// @TODO - need to revisit this behavior big time!
-			if($emailProviderRecipientListId != '')
-			{
-				foreach ($emailProviderRecipientListId as $key => $value)
-				{
-					$recipientLists[0]->emailProviderRecipientListId = $entryOverrideSettings['emailProviderRecipientListId']['list'];
-					$recipientLists[0]->emailProvider = $campaign['emailProvider'];
-					$recipientLists[0]->type = null;
-
-					// $recipientListOverrides[$key] = $recipientListOverride;
-				}
-			}
-		}
-
-		// Create the recipient list variables
-		foreach ( $recipientLists as $list )
-		{
-			$listProviders [] = $list->emailProvider;
-			$listIds [$list->emailProvider] [] = $list ['emailProviderRecipientListId'];
-		}
-
-		foreach ( $listProviders as $provider )
-		{
-			$provider_service = 'sproutEmail_' . lcfirst( $provider );
-			craft()->{$provider_service}->exportEntry( $campaign, $listIds [$provider], $return );
-		}
-
-		if ( $return )
-		{
-			return true;
-		}
-
-		// @TODO - update use of die
-		die();
-	}
-
+	/**
+	 * Renders a site template when using it in control panel context
+	 *
+	 * @param string $template
+	 * @param array $variables
+	 *
+	 * @return null|string
+	 */
 	public function renderSiteTemplateIfExists($template, array $variables = array())
 	{
 		$path     = craft()->path->getTemplatesPath();
@@ -186,7 +57,12 @@ class SproutEmailService extends BaseApplicationComponent
 		return $rendered;
 	}
 
-	public function returnJson($variables=array())
+	/**
+	 * Outputs JSON encoded data to standard output stream, useful during AJAX requests
+	 *
+	 * @param array $variables
+	 */
+	public function returnJson($variables = array())
 	{
 		JsonHelper::sendJsonHeaders();
 
@@ -201,12 +77,13 @@ class SproutEmailService extends BaseApplicationComponent
 	 * Logs an error in cases where it makes more sense than to throw an exception
 	 *
 	 * @param mixed $msg
+	 * @param array $vars
 	 */
-	public function error($msg)
+	public function error($msg, array $vars = array())
 	{
 		if (is_string($msg))
 		{
-			$msg = Craft::t($msg);
+			$msg = Craft::t($msg, $vars);
 		}
 		else
 		{
