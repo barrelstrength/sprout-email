@@ -19,14 +19,14 @@ var SproutEmail = {
 			SproutEmail.toggleRecipientList();
 		});
 
-		$('#emailProvider').change(function(){
-			SproutEmail.selectEmailProvider();
+		$('#mailer').change(function(){
+			SproutEmail.onCampaignMailerSelect();
 		});
 
 		SproutEmail.selectNotificationEvent();
 		SproutEmail.setRecipientButtons();
 		SproutEmail.toggleRecipientList();
-		SproutEmail.selectEmailProvider();
+		SproutEmail.onCampaignMailerSelect();
 	},
 
 	toggleRecipientList: function()
@@ -58,12 +58,31 @@ var SproutEmail = {
 		$('.' + $('#notificationEvent').val()).show();
 	},
 
-	selectEmailProvider: function()
+	/**
+	 * Event handler for mailer selection on campaign settings
+	 */
+	onCampaignMailerSelect: function()
 	{
-		var selected = $('#emailProvider').val();
-		$('.generalsettings').hide();
-		$('.generalsettings').find('input, select').attr('disabled', true);
-		$('#' + selected + '-generalsettings-template').show();
-		$('#' + selected + '-generalsettings-template').find('input, select').attr('disabled', false);
+		this.toggleCopyPasteTemplateView($("#mailer").val());
+	},
+
+	/**
+	 * Toggles campaign copy/paste template based on mailer selected
+	 *
+	 * @param {string} mailerSelected
+	 * @returns {*}
+	 */
+	toggleCopyPasteTemplateView: function(mailerSelected)
+	{
+		var $template = $("#templateCopyPaste").closest(".field");
+
+		if (mailerSelected === "copypaste")
+		{
+			$template.show()
+		}
+		else
+		{
+			$template.hide();
+		}
 	}
 }
