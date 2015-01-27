@@ -139,6 +139,8 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 			$source = $this->getSource($sourceKey, $context);
 
+			craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
+
 			return craft()->templates->render(
 				'sproutemail/entries/_entryindex', array(
 					'context'            => $context,
