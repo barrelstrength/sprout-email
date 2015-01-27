@@ -103,13 +103,17 @@ class SproutEmailBaseEvent
 	 * @note
 	 * This is used when determining whether a campaign should be sent
 	 *
-	 * @param mixed     $options
-	 * @param BaseModel $model
-	 * @param array     $params
+	 * @param mixed $options
+	 * @param mixed $eventData
+	 * @param array $params
+	 *
+	 * @note
+	 * $eventData will be an element model most of the time but...
+	 * it could also be a string as is the case for user session login
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, BaseModel $model, array $params = array())
+	public function validateOptions($options, $eventData, array $params = array())
 	{
 	}
 
