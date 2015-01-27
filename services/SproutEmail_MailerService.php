@@ -47,9 +47,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	/**
 	 * Returns all the available email services that sprout email can use
 	 *
+	 * @param bool $installedOnly
+	 *
 	 * @return SproutEmailBaseMailer[]
 	 */
-	public function getMailers()
+	public function getMailers($installedOnly=false)
 	{
 		if (null === $this->mailers)
 		{
@@ -63,7 +65,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 					{
 						foreach ($mailers as $name => $mailer)
 						{
-							$this->mailers[$mailer->getId()] = $mailer;
+							if (!$installedOnly || $mailer->isInstalled())
+							{
+								$this->mailers[$mailer->getId()] = $mailer;
+							}
 						}
 					}
 				}
@@ -71,6 +76,16 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 
 		return $this->mailers;
+	}
+
+	/**
+	 * Return a list of installed/registered mailers ready for use
+	 *
+	 * @return SproutEmailBaseMailer[]
+	 */
+	public function getInstalledMailers()
+	{
+		return $this->getMailers(true);
 	}
 
 	/**

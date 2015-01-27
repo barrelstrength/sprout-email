@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set crumbs = [
-	{ label: craft.sproutEmail.name|t, url: url('sproutemail') },
+	{ label: craft.sproutEmail.getName()|t, url: url('sproutemail') },
 ] %}
 
 {% set title = entry is defined and entry.title is not empty ? entry.title : 'Create a new Entry' %}
@@ -33,6 +33,9 @@
 			</div>
 
 			<div class="item" data-position="right" data-colspan="1">
+				{% if showPreviewBtn %}
+					{% include "_includes/previewbtns" %}
+				{% endif %}
 
 				<div class="pane">
 
@@ -50,9 +53,6 @@
 
 					<div>
 						<div id="tab-sproutemail-overview">
-							{% if shareUrlHtml is defined and shareUrlText is defined %}
-							<h3>Preview: <a href="{{ shareUrlHtml|replace({'.html': ''}) }}">HTML</a> | <a href="{{ shareUrlText }}">Text</a></h3>
-							{% endif %}
 
 							{{ forms.textField({
 								label: "Slug"|t,
@@ -163,20 +163,20 @@
 				<table class="inputs fullwidth">
 					<tr>
 						<td class="thin">
-
-							{% if campaign.type == 'notification' %}
-							<div class="btngroup submit first">
-								<input type="submit" class="btn submit" value="{{ 'Save Notification'|t }}">
-							</div>
-							{% endif %}
-
-							{% if campaign.type == 'email' %}
-
-							<div class="btngroup submit first">
-								<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
-							</div>
-
-							{% endif %}
+							<section class="buttons">
+								<div class="btngroup submit">
+									<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+									{% if campaign.type == 'email' %}
+									<div class="btn submit menubtn"></div>
+									<div class="menu">
+										<ul>
+											<li><a class="formsubmit" data-redirect="sproutemail/entries/{campaign.id}/{id}">{{ "Save and continue editing"|t }}</a></li>
+											<li><a class="formsubmit" data-redirect="sproutemail/entries/{campaign.id}/new">{{ "Save and add another"|t }}</a></li>
+										</ul>
+									</div>
+									{% endif %}
+								</div>
+							</section>
 						</td>
 					</tr>
 				</table>

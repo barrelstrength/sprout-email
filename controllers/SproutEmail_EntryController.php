@@ -22,6 +22,64 @@ class SproutEmail_EntryController extends BaseController
 	protected $campaign;
 
 	/**
+	 * Gives a mailer the ability to relay method calls to itself from a modal window
+	 *
+	 * @throws HttpException
+	 */
+	public function actionRelayMailerMethod()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$response = array(
+			'success' => false,
+			'content' => '',
+		);
+
+		$mailer = craft()->request->getPost('mailer');
+		$method = craft()->request->getPost('method');
+
+		if (!$mailer)
+		{
+			$response['content'] = Craft::t('The mailer name is required.');
+			$this->returnJson($response);
+		}
+
+		$mailer = sproutEmail()->mailers->getMailerByName($mailer);
+
+		if (!$mailer)
+		{
+			$response['content'] = Craft::t('The {name} mailer could be instantiated.');
+			$this->returnJson($response);
+		}
+
+		if (!$method || !method_exists($mailer, $method))
+		{
+			$response['content'] = Craft::t('You forgot to pass in a method to call or that method does not exist.');
+
+			$this->returnJson($response);
+		}
+
+		try
+		{
+			$result = call_user_func(array($mailer, $method));
+
+			if (empty($result['content']))
+			{
+				$response['content'] = Craft::t('You did not return any content from {method}().', array('method' => $method));
+				$this->returnJson($response);
+			}
+
+			$this->returnJson($result);
+		}
+		catch(\Exception $e)
+		{
+			$response['content'] = Craft::t($e->getMessage());
+			$this->returnJson($response);
+		}
+	}
+
+	/**
 	 * Saves a campaign entry
 	 *
 	 * @throws Exception
@@ -92,63 +150,31 @@ class SproutEmail_EntryController extends BaseController
 		}
 	}
 
-	/**
-	 * Fetch or create a SproutEmail_EntryModel
-	 *
-	 * @throws Exception
-	 * @return SproutEmail_EntryModel
-	 */
-	protected function getEntryModel()
+	public function actionExport()
 	{
-		$entryId = craft()->request->getPost('entryId');
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
 
-		if ($entryId)
+		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
+
+		if ($entry && ($campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId)))
 		{
-			$entry = sproutEmail()->entries->getEntryById($entryId);
-
-			if (!$entry)
+			try
 			{
-				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $entryId)));
+				$result = sproutEmail()->mailers->exportEntry($entry, $campaign);
+
+				if (craft()->request->isAjaxRequest())
+				{
+					$this->returnJson($result);
+				}
+				craft()->end();
+			}
+			catch (\Exception $e)
+			{
+				$this->returnJson(array('content' => $e->getMessage()));
 			}
 		}
-		else
-		{
-			$entry = new SproutEmail_EntryModel();
-		}
-
-		return $entry;
-	}
-
-	/**
-	 * Populates a SproutEmail_EntryModel with post data
-	 *
-	 * @param SproutEmail_EntryModel $entry
-	 *
-	 * @return \Craft\SproutEmail_EntryModel
-	 */
-	protected function populateEntryModel(SproutEmail_EntryModel $entry)
-	{
-		$entry->campaignId  = $this->campaign->id;
-		$entry->slug        = craft()->request->getPost('slug', $entry->slug);
-		$entry->enabled     = (bool) craft()->request->getPost('enabled', $entry->enabled);
-		$entry->fromName    = craft()->request->getRequiredPost('sproutEmail.fromName');
-		$entry->fromEmail   = craft()->request->getRequiredPost('sproutEmail.fromEmail');
-		$entry->replyTo     = craft()->request->getRequiredPost('sproutEmail.replyTo');
-		$entry->subjectLine = craft()->request->getRequiredPost('subjectLine');
-
-		$entry->getContent()->title = $entry->subjectLine;
-
-		if (empty($entry->slug))
-		{
-			$entry->slug = ElementHelper::createSlug($entry->subjectLine);
-		}
-
-		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
-
-		$entry->setContentFromPost($fieldsLocation);
-		$entry->setContentPostLocation($fieldsLocation);
-
-		return $entry;
+		// @todo Handle display of errors when entry or campaign is missing
 	}
 
 	/**
@@ -159,7 +185,6 @@ class SproutEmail_EntryController extends BaseController
 	 * @throws HttpException
 	 * @throws Exception
 	 */
-
 	public function actionEditEntryTemplate(array $variables = array())
 	{
 		$entryId    = craft()->request->getSegment(4);
@@ -210,13 +235,12 @@ class SproutEmail_EntryController extends BaseController
 			}
 
 			$variables['tabs'][] = array(
-				'label' => Craft::t($tab->name),
 				'url'   => '#tab'.($index + 1),
+				'label' => Craft::t($tab->name),
 				'class' => ($hasErrors ? 'error' : null)
 			);
 		}
 
-		// @todo Figure out whay this was in a conditional and what the condition should be
 		$shareParamsHtml = array(
 			'entryId'  => $variables['entry']->id,
 			'template' => 'html'
@@ -226,6 +250,42 @@ class SproutEmail_EntryController extends BaseController
 			'entryId'  => $variables['entry']->id,
 			'template' => 'txt'
 		);
+
+		// Enable Live Preview?
+		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($variables['campaign']->template))
+		{
+			craft()->templates->includeJs('Craft.LivePreview.init('.JsonHelper::encode(array(
+						'fields'        => '#title-field, #fields > div > div > .field',
+						'extraFields'   => '#settings',
+						'previewUrl'    => $variables['entry']->getUrl(),
+						'previewAction' => 'sproutEmail/entry/livePreviewEntry',
+						'previewParams' => array(
+							'entryId'   => $variables['entry']->id,
+							'campaignId'=> $variables['campaign']->id,
+						)
+					)).');');
+
+			$variables['showPreviewBtn'] = true;
+
+			// Should we show the Share button too?
+			if ($variables['entry']->id)
+			{
+				if ($variables['entry']->enabled)
+				{
+					$variables['shareUrl'] = $variables['entry']->getUrl();
+				}
+				else
+				{
+					$shareParams = array('entryId' => $variables['entry']->id, 'campaignId' => $variables['campaign']->id);
+
+					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
+				}
+			}
+		}
+		else
+		{
+			$variables['showPreviewBtn'] = false;
+		}
 
 		if ($variables['campaign']->type == 'notification')
 		{
@@ -247,6 +307,61 @@ class SproutEmail_EntryController extends BaseController
 		$variables['recipientLists'] = sproutEmail()->entries->getRecipientListsByEntryId($entryId);
 
 		$this->renderTemplate('sproutemail/entries/_edit', $variables);
+	}
+
+	public function actionPreview()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
+
+		if ($entry && ($campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId)))
+		{
+			try
+			{
+				$result = sproutEmail()->mailers->previewEntry($entry, $campaign);
+
+				if (craft()->request->isAjaxRequest())
+				{
+					return $result['content'];
+					// $this->returnJson($result);
+				}
+				// @todo Handle success message
+				craft()->end();
+			}
+			catch (\Exception $e)
+			{
+				// @todo Handle display of errors based on $e
+			}
+		}
+
+		// @todo Handle display of errors when entry or campaign is missing
+	}
+
+	/**
+	 * @throws HttpException
+	 */
+	public function actionLivePreviewEntry()
+	{
+		$entryId = craft()->request->getPost('entryId');
+
+		if ($entryId)
+		{
+			$entry = sproutEmail()->entries->getEntryById($entryId);
+		}
+
+		if (!$entry)
+		{
+			throw new HttpException(404);
+		}
+
+		$entry->getContent()->title = craft()->request->getPost('title', $entry->subjectLine);
+
+		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+		$entry->setContentFromPost($fieldsLocation);
+
+		$this->showEntry($entry);
 	}
 
 	/**
@@ -313,62 +428,6 @@ class SproutEmail_EntryController extends BaseController
 		$this->showEntry($entry, $template);
 	}
 
-	public function actionExport()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
-
-		if ($entry && ($campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId)))
-		{
-			try
-			{
-				$result = sproutEmail()->mailers->exportEntry($entry, $campaign);
-
-				if (craft()->request->isAjaxRequest())
-				{
-					$this->returnJson($result);
-				}
-				craft()->end();
-			}
-			catch (\Exception $e)
-			{
-				$this->returnJson(array('content' => $e->getMessage()));
-			}
-		}
-		// @todo Handle display of errors when entry or campaign is missing
-	}
-
-	public function actionPreview()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$entry = sproutEmail()->entries->getEntryById(craft()->request->getPost('entryId'));
-
-		if ($entry && ($campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId)))
-		{
-			try
-			{
-				$result = sproutEmail()->mailers->previewEntry($entry, $campaign);
-
-				if (craft()->request->isAjaxRequest())
-				{
-					$this->returnJson($result);
-				}
-				// @todo Handle success message
-				craft()->end();
-			}
-			catch (\Exception $e)
-			{
-				// @todo Handle display of errors based on $e
-			}
-		}
-
-		// @todo Handle display of errors when entry or campaign is missing
-	}
-
 	/**
 	 * @param SproutEmail_EntryModel $entry
 	 *
@@ -390,9 +449,17 @@ class SproutEmail_EntryController extends BaseController
 
 			craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
 
+			$ext = '';
+
+			if (in_array($template, array('txt', 'text')))
+			{
+				$ext = '.txt';
+			}
+
 			$this->renderTemplate(
-				$campaign->template.'.'.$template, array(
-					'entry' => $entry
+				$campaign->template.$ext, array(
+					'entry' => $entry,
+					'campaign' => $campaign,
 				)
 			);
 		}
@@ -401,5 +468,64 @@ class SproutEmail_EntryController extends BaseController
 			Craft::log('Attempting to preview an Entry that does not exist', LogLevel::Error);
 			throw new HttpException(404);
 		}
+	}
+
+	/**
+	 * Fetch or create a SproutEmail_EntryModel
+	 *
+	 * @throws Exception
+	 * @return SproutEmail_EntryModel
+	 */
+	protected function getEntryModel()
+	{
+		$entryId = craft()->request->getPost('entryId');
+
+		if ($entryId)
+		{
+			$entry = sproutEmail()->entries->getEntryById($entryId);
+
+			if (!$entry)
+			{
+				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $entryId)));
+			}
+		}
+		else
+		{
+			$entry = new SproutEmail_EntryModel();
+		}
+
+		return $entry;
+	}
+
+	/**
+	 * Populates a SproutEmail_EntryModel with post data
+	 *
+	 * @param SproutEmail_EntryModel $entry
+	 *
+	 * @return \Craft\SproutEmail_EntryModel
+	 */
+	protected function populateEntryModel(SproutEmail_EntryModel $entry)
+	{
+		$entry->campaignId  = $this->campaign->id;
+		$entry->slug        = craft()->request->getPost('slug', $entry->slug);
+		$entry->enabled     = (bool) craft()->request->getPost('enabled', $entry->enabled);
+		$entry->fromName    = craft()->request->getRequiredPost('sproutEmail.fromName');
+		$entry->fromEmail   = craft()->request->getRequiredPost('sproutEmail.fromEmail');
+		$entry->replyTo     = craft()->request->getRequiredPost('sproutEmail.replyTo');
+		$entry->subjectLine = craft()->request->getRequiredPost('subjectLine');
+
+		$entry->getContent()->title = $entry->subjectLine;
+
+		if (empty($entry->slug))
+		{
+			$entry->slug = ElementHelper::createSlug($entry->subjectLine);
+		}
+
+		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
+		$entry->setContentFromPost($fieldsLocation);
+		$entry->setContentPostLocation($fieldsLocation);
+
+		return $entry;
 	}
 }

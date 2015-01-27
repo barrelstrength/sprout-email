@@ -58,6 +58,27 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Returns whether or not a site template exists
+	 *
+	 * @param $template
+	 *
+	 * @return bool
+	 */
+	public function doesSiteTemplateExist($template)
+	{
+		$path = craft()->path->getTemplatesPath();
+
+		craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+
+		$exists = craft()->templates->doesTemplateExist($template);
+
+		craft()->path->setTemplatesPath($path);
+
+		return $exists;
+	}
+
+
+	/**
 	 * Outputs JSON encoded data to standard output stream, useful during AJAX requests
 	 *
 	 * @param array $variables
