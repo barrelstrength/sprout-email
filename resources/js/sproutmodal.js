@@ -81,7 +81,6 @@ SproutModal.prototype.create = function (content)
 		{
 			if (error)
 			{
-				console.log(error);
 				return;
 			}
 
@@ -96,9 +95,7 @@ SproutModal.prototype.create = function (content)
 
 $(document).ready(function ()
 {
-	var $buttons = $(".prepare, .preview");
-
-	$buttons.on("click", function (e)
+	$(".prepare").on("click", function (e)
 	{
 		e.preventDefault();
 
@@ -106,14 +103,10 @@ $(document).ready(function ()
 
 		var modal = new SproutModal();
 
-		console.log($t.data());
-
 		modal.init().postToControllerAction($t.data(), function handle(error, response)
 		{
 			if (error)
 			{
-				console.log(error);
-
 				return;
 			}
 
