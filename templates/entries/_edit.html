@@ -125,7 +125,7 @@
 						<div id="tab-sproutemail-recipients" class="hidden">
 
 							<div style="max-height:300px;overflow-y:auto;" id="recipients">
-								{{ craft.sproutemail.getMailer(campaign.mailer).getRecipientListsHtml(recipientLists) }}
+								{{ craft.sproutemail.getMailer(campaign.mailer).getRecipientListsHtml(recipientLists)|raw }}
 							</div>
 
 						</div>
