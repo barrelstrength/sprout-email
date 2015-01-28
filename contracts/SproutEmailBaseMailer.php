@@ -239,6 +239,23 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
+	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
+	 *
+	 * @example
+	 * Mailers should be calling the following functions from within their implementation
+	 *
+	 * craft()->templates->includeJs(File|Resource)();
+	 * craft()->templates->includeCss(File|Resource)();
+	 *
+	 * @note
+	 * To register a dynamic action handler, mailers should listen for sproutEmailBeforeRender
+	 * $(document).on('sproutEmailBeforeRender', function(e, content) {});
+	 */
+	public function includeModalResources()
+	{
+	}
+
+	/**
 	 * Enables mailers to define their own settings and validation for them
 	 *
 	 * @return array
