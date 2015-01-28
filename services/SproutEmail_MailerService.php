@@ -185,6 +185,93 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
+	 * @param $mailerName
+	 * @param $entryId
+	 * @param $campaignId
+	 *
+	 * @return array(content => '', actions => array())
+	 * @throws Exception
+	 */
+	public function getPrepareModal($mailerName, $entryId, $campaignId)
+	{
+		$mailer = $this->getMailerByName($mailerName);
+
+		if (!$mailer)
+		{
+			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $mailerName)));
+		}
+
+		$entry    = sproutEmail()->entries->getEntryById($entryId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$modal    = new SproutEmail_ResponseModel();
+
+		if ($entry && $campaign)
+		{
+			$modal->content = $mailer->getPrepareModalHtml($entry, $campaign);
+
+			return $modal;
+		}
+		else
+		{
+			$name = $mailer->getTitle();
+
+			$modal->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
+		}
+
+		return $modal;
+	}
+
+	/**
+	 * @param $mailerName
+	 * @param $entryId
+	 * @param $campaignId
+	 *
+	 * @return array(content => '', actions => array())
+	 * @throws Exception
+	 */
+	public function getPreviewModal($mailerName, $entryId, $campaignId)
+	{
+		$mailer = $this->getMailerByName($mailerName);
+
+		if (!$mailer)
+		{
+			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaign->mailer)));
+		}
+
+		$entry    = sproutEmail()->entries->getEntryById($entryId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$modal    = new SproutEmail_ResponseModel();
+
+		if ($entry && $campaign)
+		{
+			$modal->content = $mailer->getPreviewModalHtml($entry, $campaign);
+
+			return $modal;
+		}
+		else
+		{
+			$name = $mailer->getTitle();
+
+			$modal->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
+		}
+
+		return $modal;
+	}
+
+	public function includeMailerModalResources()
+	{
+		$mailers = $this->getInstalledMailers();
+
+		if (count($mailers))
+		{
+			foreach ($mailers as $mailer)
+			{
+				$mailer->includeModalResources();
+			}
+		}
+	}
+
+	/**
 	 * @param SproutEmail_CampaignModel $campaign
 	 * @param SproutEmail_EntryModel    $entry
 	 *
@@ -290,80 +377,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			throw $e;
 		}
-	}
-
-	/**
-	 * @param $mailerName
-	 * @param $entryId
-	 * @param $campaignId
-	 *
-	 * @return array(content => '', actions => array())
-	 * @throws Exception
-	 */
-	public function getPrepareModal($mailerName, $entryId, $campaignId)
-	{
-		$mailer = $this->getMailerByName($mailerName);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $mailerName)));
-		}
-
-		$entry    = sproutEmail()->entries->getEntryById($entryId);
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
-		$modal    = new SproutEmail_ResponseModel();
-
-		if ($entry && $campaign)
-		{
-			$modal->content = $mailer->getPrepareModalHtml($entry, $campaign);
-
-			return $modal;
-		}
-		else
-		{
-			$name = $mailer->getTitle();
-
-			$modal->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
-		}
-
-		return $modal;
-	}
-
-	/**
-	 * @param $mailerName
-	 * @param $entryId
-	 * @param $campaignId
-	 *
-	 * @return array(content => '', actions => array())
-	 * @throws Exception
-	 */
-	public function getPreviewModal($mailerName, $entryId, $campaignId)
-	{
-		$mailer = $this->getMailerByName($mailerName);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaign->mailer)));
-		}
-
-		$entry    = sproutEmail()->entries->getEntryById($entryId);
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
-		$modal    = new SproutEmail_ResponseModel();
-
-		if ($entry && $campaign)
-		{
-			$modal->content = $mailer->getPreviewModalHtml($entry, $campaign);
-
-			return $modal;
-		}
-		else
-		{
-			$name = $mailer->getTitle();
-
-			$modal->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
-		}
-
-		return $modal;
 	}
 
 	/**

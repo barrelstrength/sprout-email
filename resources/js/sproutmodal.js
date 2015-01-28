@@ -1,14 +1,43 @@
+/**
+ * Defines the SproutModal constructor
+ *
+ * @constructor
+ */
 var SproutModal = function ()
 {
 };
 
+/**
+ * Gives us the ability to augment the object in the future
+ *
+ * @returns {SproutModal}
+ */
 SproutModal.prototype.init = function ()
 {
+	var self = this;
+
+	$(".prepare").on("click", function (e)
+	{
+		e.preventDefault();
+
+		var $t = $(e.target);
+
+		self.postToControllerAction($t.data(), function handle(error, response)
+		{
+			if (error)
+			{
+				return self.createErrorModal(error);
+			}
+
+			self.create(response.content);
+		});
+	});
+
 	return this;
 };
 
 /**
- * Allows us to post to a controller action and register a callback a la NodeJS
+ * Gives us the ability to post to a controller action and register a callback a la NodeJS
  *
  * @example
  * var payload = {action: 'plugin/controller/action'};
@@ -43,9 +72,15 @@ SproutModal.prototype.postToControllerAction = function runControllerAction(payl
 	$.ajax(request);
 };
 
+/**
+ * Creates a modal window instance from content returned from server and does so recursively
+ *
+ * @param string content
+ * @returns {Garnish.Modal}
+ */
 SproutModal.prototype.create = function (content)
 {
-	// For later reference withing different scopes
+	// For later reference within different scopes
 	var self = this;
 
 	// Modal setup
@@ -53,6 +88,9 @@ SproutModal.prototype.create = function (content)
 	var $content = $("#content", $modal).html(content);
 	var $spinner = $(".spinner", $modal);
 	var $actions = $(".actions", $modal);
+
+	// Gives mailers a chance to add their own event handlers
+	$(document).trigger('sproutModalBeforeRender', $content);
 
 	$modal.removeClass("hidden");
 
@@ -62,11 +100,13 @@ SproutModal.prototype.create = function (content)
 	$("#close", $modal).off().on("click", function ()
 	{
 		modal.hide();
+		modal.destroy();
 	});
 
 	$("#cancel", $modal).off().on("click", function ()
 	{
 		modal.hide();
+		modal.destroy();
 	});
 
 	$actions.off().on("click", function (e)
@@ -81,7 +121,7 @@ SproutModal.prototype.create = function (content)
 		{
 			if (error)
 			{
-				return;
+				return this.createErrorModal(error);
 			}
 
 			modal = self.create(response.content);
@@ -93,24 +133,18 @@ SproutModal.prototype.create = function (content)
 	return modal;
 };
 
-$(document).ready(function ()
+SproutModal.prototype.createErrorModal = function(error)
 {
-	$(".prepare").on("click", function (e)
-	{
-		e.preventDefault();
+	var $content = $('#sproutmodalcontent').clone();
 
-		var $t = $(e.target);
+	$('.innercontent', $content).html(error);
 
-		var modal = new SproutModal();
+	var modal = new SproutModal();
 
-		modal.init().postToControllerAction($t.data(), function handle(error, response)
-		{
-			if (error)
-			{
-				return;
-			}
+	modal.create($content.html());
+};
 
-			modal.create(response.content);
-		});
-	});
+$(document).on('sproutModalBeforeRender', function ()
+{
+	console.log('Handled Sprout Modal Before Render');
 });

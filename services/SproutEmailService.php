@@ -38,21 +38,26 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function renderSiteTemplateIfExists($template, array $variables = array())
 	{
-		$path     = craft()->path->getTemplatesPath();
 		$rendered = null;
 
-		craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
-
-		try
+		// If blank template is passed in, Craft will render the index template for some odd reason
+		if (!empty($template))
 		{
-			$rendered = craft()->templates->render($template, $variables);
-		}
-		catch (\Exception $e)
-		{
-			$this->error($e->getMessage());
-		}
+			$path = craft()->path->getTemplatesPath();
 
-		craft()->path->setTemplatesPath($path);
+			craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+
+			try
+			{
+				$rendered = craft()->templates->render($template, $variables);
+			}
+			catch (\Exception $e)
+			{
+				$this->error($e->getMessage());
+			}
+
+			craft()->path->setTemplatesPath($path);
+		}
 
 		return $rendered;
 	}
