@@ -29,6 +29,41 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Allows us to render an object template without creating a fatal error
+	 *
+	 * @param $str
+	 * @param $obj
+	 */
+	public function renderObjectTemplateSafely($str, $obj)
+	{
+		try
+		{
+			return craft()->templates->renderObjectTemplate($str, $obj);
+		}
+		catch (\Exception $e)
+		{
+			$this->error($e->getMessage());
+		}
+	}
+
+	/**
+	 * @param BaseModel $model
+	 * @param array|mixed $obj
+	 */
+	public function renderObjectContentSafely(&$model, $obj)
+	{
+		$content = $model->getContent();
+
+		foreach ($content as $attribute => $value)
+		{
+			if (is_string($value) && stripos($value, '{') !== false)
+			{
+				$model->getContent()->{$attribute} = $this->renderObjectTemplateSafely($value, $obj);
+			}
+		}
+	}
+
+	/**
 	 * Renders a site template when using it in control panel context
 	 *
 	 * @param string $template
@@ -81,7 +116,6 @@ class SproutEmailService extends BaseApplicationComponent
 
 		return $exists;
 	}
-
 
 	/**
 	 * Outputs JSON encoded data to standard output stream, useful during AJAX requests

@@ -36,9 +36,12 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		$isNewEntry  = isset($params['isNewEntry']) && $params['isNewEntry'];
 		$onlyWhenNew = isset($options['onlyWhenNew']) && $options['onlyWhenNew'];
 
-		if (in_array($entry->getSection()->id, $options))
+		if (in_array($entry->getSection()->id, $options['entriesSaveEntrySectionIds']))
 		{
-			return (!$onlyWhenNew || $isNewEntry);
+			if (!$onlyWhenNew || ($onlyWhenNew && $isNewEntry))
+			{
+				return true;
+			}
 		}
 
 		return false;

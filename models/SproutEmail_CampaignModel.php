@@ -6,18 +6,19 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property int    $id
- * @property string $name
- * @property string $handle
- * @property string $type
- * @property string $mailer
- * @property string $titleFormat
- * @property string $urlFormat
- * @property bool   $hasUrls
- * @property bool   $hasAdvancedTitles
- * @property string $template
- * @property string $templateCopyPaste
- * @property int    $fieldLayoutId
+ * @property int                      $id
+ * @property string                   $name
+ * @property string                   $handle
+ * @property string                   $type
+ * @property string                   $mailer
+ * @property string                   $titleFormat
+ * @property string                   $urlFormat
+ * @property bool                     $hasUrls
+ * @property bool                     $hasAdvancedTitles
+ * @property string                   $template
+ * @property string                   $templateCopyPaste
+ * @property int                      $fieldLayoutId
+ * @property SproutEmail_EntryModel[] $entries
  */
 class SproutEmail_CampaignModel extends BaseModel
 {
