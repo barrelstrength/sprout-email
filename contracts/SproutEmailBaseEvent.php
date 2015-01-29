@@ -8,7 +8,7 @@ namespace Craft;
  *
  * @package Craft
  */
-class SproutEmailBaseEvent
+abstract class SproutEmailBaseEvent
 {
 	/**
 	 * Returns the event title when used in string context
