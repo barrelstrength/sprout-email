@@ -20,6 +20,15 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 
 	public function prepareParams(Event $event)
 	{
-		return array('value' => $event->params['username']);
+		$user = craft()->users->getUserByUsernameOrEmail($event->params['username']);
+
+		if (!$user)
+		{
+			sproutEmail()->error('No user found with username/email '.$event->params['username']);
+
+			return null;
+		}
+
+		return array('value' => $user);
 	}
 }
