@@ -48,12 +48,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * Returns all the available email services that sprout email can use
 	 *
 	 * @param bool $installedOnly
+	 * @param bool $includeMailersNotYetLoaded
 	 *
 	 * @return SproutEmailBaseMailer[]
 	 */
-	public function getMailers($installedOnly=false)
+	public function getMailers($installedOnly = false, $includeMailersNotYetLoaded = false)
 	{
-		if (null === $this->mailers)
+		if (is_null($this->mailers) || $includeMailersNotYetLoaded)
 		{
 			$responses = craft()->plugins->call('defineSproutEmailMailers');
 
@@ -89,12 +90,18 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
+	 * @param bool   $includeMailersNotYetLoaded
 	 *
 	 * @return SproutEmailBaseMailer|null
 	 */
-	public function getMailerByName($name)
+	public function getMailerByName($name, $includeMailersNotYetLoaded = false)
 	{
+		if ($includeMailersNotYetLoaded)
+		{
+			$this->mailers = $this->getMailers(false, true);
+		}
+
 		return isset($this->mailers[$name]) ? $this->mailers[$name] : null;
 	}
 
@@ -115,7 +122,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function getSettingsByMailerName($name)
 	{
-		if (null === $this->configs)
+		if (is_null($this->configs))
 		{
 			$this->configs = craft()->config->get('sproutEmail');
 		}
@@ -125,14 +132,15 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$configs = $this->configs['apiSettings'][$name];
 		}
 
-		if (($mailer = $this->getMailerByName($name)))
+		if (($mailer = $this->getMailerByName($name, true)))
 		{
 			$settings = new Model($mailer->defineSettings());
 		}
 
-		if ($mailer && $settings && ($record = $this->getMailerRecordByName($name)))
+		if ($mailer)
 		{
-			$settingsFromDb   = $record->settings ? $record->settings : array();
+			$record           = $this->getMailerRecordByName($name);
+			$settingsFromDb   = isset($record->settings) ? $record->settings : array();
 			$settingsFromFile = isset($configs) ? $configs : array();
 
 			$settings->setAttributes(array_merge($settingsFromDb, $settingsFromFile));
@@ -403,7 +411,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	public function installMailer($name)
 	{
 		$vars   = array('name' => $name);
-		$mailer = $this->getMailerByName($name);
+		$mailer = $this->getMailerByName($name, true);
 
 		if (!$mailer)
 		{
@@ -430,7 +438,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	public function uninstallMailer($name)
 	{
 		$vars   = array('name' => $name);
-		$mailer = $this->getMailerByName($name);
+		$mailer = $this->getMailerByName($name, true);
 
 		if (!$mailer)
 		{
