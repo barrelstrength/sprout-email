@@ -84,13 +84,6 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
-	public function addTwigExtension()
-	{
-	    Craft::import('plugins.sproutemail.twigextensions.SproutEmailTwigExtension');
-
-	    return new SproutEmailTwigExtension();
-	}
-
 	public function init()
 	{
 		parent::init();
