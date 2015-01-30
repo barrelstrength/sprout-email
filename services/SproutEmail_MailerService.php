@@ -397,6 +397,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * Installs the mailer and its settings if not already installed
 	 *
 	 * @param $name
+	 *
+	 * @throws Exception
 	 */
 	public function installMailer($name)
 	{
@@ -405,21 +407,25 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$mailer)
 		{
-			sproutEmail()->error('The {name} mailer is the available for installation.', $vars);
+			throw new Exception(Craft::t('The {name} mailer is not available for installation.', $vars));
 		}
 
 		if ($mailer->isInstalled())
 		{
 			sproutEmail()->info('The {name} mailer is already installed.', $vars);
 		}
-
-		$this->createMailerRecord($mailer);
+		else
+		{
+			$this->createMailerRecord($mailer);
+		}
 	}
 
 	/**
 	 * Installs the mailer and its settings if not already installed
 	 *
 	 * @param $name
+	 *
+	 * @throws Exception
 	 */
 	public function uninstallMailer($name)
 	{
@@ -428,15 +434,17 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$mailer)
 		{
-			sproutEmail()->error('The {name} mailer was not found.', $vars);
+			throw new Exception(Craft::t('The {name} mailer was not found.', $vars));
 		}
 
 		if (!$mailer->isInstalled())
 		{
-			sproutEmail()->info('The {name} mailer is installed, no need to uninstall.', $vars);
+			sproutEmail()->info('The {name} mailer is not installed, no need to uninstall.', $vars);
 		}
-
-		$this->deleteMailerRecord($mailer->getId());
+		else
+		{
+			$this->deleteMailerRecord($mailer->getId());
+		}
 	}
 
 	/**

@@ -136,6 +136,7 @@ class SproutEmail_MailChimpService extends SproutEmail_EmailProviderService impl
 		}
 		return $this->apiSettings;
 	}
+
 	/**
 	 * Exports campaign (with send)
 	 *
