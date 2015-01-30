@@ -15,7 +15,7 @@
 
 				<h3>{{ mailer.getCpTitle() }}</h3>
 				{{ mailer.getDescription()|markdown }}
-				{{ mailer.getSettingsHtml({forms: forms, settings: settings}) }}
+				{{ mailer.getSettingsHtml({forms: forms, settings: settings})|raw }}
 				<hr>
 			{% endif %}
 		{% endfor %}

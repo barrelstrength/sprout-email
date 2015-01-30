@@ -97,8 +97,6 @@ class SproutEmailPlugin extends BasePlugin
 
 		Craft::import('plugins.sproutemail.enums.*');
 		Craft::import('plugins.sproutemail.contracts.*');
-		Craft::import('plugins.sproutemail.interfaces.*');
-		Craft::import('plugins.sproutemail.integrations.mailers.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
 
 		sproutEmail()->notifications->registerDynamicEventHandler();
