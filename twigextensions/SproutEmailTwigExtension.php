@@ -15,7 +15,7 @@ class SproutEmailTwigExtension extends Twig_Extension
 
 	public function htmlEntityDecode($html='')
 	{
-		return html_entity_decode($html);
+		return html_entity_decode($html, null, craft()->templates->getTwig()->getCharset());
 	}
 
 	public function getFilters()
