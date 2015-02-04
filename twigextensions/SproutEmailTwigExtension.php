@@ -4,6 +4,7 @@ namespace Craft;
 use Twig_Extension;
 use Twig_Filter_Method;
 use Twig_SimpleFilter;
+use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class SproutEmailTwigExtension extends Twig_Extension
 {
