@@ -4,7 +4,6 @@ namespace Craft;
 use Twig_Extension;
 use Twig_Filter_Method;
 use Twig_SimpleFilter;
-use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class SproutEmailTwigExtension extends Twig_Extension
 {
@@ -23,7 +22,6 @@ class SproutEmailTwigExtension extends Twig_Extension
 	public function getFilters()
 	{
 		return array(
-			'inlineCss' => new Twig_Filter_Method( $this, 'inlineCssFilter',  array('is_safe' => array('html')) ),
 			'wordwrap' => new Twig_Filter_Method( $this, 'wordwrapFilter'),
 			'htmlEntityDecode'		=> new Twig_SimpleFilter('htmlEntityDecode', array($this, 'htmlEntityDecode'), array('is_safe', true)),
 		);
@@ -34,27 +32,6 @@ class SproutEmailTwigExtension extends Twig_Extension
 		return array(
 			'htmlEntityDecode'	=> new Twig_SimpleFilter('htmlEntityDecode', array($this, 'htmlEntityDecode'), array('is_safe', true))
 		);
-	}
-
-	/**
-	 * Inline CSS
-	 * @todo  - make this more robust.  This is just proof of concept right now.
-	 *
-	 * @param  [type] $string [description]
-	 * @return [type]         [description]
-	 */
-	public function inlineCssFilter($string)
-	{
-		$cssToInlineStyles = new CssToInlineStyles();
-
-		$cssToInlineStyles->setHTML($string);
-
-		// Use styles block
-		$cssToInlineStyles->setUseInlineStylesBlock(true);
-
-		$html = $cssToInlineStyles->convert();
-
-		return $html;
 	}
 
 	// @TODO - This doesn't work properly yet, but we need to
