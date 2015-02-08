@@ -4,26 +4,28 @@
 
 {% if entries|length %}
 
-	<h3>
-		Campaigns
-		<span class="info">
-			<p>Create multiple Campaigns with unique fields, layouts, and email service provider integrations.</p>
-		</span>
-	</h3>
-
 	{% for campaign in entries %}
 		{% if loop.first %}
 
 		<table id="entries" class="data fullwidth">
 			<thead>
-				<th width="40%"></th>
-				<th width="20%"></th>
-				<th width="10%"></th>
+				<th width="25%">
+                    Campaign
+                    <span class="info">
+                        <p>Create multiple Campaigns with unique fields, layouts, and email service provider integrations.</p>
+                    </span>
+                </th>
+				<th width="20%">Handle</th>
+                <th width="20%">Mailer</th>
+				<th width="10%">Template</th>
 				<th class="thin"></th>
 			</thead>
 		{% endif %}
 			<tr>
 				<td><a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a></td>
+                <td><code>{{ campaign.handle }}</code></td>
+                <td>{{ campaign.mailer }}</td>
+                <td><code>{{ campaign.template }}</code></td>
 				<td colspan="3" class="thin">
 					<a class="delete icon" title="Delete"></a>
 
