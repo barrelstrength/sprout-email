@@ -2,28 +2,28 @@
 
 {% set mailers = craft.sproutEmail.getMailers() %}
 
-<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings#settings-api') }}">
-	<input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
-	<input type="hidden" name="redirect" value="sproutemail/settings?tab=mailers">
+{% for mailer in mailers %}
+    {% if loop.first %}
+    <table id="mailers" class="data fullwidth">
+        <thead>
+            <th>Mailer</th>
+        </thead>
+        {% endif %}
 
-	{{ getCsrfInput() }}
+        <tr>
+            <td>
+                <a href="{{ cpUrl('sproutemail/' ~ mailer.name ) }}">{{ mailer.title }}</a>
+            </td>
+        </tr>
 
-	<div id="tab-campaign-info" class="tab-content">
-		{% for mailer in mailers %}
-			{% if mailer.isInstalled() %}
-				{% set settings = models[mailer.getId()] is defined ? models[mailer.getId()] : null %}
+        {% if loop.last %}
+    </table>
+    {% endif %}
 
-				<h3>{{ mailer.getCpTitle() }}</h3>
-				{{ mailer.getDescription()|markdown }}
-				{{ mailer.getSettingsHtml({forms: forms, settings: settings})|raw }}
-				<hr>
-			{% endif %}
-		{% endfor %}
-	</div>
+{% endfor %}
 
-	<div class="buttons">
-		<input class="btn submit" type="submit" value="Save API Settings">
-		<a class="btn" href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" title="Refresh List">Refresh List</a>
-	</div>
+<div class="buttons">
+    <a class="btn" href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" title="Refresh List">Refresh List</a>
+</div>
 
-</form>
+
