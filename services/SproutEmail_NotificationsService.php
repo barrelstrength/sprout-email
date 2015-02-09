@@ -185,9 +185,11 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function getDynamicEventHandler()
 	{
-		return function ($eventId, Event $event, SproutEmailBaseEvent $listener)
+		$self = $this;
+
+		return function ($eventId, Event $event, SproutEmailBaseEvent $listener) use ($self)
 		{
-			return $this->handleDynamicEvent($eventId, $event, $listener);
+			return $self->handleDynamicEvent($eventId, $event, $listener);
 		};
 	}
 
