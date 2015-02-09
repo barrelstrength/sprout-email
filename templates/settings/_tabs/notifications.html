@@ -13,10 +13,10 @@
 	{% for campaign in notifications %}
 
 		{% if loop.first %}
-		<h3>Notifications</h3>
 		<table id="entries" class="data fullwidth">
 			<thead>
-				<th width="65%"></th>
+				<th width="40%">Notification</th>
+                <th width="40%">Template</th>
 				<th class="thin"></th>
 			</thead>
 		{% endif %}
@@ -24,8 +24,8 @@
 			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
 				<td>
 					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}">{{ campaign.name }}</a>
-					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
 				</td>
+                <td><code>{{ campaign.template }}</code></td>
 				<td class="thin">
 					<a class="delete icon" title="Delete"></a>
 				</td>
