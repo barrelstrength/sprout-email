@@ -269,6 +269,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	public function includeMailerModalResources()
 	{
+		craft()->templates->includeCssResource('sproutemail/css/modal.css');
+
 		$mailers = $this->getInstalledMailers();
 
 		if (count($mailers))
