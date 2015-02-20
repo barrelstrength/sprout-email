@@ -153,6 +153,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * Returns a link to the control panel section for the mailer passed in
 	 *
 	 * @param SproutEmailBaseMailer $mailer
+	 * @deprecate Deprecated for 0.9.0 in favour of BaseMailer API
 	 *
 	 * @return string|\Twig_Markup
 	 */

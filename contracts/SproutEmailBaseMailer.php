@@ -114,6 +114,8 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @see hasCpSection()
 	 *
+	 * @deprecate Deprecated for 0.9.0 in favour of getCpSectionUrl()
+	 *
 	 * @return string|\Twig_Markup
 	 */
 	final public function getCpTitle()
@@ -127,12 +129,22 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns the name of the plugin this mailer is associated with
-	 *
 	 * @return string
 	 */
-	public function getPluginName()
+	final public function getCpSectionUrl()
 	{
+		if ($this->hasCpSection())
+		{
+			return UrlHelper::getCpUrl(sprintf('sproutemail/%s', $this->getId()));
+		}
+	}
+
+	final public function getCpSettingsUrl()
+	{
+		if ($this->hasCpSettings())
+		{
+			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
+		}
 	}
 
 	/**
@@ -143,6 +155,18 @@ abstract class SproutEmailBaseMailer
 	public function hasCpSection()
 	{
 		return false;
+	}
+
+	/**
+	 * Returns whether or not the mailer has settings to display
+	 *
+	 * @return bool
+	 */
+	final public function hasCpSettings()
+	{
+		$settings = $this->defineSettings();
+
+		return is_array($settings) && count($settings);
 	}
 
 	/**

@@ -3,27 +3,33 @@
 {% set mailers = craft.sproutEmail.getMailers() %}
 
 {% for mailer in mailers %}
-    {% if loop.first %}
-    <table id="mailers" class="data fullwidth">
-        <thead>
-            <th>Mailer</th>
+	{% if loop.first %}
+		<table id="mailers" class="data fullwidth">
+		<thead>
+			<th>Mailer</th>
+			<th>Settings</th>
+			<th>Description</th>
         </thead>
-        {% endif %}
+	{% endif %}
 
-        <tr>
-            <td>
-                <a href="{{ cpUrl('sproutemail/' ~ mailer.name ) }}">{{ mailer.title }}</a>
-            </td>
-        </tr>
+	<tr>
+		<td>
+			{% if mailer.hasCpSection() %}
+				<a href="{{ mailer.getCpSectionUrl() }}" title="{{ mailer.getTitle() }}">{{ mailer.getTitle() }}</a>
+			{% else %}
+				{{ mailer.getTitle() }}
+			{% endif %}
+		</td>
+		<td>
+			{% if mailer.hasCpSettings() %}
+				<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">Settings</a>
+			{% endif %}
+		</td>
+		<td>{{ mailer.getDescription()|md }}</td>
+	</tr>
 
-        {% if loop.last %}
-    </table>
-    {% endif %}
+	{% if loop.last %}
+		</table>
+	{% endif %}
 
 {% endfor %}
-
-<div class="buttons">
-    <a class="btn" href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" title="Refresh List">Refresh List</a>
-</div>
-
-

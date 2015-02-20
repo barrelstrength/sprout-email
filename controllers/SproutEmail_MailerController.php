@@ -18,6 +18,34 @@ class SproutEmail_MailerController extends BaseController
 	}
 
 	/**
+	 * @param array $variables
+	 *
+	 * @throws HttpException
+	 */
+	public function actionEditSettings(array $variables = array())
+	{
+		if (!isset($variables['mailerId']))
+		{
+			throw new HttpException(404, Craft::t('No mailer id was provided'));
+		}
+
+		$mailer = sproutEmail()->mailers->getMailerByName($variables['mailerId']);
+
+		if (!$mailer)
+		{
+			throw new HttpException(404, Craft::t('No mailer was found with that id'));
+		}
+
+		if (!$mailer->hasCpSettings())
+		{
+			throw new HttpException(404, Craft::t('No settings found for this mailer'));
+		}
+
+		echo $mailer->getSettingsHtml();
+		craft()->end();
+	}
+
+	/**
 	 * Provides a consistent way of validating and saving settings across mailers
 	 *
 	 * @throws HttpException
@@ -26,11 +54,10 @@ class SproutEmail_MailerController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$models  = array();
-		$success = true;
-		$mailers = sproutEmail()->mailers->getMailers();
+		$model  = null;
+		$mailer = sproutEmail()->mailers->getMailerByName(craft()->request->getRequiredPost('mailerId'));
 
-		foreach ($mailers as $mailer)
+		if ($mailer)
 		{
 			$record = sproutEmail()->mailers->getMailerRecordByName($mailer->getId());
 
@@ -40,30 +67,21 @@ class SproutEmail_MailerController extends BaseController
 
 				$model->setAttributes($mailer->prepareSettings());
 
-				$canSave = $model->validate();
-
-				$models[$mailer->getId()] = $model;
-
-				if ($canSave)
+				if ($model->validate())
 				{
 					$record->setAttribute('settings', $model->getAttributes());
-					$record->save();
-				}
-				else
-				{
-					$success = false;
+
+					if ($record->save(false))
+					{
+						craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
+						$this->redirectToPostedUrl($model);
+					}
 				}
 			}
 		}
 
-		if ($success)
-		{
-			craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
-			$this->redirectToPostedUrl();
-		}
-
 		craft()->userSession->setError(Craft::t('Settings could not be saved.'));
-		craft()->userSession->setFlash('models', $models);
+		craft()->urlManager->setRouteVariables(array('settings' => $model));
 	}
 
 	/**

@@ -187,7 +187,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	{
 		$self = $this;
 
-		return function ($eventId, Event $event, SproutEmailBaseEvent $listener) use ($self)
+		return function ($eventId, Event $event, SproutEmailBaseEvent $listener) use($self)
 		{
 			return $self->handleDynamicEvent($eventId, $event, $listener);
 		};

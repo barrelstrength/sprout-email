@@ -32,7 +32,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	protected function defineSettings()
 	{
-		return array (
+		return array(
 			'pluginNameOverride' => AttributeType::String
 		);
 	}
@@ -40,10 +40,10 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerUserPermissions()
 	{
 		return array(
-			'manageEmail'	=> array(
+			'manageEmail'             => array(
 				'label' => Craft::t('Manage Email Section')
 			),
-			'editSproutFormsSettings'	=> array(
+			'editSproutFormsSettings' => array(
 				'label' => Craft::t('Edit Form Settings')
 			)
 		);
@@ -52,28 +52,30 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerCpRoutes()
 	{
 		return array(
-			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
+			'sproutemail/settings/mailers/(?P<mailerId>{handle})'     => array(
+				'action' => 'sproutEmail/mailer/editSettings'
+			),
+			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?'     => array(
 				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
 			),
 			'sproutemail/settings/notifications/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
 			),
-			'sproutemail/entries/new' => array(
+			'sproutemail/entries/new'                                                                         => array(
 				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
-			'sproutemail/entries/edit/(?P<entryId>\d+)' => array(
+			'sproutemail/entries/edit/(?P<entryId>\d+)'                                                       => array(
 				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
-			'sproutemail/entries/(?P<campaignId>\d+)/new' => array(
+			'sproutemail/entries/(?P<campaignId>\d+)/new'                                                     => array(
 				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
-			'sproutemail/settings' => array(
+			'sproutemail/settings'                                                                            => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
-			'sproutemail/examples' => 'sproutemail/_cp/examples',
-			'sproutemail/events/new' => 'sproutemail/events/_edit',
-
-			'sproutemail/events/edit/(?P<eventId>\d+)' => 'sproutemail/events/_edit',
+			'sproutemail/examples'                                                                            => 'sproutemail/_cp/examples',
+			'sproutemail/events/new'                                                                          => 'sproutemail/events/_edit',
+			'sproutemail/events/edit/(?P<eventId>\d+)'                                                        => 'sproutemail/events/_edit',
 		);
 	}
 
@@ -102,10 +104,13 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailEvents()
 	{
-		return array(
-			'entries.saveEntry' => new SproutEmail_EntriesSaveEntryEvent(),
-			'userSession.login' => new SproutEmail_UserSessionLoginEvent(),
-		);
+		if ($this->isEnabled && $this->isInstalled)
+		{
+			return array(
+				'entries.saveEntry' => new SproutEmail_EntriesSaveEntryEvent(),
+				'userSession.login' => new SproutEmail_UserSessionLoginEvent(),
+			);
+		}
 	}
 
 	public function onBeforeInstall()
@@ -124,7 +129,9 @@ class SproutEmailPlugin extends BasePlugin
 
 			sproutEmail()->mailers->installMailers();
 		}
-		catch(\Exception $e) {}
+		catch (\Exception $e)
+		{
+		}
 	}
 
 	/**
