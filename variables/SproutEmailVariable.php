@@ -4,6 +4,16 @@ namespace Craft;
 class SproutEmailVariable
 {
 	/**
+	 * @var ElementCriteriaModel
+	 */
+	public $entries;
+
+	public function __construct()
+	{
+		$this->entries = craft()->elements->getCriteria('SproutEmail_Entry');
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getName()

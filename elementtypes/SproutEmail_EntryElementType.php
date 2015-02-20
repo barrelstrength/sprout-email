@@ -131,8 +131,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 		$context,
 		$includeContainer,
 		$showCheckboxes
-	)
-	{
+	) {
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
 
@@ -182,8 +181,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'title'      => AttributeType::String,
-			'campaignId' => AttributeType::Number,
+			'title'          => AttributeType::String,
+			'campaignId'     => AttributeType::Number,
+			'campaignHandle' => AttributeType::Handle,
 		);
 	}
 
@@ -239,9 +239,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function defineSearchableAttributes()
 	{
-		return array(
-			'title',
-		);
+		return array('title');
 	}
 
 	/**
@@ -272,6 +270,11 @@ class SproutEmail_EntryElementType extends BaseElementType
 		{
 			$query->andWhere(DbHelper::parseParam('entries.campaignId', $criteria->campaignId, $query->params));
 		}
+
+		if ($criteria->campaignHandle)
+		{
+			$query->andWhere(DbHelper::parseParam('campaigns.handle', $criteria->campaignHandle, $query->params));
+		}
 	}
 
 	/**
@@ -283,7 +286,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		$campaign  = sproutEmail()->campaigns->getCampaignById($element->campaignId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($element->campaignId);
 
 		if (!$campaign)
 		{
