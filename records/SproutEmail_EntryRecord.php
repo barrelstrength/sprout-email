@@ -35,8 +35,8 @@ class SproutEmail_EntryRecord extends BaseRecord
 		return array(
 			'subjectLine' => array(AttributeType::String, 'required' => true),
 			'campaignId'  => array(AttributeType::Number, 'required' => true),
-			'fromName'    => array(AttributeType::String, 'required' => true, 'minLength' => 2, 'maxLength' => 100),
-			'fromEmail'   => array(AttributeType::String, 'required' => true),
+			'fromName'    => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
+			'fromEmail'   => array(AttributeType::String, 'required' => false, 'minLength' => 6),
 			'replyTo'     => array(AttributeType::String, 'required' => false),
 			'sent'        => AttributeType::Bool,
 		);
@@ -64,7 +64,8 @@ class SproutEmail_EntryRecord extends BaseRecord
 	{
 		$value = $this->{$attribute};
 
-		if (strpos($value, '{') !== 0)
+		// Validate only if it is not a placeholder and it is not empty
+		if (strpos($value, '{') !== 0 && !empty($this->{$attribute}))
 		{
 			if (!filter_var($value, FILTER_VALIDATE_EMAIL))
 			{

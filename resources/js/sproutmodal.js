@@ -22,6 +22,11 @@ SproutModal.prototype.init = function ()
 
 		var $t = $(e.target);
 
+		if ($t.data('mailer') === 'copypaste')
+		{
+			self.createLoadingModal();
+		}
+
 		self.postToControllerAction($t.data(), function handle(error, response)
 		{
 			if (error)
@@ -124,8 +129,8 @@ SproutModal.prototype.create = function (content)
 				return this.createErrorModal(error);
 			}
 
-			modal = self.create(response.content);
 			$spinner.addClass("hidden");
+			modal = self.create(response.content);
 			modal.updateSizeAndPosition();
 		});
 	});
@@ -138,6 +143,17 @@ SproutModal.prototype.createErrorModal = function(error)
 	var $content = $('#sproutmodalcontent').clone();
 
 	$('.innercontent', $content).html(error);
+
+	var modal = new SproutModal();
+
+	modal.create($content.html());
+};
+
+SproutModal.prototype.createLoadingModal = function()
+{
+	var $content = $('#sproutmodalloading').clone();
+
+	$('.innercontent', $content);
 
 	var modal = new SproutModal();
 

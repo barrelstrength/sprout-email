@@ -7,7 +7,7 @@
   { label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
-{% set selectedTab = tab %}
+{% set selectedTab = tab is defined ? tab : 'mailers' %}
 
 {% set tabs = {
 	general: {

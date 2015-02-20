@@ -52,7 +52,7 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerCpRoutes()
 	{
 		return array(
-			'sproutemail/settings/mailers/(?P<mailerId>{handle})'     => array(
+			'sproutemail/settings/mailers/(?P<mailerId>[a-z]+)'                                               => array(
 				'action' => 'sproutEmail/mailer/editSettings'
 			),
 			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?'     => array(

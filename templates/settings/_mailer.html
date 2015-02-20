@@ -1,0 +1,15 @@
+{% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = mailer.getTitle() %}
+
+{% set body %}
+<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings?tab=mailers') }}">
+    <input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
+    <input type="hidden" name="redirect" value="sproutemail/settings?tab=mailers">
+	<input type="hidden" name="mailerId" value="{{ mailer.getId() }}">
+	{{ getCsrfInput() }}
+
+	{{ mailer.getSettingsHtml({settings: settings, forms: forms}) }}
+</form>
+{% endset %}

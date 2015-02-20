@@ -509,9 +509,9 @@ class SproutEmail_EntryController extends BaseController
 		$entry->campaignId  = $this->campaign->id;
 		$entry->slug        = craft()->request->getPost('slug', $entry->slug);
 		$entry->enabled     = (bool) craft()->request->getPost('enabled', $entry->enabled);
-		$entry->fromName    = craft()->request->getRequiredPost('sproutEmail.fromName');
-		$entry->fromEmail   = craft()->request->getRequiredPost('sproutEmail.fromEmail');
-		$entry->replyTo     = craft()->request->getRequiredPost('sproutEmail.replyTo');
+		$entry->fromName    = craft()->request->getPost('sproutEmail.fromName');
+		$entry->fromEmail   = craft()->request->getPost('sproutEmail.fromEmail');
+		$entry->replyTo     = craft()->request->getPost('sproutEmail.replyTo');
 		$entry->subjectLine = craft()->request->getRequiredPost('subjectLine');
 
 		$entry->getContent()->title = $entry->subjectLine;
