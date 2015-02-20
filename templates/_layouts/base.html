@@ -8,11 +8,8 @@
   {% endset %}
 {% endif %}
 
-{% set content %}
-  
-  {{ body }}
-
-{% endset %}
+{% block main %}
+{% endblock %}
 
 {% includeCssResource "sproutemail/css/sproutemail.css" %}
 {% includeJsResource "sproutemail/js/sproutemail.js" %}
