@@ -112,7 +112,7 @@ abstract class SproutEmailBaseMailer
 	 * @note
 	 * We use this to integrate third party plugin routes and UI seamlessly within Sprout Email
 	 *
-	 * @see hasCpSection()
+	 * @see       hasCpSection()
 	 *
 	 * @deprecate Deprecated for 0.9.0 in favour of getCpSectionUrl()
 	 *
@@ -351,30 +351,12 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Gives a mailer the responsibility to send notifications if they implement SproutEmailNotificationSenderInterface
 	 *
-	 * @param SproutEmail_EntryModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
-	 */
-	public function sendNotification(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
-	{
-	}
-
-	/**
-	 * @deprecated Deprecated since version 0.8.3 in favor of sendCampaign()
+	 * @param mixed|null                $element
 	 *
-	 * @param SproutEmail_Campaign $campaign
+	 * @return bool
 	 */
-	public function sendEntry(SproutEmail_Campaign $campaign)
+	public function sendNotification(SproutEmail_CampaignModel $campaign, $element)
 	{
-		craft()->deprecator->log(__FUNCTION__, 'Deprecated since version 0.8.3 in favor of using ElementTypeModel::routeRequestForMatchedElement()');
-	}
-
-	/**
-	 * @deprecated Deprecated since version 0.8.3 in favor of sendCampaign()
-	 *
-	 * @param SproutEmail_Campaign $campaign
-	 */
-	public function exportEntry(SproutEmail_Campaign $campaign)
-	{
-		craft()->deprecator->log(__FUNCTION__, 'Deprecated since version 0.8.3 in favor of using ElementTypeModel::routeRequestForMatchedElement()');
 	}
 }

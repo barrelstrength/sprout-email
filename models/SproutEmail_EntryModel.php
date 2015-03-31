@@ -30,8 +30,8 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 */
-	const READY = 'live';
-	const PENDING = 'pending';
+	const READY    = 'live';
+	const PENDING  = 'pending';
 	const DISABLED = 'expired'; // this doesn't behave properly when named 'disabled'
 	const ARCHIVED = 'setup';
 
@@ -154,19 +154,13 @@ class SproutEmail_EntryModel extends BaseElementModel
 		{
 			return static::READY;
 		}
-		else
+
+		if ($hasRequiredAttributes)
 		{
-			if ($hasRequiredAttributes)
-			{
-				return static::PENDING;
-			}
-			else
-			{
-				return static::DISABLED;
-			}
+			return static::PENDING;
 		}
 
-		return $status;
+		return static::DISABLED;
 	}
 
 	/**

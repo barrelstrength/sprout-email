@@ -98,13 +98,14 @@ class SproutEmailBaseEvent
 	 * @example
 	 * Let $options be an array containing section ids (1,3)
 	 * Let $model be an EntryModel with section id (1)
+	 * Let $params be the entry.saveEntry event params
 	 * Result is true
 	 *
 	 * @note
 	 * This is used when determining whether a campaign should be sent
 	 *
 	 * @param mixed $options
-	 * @param mixed $eventData
+	 * @param mixed $eventData Usually whatever prepareParams() returns in its value key
 	 * @param array $params
 	 *
 	 * @note

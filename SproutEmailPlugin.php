@@ -12,7 +12,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.8.4';
+		return '0.8.5';
 	}
 
 	public function getDeveloper()
@@ -79,13 +79,6 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
-	public function registerSiteRoutes()
-	{
-		return array(
-			't' => array('action' => 'sproutEmail/sandbox')
-		);
-	}
-
 	public function init()
 	{
 		parent::init();
@@ -131,12 +124,13 @@ class SproutEmailPlugin extends BasePlugin
 		}
 		catch (\Exception $e)
 		{
+			sproutEmail()->error($e->getMessage());
 		}
 	}
 
 	/**
-	 * @return SproutEmailTwigExtension
 	 * @throws \Exception
+	 * @return SproutEmailTwigExtension
 	 */
 	public function addTwigExtension()
 	{

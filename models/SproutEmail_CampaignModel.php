@@ -112,4 +112,19 @@ class SproutEmail_CampaignModel extends BaseModel
 	{
 		$this->fields = $fields;
 	}
+
+	/**
+	 * Sets the entries attribute to enabled/live entries
+	 *
+	 * @throws Exception
+	 */
+	public function setLiveEntries()
+	{
+		$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
+
+		$criteria->limit      = null;
+		$criteria->status     = SproutEmail_EntryModel::READY;
+		$criteria->campaignId = $this->id;
+		$this->entries        = $criteria->find();
+	}
 }

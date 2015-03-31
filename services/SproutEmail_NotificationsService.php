@@ -1,16 +1,56 @@
 <?php
 namespace Craft;
 
+/**
+ * The Notifications API service layer
+ *
+ * Class SproutEmail_NotificationsService
+ *
+ * @package Craft
+ */
 class SproutEmail_NotificationsService extends BaseApplicationComponent
 {
+	/**
+	 * @var SproutEmailBaseEvent[]
+	 */
 	protected $availableEvents;
-	protected $registeredEvents;
-	protected $dynamicallyRegisteredEvents = array();
-	protected $notificationsWithCampaignAndRecipients = array();
+
+	/**
+	 * @var \Callable[] Events that notifications have subscribed to
+	 */
+	protected $registeredEvents = array();
 
 	public function init()
 	{
 		$this->availableEvents = $this->getAvailableEvents();
+	}
+
+	/**
+	 * Registers an event listener to be trigger dynamically
+	 *
+	 * @param string    $eventId
+	 * @param \Callable $callback
+	 */
+	public function registerEvent($eventId, $callback)
+	{
+		$this->registeredEvents[$eventId] = $callback;
+	}
+
+	/**
+	 * Returns a callable for the given event
+	 *
+	 * @param string $eventId
+	 *
+	 * @return \Callable
+	 */
+	public function getRegisteredEvent($eventId)
+	{
+		if (isset($this->registeredEvents[$eventId]))
+		{
+			return $this->registeredEvents[$eventId];
+		};
+
+		return function() {};
 	}
 
 	/**
@@ -48,7 +88,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Returns single notification event
+	 * Returns a single notification event
 	 *
 	 * @param string $id The return value of the event getId()
 	 * @param mixed  $default
@@ -61,10 +101,26 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Returns all campaign notifications based on the passed in event id
+	 *
+	 * @param string $eventId
+	 *
+	 * @return SproutEmail_NotificationModel[]|null
+	 */
+	public function getNotifications($eventId)
+	{
+		$attributes = array('eventId' => $eventId);
+
+		if (($notifications = SproutEmail_NotificationRecord::model()->findAllByAttributes($attributes)))
+		{
+			return SproutEmail_NotificationModel::populateModels($notifications);
+		}
+	}
+
+	/**
 	 * Save a notification event to the database
 	 *
 	 * @param SproutEmailBaseEvent|string $eventId
-	 *
 	 * @param int                         $campaignId
 	 *
 	 * @throws Exception
@@ -97,24 +153,20 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			$notification->setAttribute('options', $options);
 		}
 
-		return $notification->save(false);
-	}
+		// Remove all events for a given notification to ensure only one is allowed
+		$params    = array('campaignId' => $campaignId, 'eventId' => $eventId);
+		$condition = 'campaignId = :campaignId and eventId != :eventId';
 
-	/**
-	 * Returns all campaign notifications based on the passed event
-	 *
-	 * @param string $eventId
-	 *
-	 * @return SproutEmail_NotificationModel[]|null
-	 */
-	public function getNotifications($eventId)
-	{
-		$attributes = array('eventId' => $eventId);
-
-		if (($notifications = SproutEmail_NotificationRecord::model()->findAllByAttributes($attributes)))
+		try
 		{
-			return SproutEmail_NotificationModel::populateModels($notifications);
+			SproutEmail_NotificationRecord::model()->deleteAll($condition, $params);
 		}
+		catch (\Exception $e)
+		{
+			sproutEmail($e->getMessage());
+		}
+
+		return $notification->save(false);
 	}
 
 	/**
@@ -148,20 +200,18 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			{
 				if ($listener instanceof SproutEmailBaseEvent)
 				{
-					$this->dynamicallyRegisteredEvents[$eventId] = $this->getDynamicEventHandler();
+					$self->registerEvent($eventId, $self->getDynamicEventHandler());
 
-					craft()->on(
-						$listener->getName(), function (Event $event) use ($self, $eventId, $listener)
-						{
-							return call_user_func_array(
-								$self->dynamicallyRegisteredEvents[$eventId], array(
-									$eventId,
-									$event,
-									$listener
-								)
-							);
-						}
-					);
+					craft()->on($listener->getName(), function (Event $event) use ($self, $eventId, $listener)
+					{
+						return call_user_func_array(
+							$self->getRegisteredEvent($eventId), array(
+								$eventId,
+								$event,
+								$listener
+							)
+						);
+					});
 				}
 			}
 		}
@@ -181,13 +231,13 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 * 3. This closure gets called with the name of the event and the event itself
 	 * 4. This closure executes as real event handler for the triggered event
 	 *
-	 * @return closure
+	 * @return \Callable
 	 */
 	public function getDynamicEventHandler()
 	{
 		$self = $this;
 
-		return function ($eventId, Event $event, SproutEmailBaseEvent $listener) use($self)
+		return function ($eventId, Event $event, SproutEmailBaseEvent $listener) use ($self)
 		{
 			return $self->handleDynamicEvent($eventId, $event, $listener);
 		};
@@ -213,21 +263,78 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 				{
 					$campaign = sproutEmail()->campaigns->getCampaignById($notification->campaignId);
 
-					return $this->relayNotificationThroughAssignedMailer($campaign, $element);
+					$this->relayNotificationThroughAssignedMailer($campaign, $element);
 				}
 			}
 		}
 	}
 
 	/**
+	 * Returns an array of recipients from the event element if any are found
+	 * This allows us to allow notifications to have recipients defined at runtime
+	 *
+	 * @param mixed $element Most likely a BaseElementModel but can be an array of event a string
+	 *
+	 * @return array
+	 */
+	public function getDynamicRecipientsFromElement($element)
+	{
+		$recipients = array();
+
+		if (is_object($element) && $element instanceof BaseElementModel)
+		{
+			if (isset($element->sproutEmailRecipients) && is_array($element['sproutEmailRecipients']) && count($element['sproutEmailRecipients']))
+			{
+				$recipients = (array) $element->sproutEmailRecipients;
+			}
+		}
+
+		if (is_array($element) && isset($element['sproutEmailRecipients']))
+		{
+			if (is_array($element['sproutEmailRecipients']) && count($element['sproutEmailRecipients']))
+			{
+				$recipients = $element['sproutEmailRecipients'];
+			}
+		}
+
+		return $recipients;
+	}
+
+	/**
+	 * Returns an array or variables for a notification template
+	 *
+	 * @example
+	 * The following syntax is supported to access event element properties
+	 *
+	 * {attribute}
+	 * {{ attribute }}
+	 * {{ object.attribute }}
+	 *
+	 * @param BaseModel  $entry
+	 * @param mixed|null $element
+	 *
+	 * @return array
+	 */
+	public function prepareNotificationTemplateVariables(BaseModel $entry, $element = null)
+	{
+		return array_merge(
+			array(
+				'object'       => $element,
+				'notification' => $entry,
+			),
+			$element instanceof BaseElementModel ? $element->getAttributes() : (array) $element
+		);
+	}
+
+	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param BaseElementModel          $element
+	 * @param mixed                     $element Will be an element model most of the time
 	 *
 	 * @throws Exception
 	 * @throws \Exception
 	 * @return mixed
 	 */
-	protected function relayNotificationThroughAssignedMailer(SproutEmail_CampaignModel $campaign,BaseElementModel $element)
+	protected function relayNotificationThroughAssignedMailer(SproutEmail_CampaignModel $campaign, $element)
 	{
 		if (!isset($campaign->mailer))
 		{
@@ -245,6 +352,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		{
 			throw new Exception(Craft::t('The {mailer} does not have a sendNotification() method.', array('mailer' => get_class($mailer))));
 		}
+
+		// Forces campaign.entries to be populated with live entries only
+		$campaign->setLiveEntries();
 
 		try
 		{
