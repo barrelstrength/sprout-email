@@ -3,13 +3,22 @@
 
 {% set title = mailer.getTitle() %}
 
-{% set body %}
-<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings?tab=mailers') }}">
-    <input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
-    <input type="hidden" name="redirect" value="sproutemail/settings?tab=mailers">
-	<input type="hidden" name="mailerId" value="{{ mailer.getId() }}">
-	{{ getCsrfInput() }}
+{% set crumbs = [
+	{ label: "Sprout Email"|t, url: url('sproutemail') },
+	{ label: "Settings"|t, url: url('sproutemail/settings') },
+] %}
 
-	{{ mailer.getSettingsHtml({settings: settings, forms: forms}) }}
-</form>
-{% endset %}
+{% block content %}
+	<form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings?tab=mailers') }}">
+		<input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
+		<input type="hidden" name="redirect" value="sproutemail/settings?tab=mailers">
+		<input type="hidden" name="mailerId" value="{{ mailer.getId() }}">
+		{{ getCsrfInput() }}
+
+		{{ mailer.getSettingsHtml({settings: settings, forms: forms})|raw }}
+
+		<div class="buttons">
+	        <input class="btn submit" type="submit" value="Save API Settings">
+	    </div>
+	</form>
+{% endblock %}
