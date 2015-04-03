@@ -2,7 +2,7 @@
     <div id="tab-campaign-info" class="tab-content">
         {{ forms.textField({
             id: 'fromName',
-            name: 'coremailer[fromName]',
+            name: 'defaultmailer[fromName]',
             label: 'From Name'|t,
             autofocus: true,
             required: true,
@@ -13,7 +13,7 @@
 
         {{ forms.textField({
             id: 'fromEmail',
-            name: 'coremailer[fromEmail]',
+            name: 'defaultmailer[fromEmail]',
             label: 'From Email'|t,
             required: true,
             instructions: 'The sender email shown in the email metadata.'|t,
@@ -23,7 +23,7 @@
 
         {{ forms.textField({
             id: 'replyTo',
-            name: 'coremailer[replyTo]',
+            name: 'defaultmailer[replyTo]',
             label: 'Reply To'|t,
             instructions: 'The From Email will be used if left blank.'|t,
             value: settings is defined ? settings.replyTo : null,
