@@ -1,0 +1,29 @@
+
+<h1>Sprout Email</h1>
+<hr>
+
+<h2>{{ entry.title }}</h2>
+
+<h4>Recipient Lists for this Campaign</h4>
+
+{% if recipientLists is defined and recipientLists is iterable %}
+	<ul>
+		{% for list in recipientLists %}
+			<li>
+				<strong>{{ list.name }}</strong> with <strong>({{ list.recipients|length }})</strong> {{ list.recipients|length == 1 ? "recipient" : "recipients" }}
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+<hr>
+
+<div class="buttons right">
+	<button id="close" class="btn">{{ "Cancel"|t }}</button>
+	<button
+		data-mailer="defaultmailer"
+		data-action="sproutEmail/entry/export"
+		data-entry-id="{{ entry.id }}"
+		data-campaign-id="{{ campaign.id }}"
+		class="btn submit actions">{{ "Send Campaign"|t }}</button>
+</div>

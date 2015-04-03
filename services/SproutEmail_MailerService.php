@@ -462,6 +462,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * Creates a new record for a mailer with its name and settings
 	 *
 	 * @param SproutEmailBaseMailer $mailer
+	 *
+	 * @return bool
 	 */
 	protected function createMailerRecord(SproutEmailBaseMailer $mailer)
 	{
@@ -489,6 +491,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * Deletes a mailer record by name
 	 *
 	 * @param string $name
+	 *
+	 * @return bool
 	 */
 	protected function deleteMailerRecord($name)
 	{

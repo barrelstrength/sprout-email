@@ -1,0 +1,12 @@
+<h1>Sprout Email</h1>
+<h2>{{ entry.title }}</h2>
+<hr>
+{% if success is defined and success %}
+	<p class="color: green;">You campaign was sent successfully.</p>
+{% else %}
+	<p class="color: green;">We had some issues sending your campaign, please review the logs for more info.</p>
+{% endif %}
+<hr>
+<div class="buttons right">
+	<button id="close" class="btn">{{ "Done"|t }}</button>
+</div>

@@ -1,0 +1,23 @@
+{% extends 'sproutemail/defaultmailer/_layouts/cp' %}
+
+{% set content %}
+	{% if recipientLists is defined and recipientLists|length %}
+		<h2>Recipient Lists</h2>
+		<table class="data fullwidth">
+			<tr>
+				<th>Name</th>
+				<th>Handle</th>
+				<th>Recipients</th>
+			</tr>
+			{% for recipientList in recipientLists %}
+				<tr>
+					<td>{{ recipientList.name }}</td>
+					<td>{{ recipientList.handle }}</td>
+					<td>{{ recipientList.recipients|length }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<h2>No Recipient Lists</h2>
+	{% endif %}
+{% endset %}

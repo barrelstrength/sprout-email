@@ -12,6 +12,13 @@ namespace Craft;
  */
 class SproutEmail_SimpleRecipientModel extends BaseModel
 {
+	/**
+	 * Returns an instance of self
+	 *
+	 * @param  array  $attributes
+	 *
+	 * @return SproutEmail_SimpleRecipientModel
+	 */
 	public static function create(array $attributes = array())
 	{
 		$self = new self;

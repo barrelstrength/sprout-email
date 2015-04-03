@@ -1,0 +1,33 @@
+
+    <div id="tab-campaign-info" class="tab-content">
+        {{ forms.textField({
+            id: 'fromName',
+            name: 'coremailer[fromName]',
+            label: 'From Name'|t,
+            autofocus: true,
+            required: true,
+            instructions: 'The sender name shown in the email metadata.'|t,
+            value: settings is defined ? settings.fromName : null,
+            errors: settings is defined and settings.hasErrors('fromName') ? settings.getErrors('fromName') : null
+        }) }}
+
+        {{ forms.textField({
+            id: 'fromEmail',
+            name: 'coremailer[fromEmail]',
+            label: 'From Email'|t,
+            required: true,
+            instructions: 'The sender email shown in the email metadata.'|t,
+            value: settings is defined ? settings.fromEmail : null,
+            errors: settings is defined and settings.hasErrors('fromEmail') ? settings.getErrors('fromEmail') : null
+        }) }}
+
+        {{ forms.textField({
+            id: 'replyTo',
+            name: 'coremailer[replyTo]',
+            label: 'Reply To'|t,
+            instructions: 'The From Email will be used if left blank.'|t,
+            value: settings is defined ? settings.replyTo : null,
+            errors: settings is defined and settings.hasErrors('replyTo') ? settings.getErrors('replyTo') : null
+        }) }}
+    </div>
+
