@@ -57,7 +57,7 @@ class SproutEmail_DefaultMailerRecipientElementType extends BaseElementType
 				$key = 'recipientlist:'.$recipientList->id;
 
 				$sources[$key] = array(
-					'label'    => Craft::t($recipientList->name),
+					'label'    => Craft::t($recipientList->name) . " (".count($recipientList->recipients).")",
 					'criteria' => array('recipientListId' => $recipientList->id),
 				);
 			}

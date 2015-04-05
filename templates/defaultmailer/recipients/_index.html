@@ -4,28 +4,24 @@
 
 {% set crumbs = [
     { label: "Sprout Email"|t, url: url('sproutemail') },
-    { label: "Settings"|t, url: url('sproutemail/settings') },
     { label: "Mailers"|t, url: url('sproutemail/settings?tab=mailers') }
 ] %}
 
 {% set selectedTab = craft.request.getSegment(3) %}
 
 {% set tabs = {
-    recipients: {
-        label: "Recipients"|t,
-        url: cpUrl('sproutemail/defaultmailer/recipients')
-    },
-    recipientlists: {
-        label: "Lists"|t,
-        url: cpUrl('sproutemail/defaultmailer/recipientlists')
-    },
-	settings: {
-		label: "Settings"|t,
-		url: cpUrl('sproutemail/settings/mailers/defaultmailer')
+	email: {
+		label: "Email"|t,
+		url: cpUrl('sproutemail')
 	},
+	recipients: {
+		label: "Lists & Subscribers"|t,
+		url: cpUrl('sproutemail/defaultmailer/recipients')
+	}
 } %}
 
 {% block sidebar %}
+
 	<div class="buttons">
 		<div class="btngroup submit">
 			<div class="btn submit menubtn add icon">{{ "New"|t }}</div>
@@ -39,4 +35,5 @@
 	</div>
 
 	{{ parent() }}
+
 {% endblock %}

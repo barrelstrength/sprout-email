@@ -14,11 +14,7 @@
 
 	<tr>
 		<td>
-			{% if mailer.hasCpSection() %}
-				<a href="{{ mailer.getCpSectionUrl() }}" title="{{ mailer.getTitle() }}">{{ mailer.getTitle() }}</a>
-			{% else %}
-				{{ mailer.getTitle() }}
-			{% endif %}
+			{{ mailer.getTitle() }}
 		</td>
 		<td>
 			{% if mailer.hasCpSettings() %}

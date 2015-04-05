@@ -7,3 +7,14 @@
 	  <a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
 	{% endset %}
 {% endif %}
+
+{% set tabs = {
+	email: {
+		label: "Email"|t,
+		url: cpUrl('sproutemail')
+	},
+	recipients: {
+		label: "Lists & Subscribers"|t,
+		url: cpUrl('sproutemail/defaultmailer/recipients')
+	}
+} %}
