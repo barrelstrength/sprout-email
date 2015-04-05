@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set crumbs = [
-  { label: "Sprout Email"|t, url: url('sproutemail') }
+{ label: "Sprout Email"|t, url: url('sproutemail') }
 ] %}
 
 {# @TODO - this doens't work... ug
@@ -20,24 +20,24 @@
 {% set title = 'Notifications' %}
 
 {% block main %}
-	
+
 	<div class="pane">
 
-	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
-	
-	{% for campaign in notifications %}
-			
-		{% if loop.first %}
-		<h3>Notifications</h3>
-		<table id="entries" class="data fullwidth">
-			<thead>
+		{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
+
+		{% for campaign in notifications %}
+
+			{% if loop.first %}
+				<h3>Notifications</h3>
+				<table id="notifications" class="data fullwidth">
+				<thead>
 				<th width="65%"></th>
 				<th width="30%"></th>
 				<th class="thin"></th>
-			</thead>
-		{% endif %}
-		
-			<tr data-id="{{ campaign.id }}"  data-name="{{ campaign.name|t }}">
+				</thead>
+			{% endif %}
+
+			<tr data-id="{{ campaign.id }}" data-name="{{ campaign.name }}">
 				<td>
 					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}">{{ campaign.name }}</a>
 					&nbsp;&nbsp;<span style="color: #999;text-transform:uppercase;font-size:.8em">{{ campaign.dateUpdated|date('F d, Y') }}</span>
@@ -45,10 +45,10 @@
 				<td>
 					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}">
 						Notification Info
-					</a> | 
+					</a> |
 					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}/template">
 						Templates
-					</a> | 
+					</a> |
 					<a href="{{ url('sproutemail/settings/notifications/edit/') }}/{{ campaign.id }}/recipients">
 						Define recipients
 					</a>
@@ -58,48 +58,51 @@
 				</td>
 			</tr>
 
-		{% if loop.last %}
-		</table>
-		{% endif %}
+			{% if loop.last %}
+				</table>
+			{% endif %}
 
-	{% endfor %}
+		{% endfor %}
 
 
-	{% if notifications|length %}
-	 	
-		<div class="buttons">
-			<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/new') }}">New Notification</a>
-		</div>
+		{% if notifications|length %}
 
-	{% else %}
-	 	
-	 	<div style="width:40%;">
-
-		 	<h2>Create your first Notification</h2>
-
-		 	<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on top of user generated content, keep an eye on publish workflows, or be in the know when something happens on your website.</p>
-
-		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/new') }}">Create a Notification &raquo;</a>
+			<div class="buttons">
+				<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/new') }}">New Notification</a>
 			</div>
 
-		</div>
+		{% else %}
 
-	{% endif %}
- 	
-	{% if brandMessageFooter is defined %}
-		{{ brandMessageFooter }}
-	{% endif %}
-	
+			<div style="width:40%;">
+
+				<h2>Create your first Notification</h2>
+
+				<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on
+					top of user generated content, keep an eye on publish workflows, or be in the know when something happens on
+					your website.</p>
+
+				<div class="buttons">
+					<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/new') }}">Create a
+						Notification &raquo;</a>
+				</div>
+
+			</div>
+
+		{% endif %}
+
+		{% if brandMessageFooter is defined %}
+			{{ brandMessageFooter }}
+		{% endif %}
+
 	</div>
 
 {% endblock %}
 
 {% set js %}
-	new Craft.AdminTable({
-		tableSelector: '#entries',
-		noObjectsSelector: '#noentries',
-		deleteAction: 'SproutEmail/entries/delete'
-	});
+new Craft.AdminTable({
+	tableSelector: '#notifications',
+	noObjectsSelector: '#nonotifications',
+	deleteAction: 'sproutEmail/campaign/deleteCampaign'
+});
 {% endset %}
 {% includeJs js %}

@@ -174,7 +174,10 @@ class SproutEmail_EntryController extends BaseController
 				$this->returnJson(array('content' => $e->getMessage()));
 			}
 		}
-		// @todo Handle display of errors when entry or campaign is missing
+		else
+		{
+			throw new Exception(Craft::t('Entry or Campaign is missing'));
+		}
 	}
 
 	/**
@@ -332,11 +335,13 @@ class SproutEmail_EntryController extends BaseController
 			}
 			catch (\Exception $e)
 			{
-				// @todo Handle display of errors based on $e
+				sproutEmail()->error($e->getMessage());
 			}
 		}
-
-		// @todo Handle display of errors when entry or campaign is missing
+		else
+		{
+			throw new Exception(Craft::t('Entry or Campaign is missing'));
+		}
 	}
 
 	/**
@@ -373,7 +378,7 @@ class SproutEmail_EntryController extends BaseController
 	 * @throws HttpException
 	 * @return null
 	 */
-	public function actionShareEntry($entryId = null, $template = null)
+	public function actionShareEntry($entryId = null)
 	{
 		if ($entryId)
 		{
@@ -386,7 +391,6 @@ class SproutEmail_EntryController extends BaseController
 
 			$params = array(
 				'entryId'  => $entryId,
-				'template' => $template,
 			);
 		}
 		else
@@ -401,7 +405,8 @@ class SproutEmail_EntryController extends BaseController
 				'params' => $params
 			)
 		);
-		$url   = UrlHelper::getUrlWithToken($entry->getUrl($template), $token);
+
+		$url   = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
 
 		craft()->request->redirect($url);
 	}
@@ -465,7 +470,8 @@ class SproutEmail_EntryController extends BaseController
 		}
 		else
 		{
-			Craft::log('Attempting to preview an Entry that does not exist', LogLevel::Error);
+			SproutEmailPlugin::log('Attempting to preview an Entry that does not exist', LogLevel::Error);
+
 			throw new HttpException(404);
 		}
 	}

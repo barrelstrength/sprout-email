@@ -251,40 +251,17 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 */
 	public function deleteCampaign($campaignId)
 	{
-		// since we have to perform deletes on multiple entities,
-		// it's all or nothing using sql transactions
-		$transaction = craft()->db->beginTransaction();
-
 		try
 		{
-			$campaignRecord = SproutEmail_CampaignRecord::model()->findByPk($campaignId);
+			craft()->db->createCommand()->delete('sproutemail_campaigns', array(
+				'id' => $campaignId
+			));
 
-			// delete campaign
-			if (!craft()->db->createCommand()->delete(
-				'sproutemail_campaigns', array(
-					'id' => $campaignId
-				)
-			)
-			)
-			{
-				$transaction->rollback();
-
-				return false;
-			}
-
-			// delete associated recipients
-			$service = 'sproutEmail_'.lcfirst($campaignRecord->mailer);
-			craft()->{$service}->deleteRecipients($campaignRecord);
+			return true;
 		}
 		catch (\Exception $e)
 		{
-			$transaction->rollback();
-
 			return false;
 		}
-
-		$transaction->commit();
-
-		return true;
 	}
 }
