@@ -34,7 +34,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	public function validateOptions($options, EntryModel $entry, array $params = array())
 	{
 		$isNewEntry  = isset($params['isNewEntry']) && $params['isNewEntry'];
-		$onlyWhenNew = isset($options['onlyWhenNew']) && $options['onlyWhenNew'];
+		$onlyWhenNew = isset($options['entriesSaveEntryOnlyWhenNew']) && $options['entriesSaveEntryOnlyWhenNew'];
 
 		if (in_array($entry->getSection()->id, $options['entriesSaveEntrySectionIds']))
 		{
