@@ -2,10 +2,11 @@
 
 {% set title = 'Sprout Email'|t %}
 
-{% set crumbs = [
-    { label: "Sprout Email"|t, url: url('sproutemail') },
-    { label: "Mailers"|t, url: url('sproutemail/settings?tab=mailers') }
-] %}
+{% if currentUser.can('editSproutEmailSettings') %}
+	{% set extraPageHeaderHtml %}
+	<a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
+	{% endset %}
+{% endif %}
 
 {% set selectedTab = craft.request.getSegment(3) %}
 
