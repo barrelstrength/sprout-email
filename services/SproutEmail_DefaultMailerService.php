@@ -37,6 +37,26 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
+	 * @param int entryId
+	 *
+	 * @return SproutEmail_DefaultMailerRecipientListModel|null
+	 */
+	public function getRecipientListsByEntryId($entryId)
+	{
+		if (($record = SproutEmail_EntryRecipientListRecord::model()->with('entry')->findAll('entryId=:entryId', array(':entryId' => $entryId))))
+		{
+			$recipientLists = array();
+
+			foreach ($record as $entryRecipientList)
+			{
+				$recipientLists[] = $this->getRecipientListById($entryRecipientList->list);
+			}
+
+			return $recipientLists;
+		}
+	}
+
+	/**
 	 * @param int $handle
 	 *
 	 * @return SproutEmail_DefaultMailerRecipientListModel|null
@@ -314,13 +334,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			foreach ($campaign->entries as $entry)
 			{
-				$listIds = array();
+				$recipientLists = $this->getRecipientListsByEntryId($entry->id);
 
-				if ($entry->recipientLists && count($entry->recipientLists))
+				$listIds = array();
+				if ($recipientLists && count($recipientLists))
 				{
-					foreach ($entry->recipientLists as $list)
+					foreach ($recipientLists as $list)
 					{
-						$listIds[] = $list->list;
+						$listIds[] = $list->id;
 					}
 				}
 
@@ -356,6 +377,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 							try
 							{
+								SproutEmailPlugin::log("Email sent to " . $recipient->email);
+
 								craft()->email->sendEmail($email);
 							}
 							catch (\Exception $e)
@@ -364,6 +387,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 							}
 						}
 					}
+				}
+				else
+				{
+					sproutEmail()->error(Craft::t("No recipients found."));
 				}
 			}
 		}
