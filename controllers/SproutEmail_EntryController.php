@@ -17,7 +17,7 @@ class SproutEmail_EntryController extends BaseController
 	/**
 	 * The campaign that this entry is associated with if any
 	 *
-	 * @var SproutEmail_Campaign
+	 * @var SproutEmail_CampaignModel
 	 */
 	protected $campaign;
 

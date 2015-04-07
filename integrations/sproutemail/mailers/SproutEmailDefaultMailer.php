@@ -33,8 +33,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 
 	public function getDescription()
 	{
-		return Craft::t('Integrated Email Marketing with Sprout Email. Send campaigns, trigger notifications, and manage
-		lists.');
+		return Craft::t('Integrated Email Marketing with Sprout Email. Send campaigns, trigger notifications, and manage lists.');
 	}
 
 	public function getSettingsHtml(array $context = array())

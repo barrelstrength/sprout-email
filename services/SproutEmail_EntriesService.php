@@ -20,6 +20,16 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		}
 	}
 
+	/**
+	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignModel $campaign
+	 *
+	 * @throws Exception
+	 * @throws \CDbException
+	 * @throws \Exception
+	 *
+	 * @return bool
+	 */
 	public function saveEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$isNewEntry = !$entry->id;
@@ -42,6 +52,7 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		$entryRecord->subjectLine = $entry->subjectLine;
 
 		$entryRecord->setAttributes($entry->getAttributes());
+		$entryRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
 
 		$entryRecord->validate();
 
@@ -91,6 +102,14 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		return false;
 	}
 
+	/**
+	 * @param SproutEmail_EntryModel $entry
+	 *
+	 * @throws \CDbException
+	 * @throws \Exception
+	 *
+	 * @return bool
+	 */
 	public function deleteEntry(SproutEmail_EntryModel $entry)
 	{
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
@@ -139,12 +158,22 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 	public function deleteRecipientListsByEntryId($id)
 	{
-		if ( ($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $id))) )
+		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $id))))
 		{
 			foreach ($lists as $list)
 			{
 				$list->delete();
 			}
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getOnTheFlyRecipients()
+	{
+		$postedRecipients = craft()->request->getPost('recipient.onTheFlyRecipients');
+
+		return array_filter(array_map('trim', ArrayHelper::stringToArray($postedRecipients)));
 	}
 }

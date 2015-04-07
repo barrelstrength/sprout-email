@@ -12,7 +12,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.8.6';
+		return '0.8.7';
 	}
 
 	public function getDeveloper()

@@ -44,6 +44,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 		$attributes = array(
 			'subjectLine'    => array(AttributeType::String, 'required' => true),
 			'campaignId'     => array(AttributeType::Number, 'required' => true),
+			'recipients'     => array(AttributeType::Mixed, 'required' => false),
 			'fromName'       => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'      => array(AttributeType::String, 'minLength' => 6, 'required' => false),
 			'replyTo'        => array(AttributeType::String, 'required' => false),

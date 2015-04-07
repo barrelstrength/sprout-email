@@ -37,7 +37,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param int entryId
+	 * @param int $entryId
 	 *
 	 * @return SproutEmail_DefaultMailerRecipientListModel|null
 	 */
@@ -54,6 +54,27 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			return $recipientLists;
 		}
+	}
+
+	public function getRecipientsFromEntryModel($entry)
+	{
+		$recipients = array();
+
+		if (count($entry->recipients))
+		{
+			foreach ($entry->recipients as $index => $recipient)
+			{
+				$recipients[$index] = SproutEmail_SimpleRecipientModel::create(
+					array(
+						'firstName' => '',
+						'lastName'  => '',
+						'email'     => $recipient
+					)
+				);
+			}
+		}
+
+		return $recipients;
 	}
 
 	/**
@@ -334,9 +355,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			foreach ($campaign->entries as $entry)
 			{
-				$recipientLists = $this->getRecipientListsByEntryId($entry->id);
-
 				$listIds = array();
+
+				$recipientLists    = $this->getRecipientListsByEntryId($entry->id);
+				$entryRecipients   = $this->getRecipientsFromEntryModel($entry);
+				$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($element);
+
 				if ($recipientLists && count($recipientLists))
 				{
 					foreach ($recipientLists as $list)
@@ -345,9 +369,13 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					}
 				}
 
-				$entry      = SproutEmail_EntryModel::populateModel($entry);
-				$recipients = $this->getRecipientsByRecipientListIds($listIds);
-				$recipients = array_merge($recipients, sproutEmail()->notifications->getDynamicRecipientsFromElement($element));
+				$entry          = SproutEmail_EntryModel::populateModel($entry);
+				$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
+				$recipients     = array_merge(
+					$listRecipients,
+					$entryRecipients,
+					$dynamicRecipients
+				);
 
 				if ($recipients && count($recipients))
 				{
@@ -367,18 +395,16 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					$email->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template.'.txt', $vars);
 					$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);
 
-					if (!empty($email->body))
+					if (!empty($email->htmlBody))
 					{
 						foreach ($recipients as $recipient)
 						{
-							$email->toEmail     = $recipient->email;
+							$email->toEmail     = sproutEmail()->renderObjectTemplateSafely($recipient->email, $element);
 							$email->toFirstName = $recipient->firstName;
 							$email->toLastName  = $recipient->lastName;
 
 							try
 							{
-								SproutEmailPlugin::log("Email sent to " . $recipient->email);
-
 								craft()->email->sendEmail($email);
 							}
 							catch (\Exception $e)

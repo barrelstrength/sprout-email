@@ -257,6 +257,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 				'entries.id
 				, entries.subjectLine as subjectLine
 				, entries.campaignId as campaignId
+				, entries.recipients as recipients
 				, entries.fromName as fromName
 				, entries.fromEmail as fromEmail
 				, entries.replyTo as replyTo

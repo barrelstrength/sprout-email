@@ -5,7 +5,7 @@
 	{ label: craft.sproutEmail.getName()|t, url: url('sproutemail') },
 ] %}
 
-{% set title = entry is defined and entry.title is not empty ? entry.title : 'Create a new Entry' %}
+{% set title  = entry is defined and entry.title is not empty ? entry.title : 'Create a new Entry' %}
 {% set mailer = craft.sproutemail.getMailer(campaign.mailer) %}
 
 {% block main %}
@@ -26,34 +26,50 @@
 
 			<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
 				<div id="fields" class="pane">
-
-					{% include "_includes/tabs" %}
 					{% include "sproutemail/entries/_fields" %}
-
 				</div>
 			</div>
 
 			<div class="item" data-position="right" data-colspan="1">
 				{% if showPreviewBtn %}
-					{% include "_includes/previewbtns" %}
+					{% include campaign.type == "notification" ? "sproutemail/_includes/previewbtns" : "_includes/previewbtns" %}
 				{% endif %}
 
 				<div class="pane">
+					{% set tab  = 1 %}
+					{% set tab2 = false %}
+					{% set tab3 = false %}
+					{% set tab4 = false %}
 
+					{% if entry is defined %}
+						{% if
+							entry.getErrors('fromName')
+							or entry.getErrors('fromEmail')
+							or entry.getErrors('replyTo')
+							%}
+							{% set tab  = 2 %}
+							{% set tab2 = true %}
+						{% endif %}
+						{% if entry.getErrors('recipients') %}
+							{% set tab  = 3 %}
+							{% set tab3 = true %}
+						{% endif %}
+
+					{% endif %}
 					<nav id="tabs" class="tabs">
 						<ul>
-							<li><a class="tab sel" href="#tab-sproutemail-overview">Overview</a></li>
-							<li><a class="tab" href="#tab-sproutemail-sender">Sender</a></li>
-							<li><a class="tab" href="#tab-sproutemail-recipients">Recipients</a></li>
+							<li><a class="tab {{ tab == 1 ? ' sel' : '' }}" href="#tab-sproutemail-overview">Overview</a></li>
+							<li><a class="tab {{ tab == 2 ? ' sel' : '' }} {{ tab2 ? 'error' : '' }}" href="#tab-sproutemail-sender">Sender</a></li>
+							<li><a class="tab {{ tab == 3 ? ' sel' : '' }} {{ tab3 ? 'error' : '' }}" href="#tab-sproutemail-recipients">Recipients</a></li>
 
 							{% if campaign.type == 'notification' %}
-							<li><a class="tab" href="#tab-sproutemail-rules">Rules</a></li>
+							<li><a class="tab{{ tab == 4 ? ' sel' : '' }} {{ tab4 ? 'error' : '' }}" href="#tab-sproutemail-rules">Rules</a></li>
 							{% endif %}
 						</ul>
 					</nav>
 
 					<div>
-						<div id="tab-sproutemail-overview">
+						<div class="{{ tab != 1 ? 'hidden' : '' }}" id="tab-sproutemail-overview">
 
 							{{ forms.textField({
 								label: "Slug"|t,
@@ -92,9 +108,14 @@
 
 						</div>
 
-						{# @todo Abstract requirements into the mailer API to avoid mailer specific logic #}
 						{% if mailer.getId() != 'copypaste' %}
-							<div id="tab-sproutemail-sender" class="hidden">
+							<div id="tab-sproutemail-sender" class="{{ tab != 2 ? 'hidden' : '' }}">
+								{#
+								 # Setting sender defaults from mailer settings
+								 #}
+								{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
+								{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
+								{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}
 
 								{{ forms.field({
 									label: "From Name <span class='info'>The person or business sending the email</span>"|t,
@@ -102,7 +123,7 @@
 										required: true,
 									}, forms.textField({
 										name: 'sproutEmail[fromName]',
-										value: (entry.fromName is not empty ? entry.fromName : ''),
+										value: (entry.fromName is not empty ? entry.fromName : defaultFromName ),
 								})) }}
 
 								{{ forms.field({
@@ -111,7 +132,7 @@
 										errors: (entry is defined ? entry.getErrors('fromEmail') : null),
 									}, forms.textField({
 										name: 'sproutEmail[fromEmail]',
-										value: (entry.fromEmail is not empty ? entry.fromEmail : ''),
+										value: (entry.fromEmail is not empty ? entry.fromEmail : defaultFromEmail),
 								})) }}
 
 								{{ forms.field({
@@ -120,21 +141,29 @@
 										errors: (entry is defined ? entry.getErrors('replyTo') : null),
 									}, forms.textField({
 										name: 'sproutEmail[replyTo]',
-										value: (entry.replyTo is not empty ? entry.replyTo : ''),
+										value: (entry.replyTo is not empty ? entry.replyTo : defaultReplyTo),
 								})) }}
 
 							</div>
 
-							<div id="tab-sproutemail-recipients" class="hidden">
+							<div id="tab-sproutemail-recipients" class="{{ tab != 3 ? 'hidden' : '' }}">
 
-								<div style="max-height:300px;overflow-y:auto;" id="recipients">
+								<div id="recipients">
+									{{ forms.textField({
+										label: "Recipients"|t,
+										instructions: "A comma separated list of email addresses."|t,
+										placeholder: "user@domain.com, other@domain.com",
+										name: "recipient[onTheFlyRecipients]",
+										value: entry.recipients is defined ? entry.recipients|join(', ') : "",
+										errors: entry is defined ? entry.getErrors('recipients')
+									}) }}
+									<h2>Recipients Lists</h2>
 									{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
 								</div>
-
 							</div>
 						{% else %}
 							{% set name = mailer.getTitle() %}
-							<div id="tab-sproutemail-sender" class="hidden">
+							<div id="tab-sproutemail-sender" class="{{ tab != 2 ? 'hidden' : '' }}">
 								<p>
 									<strong>{{ name }}</strong>
 									<br>No sender is required
@@ -150,7 +179,7 @@
 						{% endif %}
 
 						{% if campaign.type == 'notification' %}
-						<div id="tab-sproutemail-rules" class="hidden">
+						<div id="tab-sproutemail-rules" class="{{ tab != 4 ? 'hidden' : '' }}">
 
 							{% set events = craft.sproutemail.getAvailableEvents() %}
 

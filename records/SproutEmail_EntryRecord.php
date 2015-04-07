@@ -35,6 +35,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 		return array(
 			'subjectLine' => array(AttributeType::String, 'required' => true),
 			'campaignId'  => array(AttributeType::Number, 'required' => true),
+			'recipients'  => array(AttributeType::Mixed, 'required' => false),
 			'fromName'    => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
 			'fromEmail'   => array(AttributeType::String, 'required' => false, 'minLength' => 6),
 			'replyTo'     => array(AttributeType::String, 'required' => false),
@@ -51,6 +52,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 
 		$rules[] = array('replyTo', 'validateEmailWithOptionalPlaceholder');
 		$rules[] = array('fromEmail', 'validateEmailWithOptionalPlaceholder');
+		$rules[] = array('recipients', 'validateOnTheFlyRecipients');
 
 		return $rules;
 	}
@@ -79,19 +81,47 @@ class SproutEmail_EntryRecord extends BaseRecord
 	}
 
 	/**
+	 * Ensures that all email addresses in recipients are valid
+	 *
+	 * @param $attribute
+	 */
+	public function validateOnTheFlyRecipients($attribute)
+	{
+		$value = $this->{$attribute};
+
+		if (is_array($value) && count($value))
+		{
+			foreach ($value as $recipient)
+			{
+				if (strpos($recipient, '{') !== 0 && !empty($this->{$attribute}))
+				{
+					if (!filter_var($recipient, FILTER_VALIDATE_EMAIL))
+					{
+						$params = array(
+							'attribute' => $attribute,
+						);
+
+						$this->addError($attribute, Craft::t('All recipients must be placeholders or valid email addresses.', $params));
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * @return array
 	 */
 	public function defineRelations()
 	{
 		return array(
-			'element'       => array(
+			'element'        => array(
 				static::BELONGS_TO,
 				'ElementRecord',
 				'id',
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
-			'campaign'      => array(
+			'campaign'       => array(
 				static::BELONGS_TO,
 				'SproutEmail_CampaignRecord',
 				'required' => true,
