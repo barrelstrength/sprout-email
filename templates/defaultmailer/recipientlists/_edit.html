@@ -46,5 +46,9 @@
 {% endset %}
 
 {% if not recipientList.handle %}
-	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#name', '#handle');" %}
+	{% set js %}
+		new Craft.HandleGenerator('#name', '#handle');
+	{% endset %}
 {% endif %}
+
+{% includeJs js %}
