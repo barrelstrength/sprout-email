@@ -18,7 +18,7 @@
 				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry' }}</a>
 			</td>
 			<td>
-				{{ campaign.type }}
+				{{ campaign.type|ucfirst }}
 			</td>
 			<td>
 				{{ entry.dateCreated|date('m/d/Y') }}
