@@ -110,12 +110,16 @@
 
 						{% if mailer.getId() != 'copypaste' %}
 							<div id="tab-sproutemail-sender" class="{{ tab != 2 ? 'hidden' : '' }}">
-								{#
-								 # Setting sender defaults from mailer settings
-								 #}
-								{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
-								{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
-								{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}
+
+								{% set defaultFromName  = "" %}
+								{% set defaultFromEmail = "" %}
+								{% set defaultReplyTo   = "" %}
+
+								{% if campaign.type == 'notification' and mailer.getId() == 'defaultmailer' %}
+									{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
+									{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
+									{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}
+								{% endif %}
 
 								{{ forms.field({
 									label: "From Name <span class='info'>The person or business sending the email</span>"|t,

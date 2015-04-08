@@ -1,6 +1,7 @@
 {% import "_includes/forms" as forms %}
 
-{% set mailers = craft.sproutEmail.getMailers() %}
+{% set mailers       = craft.sproutEmail.getMailers() %}
+{% set shouldRefresh = false %}
 
 {% for mailer in mailers %}
 	{% if loop.first %}
@@ -12,20 +13,39 @@
         </thead>
 	{% endif %}
 
-	<tr>
-		<td>
-			{{ mailer.getTitle() }}
-		</td>
-		<td>
-			{% if mailer.hasCpSettings() %}
-				<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">Settings</a>
-			{% endif %}
-		</td>
-		<td>{{ mailer.getDescription()|md }}</td>
-	</tr>
+	{% if mailer.isInstalled() %}
+		<tr>
+			<td>
+				{{ mailer.getTitle() }}
+			</td>
+			<td>
+				{% if mailer.hasCpSettings() %}
+					<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">Settings</a>
+				{% endif %}
+			</td>
+			<td>{{ mailer.getDescription()|md }}</td>
+		</tr>
+	{% else %}
+		{% set shouldRefresh = true %}
+	{% endif %}{# mailer installed? #}
 
 	{% if loop.last %}
 		</table>
 	{% endif %}
 
 {% endfor %}
+
+{% if shouldRefresh %}
+	<hr>
+
+	<div class="notices">
+		<h2 class="error">Installation Required</h2>
+		<p>Sprout Email has detected mailers not currently installed.</p>
+
+		<hr>
+
+		<p>
+			<a href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" class="btn" title="Install Mailers">Install Mailers</a>
+		</p>
+	</div>
+{% endif %}

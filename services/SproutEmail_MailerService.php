@@ -122,6 +122,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function getSettingsByMailerName($name)
 	{
+		$settings = null;
+
 		if (is_null($this->configs))
 		{
 			$this->configs = craft()->config->get('sproutEmail');
@@ -144,9 +146,9 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$settingsFromFile = isset($configs) ? $configs : array();
 
 			$settings->setAttributes(array_merge($settingsFromDb, $settingsFromFile));
-
-			return $settings;
 		}
+
+		return $settings;
 	}
 
 	/**
