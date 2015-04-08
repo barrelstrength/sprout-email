@@ -464,6 +464,9 @@ class SproutEmail_EntryController extends BaseController
 				$campaign->template.$ext, array(
 					'entry' => $entry,
 					'campaign' => $campaign,
+					'firstName' => '{firstName}',
+					'lastName' => '{lastName}',
+					'email' => '{email}',
 				)
 			);
 		}
