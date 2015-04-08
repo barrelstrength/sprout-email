@@ -137,24 +137,20 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		sproutEmail()->mailers->includeMailerModalResources();
 
-		if ($context == 'index')
-		{
-			$criteria->offset = 0;
-			$criteria->limit  = null;
+		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
+		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
-			$source = $this->getSource($sourceKey, $context);
+		$criteria->limit = null;
+		$criteria->order = sprintf('%s %s', $order, $sort);
 
-			return craft()->templates->render(
-				'sproutemail/entries/_entryindex', array(
-					'context'            => $context,
-					'elementType'        => new ElementTypeVariable($this),
-					'disabledElementIds' => $disabledElementIds,
-					'elements'           => $criteria->find(),
-				)
-			);
-		}
-
-		return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
+		return craft()->templates->render(
+			'sproutemail/entries/_entryindex', array(
+				'context'            => $context,
+				'elementType'        => new ElementTypeVariable($this),
+				'disabledElementIds' => $disabledElementIds,
+				'elements'           => $criteria->find(),
+			)
+		);
 	}
 
 	/**
@@ -314,9 +310,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 					'entry'     => $element,
 					'campaign'  => $campaign,
 					'recipient' => array(
-						'firstName' => 'John',
-						'lastName'  => 'Doe',
-						'email'     => 'john@doe.com'
+						'firstName' => '{firstName}',
+						'lastName'  => '{lastName}',
+						'email'     => '{email}'
 					)
 				)
 			)

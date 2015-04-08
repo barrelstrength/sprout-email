@@ -373,7 +373,6 @@ class SproutEmail_EntryController extends BaseController
 	 * Redirects the client to a URL for viewing an entry/draft on the front end.
 	 *
 	 * @param mixed  $entryId
-	 * @param string $template
 	 *
 	 * @throws HttpException
 	 * @return null
@@ -406,7 +405,7 @@ class SproutEmail_EntryController extends BaseController
 			)
 		);
 
-		$url   = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
+		$url = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
 
 		craft()->request->redirect($url);
 	}
