@@ -25,13 +25,14 @@
 			</td>
 			<td>
 				{% if mailer and mailer.isInstalled() %}
-					<a href="#"
-						data-action="{{ mailer.getActionForPrepareModal() }}"
-						data-mailer="{{ mailer.getId() }}"
-						data-entry-id="{{ entry.id }}"
-						data-campaign-id="{{ campaign.id }}"
-						class="prepare">Prepare</a>
-
+					{% if campaign.type == 'email' %}
+						<a href="#"
+							data-action="{{ mailer.getActionForPrepareModal() }}"
+							data-mailer="{{ mailer.getId() }}"
+							data-entry-id="{{ entry.id }}"
+							data-campaign-id="{{ campaign.id }}"
+							class="prepare">Prepare</a>
+					{% endif %}
 					{% if entry.getUrl() is not empty %}
 						/
 						<a href="{{ entry.getUrl() }}" title="{{ entry.subjectLine }}" target="_blank">HTML</a>
