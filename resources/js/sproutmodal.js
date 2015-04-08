@@ -29,9 +29,16 @@ SproutModal.prototype.init = function ()
 
 		self.postToControllerAction($t.data(), function handle(error, response)
 		{
+			console.log([error, response]);
+
 			if (error)
 			{
 				return self.createErrorModal(error);
+			}
+
+			if (!response.success)
+			{
+				return self.createErrorModal(response.message);
 			}
 
 			self.create(response.content);
@@ -126,7 +133,12 @@ SproutModal.prototype.create = function (content)
 		{
 			if (error)
 			{
-				return this.createErrorModal(error);
+				return self.createErrorModal(error);
+			}
+
+			if (!response.success)
+			{
+				return self.createErrorModal(response.message);
 			}
 
 			$spinner.addClass("hidden");

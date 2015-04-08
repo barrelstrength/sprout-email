@@ -155,6 +155,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * Returns a link to the control panel section for the mailer passed in
 	 *
 	 * @param SproutEmailBaseMailer $mailer
+	 *
 	 * @deprecate Deprecated for 0.9.0 in favour of BaseMailer API
 	 *
 	 * @return string|\Twig_Markup
@@ -214,22 +215,33 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		$entry    = sproutEmail()->entries->getEntryById($entryId);
 		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
-		$modal    = new SproutEmail_ResponseModel();
+		$response = new SproutEmail_ResponseModel();
 
 		if ($entry && $campaign)
 		{
-			$modal->content = $mailer->getPrepareModalHtml($entry, $campaign);
+			try
+			{
+				$response->success = true;
+				$response->content = $mailer->getPrepareModalHtml($entry, $campaign);
 
-			return $modal;
+				return $response;
+			}
+			catch (\Exception $e)
+			{
+				$response->success = false;
+				$response->message = $e->getMessage();
+
+				return $response;
+			}
 		}
 		else
 		{
-			$name = $mailer->getTitle();
-
-			$modal->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
+			$name              = $mailer->getTitle();
+			$response->success = false;
+			$response->message = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
 		}
 
-		return $modal;
+		return $response;
 	}
 
 	/**
@@ -251,22 +263,22 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		$entry    = sproutEmail()->entries->getEntryById($entryId);
 		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
-		$modal    = new SproutEmail_ResponseModel();
+		$response = new SproutEmail_ResponseModel();
 
 		if ($entry && $campaign)
 		{
-			$modal->content = $mailer->getPreviewModalHtml($entry, $campaign);
+			$response->content = $mailer->getPreviewModalHtml($entry, $campaign);
 
-			return $modal;
+			return $response;
 		}
 		else
 		{
 			$name = $mailer->getTitle();
 
-			$modal->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
+			$response->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
 		}
 
-		return $modal;
+		return $response;
 	}
 
 	public function includeMailerModalResources()

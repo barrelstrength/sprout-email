@@ -56,4 +56,24 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	{
 		return $value;
 	}
+
+	/**
+	 * @throws Exception
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getMockedParams()
+	{
+		$criteria = craft()->elements->getCriteria(ElementType::Entry);
+
+		if (isset($this->options['entriesSaveEntrySectionIds']) && count($this->options['entriesSaveEntrySectionIds']))
+		{
+			$ids = $this->options['entriesSaveEntrySectionIds'];
+			$id  = array_shift($ids);
+
+			$criteria->sectionId = $id;
+		}
+
+		return $criteria->first();
+	}
 }

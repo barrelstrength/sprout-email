@@ -11,6 +11,11 @@ namespace Craft;
 class SproutEmailBaseEvent
 {
 	/**
+	 * @var array|null
+	 */
+	protected $options;
+
+	/**
 	 * Returns the event title when used in string context
 	 *
 	 * @return string
@@ -30,6 +35,14 @@ class SproutEmailBaseEvent
 	final public function getId()
 	{
 		return str_replace('.', '-', $this->getName());
+	}
+
+	/**
+	 * @param $options
+	 */
+	final public function setOptions($options)
+	{
+		$this->options = $options;
 	}
 
 	/**
@@ -143,5 +156,15 @@ class SproutEmailBaseEvent
 	public function prepareValue($value)
 	{
 		return $value;
+	}
+
+	/**
+	 * Gives the event the ability to let a mailer test sending notifications with mocked params
+	 *
+	 * @return array
+	 */
+	public function getMockedParams()
+	{
+		return array();
 	}
 }

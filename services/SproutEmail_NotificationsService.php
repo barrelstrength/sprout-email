@@ -93,7 +93,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 * @param string $id The return value of the event getId()
 	 * @param mixed  $default
 	 *
-	 * @return array
+	 * @return SproutEmailBaseEvent
 	 */
 	public function getEventById($id, $default = null)
 	{
@@ -176,7 +176,34 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function getNotification(array $attributes)
 	{
-		return SproutEmail_NotificationRecord::model()->findByAttributes($attributes);
+		$record = SproutEmail_NotificationRecord::model()->findByAttributes($attributes);
+
+		if ($record)
+		{
+			return SproutEmail_NotificationModel::populateModel($record->getAttributes());
+		}
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return SproutEmailBaseEvent|null
+	 */
+	public function getEventByCampaignId($id)
+	{
+		$notification = $this->getNotification(array('campaignId' => $id));
+
+		if ($notification)
+		{
+			$event = $this->getEventById($notification->eventId);
+
+			if ($event)
+			{
+				$event->setOptions($notification->options);
+
+				return $event;
+			}
+		}
 	}
 
 	/**

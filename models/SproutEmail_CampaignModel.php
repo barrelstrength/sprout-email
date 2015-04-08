@@ -127,4 +127,12 @@ class SproutEmail_CampaignModel extends BaseModel
 		$criteria->campaignId = $this->id;
 		$this->entries        = $criteria->find();
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function isNotification()
+	{
+		return ($this->type == Campaign::Notification);
+	}
 }

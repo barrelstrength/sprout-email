@@ -304,6 +304,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		return false;
 	}
 
+	/**
+	 * @param int $recipientId
+	 * @param array $recipientListIds
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
 	public function saveRecipientListRecipientRelations($recipientId, array $recipientListIds = array())
 	{
 		try
@@ -345,7 +353,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param mixed                     $element
+	 * @param mixed|null                $element
+	 *
+	 * @return bool
 	 */
 	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null)
 	{
@@ -412,6 +422,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 								sproutEmail()->error($e->getMessage());
 							}
 						}
+
+						return true;
 					}
 				}
 				else
@@ -420,10 +432,62 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				}
 			}
 		}
+
+		return false;
 	}
 
+	/**
+	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignModel $campaign
+	 *
+	 * @throws \Exception
+	 *
+	 * @return bool
+	 */
+	public function sendMockNotification(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	{
+		if ($campaign->isNotification())
+		{
+			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+
+			if ($event)
+			{
+				try
+				{
+					$this->sendNotification($campaign, $event->getMockedParams());
+				}
+				catch (\Exception $e)
+				{
+					throw $e;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignModel $campaign
+	 *
+	 * @throws \Exception
+	 *
+	 * @return bool
+	 */
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
+		if ($campaign->isNotification())
+		{
+			try
+			{
+				$this->sendMockNotification($entry, $campaign);
+			}
+			catch (\Exception $e)
+			{
+				throw $e;
+			}
+		}
+
 		$params = array('entry' => $entry, 'campaign' => $campaign);
 		$email  = array(
 			'fromEmail' => $entry->fromEmail,
