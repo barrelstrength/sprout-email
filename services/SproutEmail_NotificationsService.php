@@ -344,11 +344,11 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function prepareNotificationTemplateVariables(BaseModel $entry, $element = null)
 	{
-		if ($element instanceof BaseElementModel)
+		if ($element instanceof BaseModel)
 		{
 			$element = array_merge(
 				$element->getAttributes(),
-				$element->getContent()->getAttributes()
+				isset($element->elementType) ? $element->getContent()->getAttributes() : array()
 			);
 		}
 		else

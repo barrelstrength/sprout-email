@@ -192,7 +192,18 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 		{
 			sproutEmail()->error($e->getMessage());
 
-			throw $e;
+			$content = craft()->templates->render(
+				'sproutemail/defaultmailer/modals/_export',
+				array(
+					'entry'    => $entry,
+					'campaign' => $campaign,
+					'success'  => false,
+				)
+			);
+
+			$success = false;
+
+			return compact('content', 'success');
 		}
 	}
 

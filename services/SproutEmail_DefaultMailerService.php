@@ -454,7 +454,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			{
 				try
 				{
-					$this->sendNotification($campaign, $event->getMockedParams());
+					return $this->sendNotification($campaign, $event->getMockedParams());
 				}
 				catch (\Exception $e)
 				{
@@ -480,7 +480,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			try
 			{
-				$this->sendMockNotification($entry, $campaign);
+				return $this->sendMockNotification($entry, $campaign);
 			}
 			catch (\Exception $e)
 			{
