@@ -1,24 +1,37 @@
-# Extending Sprout Email
-**Sprout Email** was designed from the ground up to be robust and extensible.
+Sprout Email!
 
-## Dynamic Events
-**Dynamic Events** are special classes that can be registered as event handlers at runtime, enabling **Sprout Email** to respond to such events even if it originally did not know about them.
-These classes serve two purposes:
-1. To integrate a **UI** that enables users to create notification triggers
-2. To enable **Sprout Email** to `send notifications` for this event type  
+Here are some online resources you might find useful:
 
-### Creating a Dynamic Event
-To create a **Dynamic Event** you must extend the self documented **SproutEmailBaseEvent**.
-This `abstract` class follows many Craft conventions and should provide enough documentation to get you started.
 
-## Element Criteria Template API
+Sprout Email Docs
+------------------------------------------------------------
+Code examples, tags, common questions:
+http://sprout.barrelstrengthdesign.com/craft-plugins/email
 
-### `sproutEmail.entries`
 
-```twig
-{% set byId = craft.sproutEmail.entries.id(1).first() %}
-{% set bySlug = craft.sproutEmail.entries.slug('my-entry').first() %}
-{% set byTitle = craft.sproutemail.entries.title('My Entry').first() %}
-{% set byCampaignId = craft.sproutEmail.entries.campaignId(1).find() %}
-{% set byCampaignHandle = craft.sproutEmail.entries.campaignHandle('myCampaign').find() %}
-```
+Sprout Email Updates
+------------------------------------------------------------
+http://sprout.barrelstrengthdesign.com/craft-plugins/email/updates
+
+
+Sprout Email Translations
+------------------------------------------------------------
+A default translation file is provided on GitHub and can be modified 
+as needed for your language requirements.
+https://github.com/BarrelStrength/Craft-SproutEmail/blob/master/translations/en_us.php
+
+
+Sprout Email Support
+------------------------------------------------------------
+
+Via Craft Stack Exchange: Tag your questions with `plugin-sproutemail`:
+https://craftcms.stackexchange.com/
+
+Via Email:
+Send us a note at: sprout@barrelstrengthdesign.com
+
+
+Sprout Email License Terms
+------------------------------------------------------------
+Use of Sprout Email is subject to the license agreement available here:
+http://sprout.barrelstrengthdesign.com/license
