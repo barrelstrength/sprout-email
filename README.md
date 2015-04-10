@@ -14,13 +14,6 @@ Sprout Email Updates
 http://sprout.barrelstrengthdesign.com/craft-plugins/email/updates
 
 
-Sprout Email Translations
-------------------------------------------------------------
-A default translation file is provided on GitHub and can be modified 
-as needed for your language requirements.
-https://github.com/BarrelStrength/Craft-SproutEmail/blob/master/translations/en_us.php
-
-
 Sprout Email Support
 ------------------------------------------------------------
 
