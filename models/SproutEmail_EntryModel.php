@@ -30,10 +30,10 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 */
-	const READY    = 'live';
+	const READY    = 'ready';
 	const PENDING  = 'pending';
-	const DISABLED = 'expired'; // this doesn't behave properly when named 'disabled'
-	const ARCHIVED = 'setup';
+	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
+	const ARCHIVED = 'archived';
 
 	/**
 	 * @return array
@@ -140,28 +140,37 @@ class SproutEmail_EntryModel extends BaseElementModel
 
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
-		$hasRequiredAttributes = ($campaign->mailer && $campaign->template);
-
-		$hasBeenSent = $this->sent; // @TODO - hard coded
-
-		// Archived
-		if ($status == static::ARCHIVED OR $hasBeenSent)
+		switch ($status)
 		{
-			return static::ARCHIVED;
-		}
+			case BaseElementModel::DISABLED:
+			{
+				return static::DISABLED;
 
-		// Ready and Pending
-		if ($hasRequiredAttributes && $status == static::ENABLED)
-		{
-			return static::READY;
-		}
+				break;
+			}
+			case BaseElementModel::ENABLED:
+			{
+				if ($this->sent)
+				{
+					return static::ARCHIVED;
+				}
 
-		if ($hasRequiredAttributes)
-		{
-			return static::PENDING;
-		}
+				if (empty($campaign->template) or empty($campaign->mailer))
+				{
+					return static::PENDING;
+				}
 
-		return static::DISABLED;
+				return static::READY;
+
+				break;
+			}
+			case BaseElementModel::ARCHIVED:
+			{
+				return static::ARCHIVED;
+
+				break;
+			}
+		}
 	}
 
 	/**

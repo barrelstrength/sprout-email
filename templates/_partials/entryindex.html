@@ -68,3 +68,17 @@
 	</div>
 
 {% endif %}
+
+{% set statusSnippet %}
+	.status.ready {
+		background-position: 0 0; // @green
+	}
+	.status.pending {
+		background-position: 0 -10px; // @orange
+	}
+	.status.disabled {
+		background-position: 0 -20px; // @red
+	}
+{% endset %}
+
+{% includeCss(statusSnippet) %}

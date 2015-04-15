@@ -197,33 +197,32 @@ class SproutEmail_EntryElementType extends BaseElementType
 		{
 			case SproutEmail_EntryModel::DISABLED:
 			{
-				return 'campaigns.template IS NULL';
-			}
+				$query->andWhere('elements.enabled = 0');
 
+				break;
+			}
 			case SproutEmail_EntryModel::PENDING:
 			{
-				return array(
-					'and',
-					'elements.enabled = 0',
-					'campaigns.template IS NOT NULL',
-					'entries.sent = 0',
-				);
-			}
+				$query->andWhere('campaigns.template IS NULL OR campaigns.mailer IS NULL');
 
-			case SproutEmail_EntryModel::READY:
-			{
-				return array(
-					'and',
-					'elements.enabled = 1',
-					'elements_i18n.enabled = 1',
-					'campaigns.template IS NOT NULL',
-					'entries.sent = 0',
-				);
+				break;
 			}
-
 			case SproutEmail_EntryModel::ARCHIVED:
 			{
-				return 'entries.sent = 1';
+				$query->andWhere('entries.sent > 0');
+
+				break;
+			}
+			case SproutEmail_EntryModel::READY:
+			{
+				$query->andWhere('
+					elements.enabled = 1
+					AND campaigns.template IS NOT NULL
+					AND campaigns.mailer IS NOT NULL
+					AND entries.sent = 0'
+				);
+
+				break;
 			}
 		}
 	}
