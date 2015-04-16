@@ -154,7 +154,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 
 		if (!count($lists))
 		{
-			return craft()->templates->render('sproutemail/defaultmailer/recipientlists/_norecipientlists');
+			return craft()->templates->render('sproutemail/settings/_defaultmailer-norecipients');
 		}
 
 		foreach ($lists as $list)
