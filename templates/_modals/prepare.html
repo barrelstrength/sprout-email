@@ -36,5 +36,11 @@
 		data-action="sproutEmail/entry/export"
 		data-entry-id="{{ entry.id }}"
 		data-campaign-id="{{ campaign.id }}"
-		class="btn submit actions">{{ "Test Notification"|t }}</button>
+		class="btn submit actions">
+		{% if campaign.isNotification() %}
+			{{- "Test Notification"|t -}}
+		{% else %}
+			{{- "Send Campaign"|t -}}
+		{% endif %}
+	</button>
 </div>

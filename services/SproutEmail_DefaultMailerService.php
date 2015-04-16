@@ -4,7 +4,7 @@ namespace Craft;
 class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 {
 	/**
-	 * @var SproutEmail_MailerSettingsModel
+	 * @var Model
 	 */
 	protected $settings;
 
@@ -24,6 +24,21 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
+	 * @param string $email
+	 *
+	 * @return SproutEmail_DefaultMailerRecipientModel|null
+	 */
+	public function getRecipientByEmail($email)
+	{
+		$record = SproutEmail_DefaultMailerRecipientRecord::model()->with('recipientLists')->findByAttributes(array('email' => $email));
+
+		if ($record)
+		{
+			return SproutEmail_DefaultMailerRecipientModel::populateModel($record);
+		}
+	}
+
+	/**
 	 * @param int $id
 	 *
 	 * @return SproutEmail_DefaultMailerRecipientListModel|null
@@ -32,6 +47,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	{
 		if (($record = SproutEmail_DefaultMailerRecipientListRecord::model()->with('recipients')->findById((int) $id)))
 		{
+			$record->recipients = SproutEmail_DefaultMailerRecipientModel::populateModels($record->recipients);
+
 			return SproutEmail_DefaultMailerRecipientListModel::populateModel($record);
 		}
 	}
@@ -95,7 +112,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function getRecipients()
 	{
-		$records = SproutEmail_DefaultMailerRecipientRecord::model()->findAll();
+		$records = SproutEmail_DefaultMailerRecipientRecord::model()->with('recipientLists')->findAll();
 
 		if ($records)
 		{
@@ -205,7 +222,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	{
 		if (isset($model->id) && is_numeric($model->id))
 		{
-			$record = SproutEmail_DefaultMailerRecipientListRecord::model()->populateRecord($model);
+			$record = SproutEmail_DefaultMailerRecipientListRecord::model()->findById($model->id);
+
+			if ($record)
+			{
+				$record->setAttributes($model->getAttributes(), false);
+			}
 		}
 		else
 		{
@@ -220,6 +242,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			try
 			{
 				$record->save(false);
+
+				$model->id = $record->id;
 
 				return true;
 			}
@@ -289,6 +313,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 					return $saved;
 				}
+
+				$model->addErrors($record->getErrors());
 			}
 			catch (\Exception $e)
 			{

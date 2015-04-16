@@ -6,10 +6,10 @@ namespace Craft;
  *
  * @package Craft
  *
- * @property int    $id
- * @property string $name
- * @property string $handle
- * @property SproutEmail_DefaultMailerRecipientModel[]
+ * @property int                                       $id
+ * @property string                                    $name
+ * @property string                                    $handle
+ * @property SproutEmail_DefaultMailerRecipientModel[] $recipients
  */
 class SproutEmail_DefaultMailerRecipientListModel extends BaseModel
 {

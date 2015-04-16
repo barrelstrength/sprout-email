@@ -93,4 +93,21 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 
 		return $this->recipientListsIds;
 	}
+
+	/**
+	 * Returns the users first|full name if set or email otherwise
+	 *
+	 * @return string
+	 */
+	public function getNameOrEmail()
+	{
+		$name = trim($this->firstName);
+
+		if (empty($name))
+		{
+			return $this->email;
+		}
+
+		return empty($this->lastName) ? $name : sprintf('%s %s', $name, trim($this->lastName));
+	}
 }

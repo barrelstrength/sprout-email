@@ -69,9 +69,13 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		if (isset($this->options['entriesSaveEntrySectionIds']) && count($this->options['entriesSaveEntrySectionIds']))
 		{
 			$ids = $this->options['entriesSaveEntrySectionIds'];
-			$id  = array_shift($ids);
 
-			$criteria->sectionId = $id;
+			if (is_array($ids) && count($ids))
+			{
+				$id  = array_shift($ids);
+
+				$criteria->sectionId = $id;
+			}
 		}
 
 		return $criteria->first();

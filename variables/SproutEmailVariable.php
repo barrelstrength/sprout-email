@@ -33,15 +33,34 @@ class SproutEmailVariable
 		return $plugin->getVersion();
 	}
 
+	/**
+	 * Returns a list of available mailers
+	 *
+	 * @return SproutEmailBaseMailer[]
+	 */
 	public function getMailers()
 	{
 		return sproutEmail()->mailers->getMailers();
 	}
 
 	/**
+	 * Returns a list of mailers that can send campaigns
+	 *
+	 * @return SproutEmailBaseMailer[]
+	 */
+	public function getCampaignMailers()
+	{
+		$mailers = $this->getMailers();
+
+		unset($mailers['defaultmailer']);
+
+		return $mailers;
+	}
+
+	/**
 	 * @param string $mailer
 	 *
-	 * @return SproutEmail_BaseMailer|null
+	 * @return SproutEmailBaseMailer|null
 	 */
 	public function getMailer($mailer)
 	{

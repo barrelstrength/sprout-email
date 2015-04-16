@@ -1,6 +1,11 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmailPlugin
+ *
+ * @package Craft
+ */
 class SproutEmailPlugin extends BasePlugin
 {
 	public function getName()
@@ -51,25 +56,17 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function registerCpRoutes()
 	{
-		$url            = 'sproutemail/defaultmailer';
-		$ctrl           = 'sproutEmail/defaultMailer';
-		$recipients     = $url.'/recipients';
-		$recipientLists = $url.'/recipientlists';
-		$defaultMailer  = array(
-			$url => array(
-				'action' => 'templates/render',
-				'params' => array('template' => 'sproutemail/defaultmailer/_index')
-			),
-			$recipients                           => array('action' => $ctrl.'/showIndexRecipientTemplate'),
-			$recipients.'/new'                    => array('action' => $ctrl.'/showEditRecipientTemplate'),
-			$recipients.'/edit/(?P<id>[\d]+)'     => array('action' => $ctrl.'/showEditRecipientTemplate'),
-			# ~
-			$recipientLists                       => array('action' => $ctrl.'/showIndexRecipientListTemplate'),
-			$recipientLists.'/new'                => array('action' => $ctrl.'/showEditRecipientListTemplate'),
-			$recipientLists.'/edit/(?P<id>[\d]+)' => array('action' => $ctrl.'/showEditRecipientListTemplate'),
+		$url         = 'sproutemail';
+		$ctrl        = 'sproutEmail/defaultMailer';
+		$recipients  = $url.'/recipients';
+		$emailClient = array(
+			$recipients                             => array('action' => $ctrl.'/showIndexRecipientTemplate'),
+			$recipients.'/(?P<recipientListId>\d+)' => array('action' => $ctrl.'/showIndexRecipientTemplate'),
+			$recipients.'/new'                      => array('action' => $ctrl.'/showEditRecipientTemplate'),
+			$recipients.'/edit/(?P<id>[\d]+)'       => array('action' => $ctrl.'/showEditRecipientTemplate'),
 		);
 
-		return array_merge($defaultMailer, array(
+		return array_merge($emailClient, array(
 			'sproutemail/settings/mailers/(?P<mailerId>[a-z]+)' => array(
 				'action' => 'sproutEmail/mailer/editSettings'
 			),

@@ -115,7 +115,7 @@
 								{% set defaultFromEmail = "" %}
 								{% set defaultReplyTo   = "" %}
 
-								{% if campaign.type == 'notification' and mailer.getId() == 'defaultmailer' %}
+								{% if mailer.getId() == 'defaultmailer' %}
 									{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
 									{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
 									{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}

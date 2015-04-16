@@ -23,7 +23,8 @@
 
 	{{ getCsrfInput() }}
 
-	{% set mailers = craft.sproutemail.getMailers() %}
+	{% set mailers = craft.sproutemail.getCampaignMailers() %}
+
 	{% if mailers %}
 		{{ forms.textField({
 			label: "Campaign Name"|t,

@@ -301,19 +301,24 @@ class SproutEmail_EntryElementType extends BaseElementType
 			sproutEmail()->error('The template could not be found '.$campaign->template.$extension);
 		}
 
+		$vars = array(
+			'entry'     => $element,
+			'campaign'  => $campaign,
+			'recipient' => array(
+				'firstName' => '{firstName}',
+				'lastName'  => '{lastName}',
+				'email'     => '{email}'
+			),
+			'firstName' => '{firstName}',
+			'lastName'  => '{lastName}',
+			'email'     => '{email}'
+		);
+
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $campaign->template.$extension,
-				'variables' => array(
-					'entry'     => $element,
-					'campaign'  => $campaign,
-					'recipient' => array(
-						'firstName' => '{firstName}',
-						'lastName'  => '{lastName}',
-						'email'     => '{email}'
-					)
-				)
+				'variables' => $vars
 			)
 		);
 	}

@@ -1,0 +1,101 @@
+{% extends "sproutemail/_recipients/cp" %}
+
+{% includeJsResource "sproutemail/js/recipients.js" %}
+
+{% set selectedTab = 'recipients' %}
+
+{% if currentUser.can('editSproutEmailSettings') and craft.request.segment(2) == "" %}
+	{% set extraPageHeaderHtml %}
+	<a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
+	{% endset %}
+{% endif %}
+
+{% set sidebar %}
+
+	{% if recipientLists %}
+		<div class="buttons">
+			{% set newRecipientUrl = url('sproutemail/recipients/new', (recipientListId is defined ? { recipientListId: recipientListId } : null)) %}
+			<a href="{{ newRecipientUrl }}" class="submit btn add icon">{{ "New Recipient"|t }}</a>
+		</div>
+	{% endif %}
+
+	<nav>
+		<ul id="lists">
+			<li><a href="{{ url('sproutemail/recipients') }}"{% if recipientListId is not defined %} class="sel"{% endif %}>{{ "All Recipients"|t }}</a></li>
+			{% for list in recipientLists %}
+				<li>
+					<a href="{{ url('sproutemail/recipients/'~list.id) }}"{% if recipientListId is defined and list.id == recipientListId %} class="sel"{% endif %} data-id="{{ list.id }}" data-name="{{ list.name }}">
+						{{- list.name }} (<strong>{{ list.recipients|length }}</strong>)
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</nav>
+
+	<div class="buttons">
+		<div id="newlistbtn" class="btn add icon">{{ "New List"|t }}</div>
+
+		{% if recipientListId is defined %}
+			<div id="listsettingsbtn" class="btn settings icon menubtn" title="{{ 'Settings' }}"></div>
+			<div class="menu">
+				<ul>
+					<li><a data-action="rename" role="button">{{ "Rename selected list"|t }}</a></li>
+					<li><a data-action="delete" role="button">{{ "Delete selected list"|t }}</a></li>
+				</ul>
+			</div>
+		{% endif %}
+	</div>
+{% endset %}
+
+{% set content %}
+
+	<p id="norecipients"{% if recipients %} class="hidden"{% endif %}>
+		{% if recipientListId is defined %}
+			{{ "This list doesn’t have any recipients yet."|t }}
+		{% else %}
+			{{ "No recipients exist yet."|t }}
+		{% endif %}
+	</p>
+
+	{% if recipients %}
+		<table id="recipients" class="data fullwidth collapsible">
+			<thead>
+				<th scope="col">{{ "Name"|t }}</th>
+				<th scope="col">{{ "Email"|t }}</th>
+				<th scope="col">{{ "Lists"|t }}</th>
+				<td class="thin"></td>
+			</thead>
+			<tbody>
+				{% for recipient in recipients %}
+					<tr data-id="{{ recipient.id }}" data-name="{{ recipient.getNameOrEmail() }}">
+						<th scope="row" data-title="{{ 'Name'|t }}">
+							<a href="{{ url('sproutemail/recipients/edit/' ~ recipient.id) }}">
+								{{ recipient.getNameOrEmail() }}
+							</a>
+						</th>
+						<td data-title="{{ 'Email'|t }}">{{ recipient.email }}</td>
+						<td data-title="{{ 'Lists'|t }}">
+							{% set lists = [] %}
+							{% for list in recipient.recipientLists %}
+								{% set lists = lists|merge([list.name]) %}
+							{% endfor %}
+
+							{{- lists|join(' | ') -}}
+						</td>
+						<td class="thin"><a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+{% endset %}
+
+{% set js %}
+	new Craft.AdminTable({
+		tableSelector: '#recipients',
+		noObjectsSelector: '#norecipients',
+		deleteAction: 'sproutEmail/defaultMailer/deleteRecipient'
+	});
+{% endset %}
+{% includeJs js %}
+

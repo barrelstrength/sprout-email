@@ -172,4 +172,26 @@ class SproutEmailService extends BaseApplicationComponent
 
 		SproutEmailPlugin::log($msg, LogLevel::Error);
 	}
+
+	/**
+	 * @param string $text
+	 *
+	 * @return string
+	 */
+	public function createHandle($text)
+	{
+		$text = ElementHelper::createSlug($text);
+		$words = explode('-', $text);
+		$start = array_shift($words);
+
+		if (count($words))
+		{
+			foreach ($words as $word)
+			{
+				$start = $start.ucfirst($word);
+			}
+		}
+
+		return $start;
+	}
 }
