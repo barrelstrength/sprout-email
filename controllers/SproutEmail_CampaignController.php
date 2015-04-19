@@ -66,7 +66,7 @@ class SproutEmail_CampaignController extends BaseController
 		}
 		else
 		{
-			craft()->userSession->setError(Craft::t('Couldn’t delete Campaign.'));
+			craft()->userSession->setError(Craft::t("Couldn’t delete Campaign."));
 
 			$this->returnJson(array(
 				'success' => false

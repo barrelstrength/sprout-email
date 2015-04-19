@@ -15,7 +15,7 @@
 		<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
 			<td>
 				<span class="status {{ entry.status }}"></span>
-				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry' }}</a>
+				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry'|t }}</a>
 			</td>
 			<td>
 				{{ campaign.type|ucfirst }}
@@ -35,9 +35,9 @@
 
 						{% if not campaign.isNotification() %}
 							/
-							<a href="/{{ entry.uri }}" title="{{ entry.title }}" target="_blank">HTML</a>
+							<a href="/{{ entry.uri }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
 							/
-							<a href="/{{ entry.uri }}?type=text" title="{{ entry.subjectLine }}" target="_blank">Text</a>
+							<a href="/{{ entry.uri }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 						{% endif %}
 					{% endif %}
 				{% endif %}

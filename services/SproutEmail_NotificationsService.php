@@ -377,7 +377,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	{
 		if (!isset($campaign->mailer))
 		{
-			throw new Exception('An email provider is required to send the notification.');
+			throw new Exception(Craft::t('An email provider is required to send the notification.'));
 		}
 
 		$mailer = sproutEmail()->mailers->getMailerByName($campaign->mailer);

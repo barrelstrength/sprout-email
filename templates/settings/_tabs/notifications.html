@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-{% set title = 'Notifications' %}
+{% set title = 'Notifications'|t %}
 
 {% set crumbs = [
 { label: "Sprout Email"|t, url: url('sproutemail') }
@@ -15,8 +15,8 @@
 		{% if loop.first %}
 			<table id="notification-entries" class="data fullwidth">
 			<thead>
-			<th width="40%">Notification</th>
-			<th width="40%">Template</th>
+			<th width="40%">{{ "Notification"|t }}</th>
+			<th width="40%">{{ "Template"|t }}</th>
 			<th class="thin"></th>
 			</thead>
 		{% endif %}
@@ -41,23 +41,23 @@
 	{% if notifications|length %}
 
 		<div class="buttons">
-			<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/edit/new') }}">New
-				Notification</a>
+			<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/edit/new') }}">{{ "New
+				Notification"|t }}</a>
 		</div>
 
 	{% else %}
 
 		<div style="width:40%;">
 
-			<h2>Create your first Notification</h2>
+			<h2>{{ "Create your first Notification"|t }}</h2>
 
-			<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on top
+			<p>{{ "Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on top
 				of user generated content, keep an eye on publish workflows, or be in the know when something happens on your
-				website.</p>
+				website."|t }}</p>
 
 			<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/edit/new') }}">Create a
-					Notification &raquo;</a>
+				<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/edit/new') }}">{{ "Create a
+					Notification"|t }} &raquo;</a>
 			</div>
 
 		</div>

@@ -1,7 +1,7 @@
 {% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Get started with some example emails" %}
+{% set title = "Get started with some example emails"|t %}
 
 {% block main %}
 
@@ -27,7 +27,7 @@
 	
 	<p>{{ "Install example emails with commented templates and example data. The example templates will be created placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
 
-	<p>{{ "<em>Example emails include ...</em>"|t|raw }}</p>
+	<p><em>{{ "Example emails include ..."|t|raw }}</em></p>
 	
 	<div class="buttons">
 		<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />

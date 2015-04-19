@@ -7,9 +7,9 @@
 	{% if loop.first %}
 		<table id="mailers" class="data fullwidth">
 		<thead>
-			<th>Mailer</th>
-			<th>Settings</th>
-			<th>Description</th>
+			<th>{{ "Mailer"|t }}</th>
+			<th>{{ "Settings"|t }}</th>
+			<th>{{ "Description"|t }}</th>
         </thead>
 	{% endif %}
 
@@ -20,7 +20,7 @@
 			</td>
 			<td>
 				{% if mailer.hasCpSettings() %}
-					<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">Settings</a>
+					<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
 				{% endif %}
 			</td>
 			<td>{{ mailer.getDescription()|md }}</td>
@@ -39,13 +39,15 @@
 	<hr>
 
 	<div class="notices">
-		<h2 class="error">Installation Required</h2>
-		<p>Sprout Email has detected mailers not currently installed.</p>
+		<h2 class="error">{{ "Installation Required"|t }}</h2>
+		<p>{{ "Sprout Email has detected mailers not currently installed."|t }}</p>
 
 		<hr>
 
 		<p>
-			<a href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" class="btn" title="Install Mailers">Install Mailers</a>
+			<a href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" class="btn" title='{{ "Install Mailers"|t }}'>{{
+				"Install
+			Mailers"|t }}</a>
 		</p>
 	</div>
 {% endif %}

@@ -22,7 +22,7 @@ class SproutEmail_EventsController extends BaseController
 		{
 			if ( $res->hasErrors() )
 			{
-				craft()->userSession->setError( Craft::t( 'Couldn’t save form.' ) );
+				craft()->userSession->setError(Craft::t('Couldn’t save form.'));
 				
 				// Send the field back to the template
 				craft()->urlManager->setRouteVariables( array (
@@ -31,14 +31,14 @@ class SproutEmail_EventsController extends BaseController
 				return true;
 			}
 			
-			craft()->userSession->setNotice( Craft::t( 'Event saved.' ) );
+			craft()->userSession->setNotice(Craft::t('Event saved.'));
 			$this->redirectToPostedUrl( array (
 					$event_model 
 			) );
 		}
 		else // problem
 		{
-			craft()->userSession->setError( Craft::t( 'Couldn’t save form.' ) );
+			craft()->userSession->setError(Craft::t('Couldn’t save form.'));
 		}
 		
 		// Send the field back to the template

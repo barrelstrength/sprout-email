@@ -141,18 +141,19 @@
 	</div>
 	
 	<div class="buttons">
-		<input class="btn" type="submit" value="Save Info">
-		<input class="btn submit save-and-continue" id="info" type="button" value="Save Info &amp; Continue">
+		<input class="btn" type="submit" value="{{ 'Save Info'|t }}">
+		<input class="btn submit save-and-continue" id="info" type="button" value="{{ 'Save Info &amp; Continue'|t }}">
 	</div>
 	
 	{% else %}
 		
-		<p>Manage and send your email marketing and notification emails directly from Craft.</p>
+		<p>{{ "Manage and send your email marketing and notification emails directly from Craft."|t }}</p>
 		<ul>
-			<li>Sprout Email</li>
+			<li>{{ "Sprout Email"|t }}</li>
 		</ul>
 
-		<p>In you want to set up an Campaign to send via a third party, you must first provide valid API settings for one of the supported email service providers.</p>
+		<p>{{ "In you want to set up an Campaign to send via a third party, you must first provide valid API settings for
+		 one of the supported email service providers."|t }}</p>
 
 		<ul>
 			<li>Campaign Monitor</li>
@@ -161,13 +162,14 @@
 			<li>SendGrid</li>
 		</ul>
 
-		<p>Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?</p>
+		<p>{{ "Just need to get up and running or integrating with a horrible service that makes you feel like it's
+		1980?"|t }}</p>
 
 		<ul>
-			<li>Copy &amp; Paste</li>
+			<li>{{ "Copy &amp; Paste"|t }}</li>
 		</ul>
 		
-		<p><a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
+		<p><a href="{{ url('sproutemail/settings') }}" >{{ "Set API Settings Now"|t }}</a></p>
 	
 	{% endif %}
 </form>

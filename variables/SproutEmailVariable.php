@@ -291,13 +291,14 @@ class SproutEmailVariable
 	}
 
 	/**
+	 * @todo - migrate to plugin specific mailer
 	 * Provider specific functions (since there is no support for multiple variable files)
 	 */
 	public function getSendGridSenderAddresses()
 	{
 		if (!$senderAddresses = craft()->sproutEmail_sendGrid->getSenderAddresses())
 		{
-			$senderAddresses[''] = 'Please create a sender address (from name) in your SendGrid account.';
+			$senderAddresses[''] = Craft::t('Please create a sender address (from name) in your SendGrid account.');
 		}
 
 		return $senderAddresses;

@@ -1,9 +1,9 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
-{% set title = "Edit Campaign" %}
+{% set title = "Edit Campaign"|t %}
 
 {% set crumbs = [
-	{ label: "Sprout Email"|t, url: url('sproutemail/entries') },
+	{ label: "Sprout Email", url: url('sproutemail/entries') },
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
@@ -115,25 +115,27 @@
 	<hr>
 
 	<div class="buttons">
-		<input class="btn submit" type="submit" value="Save Campaign">
+		<input class="btn submit" type="submit" value="{{ 'Save Campaign'|t }}">
 	</div>
 {% else %}
-	<p>Manage and send your email marketing and notification emails directly from Craft.</p>
+	<p>{{ "Manage and send your email marketing and notification emails directly from Craft."|t }}</p>
 	<ul>
 		<li>Sprout Email</li>
 	</ul>
-	<p>In you want to set up an Campaign to send via a third party, you must first provide valid API settings for one of the supported email service providers.</p>
+	<p>{{ "In you want to set up an Campaign to send via a third party, you must first provide valid API settings for
+	one of the supported email service providers."|t }}</p>
 	<ul>
 		<li>Campaign Monitor</li>
 		<li>MailChimp</li>
 		<li>MailGun</li>
 		<li>SendGrid</li>
 	</ul>
-	<p>Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?</p>
+	<p>{{ "Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?"|t
+		}}</p>
 	<ul>
-		<li>Copy &amp; Paste</li>
+		<li>{{ "Copy &amp; Paste"|t }}</li>
 	</ul>
-	<p><a href="{{ url('sproutemail/settings') }}" >Set API Settings Now</a></p>
+	<p><a href="{{ url('sproutemail/settings') }}" >{{ "Set API Settings Now"|t }}</a></p>
 {% endif %}
 </form>
 {% endset %}

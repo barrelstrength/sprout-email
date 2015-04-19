@@ -5,19 +5,20 @@
 <h2>{{ entry.title }}</h2>
 
 {% if recipientLists is defined and recipientLists|length %}
-	<h4>Recipient Lists for this Campaign</h4>
+	<h4>{{ "Recipient Lists for this Campaign"|t }}</h4>
 
 	<ul>
 		{% for list in recipientLists %}
 			<li>
-				<strong>{{ list.name }}</strong> with <strong>({{ list.recipients|length }})</strong> {{ list.recipients|length == 1 ? "recipient" : "recipients" }}
+				<strong>{{ list.name }}</strong> {{ "with"|t }} <strong>({{ list.recipients|length }})</strong>
+				{{ (list.recipients|length == 1 ? "recipient"|t : "recipients"|t) }}
 			</li>
 		{% endfor %}
 	</ul>
 {% endif %}
 
 {% if entry.recipients is defined and entry.recipients|length %}
-	<h4>Recipients for this Campaign</h4>
+	<h4>{{ "Recipients for this Campaign"|t }}</h4>
 
 	<ul>
 		{% for recipient in entry.recipients %}

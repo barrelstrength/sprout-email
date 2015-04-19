@@ -1,11 +1,11 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Edit Notification" %}
+{% set title = "Edit Notification"|t %}
 {% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
 
 {% set crumbs = [
-	{ label: "Sprout Email"|t, url: url('sproutemail') },
+	{ label: "Sprout Email", url: url('sproutemail') },
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
 ] %}
 
@@ -58,7 +58,8 @@
 						</h3>
 					{% else %}
 						<h3>
-							<a class="btn icon add" href="{{ cpUrl('sproutemail/entries/' ~ campaignId) }}/new" title="Add Notification Entry">Add Notification Entry</a>
+							<a class="btn icon add" href="{{ cpUrl('sproutemail/entries/' ~ campaignId) }}/new" title="{{ "Add
+							Notification Entry"|t }}">{{ "Add Notification Entry"|t }}</a>
 						</h3>
 					{% endif %}
 				</div>
@@ -72,11 +73,11 @@
 		</div>
 	</form>
 	{% else %}
-		<h2>Sprout Mailer Required</h2>
-		<p>Before you can create notifications, please install our mailer.</p>
+		<h2>{{ "Sprout Mailer Required"|t }}</h2>
+		<p>{{ "Before you can create notifications, please install our mailer."|t }}</p>
 
 		<hr>
-		<p><a class="btn" href="{{ url('settings/plugins') }}" >Plugin Installation</a></p>
+		<p><a class="btn" href="{{ url('settings/plugins') }}" >{{ "Plugin Installation"|t }}</a></p>
 
 	{% endif %}
 {% endset %}

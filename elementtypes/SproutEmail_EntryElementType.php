@@ -95,7 +95,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		if (count($campaigns))
 		{
-			$sources[] = array('heading' => 'Campaigns');
+			$sources[] = array('heading' => Craft::t('Campaigns'));
 
 			foreach ($campaigns as $campaign)
 			{
@@ -298,7 +298,10 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		if (!craft()->templates->doesTemplateExist($campaign->template.$extension))
 		{
-			sproutEmail()->error('The template could not be found '.$campaign->template.$extension);
+			$templateName = $campaign->template.$extension;
+			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
+				'templateName' => $templateName
+			)));
 		}
 
 		$vars = array(

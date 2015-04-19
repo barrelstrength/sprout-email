@@ -10,12 +10,12 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return 'Save Entry';
+		return Craft::t('Save Entry');
 	}
 
 	public function getDescription()
 	{
-		return 'Triggered when an entry is saved.';
+		return Craft::t('Triggered when an entry is saved.');
 	}
 
 	public function getOptionsHtml($context = array())

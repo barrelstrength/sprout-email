@@ -1,15 +1,13 @@
 
 {% set sections = craft.sproutEmail.getAllSections() %}
 
-{{
-	forms.checkboxField({
+{{ forms.checkboxField({
 		label: "Only for new entries?"|t,
 		name: "entriesSaveEntryOnlyWhenNew",
 		checked: options.entriesSaveEntryOnlyWhenNew is defined ? options.entriesSaveEntryOnlyWhenNew : false
-	})
-}}
-{{
-	forms.field({
+}) }}
+
+{{ forms.field({
 		label: "Sections"|t,
 		instructions: "Select one or more sections."|t,
 		errors: errors is defined ? errors : null,
@@ -18,5 +16,4 @@
 		name: "entriesSaveEntrySectionIds",
 		options : sections,
 		values: options.entriesSaveEntrySectionIds is defined ? options.entriesSaveEntrySectionIds : null
-	}))
-}}
+})) }}

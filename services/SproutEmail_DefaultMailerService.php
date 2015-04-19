@@ -369,7 +369,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				}
 				else
 				{
-					throw new Exception('The recipient list with id '.$listId.' does not exists.');
+					throw new Exception(Craft::t('The recipient list with id {listId} does not exists.', array('listId' =>
+						                                                                                              $listId)));
 				}
 			}
 		}

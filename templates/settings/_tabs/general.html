@@ -10,14 +10,15 @@
 			<table id="campaigns" class="data fullwidth">
 			<thead>
 			<th width="25%">
-				Campaign
+				{{ "Campaign"|t }}
         <span class="info">
-          <p>Create multiple Campaigns with unique fields, layouts, and email service provider integrations.</p>
+          <p>{{ "Create multiple Campaigns with unique fields, layouts, and email service provider integrations."|t
+	          }}</p>
         </span>
 			</th>
-			<th width="20%">Handle</th>
-			<th width="20%">Mailer</th>
-			<th width="10%">Template</th>
+			<th width="20%">{{ "Handle"|t }}</th>
+			<th width="20%">{{ "Mailer"|t }}</th>
+			<th width="10%">{{ "Template"|t }}</th>
 			<th class="thin"></th>
 			</thead>
 		{% endif %}
@@ -31,7 +32,7 @@
 			<td>{{ campaign.mailer }}</td>
 			<td><code>{{ campaign.template }}</code></td>
 			<td colspan="3" class="thin">
-				<a class="delete icon" title="Delete"></a>
+				<a class="delete icon" title='{{ "Delete"|t }}'></a>
 			</td>
 		</tr>
 		{% if loop.last %}
@@ -41,21 +42,22 @@
 	{% endfor %}
 
 	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">New Campaign</a>
+		<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Campaign"|t
+			}}</a>
 	</div>
 
 {% else %}
 
 	<div style="width:40%;">
 
-		<h2>Create your first Campaign</h2>
+		<h2>{{ "Create your first Campaign"|t }}</h2>
 
-		<p>Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated
-			email program to manage your email.</p>
+		<p>{{ "Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated
+			email program to manage your email."|t }}</p>
 
 		<div class="buttons">
-			<a class="btn submit icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">Create an
-				Campaign &raquo;</a>
+			<a class="btn submit icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "Create an
+				Campaign"|t }} &raquo;</a>
 		</div>
 
 	</div>

@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set crumbs = [
-{ label: "Sprout Email"|t, url: url('sproutemail') }
+{ label: "Sprout Email", url: url('sproutemail') }
 ] %}
 
 {# @TODO - this doens't work... ug
@@ -17,7 +17,7 @@
   },
 } %} #}
 
-{% set title = 'Notifications' %}
+{% set title = 'Notifications'|t %}
 
 {% block main %}
 
@@ -28,7 +28,7 @@
 		{% for campaign in notifications %}
 
 			{% if loop.first %}
-				<h3>Notifications</h3>
+				<h3>{{ "Notifications"|t }}</h3>
 				<table id="notifications" class="data fullwidth">
 				<thead>
 				<th width="65%"></th>
@@ -68,22 +68,23 @@
 		{% if notifications|length %}
 
 			<div class="buttons">
-				<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/new') }}">New Notification</a>
+				<a class="btn submit add icon" href="{{ url('sproutemail/settings/notifications/new') }}">{{ "New
+				Notification"|t }}</a>
 			</div>
 
 		{% else %}
 
 			<div style="width:40%;">
 
-				<h2>Create your first Notification</h2>
+				<h2>{{ "Create your first Notification"|t }}</h2>
 
-				<p>Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on
+				<p>{{ "Notifications allow you to trigger emails when certain conditions are met. Create a notification to stay on
 					top of user generated content, keep an eye on publish workflows, or be in the know when something happens on
-					your website.</p>
+					your website."|t }}</p>
 
 				<div class="buttons">
-					<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/new') }}">Create a
-						Notification &raquo;</a>
+					<a class="btn submit icon" href="{{ url('sproutemail/settings/notifications/new') }}">{{ "Create a
+						Notification"|t }} &raquo;</a>
 				</div>
 
 			</div>

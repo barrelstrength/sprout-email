@@ -238,7 +238,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			$name              = $mailer->getTitle();
 			$response->success = false;
-			$response->message = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
+			$response->message = "<h1>$name</h1><br><p>".Craft::t('No actions available for this campaign entry.')."</p>";
 		}
 
 		return $response;
@@ -275,7 +275,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			$name = $mailer->getTitle();
 
-			$response->content = "<h1>$name</h1><br><p>No actions available for this campaign entry.</p>";
+			$response->content = "<h1>$name</h1><br><p>".Craft::t('No actions available for this campaign entry.')."</p>";
 		}
 
 		return $response;
@@ -497,7 +497,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				'message' => PHP_EOL.$e->getMessage(),
 			);
 
-			sproutEmail()->error('Unable to install the {name} mailer.{message}', $vars);
+			sproutEmail()->error(Craft::t('Unable to install the {name} mailer.{message}', $vars));
 		}
 	}
 
@@ -514,7 +514,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$record)
 		{
-			sproutEmail()->error('No {name} mailer record to delete.', array('name' => $name));
+			sproutEmail()->error(Craft::t('No {name} mailer record to delete.', array('name' => $name)));
 
 			return false;
 		}
@@ -530,7 +530,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				'message' => PHP_EOL.$e->getMessage(),
 			);
 
-			sproutEmail()->error('Unable to delete the {name} mailer record.{message}', $vars);
+			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', $vars));
 		}
 	}
 }

@@ -42,7 +42,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	 */
 	public function getDescription()
 	{
-		return Craft::t('Smart transactional email, easy recipient management, and advanced third party integration.');
+		return Craft::t('Smart transactional email, easy recipient management, and advanced third party integrations.');
 	}
 
 	/**

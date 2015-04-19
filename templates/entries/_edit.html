@@ -156,7 +156,7 @@
 									{{ forms.textField({
 										label: "Recipients"|t,
 										instructions: "A comma separated list of email addresses."|t,
-										placeholder: "user@domain.com, other@domain.com",
+										placeholder: "user@domain.com, other@domain.com"|t,
 										name: "recipient[onTheFlyRecipients]",
 										value: entry.recipients is defined ? entry.recipients|join(', ') : "",
 										errors: entry is defined ? entry.getErrors('recipients')
@@ -191,9 +191,9 @@
 								{{ forms.selectField({
 									id: "notificationEvent",
 									name: "notificationEvent",
-									label: "Trigger On",
-									instructions: "The event your notification will trigger on.",
-									options: [{label: "Select event...", value: null}]|merge(events),
+									label: "Trigger On"|t,
+									instructions: "The event your notification will trigger on."|t,
+									options: [{label: "Select event..."|t, value: null}]|merge(events),
 									value: notificationEvent is defined ? notificationEvent : null,
 								}) }}
 
@@ -223,11 +223,9 @@
 									<div class="menu">
 										<ul>
 											<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id  }}">{{
-													"Save
-											 and continue editing"|t }}</a></li>
+													"Save and continue editing"|t }}</a></li>
 											<li><a class="formsubmit" data-redirect="sproutemail/entries/{{ campaign.id }}/new">{{ "Save and
-											 add
-											another"|t }}</a></li>
+											 add another"|t }}</a></li>
 										</ul>
 									</div>
 									{% endif %}

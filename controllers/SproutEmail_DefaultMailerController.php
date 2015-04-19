@@ -15,7 +15,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 	 */
 	public function actionShowEditRecipientTemplate(array $variables = array())
 	{
-		$variables['title']              = 'Recipient';
+		$variables['title']              = Craft::t('Recipient');
 		$variables['recipientListsHtml'] = null;
 
 		if (isset($variables['id']))
@@ -40,7 +40,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 				$selectedLists[] = craft()->request->getParam('recipientListId');
 			}
 
-			$variables['title']              = 'New Recipient';
+			$variables['title']              = Craft::t('New Recipient');
 			$variables['element']            = new SproutEmail_DefaultMailerRecipientModel();
 			$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($selectedLists);
 		}
@@ -77,7 +77,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 			$recipients = sproutEmailDefaultMailer()->getRecipients();
 		}
 
-		$variables['title']          = 'Recipients';
+		$variables['title']          = Craft::t('Recipients');
 		$variables['recipientLists'] = sproutEmailDefaultMailer()->getRecipientLists();
 		$variables['recipients']     = $recipients;
 
@@ -113,13 +113,13 @@ class SproutEmail_DefaultMailerController extends BaseController
 
 		if ($model->validate() && sproutEmailDefaultMailer()->saveRecipient($model))
 		{
-			craft()->userSession->setNotice('Recipient saved successfully.');
+			craft()->userSession->setNotice(Craft::t('Recipient saved successfully.'));
 
 			$this->redirectToPostedUrl($model);
 			craft()->end();
 		}
 
-		craft()->userSession->setError('Unable to save recipient.');
+		craft()->userSession->setError(Craft::t('Unable to save recipient.'));
 		craft()->urlManager->setRouteVariables(array('recipient' => $model));
 	}
 
@@ -154,7 +154,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 
 		if ($model->validate() && sproutEmailDefaultMailer()->saveRecipientList($model))
 		{
-			craft()->userSession->setNotice('Recipient list saved successfully.');
+			craft()->userSession->setNotice(Craft::t('Recipient list saved successfully.'));
 
 			if (craft()->request->isAjaxRequest())
 			{
@@ -171,11 +171,11 @@ class SproutEmail_DefaultMailerController extends BaseController
 			$this->redirectToPostedUrl($model);
 		}
 
-		craft()->userSession->setError('Unable to save recipient list.');
+		craft()->userSession->setError(Craft::t('Unable to save recipient list.'));
 
 		if (craft()->request->isAjaxRequest())
 		{
-			$this->returnErrorJson('Unable to save recipient list.');
+			$this->returnErrorJson(Craft::t('Unable to save recipient list.'));
 		}
 
 		craft()->urlManager->setRouteVariables(array('recipientList' => $model));
@@ -206,7 +206,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 			{
 				SproutEmail_DefaultMailerRecipientListRecipientRecord::model()->deleteAllByAttributes($vars);
 
-				craft()->userSession->setNotice('Recipient deleted successfully.');
+				craft()->userSession->setNotice(Craft::t('Recipient deleted successfully.'));
 
 				if (craft()->request->isAjaxRequest())
 				{
@@ -215,11 +215,11 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 			else
 			{
-				craft()->userSession->setNotice('Unable to delete recipient.');
+				craft()->userSession->setNotice(Craft::t('Unable to delete recipient.'));
 
 				if (craft()->request->isAjaxRequest())
 				{
-					$this->returnErrorJson('Unable to delete recipient.');
+					$this->returnErrorJson(Craft::t('Unable to delete recipient.'));
 				}
 			}
 
@@ -250,7 +250,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 			{
 				SproutEmail_DefaultMailerRecipientListRecipientRecord::model()->deleteAllByAttributes($vars);
 
-				craft()->userSession->setNotice('Recipient list deleted successfully.');
+				craft()->userSession->setNotice(Craft::t('Recipient list deleted successfully.'));
 
 				if (craft()->request->isAjaxRequest())
 				{
@@ -259,11 +259,11 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 			else
 			{
-				craft()->userSession->setNotice('Unable to delete recipient list.');
+				craft()->userSession->setNotice(Craft::t('Unable to delete recipient list.'));
 
 				if (craft()->request->isAjaxRequest())
 				{
-					$this->returnErrorJson('Unable to delete recipient list.');
+					$this->returnErrorJson(Craft::t('Unable to delete recipient list.'));
 				}
 			}
 

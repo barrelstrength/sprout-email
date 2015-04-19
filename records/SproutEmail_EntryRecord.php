@@ -72,7 +72,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 			if (!filter_var($value, FILTER_VALIDATE_EMAIL))
 			{
 				$params = array(
-					'attribute' => ($attribute == 'replyTo') ? 'Reply To' : 'From Email',
+					'attribute' => ($attribute == 'replyTo') ? Craft::t('Reply To') : Craft::t('From Email'),
 				);
 
 				$this->addError($attribute, Craft::t('{attribute} is not a valid email address.', $params));
