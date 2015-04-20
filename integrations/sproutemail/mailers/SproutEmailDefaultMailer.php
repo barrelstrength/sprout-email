@@ -96,9 +96,10 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	public function defineSettings()
 	{
 		return array(
-			'fromName'  => array(AttributeType::String, 'required' => true),
-			'fromEmail' => array(AttributeType::Email, 'required' => true),
-			'replyTo'   => array(AttributeType::Email, 'required' => false),
+			'fromName'           => array(AttributeType::String, 'required' => true),
+			'fromEmail'          => array(AttributeType::Email, 'required' => true),
+			'replyTo'            => array(AttributeType::Email, 'required' => false),
+			'enableDynamicLists' => array(AttributeType::Bool, 'default' => false),
 		);
 	}
 

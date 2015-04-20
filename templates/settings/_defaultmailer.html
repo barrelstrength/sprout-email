@@ -1,33 +1,45 @@
 
 <div id="tab-campaign-info" class="tab-content">
-    {{ forms.textField({
-        id: 'fromName',
-        name: 'defaultmailer[fromName]',
-        label: 'From Name'|t,
-        autofocus: true,
-        required: true,
-        instructions: 'The sender name shown in the email metadata.'|t,
-        value: settings is defined ? settings.fromName : null,
-        errors: settings is defined and settings.hasErrors('fromName') ? settings.getErrors('fromName') : null
-    }) }}
+	{{ forms.textField({
+		id: 'fromName',
+		name: 'defaultmailer[fromName]',
+		label: 'From Name'|t,
+		autofocus: true,
+		required: true,
+		instructions: 'The sender name shown in the email metadata.'|t,
+		value: settings is defined ? settings.fromName : null,
+		errors: settings is defined and settings.hasErrors('fromName') ? settings.getErrors('fromName') : null
+	}) }}
 
-    {{ forms.textField({
-        id: 'fromEmail',
-        name: 'defaultmailer[fromEmail]',
-        label: 'From Email'|t,
-        required: true,
-        instructions: 'The sender email shown in the email metadata.'|t,
-        value: settings is defined ? settings.fromEmail : null,
-        errors: settings is defined and settings.hasErrors('fromEmail') ? settings.getErrors('fromEmail') : null
-    }) }}
+	{{ forms.textField({
+		id: 'fromEmail',
+		name: 'defaultmailer[fromEmail]',
+		label: 'From Email'|t,
+		required: true,
+		instructions: 'The sender email shown in the email metadata.'|t,
+		value: settings is defined ? settings.fromEmail : null,
+		errors: settings is defined and settings.hasErrors('fromEmail') ? settings.getErrors('fromEmail') : null
+	}) }}
 
-    {{ forms.textField({
-        id: 'replyTo',
-        name: 'defaultmailer[replyTo]',
-        label: 'Reply To'|t,
-        instructions: 'The From Email will be used if left blank.'|t,
-        value: settings is defined ? settings.replyTo : null,
-        errors: settings is defined and settings.hasErrors('replyTo') ? settings.getErrors('replyTo') : null
-    }) }}
+	{{ forms.textField({
+		id: 'replyTo',
+		name: 'defaultmailer[replyTo]',
+		label: 'Reply To'|t,
+		instructions: 'The From Email will be used if left blank.'|t,
+		value: settings is defined ? settings.replyTo : null,
+		errors: settings is defined and settings.hasErrors('replyTo') ? settings.getErrors('replyTo') : null
+	}) }}
+
+	<hr>
+	<div class="field">
+		<h3>{{ "Enable Dynamic Lists?"|t }}</h3>
+		<p class="instructions">
+			{{- "Whether recipient lists should be created based on events such as sproutCommerce.saveProduct, sproutCommerce.checkoutEnd, etc."|t -}}
+		</p>
+		{{ forms.lightswitch({
+			name: "defaultmailer[enableDynamicLists]",
+			on:   settings.enableDynamicLists
+		}) }}
+	</div>
 </div>
 

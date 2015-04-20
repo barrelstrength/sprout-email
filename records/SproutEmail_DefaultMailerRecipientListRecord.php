@@ -8,6 +8,7 @@ namespace Craft;
  *
  * @property string $name
  * @property string $handle
+ * @property bool   $dynamic Whether or not the list was created dynamically
  */
 class SproutEmail_DefaultMailerRecipientListRecord extends BaseRecord
 {
@@ -19,8 +20,9 @@ class SproutEmail_DefaultMailerRecipientListRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'name'   => AttributeType::String,
-			'handle' => AttributeType::String,
+			'name'    => AttributeType::String,
+			'handle'  => AttributeType::String,
+			'dynamic' => array(AttributeType::Bool, 'default' => 0, 'column' => ColumnType::TinyInt),
 		);
 	}
 

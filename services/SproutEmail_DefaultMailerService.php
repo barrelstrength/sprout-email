@@ -9,6 +9,28 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	protected $settings;
 
 	/**
+	 * Whether lists and recipients should be created dynamically based on Sprout Commerce events
+	 *
+	 * @return mixed
+	 */
+	public function enableDynamicLists()
+	{
+		if (is_null($this->settings))
+		{
+			$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
+
+			if ($mailer)
+			{
+				$this->init();
+
+				$this->settings = $mailer->getSettings();
+			}
+		}
+
+		return $this->settings->enableDynamicLists;
+	}
+
+	/**
 	 * @param int $id
 	 *
 	 * @return SproutEmail_DefaultMailerRecipientModel|null
@@ -233,8 +255,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			$record = new SproutEmail_DefaultMailerRecipientListRecord();
 
-			$record->name   = $model->name;
-			$record->handle = $model->handle;
+			$record->name    = $model->name;
+			$record->handle  = $model->handle;
+			$record->dynamic = (int) $model->dynamic;
 		}
 
 		if ($record->validate())
@@ -576,8 +599,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			$list = new SproutEmail_DefaultMailerRecipientListModel();
 
-			$list->name   = $event->params['product']->title;
-			$list->handle = $event->params['product']->slug;
+			$list->name    = $event->params['product']->title;
+			$list->handle  = sproutEmail()->createHandle($event->params['product']->title);
+			$list->dynamic = 1;
 
 			try
 			{

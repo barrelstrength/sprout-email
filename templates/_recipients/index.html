@@ -25,7 +25,7 @@
 			{% for list in recipientLists %}
 				<li>
 					<a href="{{ url('sproutemail/recipients/'~list.id) }}"{% if recipientListId is defined and list.id == recipientListId %} class="sel"{% endif %} data-id="{{ list.id }}" data-name="{{ list.name }}">
-						{{- list.name }} (<strong>{{ list.recipients|length }}</strong>)
+						{{- list.name }} (<strong>{{ list.recipients|length }}</strong>){{ list.dynamic ? '<span>*</span>' : '' }}
 					</a>
 				</li>
 			{% endfor %}

@@ -31,8 +31,10 @@ class SproutEmailService extends BaseApplicationComponent
 	/**
 	 * Allows us to render an object template without creating a fatal error
 	 *
-	 * @param $str
-	 * @param $obj
+	 * @param string $str
+	 * @param object $obj
+	 *
+	 * @return string
 	 */
 	public function renderObjectTemplateSafely($str, $obj)
 	{

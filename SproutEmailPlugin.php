@@ -17,7 +17,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.8.8';
+		return '0.8.9';
 	}
 
 	public function getDeveloper()
@@ -102,8 +102,11 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
 
-		craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
-		craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
+		if (sproutEmailDefaultMailer()->enableDynamicLists())
+		{
+			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
+			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
+		}
 
 		sproutEmail()->notifications->registerDynamicEventHandler();
 	}
