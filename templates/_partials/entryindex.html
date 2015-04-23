@@ -35,9 +35,9 @@
 
 						{% if not campaign.isNotification() %}
 							/
-							<a href="/{{ entry.uri }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
+							<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
 							/
-							<a href="/{{ entry.uri }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+							<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 						{% endif %}
 					{% endif %}
 				{% endif %}

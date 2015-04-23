@@ -217,6 +217,15 @@ class SproutEmail_EntryModel extends BaseElementModel
 		return $campaign;
 	}
 
+	public function getUrl()
+	{
+		$cpTrigger = craft()->config->get('cpTrigger');
+
+		$url = UrlHelper::getCpUrl($this->uri);
+
+		return str_replace('/'.$cpTrigger, '', $url);
+	}
+
 	/**
 	 * Returns the element's CP edit URL.
 	 *

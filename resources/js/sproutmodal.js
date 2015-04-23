@@ -142,7 +142,9 @@ SproutModal.prototype.create = function (content)
 			}
 
 			$spinner.addClass("hidden");
+
 			modal = self.create(response.content);
+
 			modal.updateSizeAndPosition();
 		});
 	});
@@ -171,8 +173,3 @@ SproutModal.prototype.createLoadingModal = function()
 
 	modal.create($content.html());
 };
-
-$(document).on('sproutModalBeforeRender', function ()
-{
-	console.log('Handled Sprout Modal Before Render');
-});

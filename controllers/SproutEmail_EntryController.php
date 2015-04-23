@@ -22,64 +22,6 @@ class SproutEmail_EntryController extends BaseController
 	protected $campaign;
 
 	/**
-	 * Gives a mailer the ability to relay method calls to itself from a modal window
-	 *
-	 * @throws HttpException
-	 */
-	public function actionRelayMailerMethod()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$response = array(
-			'success' => false,
-			'content' => '',
-		);
-
-		$mailer = craft()->request->getPost('mailer');
-		$method = craft()->request->getPost('method');
-
-		if (!$mailer)
-		{
-			$response['content'] = Craft::t('The mailer name is required.');
-			$this->returnJson($response);
-		}
-
-		$mailer = sproutEmail()->mailers->getMailerByName($mailer);
-
-		if (!$mailer)
-		{
-			$response['content'] = Craft::t('The {name} mailer could be instantiated.');
-			$this->returnJson($response);
-		}
-
-		if (!$method || !method_exists($mailer, $method))
-		{
-			$response['content'] = Craft::t('You forgot to pass in a method to call or that method does not exist.');
-
-			$this->returnJson($response);
-		}
-
-		try
-		{
-			$result = call_user_func(array($mailer, $method));
-
-			if (empty($result['content']))
-			{
-				$response['content'] = Craft::t('You did not return any content from {method}().', array('method' => $method));
-				$this->returnJson($response);
-			}
-
-			$this->returnJson($result);
-		}
-		catch(\Exception $e)
-		{
-			$response['content'] = Craft::t($e->getMessage());
-			$this->returnJson($response);
-		}
-	}
-
-	/**
 	 * Saves a campaign entry
 	 *
 	 * @throws Exception
@@ -150,6 +92,73 @@ class SproutEmail_EntryController extends BaseController
 		}
 	}
 
+
+	/**
+	 * Gives a mailer the ability to relay method calls to itself from a modal window
+	 *
+	 * @throws HttpException
+	 */
+	public function actionRelayMailerMethod()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$response = array(
+			'success' => false,
+			'content' => '',
+			'message' => '',
+		);
+
+		$mailer = craft()->request->getPost('mailer');
+		$method = craft()->request->getPost('method');
+
+		if (!$mailer)
+		{
+			$response['message'] = Craft::t('The mailer name is required.');
+
+			$this->returnJson($response);
+		}
+
+		$mailer = sproutEmail()->mailers->getMailerByName($mailer);
+
+		if (!$mailer)
+		{
+			$response['message'] = Craft::t('The {name} mailer could not be instantiated.');
+
+			$this->returnJson($response);
+		}
+
+		if (!$method || !method_exists($mailer, $method))
+		{
+			$response['message'] = Craft::t('You forgot to pass in a method to call or that method does not exist.');
+
+			$this->returnJson($response);
+		}
+
+		try
+		{
+			$result = call_user_func(array($mailer, $method));
+
+			if (empty($result['content']))
+			{
+				$response['message'] = Craft::t('You did not return any content from {method}().', array('method' => $method));
+
+				$this->returnJson($response);
+			}
+
+			$this->returnJson($result);
+		}
+		catch(\Exception $e)
+		{
+			$response['message'] = Craft::t($e->getMessage());
+
+			$this->returnJson($response);
+		}
+	}
+
+	/**
+	 * @throws HttpException
+	 */
 	public function actionExport()
 	{
 		$this->requirePostRequest();
@@ -161,23 +170,51 @@ class SproutEmail_EntryController extends BaseController
 		{
 			try
 			{
-				$result = sproutEmail()->mailers->exportEntry($entry, $campaign);
+				$response = sproutEmail()->mailers->exportEntry($entry, $campaign);
 
-				if (craft()->request->isAjaxRequest())
+				if ($response instanceof SproutEmail_ResponseModel)
 				{
-					$this->returnJson($result);
+					$this->returnJson($response->getAttributes());
 				}
-				craft()->end();
+				else
+				{
+					if (!isset($response['success']) || !$response['success'])
+					{
+						$response['success'] = false;
+
+						if (!isset($response['message']))
+						{
+							$response['message'] = Craft::t('The mailer did not return a accepted message.');
+						}
+					} else
+					{
+						if (!isset($response['content']))
+						{
+							$response['success'] = false;
+							$response['message'] = Craft::t('The mailer did not return an accepted response.');
+						}
+					}
+
+					$this->returnJson($response);
+				}
 			}
 			catch (\Exception $e)
 			{
-				$this->returnJson(array('content' => $e->getMessage()));
+				$response = array(
+					'success' => false,
+					'message' => $e->getMessage()
+				);
+
+				$this->returnJson($response);
 			}
 		}
-		else
-		{
-			throw new Exception(Craft::t('Entry or Campaign is missing'));
-		}
+
+		$response = array(
+			'success' => false,
+			'message' => Craft::t('The campaign email you are trying to send is missing.')
+		);
+
+		$this->returnJson($response);
 	}
 
 	/**
@@ -258,7 +295,7 @@ class SproutEmail_EntryController extends BaseController
 		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($variables['campaign']->template))
 		{
 			craft()->templates->includeJs('Craft.LivePreview.init('.JsonHelper::encode(array(
-						'fields'        => '#title-field, #fields > div > div > .field',
+						'fields'        => '#subjectLine-field, #title-field, #fields > div > div > .field',
 						'extraFields'   => '#settings',
 						'previewUrl'    => $variables['entry']->getUrl(),
 						'previewAction' => 'sproutEmail/entry/livePreviewEntry',
