@@ -4,7 +4,6 @@
 .DS_Store
 # --
 etc
-build
 vendor
 sync.sh
 docs.sh
