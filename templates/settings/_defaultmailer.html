@@ -32,12 +32,10 @@
 
 	<hr>
 	<div class="field">
-		<h3>{{ "Enable Dynamic Lists?"|t }}</h3>
-		<p class="instructions">
-			{{- "Whether recipient lists should be created based on events such as sproutCommerce.saveProduct, sproutCommerce.checkoutEnd, etc."|t -}}
-		</p>
-		{{ forms.lightswitch({
+		{{ forms.lightswitchField({
+			label: "Enable Dynamic Lists?"|t,
 			name: "defaultmailer[enableDynamicLists]",
+			instructions: "Dynamically create email lists based on Sprout Commerce events."|t,
 			on:   settings.enableDynamicLists
 		}) }}
 	</div>
