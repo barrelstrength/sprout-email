@@ -102,7 +102,7 @@ SproutModal.prototype.create = function (content)
 	var $actions = $(".actions", $modal);
 
 	// Gives mailers a chance to add their own event handlers
-	$(document).trigger('sproutModalBeforeRender', $content);
+	$(document).trigger("sproutModalBeforeRender", $content);
 
 	$modal.removeClass("hidden");
 
@@ -121,11 +121,18 @@ SproutModal.prototype.create = function (content)
 		modal.destroy();
 	});
 
-	$actions.off().on("click", function (e)
+	$actions.on("click", function (e)
 	{
 		e.preventDefault();
 
 		var $self = $(e.target);
+
+		if ($self.hasClass('preventAction'))
+		{
+			$self.removeClass('preventAction');
+
+			return;
+		}
 
 		$spinner.removeClass("hidden");
 
