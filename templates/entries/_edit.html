@@ -153,14 +153,17 @@
 							<div id="tab-sproutemail-recipients" class="{{ tab != 3 ? 'hidden' : '' }}">
 
 								<div id="recipients">
-									{{ forms.textField({
-										label: "Recipients"|t,
-										instructions: "A comma separated list of email addresses."|t,
-										placeholder: "user@domain.com, other@domain.com"|t,
-										name: "recipient[onTheFlyRecipients]",
-										value: entry.recipients is defined ? entry.recipients|join(', ') : "",
-										errors: entry is defined ? entry.getErrors('recipients')
-									}) }}
+									{% if campaign.isNotification() %}
+										{{ forms.textField({
+											label: "Recipients"|t,
+											instructions: "A comma separated list of email addresses."|t,
+											placeholder: "user@domain.com, other@domain.com"|t,
+											name: "recipient[onTheFlyRecipients]",
+											value: entry.recipients is defined ? entry.recipients|join(', ') : "",
+											errors: entry is defined ? entry.getErrors('recipients')
+										}) }}
+									{% endif %}
+
 									<h2>Recipients Lists</h2>
 									{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
 								</div>
