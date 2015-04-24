@@ -1,34 +1,44 @@
 
-<h1>Sprout Email</h1>
-<hr>
+<h1>{{ "Test Notification"|t }}</h1>
 
-<h2>{{ entry.title }}</h2>
+<table class="data fullwidth">
+	<tbody>
+	<tr>
+		<td><strong>{{ "Subject Line"|t }}</strong></td>
+		<td>{{ entry.title }}</td>
+	</tr>
 
-{% if recipientLists is defined and recipientLists|length %}
-	<h4>{{ "Recipient Lists for this Campaign"|t }}</h4>
+	{% if recipientLists is defined and recipientLists|length %}
+	<tr>
+		<td><strong>{{ "Recipients"|t }}</strong></td>
+		<td>
+				<ul>
+					{% for list in recipientLists %}
+						<li>
+							<strong>{{ list.name }}</strong> {{ "with"|t }} <strong>({{ list.recipients|length }})</strong>
+							{{ (list.recipients|length == 1 ? "recipient"|t : "recipients"|t) }}
+						</li>
+					{% endfor %}
+				</ul>
+		</td>
+	</tr>
+	{% endif %}
 
-	<ul>
-		{% for list in recipientLists %}
-			<li>
-				<strong>{{ list.name }}</strong> {{ "with"|t }} <strong>({{ list.recipients|length }})</strong>
-				{{ (list.recipients|length == 1 ? "recipient"|t : "recipients"|t) }}
-			</li>
-		{% endfor %}
-	</ul>
-{% endif %}
+	{% if entry.recipients is defined and entry.recipients|length %}
+	<tr>
+		<td><strong>{{ "Recipients"|t }}</strong></td>
+		<td>
+			<ul>
+				{% for recipient in entry.recipients %}
+					<li>{{ recipient }}</li>
+				{% endfor %}
+			</ul>
+		</td>
+	</tr>
+	{% endif %}
 
-{% if entry.recipients is defined and entry.recipients|length %}
-	<h4>{{ "Recipients for this Campaign"|t }}</h4>
-
-	<ul>
-		{% for recipient in entry.recipients %}
-			<li>{{ recipient }}</li>
-		{% endfor %}
-	</ul>
-
-{% endif %}
-
-<hr>
+	</tbody>
+</table>
 
 <div class="buttons right">
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
@@ -39,7 +49,7 @@
 		data-campaign-id="{{ campaign.id }}"
 		class="btn submit actions">
 		{% if campaign.isNotification() %}
-			{{- "Test Notification"|t -}}
+			{{- "Send Test"|t -}}
 		{% else %}
 			{{- "Send Campaign"|t -}}
 		{% endif %}
