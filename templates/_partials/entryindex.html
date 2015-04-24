@@ -20,7 +20,11 @@
 				{{ campaign.type|ucfirst }}
 			</td>
 			<td>
-			{% if mailer and mailer.isInstalled() and not campaign.isNotification() %}
+			{% if
+				mailer
+				and mailer.isInstalled()
+				and not campaign.isNotification()
+				and entry.status == 'ready' %}
 				<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
 				&nbsp;|&nbsp;
 				<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
