@@ -1,11 +1,11 @@
 {% if loop.first %}
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th width="50%">Subject Line</th>
-			<th width="15%">Type</th>
-			<th width="20%">Preview</th>
-			<th width="20%">Actions</th>
-			<th width="15%">Date Created</th>
+			<th width="60%">Subject Line</th>
+			<th width="10%">Date Created</th>
+			<th width="10%">Type</th>
+			<th width="10%">Preview</th>
+			<th width="10%">Send</th>
 		</thead>
 {% endif %}
 
@@ -17,6 +17,9 @@
 				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry'|t }}</a>
 			</td>
 			<td>
+				{{ entry.dateCreated|date('m/d/Y') }}
+			</td>
+			<td>
 				{{ campaign.type|ucfirst }}
 			</td>
 			<td>
@@ -26,11 +29,11 @@
 				and not campaign.isNotification()
 				and entry.status == 'ready' %}
 				<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
-				&nbsp;|&nbsp;
+				&nbsp;/&nbsp;
 				<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 			{% endif %}
 			</td>
-			<td>
+			<td class="nowrap">
 				{% if mailer and mailer.isInstalled() %}
 					{% if entry.status == 'ready' %}
 						<a href="#"
@@ -39,12 +42,8 @@
 							data-entry-id="{{ entry.id }}"
 							data-campaign-id="{{ campaign.id }}"
 							class="prepare">{{ mailer.getPrepareModalLinkTitle() }}</a>
-
 					{% endif %}
 				{% endif %}
-			</td>
-			<td>
-				{{ entry.dateCreated|date('m/d/Y') }}
 			</td>
 		</tr>
 {% if loop.last %}
