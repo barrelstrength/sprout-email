@@ -253,7 +253,7 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function getPrepareModalLinkTitle()
 	{
-		return 'Prepare';
+		return 'Review';
 	}
 
 	/**

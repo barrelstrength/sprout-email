@@ -1,12 +1,11 @@
 {% if loop.first %}
-	<h3>{{ "Entries"|t }}</h3>
-
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th width="50%">Entry</th>
+			<th width="50%">Subject Line</th>
 			<th width="15%">Type</th>
-			<th width="15%">Date Created</th>
+			<th width="20%">Preview</th>
 			<th width="20%">Actions</th>
+			<th width="15%">Date Created</th>
 		</thead>
 {% endif %}
 
@@ -21,7 +20,11 @@
 				{{ campaign.type|ucfirst }}
 			</td>
 			<td>
-				{{ entry.dateCreated|date('m/d/Y') }}
+			{% if mailer and mailer.isInstalled() and not campaign.isNotification() %}
+				<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
+				&nbsp;|&nbsp;
+				<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+			{% endif %}
 			</td>
 			<td>
 				{% if mailer and mailer.isInstalled() %}
@@ -33,14 +36,11 @@
 							data-campaign-id="{{ campaign.id }}"
 							class="prepare">{{ mailer.getPrepareModalLinkTitle() }}</a>
 
-						{% if not campaign.isNotification() %}
-							/
-							<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
-							/
-							<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
-						{% endif %}
 					{% endif %}
 				{% endif %}
+			</td>
+			<td>
+				{{ entry.dateCreated|date('m/d/Y') }}
 			</td>
 		</tr>
 {% if loop.last %}
