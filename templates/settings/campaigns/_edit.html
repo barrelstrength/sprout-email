@@ -118,24 +118,16 @@
 		<input class="btn submit" type="submit" value="{{ 'Save Campaign'|t }}">
 	</div>
 {% else %}
-	<p>{{ "Manage and send your email marketing and notification emails directly from Craft."|t }}</p>
-	<ul>
-		<li>Sprout Email</li>
-	</ul>
-	<p>{{ "In you want to set up an Campaign to send via a third party, you must first provide valid API settings for
-	one of the supported email service providers."|t }}</p>
-	<ul>
+	<h2>{{ "Setup your first campaign."|t }}</h2>
+
+	<p>Install and setup a Mailer Service to create your first Campaign. Mailers are available as separate plugins
+	and can be downloaded from the Sprout website and updated in the <a href="{{ url('sproutemail/settings?tab=mailers') }}">Mailer Setttings</a>.</p>
+
+	<p>{{ "Currently supported:"|t }}</p>
+	<ul class="bullets">
 		<li>Campaign Monitor</li>
-		<li>MailChimp</li>
-		<li>MailGun</li>
-		<li>SendGrid</li>
+		<li>Copy & Paste</li>
 	</ul>
-	<p>{{ "Just need to get up and running or integrating with a horrible service that makes you feel like it's 1980?"|t
-		}}</p>
-	<ul>
-		<li>{{ "Copy &amp; Paste"|t }}</li>
-	</ul>
-	<p><a href="{{ url('sproutemail/settings') }}" >{{ "Set API Settings Now"|t }}</a></p>
 {% endif %}
 </form>
 {% endset %}
