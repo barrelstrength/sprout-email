@@ -22,13 +22,20 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 	{
 		$user = craft()->users->getUserByUsernameOrEmail($event->params['username']);
 
-		if (!$user)
+		if ($user)
 		{
-			sproutEmail()->error('No user found with username/email '.$event->params['username']);
-
-			return null;
+			return array('value' => $user);
 		}
 
-		return array('value' => $user);
+		sproutEmail()->error('No user found with username/email '.$event->params['username']);
 	}
-}
+
+	/**
+	 * @throws Exception
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getMockedParams()
+	{
+		return craft()->elements->getCriteria(ElementType::User)->first(array('limit' => 1));
+	}}
