@@ -346,18 +346,18 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	{
 		if ($element instanceof BaseModel)
 		{
-			$element = array_merge(
+			$attributes = array_merge(
 				$element->getAttributes(),
 				isset($element->elementType) ? $element->getContent()->getAttributes() : array()
 			);
 		}
 		else
 		{
-			$element = (array) $element;
+			$attributes = (array) $element;
 		}
 
 		return array_merge(
-			$element,
+			$attributes,
 			array(
 				'entry'        => $entry,
 				'notification' => $entry,
