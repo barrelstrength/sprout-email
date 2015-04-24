@@ -29,8 +29,6 @@ SproutModal.prototype.init = function ()
 
 		self.postToControllerAction($t.data(), function handle(error, response)
 		{
-			console.log([error, response]);
-
 			if (error)
 			{
 				return self.createErrorModal(error);
@@ -80,6 +78,8 @@ SproutModal.prototype.postToControllerAction = function runControllerAction(payl
 			callback(null, response);
 		}
 	};
+
+	request.data[Craft.csrfTokenName] = Craft.csrfTokenValue;
 
 	$.ajax(request);
 };
