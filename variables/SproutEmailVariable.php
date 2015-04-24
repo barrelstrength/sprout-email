@@ -208,74 +208,6 @@ class SproutEmailVariable
 		return $mailer->getCampaignList();
 	}
 
-	/**
-	 * Get notification event for specified id
-	 *
-	 * @param int $id
-	 *
-	 * @return obj
-	 */
-	public function getNotificationEventById($id)
-	{
-		return sproutEmail()->notifications->getNotificationEventById($id);
-	}
-
-	public function isSubscribed($userId = null, $elementId = null)
-	{
-		if (!$userId or !$elementId)
-		{
-			return false;
-		}
-
-		$query = craft()->db->createCommand()->select('userId, elementId')->from('sproutemail_subscriptions')->where(
-			array(
-				'AND',
-				'userId = :userId',
-				'elementId = :elementId'
-			), array(
-				':userId'    => $userId,
-				':elementId' => $elementId
-			)
-		)->queryRow();
-
-		return (is_array($query)) ? true : false;
-	}
-
-	public function getSubscriptionIds($userId = null, $elementType = 'Entry', $criteria = array())
-	{
-		$userId = craft()->userSession->id;
-
-		if (!$userId)
-		{
-			return false;
-		}
-
-		// @TODO - join the sproutemail_subscriptions and elements table to make sure we're only
-		// getting back the IDs of the Elements that match our type.
-
-		$results = craft()->db->createCommand()->select('elementId')->from('sproutemail_subscriptions')->where(
-			'userId = :userId', array(
-				':userId' => $userId
-			)
-		)->queryAll();
-
-		$ids = "";
-
-		foreach ($results as $key => $value)
-		{
-			if ($ids == "")
-			{
-				$ids = $value ['elementId'];
-			}
-			else
-			{
-				$ids .= ",".$value ['elementId'];
-			}
-		}
-
-		return $ids;
-	}
-
 	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
 		$customTemplate       = 'sproutemail/_providers/'.$emailProvider.'/generalCampaignSettings';
@@ -288,20 +220,6 @@ class SproutEmailVariable
 		}
 
 		return false;
-	}
-
-	/**
-	 * @todo - migrate to plugin specific mailer
-	 * Provider specific functions (since there is no support for multiple variable files)
-	 */
-	public function getSendGridSenderAddresses()
-	{
-		if (!$senderAddresses = craft()->sproutEmail_sendGrid->getSenderAddresses())
-		{
-			$senderAddresses[''] = Craft::t('Please create a sender address (from name) in your SendGrid account.');
-		}
-
-		return $senderAddresses;
 	}
 
 	public function getRecipientLists($mailer)
