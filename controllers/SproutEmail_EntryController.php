@@ -391,16 +391,22 @@ class SproutEmail_EntryController extends BaseController
 		if ($entryId)
 		{
 			$entry = sproutEmail()->entries->getEntryById($entryId);
-		}
 
-		if (!$entry)
+			if (!$entry)
+			{
+				throw new HttpException(404);
+			}
+		}
+		else
 		{
-			throw new HttpException(404);
+			$entry = new SproutEmail_EntryModel();
 		}
 
-		$entry->getContent()->title = craft()->request->getPost('title', $entry->subjectLine);
+		$entry->subjectLine         = craft()->request->getPost('subjectLine', $entry->subjectLine);
+		$entry->getContent()->title = $entry->subjectLine;
 
 		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
 		$entry->setContentFromPost($fieldsLocation);
 
 		$this->showEntry($entry);
