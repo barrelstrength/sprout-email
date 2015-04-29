@@ -20,7 +20,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 	public function getOptionsHtml($context = array())
 	{
-		if (!isset($context['goups']))
+		if (!isset($context['groups']))
 		{
 			$context['groups'] = $this->getAllGroups();
 		}
