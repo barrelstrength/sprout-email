@@ -344,19 +344,32 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function prepareNotificationTemplateVariables(BaseModel $entry, $element = null)
 	{
-		if ($element instanceof BaseModel)
+		if (is_object($element) && method_exists($element, 'getAttributes'))
 		{
-			$attributes = array_merge(
-				$element->getAttributes(),
-				isset($element->elementType) ? $element->getContent()->getAttributes() : array()
-			);
+			$attributes = $element->getAttributes();
+
+			if (isset($element->elementType))
+			{
+				$content = $element->getContent()->getAttributes();
+
+				if (count($content))
+				{
+					foreach ($content as $key => $value)
+					{
+						if (!isset($attributes[$key]))
+						{
+							$attributes[$key] = $value;
+						}
+					}
+				}
+			}
 		}
 		else
 		{
 			$attributes = (array) $element;
 		}
 
-		return array_merge(
+		$vars = array_merge(
 			$attributes,
 			array(
 				'entry'        => $entry,
@@ -364,6 +377,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 				'object'       => $element,
 			)
 		);
+
+
+		return $vars;
 	}
 
 	/**

@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="Sprout Email" default="build">
+<project name="Sprout Email" default="release">
 
     <property name="pluginFileName" value="SproutEmail" />
     <property name="pluginName" value="sproutemail" />
-    <property name="pluginVersion" value="0.9.1" />
+    <property name="pluginVersion" value="0.9.2" />
 
     <target name="release">
         <echo msg="Preparing release distro..." />
         <zip destfile="${pluginFileName}-${pluginVersion}.zip">
             <fileset dir="../../">
                 <include name="${pluginName}/" />
-                <exclude name="${pluginName}/build/" />
-                <exclude name="${pluginName}/tests/" />
-                <exclude name="${pluginName}/.git/" />
-                <exclude name="${pluginName}/.gitignore" />
-                <exclude name="${pluginName}/.idea/" />
+				<exclude name="${pluginName}/.git/" />
+				<exclude name="${pluginName}/.gitignore" />
+				<exclude name="${pluginName}/.idea/" />
+				<exclude name="${pluginName}/build/" />
+				<exclude name="${pluginName}/tests/" />
+                <exclude name="${pluginName}/NOTES.md" />
             </fileset>
         </zip>
         <echo msg="Release for (${pluginName}) has been created!" />
@@ -26,7 +27,7 @@
                 source="${pluginName}.${pluginVersion}.zip"
                 dest="use.json"
                 />
-        <echo msg="Distro was unzip properly: )" />
+        <echo msg="Distro was unzipped properly: )" />
     </target>
 
     <adhoc-task name="adhoc-plugin-unzip"><![CDATA[

@@ -44,7 +44,7 @@ class SproutEmail_DefaultMailerRecipientElementType extends BaseElementType
 	{
 		$sources = array(
 			'*' => array(
-				'label' => Craft::t('All Recipient Lists'),
+				'label' => Craft::t('All Recipients'),
 			),
 		);
 
@@ -64,6 +64,27 @@ class SproutEmail_DefaultMailerRecipientElementType extends BaseElementType
 		}
 
 		return $sources;
+	}
+
+	/**
+	 * @inheritDoc IElementType::getAvailableActions()
+	 *
+	 * @param string|null $source
+	 *
+	 * @return array|null
+	 */
+	public function getAvailableActions($source = null)
+	{
+		$exportRecipientAction = craft()->elements->getAction('SproutEmail_ExportRecipients');
+
+		$exportRecipientAction->setParams(
+			array(
+				'confirmationMessage' => Craft::t('Are you sure you want to export all recipients?'),
+				'successMessage'      => Craft::t('Generating the data we need for the export...')
+			)
+		);
+
+		return array($exportRecipientAction);
 	}
 
 	/**

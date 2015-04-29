@@ -17,7 +17,7 @@ class SproutEmailPlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.9.1';
+		return '0.9.2';
 	}
 
 	public function getDeveloper()
@@ -61,7 +61,6 @@ class SproutEmailPlugin extends BasePlugin
 		$recipients  = $url.'/recipients';
 		$emailClient = array(
 			$recipients                             => array('action' => $ctrl.'/showIndexRecipientTemplate'),
-			$recipients.'/(?P<recipientListId>\d+)' => array('action' => $ctrl.'/showIndexRecipientTemplate'),
 			$recipients.'/new'                      => array('action' => $ctrl.'/showEditRecipientTemplate'),
 			$recipients.'/edit/(?P<id>[\d]+)'       => array('action' => $ctrl.'/showEditRecipientTemplate'),
 		);
@@ -123,6 +122,7 @@ class SproutEmailPlugin extends BasePlugin
 			return array(
 				'entries.saveEntry' => new SproutEmail_EntriesSaveEntryEvent(),
 				'userSession.login' => new SproutEmail_UserSessionLoginEvent(),
+				'users.saveUser'    => new SproutEmail_UsersSaveUserEvent(),
 			);
 		}
 	}

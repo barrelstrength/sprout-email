@@ -61,7 +61,7 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		return UrlHelper::getCpUrl('sproutemail/defaultmailer/recipients/edit/'.$this->id);
+		return UrlHelper::getCpUrl('sproutemail/recipients/edit/'.$this->id);
 	}
 
 	/**

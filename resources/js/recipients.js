@@ -11,17 +11,20 @@
 
 var RecipientAdmin = Garnish.Base.extend(
 {
-	$lists: null,
-	$selectedList: null,
-
 	init: function()
 	{
-		this.$lists = $('#lists');
-		this.$selectedList = this.$lists.find('a.sel:first');
+		var self = this;
+
+		this.getSelectedList();
 		this.addListener($('#newlistbtn'), 'activate', 'addNewList');
 
-		var $listSettingsBtn = $('#listsettingsbtn');
+		$('#newrecipientbtn').on('click', function(e) {
+			var $target = $(e.target);
 
+			$target.attr('href', $target.attr('href') + '?recipientListId=' + self.getSelectedList().data('id'));
+		});
+
+		var $listSettingsBtn = $('#listsettingsbtn');
 		if ($listSettingsBtn.length)
 		{
 			var menuBtn = $listSettingsBtn.data('menubtn');
@@ -63,7 +66,7 @@ var RecipientAdmin = Garnish.Base.extend(
 				{
 					if (response.success)
 					{
-						location.href = Craft.getUrl('sproutemail/recipients/'+response.list.id);
+						location.href = Craft.getUrl('sproutemail/recipients');
 					}
 					else if (response.errors)
 					{
@@ -82,13 +85,13 @@ var RecipientAdmin = Garnish.Base.extend(
 
 	renameSelectedList: function()
 	{
-		var oldName = this.$selectedList.data('name'),
+		var oldName = this.getSelectedList().data('name'),
 			newName = this.promptForListName(oldName);
 
 		if (newName && newName != oldName)
 		{
 			var data = {
-				id:   this.$selectedList.data('id'),
+				id:   this.getSelectedList().data('id'),
 				name: newName
 			};
 
@@ -98,11 +101,12 @@ var RecipientAdmin = Garnish.Base.extend(
 				{
 					if (response.success)
 					{
-						location.href = Craft.getUrl('sproutemail/recipients/'+response.list.id);
+						location.href = Craft.getUrl('sproutemail/recipients');
 					}
 					else if (response.errors)
 					{
 						var errors = this.flattenErrors(response.errors);
+
 						alert(Craft.t('Could not rename the list:')+"\n\n"+errors.join("\n"));
 					}
 					else
@@ -124,7 +128,7 @@ var RecipientAdmin = Garnish.Base.extend(
 		if (confirm(Craft.t('Are you sure you want to delete this list and all its recipients?')))
 		{
 			var data = {
-				id: this.$selectedList.data('id')
+				id: this.getSelectedList().data('id')
 			};
 
 			Craft.postActionRequest('sproutEmail/defaultMailer/deleteRecipientList', data, $.proxy(function(response, textStatus)
@@ -142,6 +146,10 @@ var RecipientAdmin = Garnish.Base.extend(
 				}
 			}, this));
 		}
+	},
+
+	getSelectedList: function() {
+		return $('#lists li').find('a.sel:first');
 	},
 
 	flattenErrors: function(responseErrors)

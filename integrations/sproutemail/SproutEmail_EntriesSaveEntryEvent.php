@@ -20,6 +20,11 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function getOptionsHtml($context = array())
 	{
+		if (!isset($context['sections']))
+		{
+			$context['sections'] = $this->getAllSections();
+		}
+
 		return craft()->templates->render('sproutemail/_events/saveEntry', $context);
 	}
 
@@ -31,17 +36,35 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		);
 	}
 
+	/**
+	 * Returns whether or not the entry meets the criteria necessary to trigger the event
+	 *
+	 * @param mixed      $options
+	 * @param EntryModel $entry
+	 * @param array      $params
+	 *
+	 * @return bool
+	 */
 	public function validateOptions($options, EntryModel $entry, array $params = array())
 	{
 		$isNewEntry  = isset($params['isNewEntry']) && $params['isNewEntry'];
 		$onlyWhenNew = isset($options['entriesSaveEntryOnlyWhenNew']) && $options['entriesSaveEntryOnlyWhenNew'];
 
-		if (in_array($entry->getSection()->id, $options['entriesSaveEntrySectionIds']))
+		// If any section ids were checked
+		// Make sure the entry belongs in one of them
+		if (!empty($options['entriesSaveEntrySectionIds']) && count($options['entriesSaveEntrySectionIds']))
 		{
-			if (!$onlyWhenNew || ($onlyWhenNew && $isNewEntry))
+			if (!in_array($entry->getSection()->id, $options['entriesSaveEntrySectionIds']))
 			{
-				return true;
+				return false;
 			}
+		}
+
+		// If only new entries was checked
+		// Make sure the entry is new
+		if (!$onlyWhenNew || ($onlyWhenNew && $isNewEntry))
+		{
+			return true;
 		}
 
 		return false;
@@ -72,12 +95,35 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 			if (is_array($ids) && count($ids))
 			{
-				$id  = array_shift($ids);
+				$id = array_shift($ids);
 
 				$criteria->sectionId = $id;
 			}
 		}
 
 		return $criteria->first();
+	}
+
+	/**
+	 * Returns an array of sections suitable for use in checkbox field
+	 *
+	 * @return array
+	 */
+	protected function getAllSections()
+	{
+		$result  = craft()->sections->getAllSections();
+		$options = array();
+
+		foreach ($result as $key => $section)
+		{
+			array_push(
+				$options, array(
+					'label' => $section->name,
+					'value' => $section->id
+				)
+			);
+		}
+
+		return $options;
 	}
 }

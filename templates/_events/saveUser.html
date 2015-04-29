@@ -1,0 +1,16 @@
+{{ forms.checkboxField({
+		label: "Only for new users?"|t,
+		name: "usersSaveUserOnlyWhenNew",
+		checked: options.usersSaveUserOnlyWhenNew is defined ? options.usersSaveUserOnlyWhenNew : false
+}) }}
+
+{{ forms.field({
+		label: "Groups"|t,
+		instructions: "Select groups or leave unchecked for all groups."|t,
+		errors: errors is defined ? errors : null,
+	},
+	forms.checkboxGroup({
+		name: "usersSaveUserGroupIds",
+		options : groups,
+		values: options.usersSaveUserGroupIds is defined ? options.usersSaveUserGroupIds : null
+})) }}

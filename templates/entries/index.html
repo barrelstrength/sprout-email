@@ -1,8 +1,9 @@
 {% extends "sproutemail/_layouts/elementindex" %}
-{% set title            = "Email"|t %}
-{% set elementType      = "SproutEmail_Entry" %}
-{% set campaigns        = craft.sproutEmail.getCampaigns('email') %}
-{% set notifications    = craft.sproutEmail.getCampaigns('notification') %}
+
+{% set title         = "Email"|t %}
+{% set elementType   = "SproutEmail_Entry" %}
+{% set campaigns     = craft.sproutEmail.getCampaigns('email') %}
+{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
 
 {% block sidebar %}
 	<div class="buttons">
