@@ -80,7 +80,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 
 			if (count($this->availableEvents))
 			{
-				asort($this->availableEvents);
+				uasort($this->availableEvents, function($a, $b) {
+					return strlen($a->getId()) > strlen($b->getId());
+				});
 			}
 		}
 
