@@ -20,9 +20,9 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function getOptionsHtml($context = array())
 	{
-		if (!isset($context['sections']))
+		if (!isset($context['availableSections']))
 		{
-			$context['sections'] = $this->getAllSections();
+			$context['availableSections'] = $this->getAllSections();
 		}
 
 		return craft()->templates->render('sproutemail/_events/saveEntry', $context);
