@@ -8,6 +8,9 @@ namespace Craft;
  */
 class SproutEmailPlugin extends BasePlugin
 {
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		$alias = $this->getSettings()->getAttribute('pluginNameOverride');
@@ -15,26 +18,41 @@ class SproutEmailPlugin extends BasePlugin
 		return $alias ? $alias : Craft::t('Sprout Email');
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getVersion()
 	{
-		return '0.9.2';
+		return '1.0.0';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDeveloper()
 	{
 		return 'Barrel Strength Design';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDeveloperUrl()
 	{
 		return 'http://barrelstrengthdesign.com';
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasCpSection()
 	{
 		return (craft()->userSession->isAdmin() or craft()->userSession->user->can('manageEmail'));
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function defineSettings()
 	{
 		return array(
@@ -42,10 +60,13 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function registerUserPermissions()
 	{
 		return array(
-			'manageEmail'             => array(
+			'manageEmail' => array(
 				'label' => Craft::t('Manage Email Section')
 			),
 			'editSproutFormsSettings' => array(
@@ -54,22 +75,25 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function registerCpRoutes()
 	{
 		$url         = 'sproutemail';
 		$ctrl        = 'sproutEmail/defaultMailer';
 		$recipients  = $url.'/recipients';
 		$emailClient = array(
-			$recipients                             => array('action' => $ctrl.'/showIndexRecipientTemplate'),
-			$recipients.'/new'                      => array('action' => $ctrl.'/showEditRecipientTemplate'),
-			$recipients.'/edit/(?P<id>[\d]+)'       => array('action' => $ctrl.'/showEditRecipientTemplate'),
+			$recipients                       => array('action' => $ctrl.'/showIndexRecipientTemplate'),
+			$recipients.'/new'                => array('action' => $ctrl.'/showEditRecipientTemplate'),
+			$recipients.'/edit/(?P<id>[\d]+)' => array('action' => $ctrl.'/showEditRecipientTemplate'),
 		);
 
 		return array_merge($emailClient, array(
 			'sproutemail/settings/mailers/(?P<mailerId>[a-z]+)' => array(
 				'action' => 'sproutEmail/mailer/editSettings'
 			),
-			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?'  => array(
+			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
 			),
 			'sproutemail/settings/notifications/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
@@ -179,7 +203,6 @@ class SproutEmailPlugin extends BasePlugin
 
 		return new SproutEmailTwigExtension();
 	}
-
 }
 
 /**
