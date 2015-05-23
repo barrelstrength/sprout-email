@@ -1,7 +1,14 @@
+
 {{ forms.checkboxField({
-		label: "Only for new entries?"|t,
+		label: "When the entry is created?"|t,
 		name: "entriesSaveEntryOnlyWhenNew",
-		checked: options.entriesSaveEntryOnlyWhenNew is defined ? options.entriesSaveEntryOnlyWhenNew : false
+		checked: options.entriesSaveEntryOnlyWhenNew is defined ? options.entriesSaveEntryOnlyWhenNew : false,
+}) }}
+
+{{ forms.checkboxField({
+		label: "When the entry is updated?"|t,
+		name: "entriesSaveEntryOnlyWhenNotNew",
+		checked: options.entriesSaveEntryOnlyWhenNotNew is defined ? options.entriesSaveEntryOnlyWhenNotNew : false,
 }) }}
 
 {{ forms.field({

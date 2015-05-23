@@ -31,8 +31,9 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	public function prepareOptions()
 	{
 		return array(
-			'entriesSaveEntrySectionIds'  => craft()->request->getPost('entriesSaveEntrySectionIds'),
-			'entriesSaveEntryOnlyWhenNew' => craft()->request->getPost('entriesSaveEntryOnlyWhenNew'),
+			'entriesSaveEntrySectionIds'     => craft()->request->getPost('entriesSaveEntrySectionIds'),
+			'entriesSaveEntryOnlyWhenNew'    => craft()->request->getPost('entriesSaveEntryOnlyWhenNew'),
+			'entriesSaveEntryOnlyWhenNotNew' => craft()->request->getPost('entriesSaveEntryOnlyWhenNotNew'),
 		);
 	}
 
@@ -47,8 +48,9 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, EntryModel $entry, array $params = array())
 	{
-		$isNewEntry  = isset($params['isNewEntry']) && $params['isNewEntry'];
-		$onlyWhenNew = isset($options['entriesSaveEntryOnlyWhenNew']) && $options['entriesSaveEntryOnlyWhenNew'];
+		$isNewEntry     = isset($params['isNewEntry']) && $params['isNewEntry'];
+		$onlyWhenNew    = isset($options['entriesSaveEntryOnlyWhenNew']) && $options['entriesSaveEntryOnlyWhenNew'];
+		$onlyWhenNotNew = isset($options['entriesSaveEntryOnlyWhenNotNew']) && $options['entriesSaveEntryOnlyWhenNotNew'];
 
 		// If any section ids were checked
 		// Make sure the entry belongs in one of them
@@ -62,12 +64,19 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 		// If only new entries was checked
 		// Make sure the entry is new
-		if (!$onlyWhenNew || ($onlyWhenNew && $isNewEntry))
+		if ($onlyWhenNew && !$isNewEntry)
 		{
-			return true;
+			return false;
 		}
 
-		return false;
+		// If only not new entries was checked
+		// Make sure the entry is not new
+		if ($onlyWhenNotNew && $isNewEntry)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	public function prepareParams(Event $event)

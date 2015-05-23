@@ -38,4 +38,5 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 	public function getMockedParams()
 	{
 		return craft()->elements->getCriteria(ElementType::User)->first(array('limit' => 1));
-	}}
+	}
+}
