@@ -10,7 +10,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('Save Entry');
+		return Craft::t('Entry Save');
 	}
 
 	public function getDescription()

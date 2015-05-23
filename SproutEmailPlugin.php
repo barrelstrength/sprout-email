@@ -23,7 +23,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '1.0.1';
+		return '1.0.2';
 	}
 
 	/**
@@ -144,9 +144,11 @@ class SproutEmailPlugin extends BasePlugin
 		if ($this->isEnabled && $this->isInstalled)
 		{
 			return array(
-				'entries.saveEntry' => new SproutEmail_EntriesSaveEntryEvent(),
-				'userSession.login' => new SproutEmail_UserSessionLoginEvent(),
-				'users.saveUser'    => new SproutEmail_UsersSaveUserEvent(),
+				'entries.saveEntry'   => new SproutEmail_EntriesSaveEntryEvent(),
+				'entries.deleteEntry' => new SproutEmail_EntriesDeleteEntryEvent(),
+				'userSession.login'   => new SproutEmail_UserSessionLoginEvent(),
+				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
+				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
 			);
 		}
 	}

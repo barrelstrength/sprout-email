@@ -10,7 +10,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('Save User');
+		return Craft::t('User Save');
 	}
 
 	public function getDescription()
@@ -22,7 +22,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	{
 		if (!isset($context['groups']))
 		{
-			$context['groups'] = $this->getAllGroups();
+			$context['groups'] = $this->getAllGroupsOptions();
 		}
 
 		return craft()->templates->render('sproutemail/_events/saveUser', $context);
@@ -31,8 +31,9 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	public function prepareOptions()
 	{
 		return array(
-			'usersSaveUserGroupIds'    => craft()->request->getPost('usersSaveUserGroupIds'),
-			'usersSaveUserOnlyWhenNew' => craft()->request->getPost('usersSaveUserOnlyWhenNew'),
+			'usersSaveUserGroupIds'       => craft()->request->getPost('usersSaveUserGroupIds'),
+			'usersSaveUserOnlyWhenNew'    => craft()->request->getPost('usersSaveUserOnlyWhenNew'),
+			'usersSaveUserOnlyWhenNotNew' => craft()->request->getPost('usersSaveUserOnlyWhenNotNew'),
 		);
 	}
 
@@ -47,8 +48,9 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, UserModel $user, array $params = array())
 	{
-		$isNewUser   = isset($params['isNewUser']) && $params['isNewUser'];
-		$onlyWhenNew = isset($options['usersSaveUserOnlyWhenNew']) && $options['usersSaveUserOnlyWhenNew'];
+		$isNewUser      = isset($params['isNewUser']) && $params['isNewUser'];
+		$onlyWhenNew    = isset($options['usersSaveUserOnlyWhenNew']) && $options['usersSaveUserOnlyWhenNew'];
+		$onlyWhenNotNew = isset($options['usersSaveUserOnlyWhenNew']) && $options['usersSaveUserOnlyWhenNotNew'];
 
 		// If any user groups were checked
 		// Make sure the user is in one of the groups
@@ -73,12 +75,19 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 		// If only new users was checked
 		// Make sure this user is new
-		if (!$onlyWhenNew || ($onlyWhenNew && $isNewUser))
+		if ($onlyWhenNew || !$isNewUser)
 		{
-			return true;
+			return false;
 		}
 
-		return false;
+		// If only not new users was checked
+		// Make sure this user is new
+		if ($onlyWhenNotNew || $isNewUser)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	public function prepareParams(Event $event)
@@ -120,19 +129,30 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	 *
 	 * @return array
 	 */
-	protected function getAllGroups()
+	protected function getAllGroupsOptions()
 	{
-		$result  = craft()->userGroups->getAllGroups();
+		try
+		{
+			$groups = craft()->userGroups->getAllGroups();
+		}
+		catch (\Exception $e)
+		{
+			$groups = array();
+		}
+
 		$options = array();
 
-		foreach ($result as $key => $group)
+		if (count($groups))
 		{
-			array_push(
-				$options, array(
-					'label' => $group->name,
-					'value' => $group->id
-				)
-			);
+			foreach ($groups as $key => $group)
+			{
+				array_push(
+					$options, array(
+						'label' => $group->name,
+						'value' => $group->id
+					)
+				);
+			}
 		}
 
 		return $options;
