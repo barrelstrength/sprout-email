@@ -95,13 +95,20 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 	}
 
-	public function getRecipientsFromEntryModel($entry)
+	/**
+	 * @param SproutEmail_EntryModel $entry
+	 * @param mixed                  $element
+	 *
+	 * @return array
+	 */
+	public function getRecipientsFromEntryModel(SproutEmail_EntryModel $entry, $element)
 	{
-		$recipients = array();
+		$recipients         = array();
+		$onTheFlyRecipients = $entry->getRecipients($element);
 
-		if (count($entry->recipients))
+		if (count($onTheFlyRecipients))
 		{
-			foreach ($entry->recipients as $index => $recipient)
+			foreach ($onTheFlyRecipients as $index => $recipient)
 			{
 				$recipients[$index] = SproutEmail_SimpleRecipientModel::create(
 					array(
@@ -354,7 +361,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param int $recipientId
+	 * @param int   $recipientId
 	 * @param array $recipientListIds
 	 *
 	 * @throws Exception
@@ -415,10 +422,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			foreach ($campaign->entries as $entry)
 			{
+				$entry   = SproutEmail_EntryModel::populateModel($entry);
 				$listIds = array();
 
 				$recipientLists    = $this->getRecipientListsByEntryId($entry->id);
-				$entryRecipients   = $this->getRecipientsFromEntryModel($entry);
+				$entryRecipients   = $this->getRecipientsFromEntryModel($entry, $element);
 				$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($element);
 
 				if ($recipientLists && count($recipientLists))
@@ -457,19 +465,24 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 					if (!empty($email->htmlBody))
 					{
+						$processedRecipients = array();
+
 						foreach ($recipients as $recipient)
 						{
 							$email->toEmail     = sproutEmail()->renderObjectTemplateSafely($recipient->email, $element);
 							$email->toFirstName = $recipient->firstName;
 							$email->toLastName  = $recipient->lastName;
 
-							try
+							if (!array_key_exists($email->toEmail, $processedRecipients))
 							{
-								craft()->email->sendEmail($email);
-							}
-							catch (\Exception $e)
-							{
-								sproutEmail()->error($e->getMessage());
+								try
+								{
+									$processedRecipients[$email->toEmail] = craft()->email->sendEmail($email);
+								}
+								catch (\Exception $e)
+								{
+									sproutEmail()->error($e->getMessage());
+								}
 							}
 						}
 

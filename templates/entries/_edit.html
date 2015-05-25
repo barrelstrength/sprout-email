@@ -152,7 +152,8 @@
 											instructions: "A comma separated list of email addresses."|t,
 											placeholder: "user@domain.com, other@domain.com"|t,
 											name: "recipient[onTheFlyRecipients]",
-											value: entry.recipients is defined ? entry.recipients|join(', ') : "",
+											class: "code",
+											value: entry is defined ? entry.recipients : "",
 											errors: entry is defined ? entry.getErrors('recipients')
 										}) }}
 									{% endif %}

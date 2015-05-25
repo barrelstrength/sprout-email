@@ -36,6 +36,55 @@ class SproutEmail_EntryModel extends BaseElementModel
 	const ARCHIVED = 'archived';
 
 	/**
+	 * @param mixed|null $element
+	 *
+	 * @throws \Exception
+	 * @return array|string
+	 */
+	public function getRecipients($element = null)
+	{
+		$recipientsString = $this->getAttribute('recipients');
+
+		// Possibly called from entry edit screen
+		if (is_null($element))
+		{
+			return $recipientsString;
+		}
+
+		// Previously converted to array somehow?
+		if (is_array($recipientsString))
+		{
+			return $recipientsString;
+		}
+
+		// Previously stored as JSON string?
+		if (stripos($recipientsString, '[') === 0)
+		{
+			return JsonHelper::decode($recipientsString);
+		}
+
+		// Still a string with possible twig generator code?
+		if (stripos($recipientsString, '{') !== false)
+		{
+			try
+			{
+				$recipients = craft()->templates->renderObjectTemplate(
+					$recipientsString,
+					sproutEmail()->notifications->prepareNotificationTemplateVariables($this, $element)
+				);
+
+				return array_unique(ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipients)));
+			}
+			catch (\Exception $e)
+			{
+				throw $e;
+			}
+		}
+
+		return array();
+	}
+
+	/**
 	 * @return array
 	 */
 	protected function defineAttributes()
@@ -44,7 +93,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 		$attributes = array(
 			'subjectLine'    => array(AttributeType::String, 'required' => true),
 			'campaignId'     => array(AttributeType::Number, 'required' => true),
-			'recipients'     => array(AttributeType::Mixed, 'required' => false),
+			'recipients'     => array(AttributeType::String, 'required' => false),
 			'fromName'       => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'      => array(AttributeType::String, 'minLength' => 6, 'required' => false),
 			'replyTo'        => array(AttributeType::String, 'required' => false),

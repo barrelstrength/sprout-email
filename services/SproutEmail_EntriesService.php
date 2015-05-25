@@ -168,12 +168,10 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
 	protected function getOnTheFlyRecipients()
 	{
-		$postedRecipients = craft()->request->getPost('recipient.onTheFlyRecipients');
-
-		return array_filter(array_map('trim', ArrayHelper::stringToArray($postedRecipients)));
+		return craft()->request->getPost('recipient.onTheFlyRecipients');
 	}
 }
