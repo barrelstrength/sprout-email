@@ -149,6 +149,7 @@ class SproutEmailPlugin extends BasePlugin
 				'userSession.login'   => new SproutEmail_UserSessionLoginEvent(),
 				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
 				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
+				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent(),
 			);
 		}
 	}
