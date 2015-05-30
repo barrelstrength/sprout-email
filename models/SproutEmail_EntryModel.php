@@ -81,6 +81,12 @@ class SproutEmail_EntryModel extends BaseElementModel
 			}
 		}
 
+		// Just a regular CSV list
+		if (!empty($recipientsString))
+		{
+			return ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipientsString));
+		}
+
 		return array();
 	}
 
