@@ -68,9 +68,6 @@ class SproutEmailPlugin extends BasePlugin
 		return array(
 			'manageEmail' => array(
 				'label' => Craft::t('Manage Email Section')
-			),
-			'editSproutFormsSettings' => array(
-				'label' => Craft::t('Edit Form Settings')
 			)
 		);
 	}
