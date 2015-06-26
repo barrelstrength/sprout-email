@@ -188,8 +188,8 @@
 								{{ forms.selectField({
 									id: "notificationEvent",
 									name: "notificationEvent",
-									label: "Trigger On"|t,
-									instructions: "The event your notification will be triggered by."|t,
+									label: "Event"|t,
+									instructions: "The event that will trigger your notification."|t,
 									options: [{label: "Select event..."|t, value: null}]|merge(events),
 									value: notificationEvent is defined ? notificationEvent : null,
 								}) }}

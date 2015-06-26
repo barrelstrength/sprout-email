@@ -10,7 +10,7 @@ class SproutEmail_UsersActivateUserEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('User Activate');
+		return Craft::t('When a user is activated');
 	}
 
 	public function getDescription()

@@ -10,7 +10,7 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('User Login');
+		return Craft::t('When a user logs in');
 	}
 
 	public function getDescription()

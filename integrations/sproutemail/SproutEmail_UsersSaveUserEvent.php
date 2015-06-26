@@ -10,7 +10,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('User Save');
+		return Craft::t('When a user is saved');
 	}
 
 	public function getDescription()

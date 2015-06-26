@@ -10,7 +10,7 @@ class SproutEmail_EntriesDeleteEntryEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('Entry Delete');
+		return Craft::t('When an entry is deleted');
 	}
 
 	public function getDescription()

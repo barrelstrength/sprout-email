@@ -10,7 +10,7 @@ class SproutEmail_UsersDeleteUserEvent extends SproutEmailBaseEvent
 
 	public function getTitle()
 	{
-		return Craft::t('User Delete');
+		return Craft::t('When a user is deleted');
 	}
 
 	public function getDescription()
