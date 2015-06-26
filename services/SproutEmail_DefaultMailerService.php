@@ -437,7 +437,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					}
 				}
 
-				$entry          = SproutEmail_EntryModel::populateModel($entry);
 				$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
 				$recipients     = array_merge(
 					$listRecipients,
