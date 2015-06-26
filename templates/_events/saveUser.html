@@ -1,13 +1,23 @@
+{% set whenNew = (options.craft.saveUser.whenNew is defined)
+                 ? options.craft.saveUser.whenNew
+                 : false %}
+{% set whenUpdated = (options.craft.saveUser.whenUpdated is defined)
+		                 ? options.craft.saveUser.whenUpdated
+		                 : false %}
+{% set userGroupIds = (options.craft.saveUser.userGroupIds is defined)
+		                  ? options.craft.saveUser.userGroupIds
+		                  : null %}
+
 {{ forms.checkboxField({
 		label: "When the user is created?"|t,
-		name: "usersSaveUserOnlyWhenNew",
-		checked: options.usersSaveUserOnlyWhenNew is defined ? options.usersSaveUserOnlyWhenNew : false
+		name: "rules[craft][saveUser][whenNew]",
+		checked: whenNew
 }) }}
 
 {{ forms.checkboxField({
 		label: "When the user is updated?"|t,
-		name: "usersSaveUserOnlyWhenNotNew",
-		checked: options.usersSaveUserOnlyWhenNotNew is defined ? options.usersSaveUserOnlyWhenNotNew : false
+		name: "rules[craft][saveUser][whenUpdated]",
+		checked: whenUpdated
 }) }}
 
 {% if groups is iterable and groups|length %}
@@ -17,8 +27,8 @@
 			errors: errors is defined ? errors : null,
 		},
 		forms.checkboxGroup({
-			name: "usersSaveUserGroupIds",
+			name: "rules[craft][saveUser][userGroupIds]",
 			options : groups,
-			values: options.usersSaveUserGroupIds is defined ? options.usersSaveUserGroupIds : null
+			values: userGroupIds
 	})) }}
 {% endif %}

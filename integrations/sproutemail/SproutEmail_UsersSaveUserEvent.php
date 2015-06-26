@@ -30,10 +30,10 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 	public function prepareOptions()
 	{
+		$rules = craft()->request->getPost('rules.craft');
+
 		return array(
-			'usersSaveUserGroupIds'       => craft()->request->getPost('usersSaveUserGroupIds'),
-			'usersSaveUserOnlyWhenNew'    => craft()->request->getPost('usersSaveUserOnlyWhenNew'),
-			'usersSaveUserOnlyWhenNotNew' => craft()->request->getPost('usersSaveUserOnlyWhenNotNew'),
+			'craft' => $rules,
 		);
 	}
 
@@ -48,18 +48,22 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, UserModel $user, array $params = array())
 	{
-		$isNewUser      = isset($params['isNewUser']) && $params['isNewUser'];
-		$onlyWhenNew    = isset($options['usersSaveUserOnlyWhenNew']) && $options['usersSaveUserOnlyWhenNew'];
-		$onlyWhenNotNew = isset($options['usersSaveUserOnlyWhenNew']) && $options['usersSaveUserOnlyWhenNotNew'];
+		$isNewUser  = isset($params['isNewUser']) && $params['isNewUser'];
+
+		$whenNew     = isset($options['craft']['saveUser']['whenNew']) &&
+			$options['craft']['saveUser']['whenNew'];
+
+		$whenUpdated = isset($options['craft']['saveUser']['whenUpdated']) &&
+			$options['craft']['saveUser']['whenUpdated'];
 
 		// If any user groups were checked
 		// Make sure the user is in one of the groups
-		if (!empty($options['usersSaveUserGroupIds']) && count($options['usersSaveUserGroupIds']))
+		if (!empty($options['craft']['saveUser']['userGroupIds']) && count($options['craft']['saveUser']['userGroupIds']))
 		{
 			$inGroup    = false;
 			$userGroups = $user->getGroups('id');
 
-			foreach ($options['usersSaveUserGroupIds'] as $groupId)
+			foreach ($options['craft']['saveUser']['userGroupIds'] as $groupId)
 			{
 				if (array_key_exists($groupId, $userGroups))
 				{
@@ -75,14 +79,14 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 		// If only new users was checked
 		// Make sure this user is new
-		if ($onlyWhenNew || !$isNewUser)
+		if ($whenNew || !$isNewUser)
 		{
 			return false;
 		}
 
 		// If only not new users was checked
 		// Make sure this user is new
-		if ($onlyWhenNotNew || $isNewUser)
+		if ($whenUpdated || $isNewUser)
 		{
 			return false;
 		}
@@ -109,9 +113,9 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	{
 		$criteria = craft()->elements->getCriteria(ElementType::User);
 
-		if (isset($this->options['usersSaveUserGroupIds']) && count($this->options['usersSaveUserGroupIds']))
+		if (isset($this->options['craft']['saveUser']['userGroupIds']) && count($this->options['craft']['saveUser']['userGroupIds']))
 		{
-			$ids = $this->options['usersSaveUserGroupIds'];
+			$ids = $this->options['craft']['saveUser']['userGroupIds'];
 
 			if (is_array($ids) && count($ids))
 			{
