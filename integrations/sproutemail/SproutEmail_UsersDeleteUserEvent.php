@@ -29,6 +29,8 @@ class SproutEmail_UsersDeleteUserEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, UserModel $user, array $params = array())
 	{
+		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
+
 		return true;
 	}
 

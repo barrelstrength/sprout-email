@@ -56,7 +56,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		$whenUpdated = isset($options['craft']['saveEntry']['whenUpdated']) &&
 			             $options['craft']['saveEntry']['whenUpdated'];
 
-		SproutEmailPlugin::log(Craft::t("Sprout Email 'When an entry is saved' event has been triggered"));
+		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
 
 		// If any section ids were checked, make sure the entry belongs in one of them
 		if (!empty($options['craft']['saveEntry']['sectionIds']) && count($options['craft']['saveEntry']['sectionIds']))

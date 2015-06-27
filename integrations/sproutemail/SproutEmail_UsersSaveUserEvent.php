@@ -56,7 +56,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 		$whenUpdated = isset($options['craft']['saveUser']['whenUpdated']) &&
 			$options['craft']['saveUser']['whenUpdated'];
 
-		SproutEmailPlugin::log(Craft::t("Sprout Email 'When a user is saved' event has been triggered"));
+		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
 
 		// If any user groups were checked, make sure the user is in one of the groups
 		if (!empty($options['craft']['saveUser']['userGroupIds']) && count($options['craft']['saveUser']['userGroupIds']))
