@@ -70,7 +70,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 			{
 				$recipients = craft()->templates->renderObjectTemplate(
 					$recipientsString,
-					sproutEmail()->notifications->prepareNotificationTemplateVariables($this, $element)
+					$element
 				);
 
 				return array_unique(ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipients)));
@@ -80,7 +80,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 				throw $e;
 			}
 		}
-
+		
 		// Just a regular CSV list
 		if (!empty($recipientsString))
 		{
