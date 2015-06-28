@@ -217,7 +217,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return \Twig_Markup
 	 */
-	public function getRecipientListsHtml($selected = null)
+	public function getRecipientListsHtml($element = null)
 	{
 		$lists   = $this->getRecipientLists();
 		$options = array();
@@ -233,16 +233,34 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			}
 		}
 
-		$html = craft()->templates->renderMacro(
+		$values = array();
+
+		if (count($element->getRecipientListIds()))
+		{
+			$values = $element->getRecipientListIds();
+		}
+
+		// @todo - Move template code to the template
+		$checkboxGroup = craft()->templates->renderMacro(
 			'_includes/forms', 'checkboxGroup', array(
 				array(
-					'id'      => 'recipientLists',
 					'name'    => 'recipient[recipientLists]',
 					'options' => $options,
-					'values'  => $selected,
+					'values'  => $values
 				)
 			)
 		);
+
+		$html = craft()->templates->renderMacro(
+			'_includes/forms', 'field', array(
+				array(
+					'id'      => 'recipientLists',
+					'errors'  => $element->getErrors('recipientLists')
+				),
+				$checkboxGroup
+			)
+		);
+
 
 		return TemplateHelper::getRaw($html);
 	}

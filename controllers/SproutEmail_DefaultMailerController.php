@@ -65,32 +65,36 @@ class SproutEmail_DefaultMailerController extends BaseController
 		$variables['title']              = Craft::t('Recipient');
 		$variables['recipientListsHtml'] = null;
 
-		if (isset($variables['id']))
+		// @todo - Refactor and improve
+		if(isset($variables['recipient']))
 		{
-			$variables['element'] = sproutEmailDefaultMailer()->getRecipientById($variables['id']);
-
-			if (!$variables['element'])
-			{
-				throw new HttpException(404);
-			}
-
-			$selectedLists = $variables['element']->getRecipientListIds();
-
-			$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($selectedLists);
+			// When a form doesn't validate, we can use our SproutEmail_DefaultMailerRecipientModel object here
+			$variables['element'] = $variables['recipient'];
 		}
 		else
 		{
-			$selectedLists = array();
-
-			if (craft()->request->getParam('recipientListId'))
+			if (isset($variables['id']))
 			{
-				$selectedLists[] = craft()->request->getParam('recipientListId');
-			}
+				$variables['element'] = sproutEmailDefaultMailer()->getRecipientById($variables['id']);
 
-			$variables['title']              = Craft::t('New Recipient');
-			$variables['element']            = new SproutEmail_DefaultMailerRecipientModel();
-			$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($selectedLists);
+				if (!$variables['element'])
+				{
+					throw new HttpException(404);
+				}
+			}
+			else
+			{
+				if (craft()->request->getParam('recipientListId'))
+				{
+					$selectedLists[] = craft()->request->getParam('recipientListId');
+				}
+
+				$variables['title']   = Craft::t('New Recipient');
+				$variables['element'] = new SproutEmail_DefaultMailerRecipientModel();
+			}
 		}
+
+		$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element']);
 
 		$variables['recipientLists']     = sproutEmailDefaultMailer()->getRecipientLists();
 		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/_recipients/dit/'.$variables['id'] : null;

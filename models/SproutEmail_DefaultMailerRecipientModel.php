@@ -26,7 +26,7 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 			'email'          => array(AttributeType::Email, 'required' => true),
 			'firstName'      => array(AttributeType::String, 'required' => false),
 			'lastName'       => array(AttributeType::String, 'required' => false),
-			'recipientLists' => AttributeType::Mixed,
+			'recipientLists' => array(AttributeType::Mixed, 'required' => true)
 		);
 
 		return array_merge(parent::defineAttributes(), $defaults);
