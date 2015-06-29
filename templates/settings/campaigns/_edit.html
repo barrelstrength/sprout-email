@@ -11,10 +11,11 @@
 	{% set selectedTab = craft.request.getSegment(6) %}
 {% endif %}
 
-{% set savaAndContinueUrl = craft.request.getSegment(4) == 'notifications' ? 'sproutemail/settings/notifications/edit/{id}' : 'sproutemail/settings/campaigns/edit/{id}' %}
+{% set saveAndContinueUrl = craft.request.getSegment(4) == 'notifications' ?
+'sproutemail/settings/notifications/edit/{id}' : 'sproutemail/settings/campaigns/edit/{id}' %}
 
 {% set content %}
-<form method="post" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url(savaAndContinueUrl) }}" data-confirm-unload>
+<form method="post" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url(saveAndContinueUrl) }}" data-confirm-unload>
 	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
 	<input type="hidden" name="redirect" value="sproutemail/settings">
 	<input type="hidden" name="tab" value="fields">
@@ -47,7 +48,8 @@
 		}) }}
 		{{ forms.selectField({
 			label: "How would you like to send this email"|t,
-			instructions: 'Select the platform you will use to send your Entries. Add support for more services via your <a href="' ~ url('sproutemail/settings#settings-api') ~ '">API settings</a>'|t,
+			instructions: 'Select the platform you will use to send your Entries. Add support for more services via your <a
+			 href="' ~ url('sproutemail/settings?tab=mailers') ~ '">Mailer settings</a>'|t,
 			id: 'mailer',
 			name: 'sproutEmail[mailer]',
 			required: true,
@@ -120,15 +122,12 @@
 {% else %}
 	<h2>{{ "Setup your first campaign."|t }}</h2>
 
-	<p>Install and setup a Mailer Service to create your first Campaign. Mailers are available as separate plugins
-	and can be downloaded from the Sprout website and updated in the <a href="{{ url('sproutemail/settings?tab=mailers') }}">Mailer Setttings</a>.</p>
+	<p style="width:40%;">Install and setup a Mailer Service to create your first Campaign. Mailers are available as
+	separate plugins
+	and can be downloaded from the links listed in the <a href="{{ url('sproutemail/settings?tab=mailers') }}">Mailer
+	Setttings</a>
+	.</p>
 
-	<p>{{ "Currently supported:"|t }}</p>
-	<ul class="bullets">
-		<li><a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCampaignMonitor-0.4.0.zip" target="_blank">Campaign Monitor</a></li>
-		<li><a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy &
-				Paste</a></li>
-	</ul>
 {% endif %}
 </form>
 {% endset %}
