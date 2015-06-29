@@ -11,7 +11,7 @@
 
 <style type="text/css">
 	.examples {
-		width: 35%;
+		width: 50%;
 	}
 	.examples .buttons {
 		margin-top: 1em;
@@ -25,15 +25,29 @@
 
 	<h2>{{ "Getting Started"|t }}</h2>
 	
-	<p>{{ "Install example emails with commented templates and example data. The example templates will be created placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
+	<p>{{ "Install example emails with commented templates and example data. The example templates will be created
+	and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
 
-	<p><em>{{ "Example emails include ..."|t|raw }}</em></p>
+	<p><em>{{ "Examples include:"|t }}</em></p>
+
+	<ul class="bullets">
+		<li>{{ "A welcome email for a new user"|t }}</li>
+		<li>{{ "An admin notification email when a new user is created"|t }}</li>
+		<li>{{ "A monthly newsletter email"|t }}</li>
+	</ul>
+	<br>
+
+	<ul class="bullets">
+		<li>{{ "Example notification templates (HTML/Text) using dynamic variables"|t }}</li>
+		<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
+		requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
+	</ul>
 	
 	<div class="buttons">
 		<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
 	</div>
 
-	<p>{{ "Don't install any example forms or data, I will build the forms I need myself."|t }}</p>
+	<p>{{ "Don't install any example emails or data, I will build the emails I need myself."|t }}</p>
 
 	<div class="buttons">
 		<a href="{{ url('sproutemail/entries') }}" class="btn delete">{{ "Take me to Sprout Email"|t }}</a>

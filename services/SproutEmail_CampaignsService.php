@@ -73,6 +73,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
+		// @todo - Refactor. We no longer use tabs in the CP section.
 		switch ($tab)
 		{
 			case 'fields':
@@ -102,7 +103,6 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 					return $campaign;
 				}
-
 				break;
 
 				// save the campaign
@@ -134,15 +134,12 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 					// If we have a Notification, also Save the Entry
 					if ($campaign->type == Campaign::Notification)
 					{
-						// Check to see if we have a matching Entry by CampaignId
-						$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
-
 						if (isset($oldCampaign->id))
 						{
+							$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
 							$criteria->campaignId = $oldCampaign->id;
+							$entry = $criteria->first();
 						}
-
-						$entry = $criteria->first();
 
 						if (isset($entry))
 						{
@@ -156,11 +153,11 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 							// If we don't have a blast yet, create a new entry
 							$entry                      = new SproutEmail_EntryModel();
 							$entry->campaignId          = $campaignRecord->id;
-							$entry->subjectLine         = $campaign->subject;
+							$entry->subjectLine         = $campaign->name;
 							$entry->getContent()->title = $campaign->name;
 						}
 
-						if (craft()->sproutEmail_entry->saveEntry($entry))
+						if (sproutEmail()->entries->saveEntry($entry, $campaign))
 						{
 							// @todo - redirect and such
 						}
@@ -169,7 +166,6 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 							SproutEmailPlugin::log(json_encode($entry->getErrors()));
 						}
 					}
-
 				}
 				catch (\Exception $e)
 				{

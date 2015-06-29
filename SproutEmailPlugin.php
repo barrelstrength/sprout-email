@@ -108,9 +108,12 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings' => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
-			'sproutemail/examples' => 'sproutemail/_cp/examples',
 			'sproutemail/events/new' => 'sproutemail/events/_edit',
 			'sproutemail/events/edit/(?P<eventId>\d+)' => 'sproutemail/events/_edit',
+
+			// Install Examples
+			'sproutemail/examples' =>
+			'sproutemail/_cp/examples',
 		));
 	}
 
@@ -129,6 +132,17 @@ class SproutEmailPlugin extends BasePlugin
 		}
 
 		sproutEmail()->notifications->registerDynamicEventHandler();
+	}
+
+	/**
+	 * @throws \Exception
+	 * @return SproutEmailTwigExtension
+	 */
+	public function addTwigExtension()
+	{
+		Craft::import('plugins.sproutemail.twigextensions.SproutEmailTwigExtension');
+
+		return new SproutEmailTwigExtension();
 	}
 
 	/**
@@ -186,22 +200,14 @@ class SproutEmailPlugin extends BasePlugin
 			}
 
 			sproutEmail()->mailers->installMailers();
+
+			// Redirect to examples after installation
+			craft()->request->redirect(UrlHelper::getCpUrl().'/sproutemail/examples');
 		}
 		catch (\Exception $e)
 		{
 			sproutEmail()->error($e->getMessage());
 		}
-	}
-
-	/**
-	 * @throws \Exception
-	 * @return SproutEmailTwigExtension
-	 */
-	public function addTwigExtension()
-	{
-		Craft::import('plugins.sproutemail.twigextensions.SproutEmailTwigExtension');
-
-		return new SproutEmailTwigExtension();
 	}
 }
 
