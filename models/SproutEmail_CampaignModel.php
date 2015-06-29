@@ -56,7 +56,7 @@ class SproutEmail_CampaignModel extends BaseModel
 			'template'          => AttributeType::String,
 			'templateCopyPaste' => AttributeType::String,
 			// @defaults
-			'dateCreate'        => AttributeType::DateTime,
+			'dateCreated'       => AttributeType::DateTime,
 			'dateUpdated'       => AttributeType::DateTime,
 			// @related
 			'entries'           => AttributeType::Mixed,
