@@ -209,8 +209,15 @@ class SproutEmail_ExamplesController extends BaseController
 					'locale' => $currentUser->locale,
 					'localeEnabled' => '1',
 					'sent' => '0',
-					'htmlBody' => '<p>Thanks for signing up. Your email is: {email}</p>',
-					'textBody' => 'Thanks for signing up. Your email is: {email}',
+					'htmlBody' => '<p>Thanks for becoming a member.</p>
+<ul>
+	<li>Username: <strong>{username}</strong></li>
+	<li>Email: <strong>{email}</strong></li>
+</ul>',
+					'textBody' => 'Thanks for becoming a member.
+
+Username: {username}
+Email: {email}',
 				),
 				'newUserEmail' => array(
 					'title' => 'A new user has created an account',
@@ -240,8 +247,15 @@ class SproutEmail_ExamplesController extends BaseController
 					'locale' => $currentUser->locale,
 					'localeEnabled' => '1',
 					'sent' => '0',
-					'htmlBody' => '<p>A new user has been created: {username} {email}</p>',
-					'textBody' => 'A new user has been created: {username} {email}',
+					'htmlBody' => '<p>A new user has been created:</p>
+<ul>
+	<li>Username: <strong>{username}</strong></li>
+	<li>Email: <strong>{email}</strong></li>
+</ul>',
+					'textBody' => 'A new user has been created:
+
+Username: {username}
+Email: {email}',
 				),
 				'monthlyNewsletter' => array(
 					'title' => 'Best Practices for your Email Subject Line',
@@ -261,8 +275,8 @@ class SproutEmail_ExamplesController extends BaseController
 					'locale' => $currentUser->locale,
 					'localeEnabled' => '1',
 					'sent' => '0',
-					'htmlBody' => '<p>Write nice stuff.</p>',
-					'textBody' => 'Write nice stuff.',
+					'htmlBody' => '<p>Say something interesting!</p>',
+					'textBody' => 'Say something interesting!',
 				)
 			);
 
