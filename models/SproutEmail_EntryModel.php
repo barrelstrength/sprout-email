@@ -163,7 +163,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getUrlFormat($template = null)
 	{
-		$campaign = $this->getType();
+		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
 		if ($campaign && $campaign->hasUrls)
 		{
@@ -263,13 +263,13 @@ class SproutEmail_EntryModel extends BaseElementModel
 	}
 
 	/**
-	 * @return SproutEmail_CampaignModel
+	 * @return string Campaign Type
 	 */
 	public function getType()
 	{
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
-		return $campaign;
+		return $campaign->type;
 	}
 
 	public function getUrl()

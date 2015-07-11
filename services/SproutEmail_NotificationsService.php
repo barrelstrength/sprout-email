@@ -171,6 +171,15 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		return $notification->save(false);
 	}
 
+	public function deleteNotificationsByCampaignId($campaignId)
+	{
+		$return = craft()->db->createCommand()->delete('sproutemail_campaigns_notifications',
+			'campaignId = :campaignId', array(':campaignId' => $campaignId)
+		);
+
+		return $return;
+	}
+
 	/**
 	 * @param array $attributes
 	 *

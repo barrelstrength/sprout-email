@@ -115,6 +115,13 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 		try
 		{
+			// Delete Campaign and Rules associated with this email
+			if ($entry->getType() == Campaign::Notification)
+			{
+				sproutEmail()->campaigns->deleteCampaign($entry->campaignId);
+				sproutEmail()->notifications->deleteNotificationsByCampaignId($entry->campaignId);
+			}
+
 			// Delete the Element and Entry
 			craft()->elements->deleteElementById($entry->id);
 

@@ -488,7 +488,7 @@ class SproutEmail_EntryController extends BaseController
 		// Get the template value from the Campaign settings
 		// ------------------------------------------------------------
 
-		$campaign = $entry->getType();
+		$campaign = sproutEmail()->campaigns->getCampaignById($entry->campaignId);
 
 		if ($campaign)
 		{
