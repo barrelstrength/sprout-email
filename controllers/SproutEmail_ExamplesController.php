@@ -321,6 +321,16 @@ Email: {email}',
 
 				$tabs = $fieldSettings[$campaign->handle];
 
+				// Ensure we have a Field Group to save our Fields
+				if (!$sproutEmailFieldGroup = $this->_createFieldGroup())
+				{
+					SproutEmailPlugin::log('Could not save the Sprout Email Examples field group.', LogLevel::Warning);
+
+					craft()->userSession->setError(Craft::t('Unable to create examples. Field group not saved.'));
+
+					return false;
+				}
+
 				foreach ($tabs as $tabName => $newFields)
 				{
 					foreach ($newFields as $newField)
@@ -328,6 +338,7 @@ Email: {email}',
 						if (! $field = craft()->fields->getFieldByHandle($newField['handle']))
 						{
 							$field = new FieldModel();
+							$field->groupId     = $sproutEmailFieldGroup->id;
 							$field->name        = $newField['name'];
 							$field->handle      = $newField['handle'];
 							$field->type        = $newField['type'];
@@ -353,7 +364,7 @@ Email: {email}',
 				$fieldLayout->type = 'SproutEmail_Campaign';
 				$campaign->setFieldLayout($fieldLayout);
 
-				// Save our email again with a layouts
+				// Save our email again with a layout
 				sproutEmail()->campaigns->saveCampaign($campaign, 'fields');
 
 				$entryRecord = SproutEmail_EntryRecord::model()->findByAttributes(array('campaignId' => $campaign->id));
@@ -398,6 +409,35 @@ Email: {email}',
 		{
 			$this->_handleError($e);
 		}
+	}
+
+	/**
+	 * @param $sproutEmailFieldGroup
+	 * @return bool
+	 */
+	private function _createFieldGroup()
+	{
+		$sproutEmailFieldGroup = new FieldGroupModel();
+		$sproutEmailFieldGroup->name = "Sprout Email Examples";
+
+		if (craft()->fields->saveGroup($sproutEmailFieldGroup))
+		{
+			return $sproutEmailFieldGroup;
+		}
+
+		// If we couldn't save the group, try to find the ID of one that exists
+		$existingFieldGroup = craft()->db->createCommand()
+			->select('*')
+			->from('fieldgroups')
+			->where('name = :name', array(':name' => $sproutEmailFieldGroup->name))
+			->queryRow();
+
+		if ($existingFieldGroup)
+		{
+			return new FieldGroupModel($existingFieldGroup);
+		}
+
+		return false;
 	}
 
 	/**
