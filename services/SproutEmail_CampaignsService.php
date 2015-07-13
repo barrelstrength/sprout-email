@@ -253,6 +253,9 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 				'id' => $campaignId
 			));
 
+			// This only applies to Notifications
+			sproutEmail()->notifications->deleteNotificationsByCampaignId($campaignId);
+
 			return true;
 		}
 		catch (\Exception $e)

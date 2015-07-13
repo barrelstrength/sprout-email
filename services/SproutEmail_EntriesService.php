@@ -119,7 +119,6 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 			if ($entry->getType() == Campaign::Notification)
 			{
 				sproutEmail()->campaigns->deleteCampaign($entry->campaignId);
-				sproutEmail()->notifications->deleteNotificationsByCampaignId($entry->campaignId);
 			}
 
 			// Delete the Element and Entry
