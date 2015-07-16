@@ -1,7 +1,8 @@
 {% if loop.first %}
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th width="60%">Subject Line</th>
+			<th width="5%"></th>
+			<th width="55%">Subject Line</th>
 			<th width="10%">Date Created</th>
 			<th width="10%">Type</th>
 			<th width="10%">Preview</th>
@@ -12,7 +13,10 @@
 		{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
 
 		<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
-			<td>
+			<td class="thin" data-checkboxcell="">
+				<div class="checkbox" title="Select"></div>
+			</td>
+			<td data-titlecell>
 				<span class="status {{ entry.status }}"></span>
 				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry'|t }}</a>
 			</td>
