@@ -149,9 +149,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 				'elementType'        => new ElementTypeVariable($this),
 				'disabledElementIds' => $disabledElementIds,
 				'elements'           => $criteria->find(),
-				'viewMode'           => $viewState['mode'],
-				'collapsedElementIds' => craft()->request->getParam('collapsedElementIds'),
-				'showCheckboxes'      => $showCheckboxes,
 			)
 		);
 	}
