@@ -1,13 +1,14 @@
 {% if loop.first %}
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th width="5%"></th>
-			<th width="55%">Subject Line</th>
-			<th width="10%">Date Created</th>
-			<th width="10%">Type</th>
-			<th width="10%">Preview</th>
-			<th width="10%">&nbsp;</th>
+			<th></th>
+			<th>Subject Line</th>
+			<th>Date Created</th>
+			<th>Type</th>
+			<th>Preview</th>
+			<th>&nbsp;</th>
 		</thead>
+		<tbody>
 {% endif %}
 
 		{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
@@ -51,6 +52,7 @@
 			</td>
 		</tr>
 {% if loop.last %}
+	 </tbody>
 	</table>
 
 	{# Placeholder Sprout Modal #}

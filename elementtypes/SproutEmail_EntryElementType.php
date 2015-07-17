@@ -149,6 +149,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 				'elementType'        => new ElementTypeVariable($this),
 				'disabledElementIds' => $disabledElementIds,
 				'elements'           => $criteria->find(),
+				'viewMode'           => $viewState['mode'],
+				'collapsedElementIds' => craft()->request->getParam('collapsedElementIds'),
+				'showCheckboxes'      => $showCheckboxes,
 			)
 		);
 	}
@@ -210,7 +213,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 			case SproutEmail_EntryModel::ARCHIVED:
 			{
 				$query->andWhere('entries.sent > 0');
-
+				$query->orWhere('elements.archived = 1');
 				break;
 			}
 			case SproutEmail_EntryModel::READY:
@@ -344,7 +347,15 @@ class SproutEmail_EntryElementType extends BaseElementType
 			)
 		);
 
-		return array($deleteAction);
+		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+
+		$deleteAction->setParams(
+			array(
+				'status' => array(AttributeType::Enum, 'values' => array(BaseElementModel::ARCHIVED, BaseElementModel::DISABLED), 'required' => true)
+			)
+		);
+
+		return array($deleteAction, $setStatusAction);
 	}
 
 	/**
