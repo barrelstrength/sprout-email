@@ -96,7 +96,7 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings/notifications/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
 			),
-			'sproutemail/entries/new' => array(
+			'proutemail/entries/new' => array(
 				'action' => 'sproutEmail/entry/editEntryTemplate'
 			),
 			'sproutemail/entries/edit/(?P<entryId>\d+)' => array(

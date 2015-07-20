@@ -113,47 +113,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	}
 
 	/**
-	 * @param ElementCriteriaModel $criteria
-	 * @param array                $disabledElementIds
-	 * @param array                $viewState
-	 * @param null|string          $sourceKey
-	 * @param null|string          $context
-	 * @param                      $includeContainer
-	 * @param                      $showCheckboxes
-	 *
-	 * @return string
-	 */
-	public function getIndexHtmlss(
-		$criteria,
-		$disabledElementIds,
-		$viewState,
-		$sourceKey,
-		$context,
-		$includeContainer,
-		$showCheckboxes
-	) {
-		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
-		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
-
-		sproutEmail()->mailers->includeMailerModalResources();
-
-		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
-		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
-
-		$criteria->limit = null;
-		$criteria->order = sprintf('%s %s', $order, $sort);
-
-		return craft()->templates->render(
-			'sproutemail/entries/_entryindex', array(
-				'context'            => $context,
-				'elementType'        => new ElementTypeVariable($this),
-				'disabledElementIds' => $disabledElementIds,
-				'elements'           => $criteria->find(),
-			)
-		);
-	}
-
-	/**
 	 * Returns the attributes that can be shown/sorted by in table views.
 	 *
 	 * @param string|null $source
@@ -166,7 +125,57 @@ class SproutEmail_EntryElementType extends BaseElementType
 			'dateCreated' => Craft::t('Date Created'),
 			'type' => Craft::t('Type'),
 			'preview' => Craft::t('Preview'),
+			'review' => null,
 		);
+	}
+
+	/**
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return string
+	 */
+	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
+	{
+		$campaign = sproutEmail()->campaigns->getCampaignById($element->campaignId);
+		$mailer = sproutEmail()->mailers->getMailerByName($campaign->mailer);
+		switch ($attribute)
+		{
+			case 'preview':
+				$link = null;
+				$textLabel = Craft::t('Text');
+				if($mailer != null &&  $mailer->isInstalled() && !$campaign->isNotification() && $element->status == SproutEmail_EntryModel::READY)
+				{
+					$link = "<a href='{$element->url}' title='{$element->title}' target='_blank'>HTML</a>
+					&nbsp;/&nbsp;
+					<a href='{$element->url}?type=text' title='{$element->subjectLine}' target='_blank'>{$textLabel}</a>";
+				}
+
+				return $link;
+
+			case 'review':
+				$link = null;
+
+				if($mailer != null && $mailer->isInstalled() && $element->status == SproutEmail_EntryModel::READY)
+				{
+					$link = "<a href='#'
+						data-action='{$mailer->getActionForPrepareModal()}'
+						data-mailer='{$mailer->getId()}'
+						data-entry-id='{$element->id}'
+						data-campaign-id='{$campaign->id}'
+						class='prepare'>{$mailer->getPrepareModalLinkTitle()}</a>";
+				}
+
+				return $link;
+
+			case 'type':
+
+				return ucfirst($element->type);
+
+			default:
+				return parent::getTableAttributeHtml($element, $attribute);
+				break;
+		}
 	}
 
 	/**
@@ -192,10 +201,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 			'collapsedElementIds' => craft()->request->getParam('collapsedElementIds'),
 			'showCheckboxes'      => $showCheckboxes,
 		);
-
+		//SproutEmail resources
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
-
 		sproutEmail()->mailers->includeMailerModalResources();
 
 		// Special case for sorting by structure
@@ -234,15 +242,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 			{
 				$order = (!empty($viewState['order']) && isset($sortableAttributes[$viewState['order']])) ? $viewState['order'] : array_shift(array_keys($sortableAttributes));
 				$sort  = (!empty($viewState['sort']) && in_array($viewState['sort'], array('asc', 'desc'))) ? $viewState['sort'] : 'asc';
-
-				// Combine them, accounting for the possibility that $order could contain multiple values,
-				// and be defensive about the possibility that the first value actually has "asc" or "desc"
-
-				// typeId             => typeId [sort]
-				// typeId, title      => typeId [sort], title
-				// typeId, title desc => typeId [sort], title desc
-				// typeId desc        => typeId [sort]
-
 				$criteria->order = preg_replace('/^(.*?)(?:\s+(?:asc|desc))?(,.*)?$/i', "$1 {$sort}$2", $order);
 			}
 		}
@@ -262,22 +261,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		$template = '_elements/'.$viewState['mode'].'view/'.($includeContainer ? 'container' : 'elements');
 		return craft()->templates->render($template, $variables);
-	}
-
-	/**
-	 * Returns the attributes that can be shown/sorted by in table views.
-	 *
-	 * @param string|null $source
-	 *
-	 * @return array
-	 */
-	public function defineTableAttributes($source = null)
-	{
-		return array(
-			'title'       => Craft::t('Title'),
-			'dateCreated' => Craft::t('Date Created'),
-			'dateUpdated' => Craft::t('Date Updated'),
-		);
 	}
 
 	/**
