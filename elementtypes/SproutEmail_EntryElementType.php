@@ -123,7 +123,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 *
 	 * @return string
 	 */
-	public function getIndexHtml(
+	public function getIndexHtmlss(
 		$criteria,
 		$disabledElementIds,
 		$viewState,
@@ -151,6 +151,117 @@ class SproutEmail_EntryElementType extends BaseElementType
 				'elements'           => $criteria->find(),
 			)
 		);
+	}
+
+	/**
+	 * Returns the attributes that can be shown/sorted by in table views.
+	 *
+	 * @param string|null $source
+	 * @return array
+	 */
+	public function defineTableAttributes($source = null)
+	{
+		return array(
+			'title' => Craft::t('Subject Line'),
+			'dateCreated' => Craft::t('Date Created'),
+			'type' => Craft::t('Type'),
+			'preview' => Craft::t('Preview'),
+		);
+	}
+
+	/**
+	 * @inheritDoc IElementType::getIndexHtml()
+	 *
+	 * @param ElementCriteriaModel $criteria
+	 * @param array                $disabledElementIds
+	 * @param array                $viewState
+	 * @param null|string          $sourceKey
+	 * @param null|string          $context
+	 * @param bool                 $includeContainer
+	 * @param bool                 $showCheckboxes
+	 *
+	 * @return string
+	 */
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
+	{
+		$variables = array(
+			'viewMode'            => $viewState['mode'],
+			'context'             => $context,
+			'elementType'         => new ElementTypeVariable($this),
+			'disabledElementIds'  => $disabledElementIds,
+			'collapsedElementIds' => craft()->request->getParam('collapsedElementIds'),
+			'showCheckboxes'      => $showCheckboxes,
+		);
+
+		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
+		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
+
+		sproutEmail()->mailers->includeMailerModalResources();
+
+		// Special case for sorting by structure
+		if (isset($viewState['order']) && $viewState['order'] == 'structure')
+		{
+			$source = $this->getSource($sourceKey, $context);
+
+			if (isset($source['structureId']))
+			{
+				$criteria->order = 'lft asc';
+				$variables['structure'] = craft()->structures->getStructureById($source['structureId']);
+
+				// Are they allowed to make changes to this structure?
+				if ($context == 'index' && $variables['structure'] && !empty($source['structureEditable']))
+				{
+					$variables['structureEditable'] = true;
+
+					// Let StructuresController know that this user can make changes to the structure
+					craft()->userSession->authorize('editStructure:'.$variables['structure']->id);
+				}
+			}
+			else
+			{
+				unset($viewState['order']);
+			}
+		}
+		else if (!empty($viewState['order']) && $viewState['order'] == 'score')
+		{
+			$criteria->order = 'score';
+		}
+		else
+		{
+			$sortableAttributes = $this->defineSortableAttributes();
+
+			if ($sortableAttributes)
+			{
+				$order = (!empty($viewState['order']) && isset($sortableAttributes[$viewState['order']])) ? $viewState['order'] : array_shift(array_keys($sortableAttributes));
+				$sort  = (!empty($viewState['sort']) && in_array($viewState['sort'], array('asc', 'desc'))) ? $viewState['sort'] : 'asc';
+
+				// Combine them, accounting for the possibility that $order could contain multiple values,
+				// and be defensive about the possibility that the first value actually has "asc" or "desc"
+
+				// typeId             => typeId [sort]
+				// typeId, title      => typeId [sort], title
+				// typeId, title desc => typeId [sort], title desc
+				// typeId desc        => typeId [sort]
+
+				$criteria->order = preg_replace('/^(.*?)(?:\s+(?:asc|desc))?(,.*)?$/i', "$1 {$sort}$2", $order);
+			}
+		}
+
+		switch ($viewState['mode'])
+		{
+			case 'table':
+			{
+				// Get the table columns
+				$variables['attributes'] = $this->defineTableAttributes($sourceKey);
+
+				break;
+			}
+		}
+
+		$variables['elements'] = $criteria->find();
+
+		$template = '_elements/'.$viewState['mode'].'view/'.($includeContainer ? 'container' : 'elements');
+		return craft()->templates->render($template, $variables);
 	}
 
 	/**
@@ -345,12 +456,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 		);
 
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
-
-		$deleteAction->setParams(
-			array(
-				'status' => array(AttributeType::Enum, 'values' => array(BaseElementModel::ARCHIVED, BaseElementModel::DISABLED), 'required' => true)
-			)
-		);
 
 		return array($deleteAction, $setStatusAction);
 	}
