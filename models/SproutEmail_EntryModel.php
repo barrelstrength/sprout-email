@@ -22,9 +22,6 @@ class SproutEmail_EntryModel extends BaseElementModel
 {
 	protected $fields;
 	protected $elementType = 'SproutEmail_Entry';
-	public $preview;
-	public $review;
-
 
 	/**
 	 * @todo Clean up this status mess before 0.9.0
