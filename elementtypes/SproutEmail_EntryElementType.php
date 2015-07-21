@@ -346,12 +346,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
 
-		$deleteAction->setParams(
-			array(
-				'status' => array(AttributeType::Enum, 'values' => array(BaseElementModel::ARCHIVED, BaseElementModel::DISABLED), 'required' => true)
-			)
-		);
-
 		return array($deleteAction, $setStatusAction);
 	}
 

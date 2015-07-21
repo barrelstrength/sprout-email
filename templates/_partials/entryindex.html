@@ -1,4 +1,7 @@
-{% if loop.first %}
+{% spaceless %}
+
+{% if loop.first and craft.request.getPost("elementAction") == null %}
+	<div class="tableview">
 	<table id="entries" class="data fullwidth">
 		<thead>
 			<th></th>
@@ -9,11 +12,11 @@
 			<th>&nbsp;</th>
 		</thead>
 		<tbody>
+
 {% endif %}
 
-		{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
-
-		<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
+	{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
+	<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
 			<td class="thin" data-checkboxcell="">
 				<div class="checkbox" title="Select"></div>
 			</td>
@@ -50,8 +53,9 @@
 					{% endif %}
 				{% endif %}
 			</td>
-		</tr>
-{% if loop.last %}
+	</tr>
+
+{% if loop.last and craft.request.getPost("elementAction") == null %}
 	 </tbody>
 	</table>
 
@@ -78,9 +82,6 @@
 		<h2>Loading...</h2>
 		<div class="spinner"></div>
 	</div>
-
-{% endif %}
-
 {% set statusSnippet %}
 	.status.ready {
 		background-position: 0 0; // @green
@@ -94,3 +95,9 @@
 {% endset %}
 
 {% includeCss(statusSnippet) %}
+
+</div><!-- tableview  -->
+
+{% endif %}
+
+{% endspaceless -%}
