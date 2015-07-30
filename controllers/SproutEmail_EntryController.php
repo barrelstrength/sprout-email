@@ -178,15 +178,12 @@ class SproutEmail_EntryController extends BaseController
 				}
 				else
 				{
-					if (!isset($response['success']) || !$response['success'])
+					if (isset($response['content']))
 					{
-						$response['success'] = false;
-
-						if (!isset($response['message']))
-						{
-							$response['message'] = Craft::t('The mailer did not return a accepted message.');
-						}
-					} else
+						$response['success'] = true;
+						$response['message'] = $response['content'];
+					}
+					else
 					{
 						if (!isset($response['content']))
 						{
