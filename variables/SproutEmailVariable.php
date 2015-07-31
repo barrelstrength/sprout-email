@@ -226,4 +226,9 @@ class SproutEmailVariable
 	{
 		return sproutEmail()->mailers->getRecipientLists($mailer);
 	}
+
+	public function doesSiteTemplateExist($template)
+	{
+		return sproutEmail()->doesSiteTemplateExist($template);
+	}
 }
