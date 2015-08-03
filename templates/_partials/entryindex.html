@@ -35,18 +35,17 @@
 				mailer
 				and mailer.isInstalled()
 				and not campaign.isNotification()
-				and entry.status == 'ready'
-				and craft.sproutEmail.doesSiteTemplateExist(campaign.template) %}
+				and entry.isReady() %}
 				<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
 				&nbsp;/&nbsp;
 				<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 			{% else %}
-			 <span class='code warning'>{{ "The template does not exist. Please check your mailer settings."|t }} </span>
+				<span class='code warning'>{{ "The template does not exist. Please check your mailer settings."|t }} </span>
 			{% endif %}
 			</td>
 			<td class="nowrap">
 				{% if mailer and mailer.isInstalled() %}
-					{% if entry.status == 'ready' %}
+					{% if entry.isReady() %}
 						<a href="#"
 							data-action="{{ mailer.getActionForPrepareModal() }}"
 							data-mailer="{{ mailer.getId() }}"

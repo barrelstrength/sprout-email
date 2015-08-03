@@ -210,7 +210,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 					return static::ARCHIVED;
 				}
 
-				if (empty($campaign->template) or empty($campaign->mailer))
+				if (empty($campaign->mailer) || empty($campaign->template) || !sproutEmail()->doesSiteTemplateExist($campaign->template))
 				{
 					return static::PENDING;
 				}
@@ -291,5 +291,10 @@ class SproutEmail_EntryModel extends BaseElementModel
 		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/'.$this->id);
 
 		return $url;
+	}
+
+	public function isReady()
+	{
+		return (bool) ($this->getStatus() == static::READY);
 	}
 }
