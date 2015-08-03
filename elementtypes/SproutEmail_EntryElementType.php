@@ -48,7 +48,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_EntryModel::READY    => Craft::t('Ready'),
+			SproutEmail_EntryModel::READY    => Craft::t('Enabled'),
 			SproutEmail_EntryModel::PENDING  => Craft::t('Pending'),
 			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled'),
 			SproutEmail_EntryModel::ARCHIVED => Craft::t('Archived'),
