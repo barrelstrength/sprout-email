@@ -48,7 +48,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_EntryModel::READY    => Craft::t('Enabled'),
+			SproutEmail_EntryModel::ENABLED  => Craft::t('Enabled'),
 			SproutEmail_EntryModel::PENDING  => Craft::t('Pending'),
 			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled'),
 			SproutEmail_EntryModel::ARCHIVED => Craft::t('Archived'),
@@ -203,23 +203,34 @@ class SproutEmail_EntryElementType extends BaseElementType
 			}
 			case SproutEmail_EntryModel::PENDING:
 			{
+				$query->andWhere('elements.enabled = 1');
 				$query->andWhere('campaigns.template IS NULL OR campaigns.mailer IS NULL');
 
 				break;
 			}
 			case SproutEmail_EntryModel::ARCHIVED:
 			{
-				$query->andWhere('entries.sent > 0');
-				$query->orWhere('elements.archived = 1');
+				$query->andWhere('elements.archived = 1');
 				break;
 			}
 			case SproutEmail_EntryModel::READY:
 			{
-				$query->andWhere('
+				$query->andWhere(
+					'
 					elements.enabled = 1
 					AND campaigns.template IS NOT NULL
-					AND campaigns.mailer IS NOT NULL
-					AND entries.sent = 0'
+					AND campaigns.mailer IS NOT NULL'
+				);
+
+				break;
+			}
+			case SproutEmail_EntryModel::ENABLED:
+			{
+				$query->andWhere(
+					'
+					elements.enabled = 1
+					AND campaigns.template IS NOT NULL
+					AND campaigns.mailer IS NOT NULL'
 				);
 
 				break;
@@ -299,9 +310,13 @@ class SproutEmail_EntryElementType extends BaseElementType
 		if (!craft()->templates->doesTemplateExist($campaign->template.$extension))
 		{
 			$templateName = $campaign->template.$extension;
-			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
-				'templateName' => $templateName
-			)));
+			sproutEmail()->error(
+				Craft::t(
+					"The template '{templateName}' could not be found", array(
+						'templateName' => $templateName
+					)
+				)
+			);
 		}
 
 		$vars = array(
@@ -344,9 +359,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 			)
 		);
 
-		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+		// $setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
 
-		return array($deleteAction, $setStatusAction);
+		return array($deleteAction);
 	}
 
 	/**

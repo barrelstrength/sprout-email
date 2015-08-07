@@ -6,17 +6,17 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property int            $id
- * @property string         $subjectLine
- * @property int            $campaignId
- * @property string         $fromName
- * @property string         $fromEmail
- * @property string         $replyTo
- * @property bool           $sent
+ * @property int         $id
+ * @property string      $subjectLine
+ * @property int         $campaignId
+ * @property string      $fromName
+ * @property string      $fromEmail
+ * @property string      $replyTo
+ * @property bool        $sent
  * --
- * @property string|null    $uri
- * @property string         $slug
- * @property bool           $enabled
+ * @property string|null $uri
+ * @property string      $slug
+ * @property bool        $enabled
  */
 class SproutEmail_EntryModel extends BaseElementModel
 {
@@ -30,8 +30,8 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 */
-	const READY    = 'ready';
-	const PENDING  = 'pending';
+	const READY = 'ready';
+	const PENDING = 'pending';
 	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
 	const ARCHIVED = 'archived';
 
@@ -177,22 +177,20 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 * Ready -    has all required attributes, and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 */
+
+	/**
+	 * Returns the entry status based on actual values and dynamic checking
+	 *
+	 * Disabled - Entry is disabled
+	 * Archived - Entry has been manually set to archived
+	 * Pending  - Entry is enabled but some requirements are not yet met
+	 * Ready    - Entry is enabled and all requirements are met
+	 *
+	 * @return string
+	 */
 	public function getStatus()
 	{
-		$status = parent::getStatus();
-
-		// Required attributes :$campaign->mailer && $campaign->template
-		// Enabled : static::ENABLED
-		// Disabled : static::DISABLED
-		// Archived : static::ARCHIVED
-		// Sent (track sent dates in a sent log table)
-		//
-		// @todo We can make this conditional statement more
-		// advanced and check for the Service Provider and determine
-		// specific things about each service provider to decide if an
-		// email is ready or not.  For now, we'll just check to see if
-		// it has a service provider and text template.
-
+		$status   = parent::getStatus();
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
 		switch ($status)
@@ -210,7 +208,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 					return static::ARCHIVED;
 				}
 
-				if (empty($campaign->mailer) || empty($campaign->template) || !sproutEmail()->doesSiteTemplateExist($campaign->template))
+				if (empty($campaign->mailer) || empty($campaign->template))
 				{
 					return static::PENDING;
 				}

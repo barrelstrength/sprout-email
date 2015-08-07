@@ -10,6 +10,7 @@ class SproutEmail_EntryController extends BaseController
 {
 	/**
 	 * List of actions allowed to be called from outside the Control Panel
+	 *
 	 * @var array
 	 */
 	protected $allowAnonymous = array('actionViewSharedEntry');
@@ -148,7 +149,7 @@ class SproutEmail_EntryController extends BaseController
 
 			$this->returnJson($result);
 		}
-		catch(\Exception $e)
+		catch (\Exception $e)
 		{
 			$response['message'] = Craft::t($e->getMessage());
 
@@ -174,44 +175,45 @@ class SproutEmail_EntryController extends BaseController
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{
-					$this->returnJson($response->getAttributes());
-				}
-				else
-				{
-					if (isset($response['content']))
-					{
-						$response['success'] = true;
-						$response['message'] = $response['content'];
-					}
-					else
-					{
-						if (!isset($response['content']))
-						{
-							$response['success'] = false;
-							$response['message'] = Craft::t('The mailer did not return an accepted response.');
-						}
-					}
-
 					$this->returnJson($response);
 				}
+
+				$this->returnJson(
+					SproutEmail_ResponseModel::createErrorModalResponse(
+						'sproutemail/_modals/export',
+						array(
+							'entry'    => $entry,
+							'campaign' => $campaign,
+							'message'  => Craft::t('Mailer did not return a valid response model after entry export.'),
+						)
+					)
+				);
 			}
 			catch (\Exception $e)
 			{
-				$response = array(
-					'success' => false,
-					'message' => $e->getMessage()
+				$this->returnJson(
+					SproutEmail_ResponseModel::createErrorModalResponse(
+						'sproutemail/_modals/export',
+						array(
+							'entry'    => $entry,
+							'campaign' => $campaign,
+							'message'  => Craft::t($e->getMessage()),
+						)
+					)
 				);
-
-				$this->returnJson($response);
 			}
 		}
 
-		$response = array(
-			'success' => false,
-			'message' => Craft::t('The campaign email you are trying to send is missing.')
+		$this->returnJson(
+			SproutEmail_ResponseModel::createErrorModalResponse(
+				'sproutemail/_modals/export',
+				array(
+					'entry'    => $entry,
+					'campaign' => !empty($campaign) ? $campaign : null,
+					'message'  => Craft::t('The campaign email you are trying to send is missing.'),
+				)
+			)
 		);
-
-		$this->returnJson($response);
 	}
 
 	/**
@@ -291,16 +293,20 @@ class SproutEmail_EntryController extends BaseController
 		// Enable Live Preview?
 		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($variables['campaign']->template))
 		{
-			craft()->templates->includeJs('Craft.LivePreview.init('.JsonHelper::encode(array(
+			craft()->templates->includeJs(
+				'Craft.LivePreview.init('.JsonHelper::encode(
+					array(
 						'fields'        => '#subjectLine-field, #title-field, #fields > div > div > .field',
 						'extraFields'   => '#settings',
 						'previewUrl'    => $variables['entry']->getUrl(),
 						'previewAction' => 'sproutEmail/entry/livePreviewEntry',
 						'previewParams' => array(
-							'entryId'   => $variables['entry']->id,
-							'campaignId'=> $variables['campaign']->id,
+							'entryId'    => $variables['entry']->id,
+							'campaignId' => $variables['campaign']->id,
 						)
-					)).');');
+					)
+				).');'
+			);
 
 			$variables['showPreviewBtn'] = true;
 
@@ -313,7 +319,10 @@ class SproutEmail_EntryController extends BaseController
 				}
 				else
 				{
-					$shareParams = array('entryId' => $variables['entry']->id, 'campaignId' => $variables['campaign']->id);
+					$shareParams = array(
+						'entryId'    => $variables['entry']->id,
+						'campaignId' => $variables['campaign']->id
+					);
 
 					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 				}
@@ -364,7 +373,6 @@ class SproutEmail_EntryController extends BaseController
 					return $result['content'];
 					// $this->returnJson($result);
 				}
-				// @todo Handle success message
 				craft()->end();
 			}
 			catch (\Exception $e)
@@ -412,7 +420,7 @@ class SproutEmail_EntryController extends BaseController
 	/**
 	 * Redirects the client to a URL for viewing an entry/draft on the front end.
 	 *
-	 * @param mixed  $entryId
+	 * @param mixed $entryId
 	 *
 	 * @throws HttpException
 	 * @return null
@@ -429,7 +437,7 @@ class SproutEmail_EntryController extends BaseController
 			}
 
 			$params = array(
-				'entryId'  => $entryId,
+				'entryId' => $entryId,
 			);
 		}
 		else
@@ -502,11 +510,11 @@ class SproutEmail_EntryController extends BaseController
 
 			$this->renderTemplate(
 				$campaign->template.$ext, array(
-					'entry' => $entry,
-					'campaign' => $campaign,
+					'entry'     => $entry,
+					'campaign'  => $campaign,
 					'firstName' => '{firstName}',
-					'lastName' => '{lastName}',
-					'email' => '{email}',
+					'lastName'  => '{lastName}',
+					'email'     => '{email}',
 				)
 			);
 		}

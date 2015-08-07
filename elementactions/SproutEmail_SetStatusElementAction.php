@@ -1,42 +1,48 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmail_SetStatusElementAction
+ *
+ * @package Craft
+ */
 class SproutEmail_SetStatusElementAction extends BaseElementAction
 {
-	// Public Methods
-	// =========================================================================
-
 	/**
-	 * @inheritDoc IElementAction::getTriggerHtml()
-	 *
-	 * @return string|null
+	 * @return string
 	 */
 	public function getTriggerHtml()
 	{
-		return craft()->templates->render('sproutemail/_setStatus/trigger');
+		return craft()->templates->render('sproutemail/_actions/setStatus');
 	}
 
 	/**
-	 * @inheritDoc IElementAction::performAction()
-	 *
 	 * @param ElementCriteriaModel $criteria
 	 *
 	 * @return bool
 	 */
 	public function performAction(ElementCriteriaModel $criteria)
 	{
-		$status = $this->getParams()->status;
-		//False by default
+		$status   = $this->getParams()->status;
 		$archived = $enable = 0;
 
 		switch ($status)
 		{
-			case SproutEmail_EntryModel::READY:
-				$enable = '1';
+			case SproutEmail_EntryModel::ENABLED:
+			{
+				$enable = 1;
 				break;
+			}
+			case SproutEmail_EntryModel::DISABLED:
+			{
+				$enable = 0;
+				break;
+			}
 			case SproutEmail_EntryModel::ARCHIVED:
-				$archived = '1';
+			{
+				$archived = 1;
 				break;
+			}
 		}
 
 		$elementIds = $criteria->ids();
@@ -48,7 +54,7 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 			array('in', 'id', $elementIds)
 		);
 
-		if ($status == SproutEmail_EntryModel::READY)
+		if ($status == SproutEmail_EntryModel::ENABLED)
 		{
 			// Enable their locale as well
 			craft()->db->createCommand()->update(
@@ -63,38 +69,33 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 		craft()->templateCache->deleteCachesByElementId($elementIds);
 
 		// Fire an 'onSetStatus' event
-		$this->onSetStatus(new Event($this, array(
-			'criteria'   => $criteria,
-			'elementIds' => $elementIds,
-			'status'     => $status,
-		)));
+		$this->onSetStatus(
+			new Event(
+				$this,
+				array(
+					'criteria'   => $criteria,
+					'elementIds' => $elementIds,
+					'status'     => $status,
+				)
+			)
+		);
 
 		$this->setMessage(Craft::t('Statuses updated.'));
 
 		return true;
 	}
 
-	// Events
-	// -------------------------------------------------------------------------
-
 	/**
-	 * Fires an 'onSetStatus' event.
-	 *
 	 * @param Event $event
 	 *
-	 * @return null
+	 * @throws \CException
 	 */
 	public function onSetStatus(Event $event)
 	{
 		$this->raiseEvent('onSetStatus', $event);
 	}
 
-	// Protected Methods
-	// =========================================================================
-
 	/**
-	 * @inheritDoc BaseElementAction::defineParams()
-	 *
 	 * @return array
 	 */
 	protected function defineParams()
@@ -102,12 +103,12 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 		return array(
 			'status' => array(
 				AttributeType::Enum,
-				'values' => array(
-					SproutEmail_EntryModel::READY,
+				'values'   => array(
 					BaseElementModel::DISABLED,
 					SproutEmail_EntryModel::ARCHIVED
 				),
-			'required' => true)
+				'required' => true
+			)
 		);
 	}
 }
