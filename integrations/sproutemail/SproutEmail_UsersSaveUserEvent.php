@@ -68,9 +68,14 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 			// because _processUserGroupsPermissions() runs after saveUser()
 			$newUserGroups = craft()->request->getPost('groups');
 
+			if (!is_array($newUserGroups))
+			{
+				$newUserGroups = ArrayHelper::stringToArray($newUserGroups);
+			}
+
 			foreach ($options['craft']['saveUser']['userGroupIds'] as $groupId)
 			{
-				if (array_key_exists($groupId, $existingUserGroups) OR in_array($groupId, $newUserGroups))
+				if (array_key_exists($groupId, $existingUserGroups) || in_array($groupId, $newUserGroups))
 				{
 					$inGroup = true;
 				}
