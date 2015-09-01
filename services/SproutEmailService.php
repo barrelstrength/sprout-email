@@ -29,6 +29,21 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Returns a config value from general.php for the sproutEmail array
+	 *
+	 * @param string     $name
+	 * @param mixed|null $default
+	 *
+	 * @return null
+	 */
+	public function getConfig($name, $default = null)
+	{
+		$configs = craft()->config->get('sproutEmail');
+
+		return is_array($configs) && isset($configs[$name]) ? $configs[$name] : $default;
+	}
+
+	/**
 	 * Allows us to render an object template without creating a fatal error
 	 *
 	 * @param string $str
@@ -195,5 +210,94 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 
 		return $start;
+	}
+
+	/**
+	 * Handles event to attach files to email
+	 *
+	 * @param Event $event
+	 */
+
+	public function handleOnBeforeSendEmail(Event $event)
+	{
+		$attachmentConfig = 'enableFileAttachments';
+
+		if (isset($event->params['variables']['sproutEmailEntry']) && $this->getConfig($attachmentConfig))
+		{
+			$entry = $event->params['variables']['sproutEmailEntry'];
+
+			/**
+			 * @var $field FieldModel
+			 */
+			foreach ($entry->getFields() as $field)
+			{
+				$type = $field->getFieldType();
+
+				if (get_class($type) === 'Craft\\AssetsFieldType')
+				{
+					/**
+					 * @var $criteria ElementCriteriaModel
+					 */
+					$criteria = $entry->{$field->handle};
+
+					if ($criteria instanceof ElementCriteriaModel)
+					{
+						$assets = $criteria->find();
+
+						$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
+					}
+				}
+			}
+		}
+
+		if (isset($event->params['variables']['sproutEmailEntry']) && !$this->getConfig($attachmentConfig))
+		{
+			$this->log('File attachments are currently not enabled for Sprout Email.');
+		}
+
+	}
+
+	/**
+	 * @param mixed $message
+	 * @param array $vars
+	 */
+	public function log($message, array $vars = array())
+	{
+		if (is_string($message))
+		{
+			$message = Craft::t($message, $vars);
+		}
+		else
+		{
+			$message = print_r($message, true);
+		}
+
+		SproutEmailPlugin::log($message, LogLevel::Info);
+	}
+
+	/**
+	 * @param EmailModel       $email
+	 * @param AssetFileModel[] $assets
+	 */
+	protected function attachAssetFilesToEmailModel(EmailModel $email, array $assets)
+	{
+		foreach ($assets as $asset)
+		{
+			$name = $asset->filename;
+			$path = $this->getAssetFilePath($asset);
+
+			$email->addAttachment($path, $name);
+		}
+	}
+
+
+	/**
+	 * @param AssetFileModel $asset
+	 *
+	 * @return string
+	 */
+	protected function getAssetFilePath(AssetFileModel $asset)
+	{
+		return $asset->getSource()->getSourceType()->getBasePath().$asset->getFolder()->path.$asset->filename;
 	}
 }
