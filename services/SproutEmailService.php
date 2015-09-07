@@ -222,9 +222,9 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$attachmentConfig = 'enableFileAttachments';
 
-		if (isset($event->params['variables']['sproutEmailEntry']) && $this->getConfig($attachmentConfig))
+		if (isset($event->params['variables']['elementEntry']) && $this->getConfig($attachmentConfig))
 		{
-			$entry = $event->params['variables']['sproutEmailEntry'];
+			$entry = $event->params['variables']['elementEntry'];
 
 			/**
 			 * @var $field FieldModel
@@ -250,7 +250,7 @@ class SproutEmailService extends BaseApplicationComponent
 			}
 		}
 
-		if (isset($event->params['variables']['sproutEmailEntry']) && !$this->getConfig($attachmentConfig))
+		if (isset($event->params['variables']['elementEntry']) && !$this->getConfig($attachmentConfig))
 		{
 			$this->log('File attachments are currently not enabled for Sprout Email.');
 		}
