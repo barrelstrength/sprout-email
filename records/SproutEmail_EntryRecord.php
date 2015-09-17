@@ -134,4 +134,50 @@ class SproutEmail_EntryRecord extends BaseRecord
 			)
 		);
 	}
+
+	/**
+	 * Create a secuencial string for the "name" and "handle" fields if they are already taken
+	 * @param string
+	 * @param string
+	 * return string
+	*/
+	private function getFieldAsNew($field, $value)
+	{
+		$newField = null;
+		$i = 1;
+		$band = true;
+		do
+		{
+			$newField = $value.$i;
+			$entry = sproutEmail()->entries->getFieldValue($field, $newField);
+			if ( is_null($entry) )
+			{
+				$band = false;
+			}
+
+			$i++;
+		} while ( $band );
+
+		return $newField;
+	}
+	/**
+	 * Before Validate
+	 *
+	 */
+	protected function beforeValidate()
+	{
+		// Validate the subjectLine field when the record is save as new
+		if (isset($_POST["saveAsNew"]))
+		{
+			if($_POST['saveAsNew'])
+			{
+				if(sproutEmail()->entries->getFieldValue('subjectLine', $this->subjectLine))
+				{
+					$this->subjectLine = $this->getFieldAsNew('subjectLine', $this->subjectLine);
+				}
+			}
+		}
+
+		return true;
+	}
 }

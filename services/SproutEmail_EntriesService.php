@@ -32,20 +32,17 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	 */
 	public function saveEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$isNewEntry = !$entry->id;
+		$isNewEntry = true;
+		$entryRecord = new SproutEmail_EntryRecord();
 
-		if ($entry->id)
+		if ($entry->id && !$entry->saveAsNew)
 		{
 			$entryRecord = SproutEmail_EntryRecord::model()->findById($entry->id);
-
+			$isNewEntry = false;
 			if (!$entryRecord)
 			{
 				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $entry->id)));
 			}
-		}
-		else
-		{
-			$entryRecord = new SproutEmail_EntryRecord();
 		}
 
 		$entryRecord->campaignId  = $entry->campaignId;
@@ -55,6 +52,11 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		$entryRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
 
 		$entryRecord->validate();
+
+		if($entry->saveAsNew)
+		{
+			$entry->subjectLine = $entryRecord->subjectLine;
+		}
 
 		$entry->addErrors($entryRecord->getErrors());
 
@@ -179,5 +181,23 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	protected function getOnTheFlyRecipients()
 	{
 		return craft()->request->getPost('recipient.onTheFlyRecipients');
+	}
+
+	/**
+	 * Returns the value of a given field
+	 *
+	 * @param string $field
+	 * @param string $value
+	 * @return SproutEmail_EntryRecord
+	 */
+	public function getFieldValue($field, $value)
+	{
+		$criteria = new \CDbCriteria();
+		$criteria->condition = "{$field} =:value";
+		$criteria->params = array(':value'=>$value);
+		$criteria->limit = 1;
+
+		$result = SproutEmail_EntryRecord::model()->find($criteria);
+		return $result;
 	}
 }

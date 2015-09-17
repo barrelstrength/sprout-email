@@ -44,6 +44,12 @@ class SproutEmail_EntryController extends BaseController
 		$entry = $this->getEntryModel();
 		$entry = $this->populateEntryModel($entry);
 
+		if(craft()->request->getPost('saveAsNew'))
+		{
+			$entry->saveAsNew  = true;
+			$entry->id = null;
+		}
+
 		if ($this->campaign->titleFormat)
 		{
 			$entry->getContent()->title = craft()->templates->renderObjectTemplate($this->campaign->titleFormat, $entry);

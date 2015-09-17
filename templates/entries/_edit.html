@@ -221,6 +221,9 @@
 										<ul>
 											<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id  }}">{{ "Save and continue editing"|t }}</a></li>
 											<li><a class="formsubmit" data-redirect="sproutemail/entries/{{ campaign.id }}/new">{{ "Save and add another"|t }}</a></li>
+											{% if entry.id != null %}
+												<li><a class="formsubmit" data-param='saveAsNew' data-value="true">{{ "Save as a new email"|t }}</a></li>
+											{% endif %}
 										</ul>
 									</div>
 									{% endif %}
