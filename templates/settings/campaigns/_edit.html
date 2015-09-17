@@ -115,9 +115,16 @@
 	<hr>
 	{% include "_includes/fieldlayoutdesigner" with {fieldLayout: campaign.getFieldLayout()} only %}
 	<hr>
-
-	<div class="buttons">
-		<input class="btn submit" type="submit" value="{{ 'Save Campaign'|t }}">
+	<div class="btngroup submit first">
+		<input type="submit" class="btn submit" value="{{ 'Save Campaign'|t }}">
+		{% if campaign.id != null %}
+			<div class="btn submit menubtn"></div>
+			<div class="menu">
+				<ul>
+					<li><a class="formsubmit" data-param='saveAsNew' data-value="true">{{ "Save as a new campaign"|t }}</a></li>
+				</ul>
+			</div>
+		{% endif %}
 	</div>
 {% else %}
 	<h2>{{ "Setup your first campaign."|t }}</h2>

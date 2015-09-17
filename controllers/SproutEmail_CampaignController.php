@@ -17,6 +17,12 @@ class SproutEmail_CampaignController extends BaseController
 
 		$campaign->setAttributes(craft()->request->getPost('sproutEmail'));
 
+		if(craft()->request->getPost('saveAsNew'))
+		{
+			$campaign->saveAsNew  = true;
+			$campaign->id = null;
+		}
+
 		if (craft()->request->getPost('fieldLayout'))
 		{
 			// Set the field layout

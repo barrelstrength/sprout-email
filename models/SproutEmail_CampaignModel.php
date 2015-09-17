@@ -24,6 +24,7 @@ class SproutEmail_CampaignModel extends BaseModel
 {
 	protected $fields;
 
+	public $saveAsNew;
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *

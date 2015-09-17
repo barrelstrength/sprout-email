@@ -59,16 +59,13 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 */
 	public function saveCampaign(SproutEmail_CampaignModel $campaign, $tab = 'info')
 	{
+		$campaignRecord = new SproutEmail_CampaignRecord();
 		$oldCampaign = null;
 
-		if (is_numeric($campaign->id))
+		if (is_numeric($campaign->id) && !$campaign->saveAsNew)
 		{
 			$campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
 			$oldCampaign    = SproutEmail_CampaignModel::populateModel($campaignRecord);
-		}
-		else
-		{
-			$campaignRecord = new SproutEmail_CampaignRecord();
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
@@ -189,8 +186,9 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	protected function saveCampaignInfo(SproutEmail_CampaignModel &$campaign)
 	{
 		$oldCampaignMailer = null;
+		$campaignRecord = new SproutEmail_CampaignRecord();
 
-		if (isset($campaign->id) && is_numeric($campaign->id))
+		if (isset($campaign->id) && is_numeric($campaign->id) && !$campaign->saveAsNew)
 		{
 			$campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
 
@@ -206,10 +204,6 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 			}
 
 			$oldCampaignMailer = $campaignRecord->mailer;
-		}
-		else
-		{
-			$campaignRecord = new SproutEmail_CampaignRecord();
 		}
 
 		// Set common attributes
@@ -228,6 +222,12 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 		$campaignRecord->validate();
 		$campaign->addErrors($campaignRecord->getErrors());
+
+		if($campaign->saveAsNew)
+		{
+			$campaign->name = $campaignRecord->name;
+			$campaign->handle = $campaignRecord->handle;
+		}
 
 		if (!$campaignRecord->hasErrors())
 		{
@@ -262,5 +262,23 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Returns the value of a given field
+	 *
+	 * @param string $field
+	 * @param string $value
+	 * @return SproutEmail_CampaignRecord
+	 */
+	public function getFieldValue($field, $value)
+	{
+		$criteria = new \CDbCriteria();
+		$criteria->condition = "{$field} =:value";
+		$criteria->params = array(':value'=>$value);
+		$criteria->limit = 1;
+
+		$result = SproutEmail_CampaignRecord::model()->find($criteria);
+		return $result;
 	}
 }
