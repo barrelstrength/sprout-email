@@ -225,35 +225,39 @@ class SproutEmailService extends BaseApplicationComponent
 		if (isset($event->params['variables']['elementEntry']) && $this->getConfig($attachmentConfig))
 		{
 			$entry = $event->params['variables']['elementEntry'];
-
+			
 			/**
 			 * @var $field FieldModel
 			 */
-			foreach ($entry->getFields() as $field)
+			if(method_exists($entry, 'getFields'))
 			{
-				$type = $field->getFieldType();
-
-				if (get_class($type) === 'Craft\\AssetsFieldType')
+				foreach ($entry->getFields() as $field)
 				{
-					/**
-					 * @var $criteria ElementCriteriaModel
-					 */
-					$criteria = $entry->{$field->handle};
+					$type = $field->getFieldType();
 
-					if ($criteria instanceof ElementCriteriaModel)
+					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
-						$assets = $criteria->find();
+						/**
+						 * @var $criteria ElementCriteriaModel
+						 */
+						$criteria = $entry->{$field->handle};
 
-						$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
+						if ($criteria instanceof ElementCriteriaModel)
+						{
+							$assets = $criteria->find();
+
+							$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
+						}
 					}
 				}
 			}
+
+			if (isset($event->params['variables']['elementEntry']) && !$this->getConfig($attachmentConfig))
+			{
+				$this->log('File attachments are currently not enabled for Sprout Email.');
+			}
 		}
 
-		if (isset($event->params['variables']['elementEntry']) && !$this->getConfig($attachmentConfig))
-		{
-			$this->log('File attachments are currently not enabled for Sprout Email.');
-		}
 
 	}
 
