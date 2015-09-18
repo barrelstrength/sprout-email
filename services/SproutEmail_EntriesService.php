@@ -50,12 +50,12 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 		$entryRecord->setAttributes($entry->getAttributes());
 		$entryRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
-
 		$entryRecord->validate();
 
 		if($entry->saveAsNew)
 		{
 			$entry->subjectLine = $entryRecord->subjectLine;
+			$entry->getContent()->title = $entry->subjectLine;
 		}
 
 		$entry->addErrors($entryRecord->getErrors());

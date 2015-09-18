@@ -541,8 +541,9 @@ class SproutEmail_EntryController extends BaseController
 	protected function getEntryModel()
 	{
 		$entryId = craft()->request->getPost('entryId');
+		$saveAsNew = craft()->request->getPost('saveAsNew');
 
-		if ($entryId)
+		if ($entryId && !$saveAsNew)
 		{
 			$entry = sproutEmail()->entries->getEntryById($entryId);
 
