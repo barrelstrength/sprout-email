@@ -22,6 +22,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 {
 	protected $fields;
 	protected $elementType = 'SproutEmail_Entry';
+	public $saveAsNew;
 
 	/**
 	 * @todo Clean up this status mess before 0.9.0
