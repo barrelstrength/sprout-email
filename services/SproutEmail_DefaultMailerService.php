@@ -106,6 +106,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$recipients         = array();
 		$onTheFlyRecipients = $entry->getRecipients($element);
 
+		if(is_string($onTheFlyRecipients))
+		{
+			$onTheFlyRecipients = explode(",", $onTheFlyRecipients);
+		}
+
 		if (count($onTheFlyRecipients))
 		{
 			foreach ($onTheFlyRecipients as $index => $recipient)
@@ -499,7 +504,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 										'elementEntry'     => $element,
 									);
 
-									$processedRecipients[$email->toEmail] = craft()->email->sendEmail($email, $vars);						
+									$processedRecipients[$email->toEmail] = craft()->email->sendEmail($email, $vars);
 								}
 								catch (\Exception $e)
 								{
