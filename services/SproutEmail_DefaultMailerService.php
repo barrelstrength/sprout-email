@@ -440,6 +440,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			foreach ($campaign->entries as $entry)
 			{
+				if(!$entry->enabled) continue;
+				
 				$entry   = SproutEmail_EntryModel::populateModel($entry);
 				$listIds = array();
 
