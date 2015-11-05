@@ -30,12 +30,28 @@ class SproutEmail_ExamplesController extends BaseController
 		try
 		{
 			$fileHelper = new \CFileHelper();
-			@mkdir(craft()->path->getSiteTemplatesPath() . 'sproutemail');
-			$fileHelper->copyDirectory(craft()->path->getPluginsPath() . 'sproutemail/templates/_special/examples/emails',
-				craft()->path->getSiteTemplatesPath() . 'sproutemail');
+			$path = craft()->path->getSiteTemplatesPath() ;
+
+
+			$dir = @mkdir($path . 'sproutemail');
+
+			if(!$dir)
+			{
+				$message = Craft::t("Could not create example templates. Make sure $path folder has write access permission.");
+
+				craft()->userSession->setError($message);
+				$this->redirect(UrlHelper::getCpUrl() . '/sproutemail/examples');
+			}
+			else
+			{
+				$fileHelper->copyDirectory(craft()->path->getPluginsPath() . 'sproutemail/templates/_special/examples/emails',
+					craft()->path->getSiteTemplatesPath() . 'sproutemail');
+			}
+
 		}
 		catch (\Exception $e)
 		{
+
 			$this->_handleError($e);
 		}
 	}
