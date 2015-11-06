@@ -37,9 +37,14 @@ class SproutEmail_CampaignController extends BaseController
 		if (($campaign = sproutEmail()->campaigns->saveCampaign($campaign, $tab)) && !$campaign->hasErrors())
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));
+
+			$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
+			
 			$this->redirectToPostedUrl($campaign);
 			craft()->end();
 		}
+
+
 
 		craft()->userSession->setError(Craft::t('Unable to save campaign.'));
 
