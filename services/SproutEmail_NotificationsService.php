@@ -240,6 +240,8 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 				{
 					$self->registerEvent($eventId, $self->getDynamicEventHandler());
 
+					if($listener->getName() == 'userSession.login' && craft()->isConsole() == true) continue;
+
 					craft()->on($listener->getName(), function (Event $event) use ($self, $eventId, $listener)
 					{
 						return call_user_func_array(
