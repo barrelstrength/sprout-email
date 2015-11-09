@@ -432,4 +432,16 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			throw $e;
 		}
 	}
+
+	public function getNotificationEntryByCampaignId($id)
+	{
+		$record = SproutEmail_EntryRecord::model()->findByAttributes(array('campaignId' => $id));
+
+		if ($record)
+		{
+			return SproutEmail_EntryModel::populateModel($record);
+		}
+
+		return false;
+	}
 }

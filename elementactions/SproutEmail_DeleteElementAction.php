@@ -23,8 +23,12 @@ class SproutEmail_DeleteElementAction extends DeleteElementAction
 		{
 			foreach($ids as $id)
 			{
-				$campaign = sproutEmail()->campaigns->getCampaignByEntryId($id);
-				sproutEmail()->campaigns->deleteCampaign($campaign->id);
+
+				if($campaign = sproutEmail()->campaigns->getCampaignByEntryId($id))
+				{
+					sproutEmail()->campaigns->deleteCampaign($campaign->id);
+				}
+
 			}
 		}
 

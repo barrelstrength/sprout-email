@@ -5,10 +5,11 @@
 	{ label: craft.sproutEmail.getName()|t, url: url('sproutemail') },
 ] %}
 
-{% set title  = entry is defined and entry.title is not empty ? entry.title : 'Create a new Entry' %}
+{% set title  = entry is defined and entry.title is not empty ? campaign.name : 'Create a new Entry' %}
 {% set mailer = craft.sproutemail.getMailer(campaign.mailer) %}
 
 {% block main %}
+
 	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/entries/edit/{id}') }}" data-confirm-unload>
 		<input type="hidden" name="action" value="sproutEmail/entry/saveEntry">
 		<input type="hidden" name="redirect" value="sproutemail/entries">
@@ -214,7 +215,16 @@
 						<td class="thin">
 							<section class="buttons">
 								<div class="btngroup submit">
-									<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+									<input type="submit" class="btn submit first" value="{{ 'Save'|t }}">
+
+									<div class="btn submit menubtn"></div>
+									<div class="menu">
+										<ul>
+											<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">{{ "Save and continue editing"|t }}</a></li>
+											<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Edit Notification Settings"|t }}</a></li>
+										</ul>
+									</div>
+
 									{% if campaign.type == 'email' %}
 									<div class="btn submit menubtn"></div>
 									<div class="menu">

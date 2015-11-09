@@ -38,8 +38,18 @@ class SproutEmail_CampaignController extends BaseController
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));
 
-			$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
-			
+			if(sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id) == false)
+			{
+				$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
+			}
+			else
+			{
+				$entry = sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id);
+			}
+
+			// Pass entryId for save and edit notification button
+			$campaign->entryId = $entry->id;
+
 			$this->redirectToPostedUrl($campaign);
 			craft()->end();
 		}

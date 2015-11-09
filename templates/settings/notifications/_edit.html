@@ -69,7 +69,18 @@
 		{% include "_includes/fieldlayoutdesigner" with {fieldLayout: campaign.getFieldLayout() } only %}
 
 		<div class="buttons">
-			<input class="btn submit" id="info" type="submit" value="Save">
+
+			<div class="btngroup submit first">
+				<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+				<div class="btn submit menubtn"></div>
+				<div class="menu">
+					<ul>
+						<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{id}">{{ "Save and continue editing"|t }}</a></li>
+						<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{entryId}">{{ "Save and Edit Notification"|t }}</a></li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</form>
 	{% else %}
