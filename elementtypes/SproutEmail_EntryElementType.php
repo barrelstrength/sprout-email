@@ -350,7 +350,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('Delete');
+		$deleteAction = craft()->elements->getAction('SproutEmail_Delete');
 
 		$deleteAction->setParams(
 			array(
