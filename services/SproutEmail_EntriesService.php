@@ -212,6 +212,8 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		$entry->fromName = craft()->userSession->getUser()->email;
 		$entry->fromEmail = craft()->userSession->getUser()->email;
 		$entry->replyTo = craft()->userSession->getUser()->email;
+		$entry->dateCreated = date('Y-m-d H:i:s');
+		$entry->enabled = true;
 		$entry->saveAsNew = true;
 
 		return sproutEmail()->entries->saveEntry($entry, $campaign);
