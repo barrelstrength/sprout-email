@@ -23,31 +23,42 @@
 
 	{{ getCsrfInput() }}
 
-	<h2>{{ "Getting Started"|t }}</h2>
-	
-	<p>{{ "Install example emails with commented templates and example data. The example templates will be created
-	and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
+	{% if craft.sproutemail.canCreateExamples() %}
 
-	<p><em>{{ "Examples include:"|t }}</em></p>
+		<h2>{{ "Getting Started"|t }}</h2>
 
-	<ul class="bullets">
-		<li>{{ "A welcome email for a new user"|t }}</li>
-		<li>{{ "An admin notification email when a new user is created"|t }}</li>
-		<li>{{ "A monthly newsletter email"|t }}</li>
-	</ul>
-	<br>
+		<p>{{ "Install example emails with commented templates and example data. The example templates will be created
+		and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
 
-	<ul class="bullets">
-		<li>{{ "Example notification templates (HTML/Text) using dynamic variables"|t }}</li>
-		<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
-		requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
-	</ul>
-	
-	<div class="buttons">
-		<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
-	</div>
+		<p><em>{{ "Examples include:"|t }}</em></p>
 
-	<p>{{ "Don't install any example emails or data, I will build the emails I need myself."|t }}</p>
+		<ul class="bullets">
+			<li>{{ "A welcome email for a new user"|t }}</li>
+			<li>{{ "An admin notification email when a new user is created"|t }}</li>
+			<li>{{ "A monthly newsletter email"|t }}</li>
+		</ul>
+		<br>
+
+		<ul class="bullets">
+			<li>{{ "Example notification templates (HTML/Text) using dynamic variables"|t }}</li>
+			<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
+			requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
+		</ul>
+
+		{% if craft.sproutemail.hasExamples() %}
+			<h3>{{ "Example templates and entry has already been created."|t }}</h3>
+		{% else %}
+			<div class="buttons">
+				<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
+			</div>
+		{% endif %}
+
+		<p>{{ "Don't install any example emails or data, I will build the emails I need myself."|t }}</p>
+
+	{% else %}
+		{% set path = craft.sproutemail.getTemplatePath() %}
+		<h2>{{ "Could not create example templates. Make sure \"" ~  path ~ "\" folder has write access permission."|t }}</h2>
+	{% endif %}
 
 	<div class="buttons">
 		<a href="{{ url('sproutemail/entries') }}" class="btn delete">{{ "Take me to Sprout Email"|t }}</a>

@@ -304,4 +304,31 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		return $asset->getSource()->getSourceType()->getBasePath().$asset->getFolder()->path.$asset->filename;
 	}
+
+	/**
+	 * Check template folder if it is writable
+	 * @return bool
+	 */
+	public function canCreateExamples()
+	{
+		$path = craft()->path->getSiteTemplatesPath();
+		$dir = is_writable($path);
+
+		return $dir;
+	}
+
+	/**
+	 * Check if example already exist
+	 * @return bool
+	 */
+	public function hasExamples()
+	{
+		$path = craft()->path->getSiteTemplatesPath() . 'sproutemail';
+		if(file_exists($path))
+		{
+			return true;
+		}
+
+		return false;
+	}
 }

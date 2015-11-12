@@ -231,4 +231,19 @@ class SproutEmailVariable
 	{
 		return sproutEmail()->doesSiteTemplateExist($template);
 	}
+
+	public function canCreateExamples()
+	{
+		return sproutEmail()->canCreateExamples();
+	}
+
+	public function getTemplatePath()
+	{
+		return craft()->path->getSiteTemplatesPath();
+	}
+
+	public function hasExamples()
+	{
+		return sproutEmail()->hasExamples();
+	}
 }
