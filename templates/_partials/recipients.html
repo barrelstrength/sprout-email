@@ -1,0 +1,23 @@
+
+{% if recipientLists is defined and recipientLists|length %}
+	<tr>
+		<td><strong>{{ "Recipient List"|t }}</strong></td>
+		<td>
+			<ul>
+				{% for list in recipientLists %}
+					<li>
+						<strong>{{ list.name }}</strong> {{ "with"|t }} <strong>({{ list.recipients|length }})</strong>
+						{{ (list.recipients|length == 1 ? "recipient"|t : "recipients"|t) }}
+					</li>
+				{% endfor %}
+			</ul>
+		</td>
+	</tr>
+{% endif %}
+
+	{% if entry.recipients is defined and entry.recipients|length %}
+		<tr>
+			<td><strong>{{ "Recipients"|t }}</strong></td>
+			<td>{{ entry.recipients }}</td>
+		</tr>
+	{% endif %}

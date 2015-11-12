@@ -209,18 +209,35 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	 */
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
+		$lists          = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$recipientLists = array();
+
+		if (count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$recipientList = sproutEmailDefaultMailer()->getRecipientListById($list->list);
+
+				if ($recipientList)
+				{
+					$recipientLists[] = $recipientList;
+				}
+			}
+		}
+
 		$response = new SproutEmail_ResponseModel();
 
 		try
 		{
 			$this->getService()->exportEntry($entry, $campaign);
-			$sessionEmail = craft()->userSession->getUser()->email;
+
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'    => $entry,
-					'campaign' => $campaign,
-					'message'  => $campaign->isNotification() ? Craft::t('Notification sent successfully to email ' . $sessionEmail) : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
+					'entry'    		=> $entry,
+					'campaign' 		=> $campaign,
+					'recipentLists' => $recipientLists,
+					'message'  		=> $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
 				)
 			);
 		}
