@@ -221,7 +221,9 @@
 									<div class="menu">
 										<ul>
 											<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">{{ "Save and continue editing"|t }}</a></li>
-											<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Edit Notification Settings"|t }}</a></li>
+											{% if currentUser.can('editSproutEmailSettings') %}
+												<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Edit Notification Settings"|t }}</a></li>
+											{% endif %}
 										</ul>
 									</div>
 

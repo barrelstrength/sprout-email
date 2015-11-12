@@ -17,6 +17,8 @@ class SproutEmail_NotificationsController extends SproutEmail_CampaignController
 	 */
 	public function actionNotificationSettingsTemplate(array $variables = array())
 	{
+		if(!sproutEmail()->checkPermission()) $this->redirect('sproutemail');
+
 		if (isset($variables['campaignId']))
 		{
 			if (!isset($variables['campaign']))

@@ -304,4 +304,20 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		return $asset->getSource()->getSourceType()->getBasePath().$asset->getFolder()->path.$asset->filename;
 	}
+
+	/**
+	 * Return true if has permission
+	 * @return bool
+	 */
+	public function checkPermission()
+	{
+		$user = craft()->userSession->getUser();
+
+		if(!$user->can('editSproutEmailSettings'))
+		{
+			return false;
+		}
+
+		return true;
+	}
 }
