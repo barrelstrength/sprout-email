@@ -29,7 +29,7 @@
 		<td><strong>{{ "Recipients"|t }}</strong></td>
 		<td>
 			<ul>
-				{% for recipient in entry.recipients %}
+				{% for recipient in entry.recipients|split(',') %}
 					<li>{{ recipient }}</li>
 				{% endfor %}
 			</ul>
