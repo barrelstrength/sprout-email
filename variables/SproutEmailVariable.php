@@ -106,12 +106,17 @@ class SproutEmailVariable
 	 */
 	public function getNotificationEntryByCampaignId($id)
 	{
-		$record = SproutEmail_EntryRecord::model()->findByAttributes(array('campaignId' => $id));
+		return sproutEmail()->notifications->getNotificationEntryByCampaignId($id);
+	}
 
-		if ($record)
-		{
-			return SproutEmail_EntryModel::populateModel($record);
-		}
+	/**
+	 * Return Campaign model by passing entry id
+	 * @param $id
+	 * @return bool|SproutEmail_CampaignModel
+	 */
+	public function getCampaignByEntryId($id)
+	{
+		return sproutEmail()->campaigns->getCampaignByEntryId($id);
 	}
 
 	/**

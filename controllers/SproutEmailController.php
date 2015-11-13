@@ -8,6 +8,8 @@ class SproutEmailController extends BaseController
 	 */
 	public function actionSettingsIndexTemplate()
 	{
+		if(!sproutEmail()->checkPermission()) $this->redirect('sproutemail');
+
 		$variables['settings'] = craft()->plugins->getPlugin('sproutemail')->getSettings();
 
 		$this->renderTemplate('sproutemail/settings', $variables);

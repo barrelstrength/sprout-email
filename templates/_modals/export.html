@@ -3,6 +3,13 @@
 <hr>
 {% if success is defined and success %}
 	<p class="color: green;">{{ message is defined ? message : "You campaign was sent successfully."|t }}</p>
+
+	<table class="data fullwidth">
+		<tbody>
+			{% include "sproutemail/_partials/recipients" %}
+		</tbody>
+	</table>
+
 {% else %}
 	<p class="color: #d00;">{{ message is defined ? message : "We had some issues sending your campaign, please review the logs for more info."|t }}</p>
 {% endif %}

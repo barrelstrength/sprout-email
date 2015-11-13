@@ -86,7 +86,7 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 							$transaction->commit();
 						}
 
-						return true;
+						return $entryRecord;
 					}
 				}
 			}
@@ -199,5 +199,24 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 		$result = SproutEmail_EntryRecord::model()->find($criteria);
 		return $result;
+	}
+
+	public function saveRelatedEntry(SproutEmail_CampaignModel $campaign)
+	{
+		$entry = new SproutEmail_EntryModel();
+
+		$entry->subjectLine = $campaign->getAttribute('name');
+		$entry->campaignId = $campaign->getAttribute('id');
+
+		$entry->recipients = craft()->userSession->getUser()->email;
+		$entry->fromName = craft()->userSession->getUser()->email;
+		$entry->fromEmail = craft()->userSession->getUser()->email;
+		$entry->replyTo = craft()->userSession->getUser()->email;
+		$entry->dateCreated = date('Y-m-d H:i:s');
+		$entry->enabled = true;
+		$entry->saveAsNew = true;
+
+		return sproutEmail()->entries->saveEntry($entry, $campaign);
+
 	}
 }

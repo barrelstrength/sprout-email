@@ -281,4 +281,24 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		$result = SproutEmail_CampaignRecord::model()->find($criteria);
 		return $result;
 	}
+
+	/**	Get campaign Model by the related entry id
+	 * @param $entryId
+	 * @return bool|SproutEmail_CampaignModel
+	 */
+	public function getCampaignByEntryId($entryId)
+	{
+		$entry = SproutEmail_EntryRecord::model()->findById($entryId);
+		if(!isset($entry->campaignId)) return false;
+
+		$campaignId = $entry->campaignId;
+
+		$campaign = $this->getCampaignById($campaignId);
+		if($campaign->id != null)
+		{
+			return $campaign;
+		}
+
+		return false;
+	}
 }

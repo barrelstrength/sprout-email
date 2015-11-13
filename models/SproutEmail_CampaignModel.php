@@ -62,6 +62,7 @@ class SproutEmail_CampaignModel extends BaseModel
 			// @related
 			'entries'           => AttributeType::Mixed,
 			'fieldLayoutId'     => AttributeType::Number,
+			'entryId'     		=> AttributeType::Number
 		);
 	}
 
