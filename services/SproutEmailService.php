@@ -306,15 +306,13 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Check template folder if it is writable
+	 * Returns whether or not the templates directory is writable
+	 *
 	 * @return bool
 	 */
 	public function canCreateExamples()
 	{
-		$path = craft()->path->getSiteTemplatesPath();
-		$dir = is_writable($path);
-
-		return $dir;
+		return is_writable(craft()->path->getSiteTemplatesPath());
 	}
 
 	/**

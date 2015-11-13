@@ -27,8 +27,12 @@
 
 		<h2>{{ "Getting Started"|t }}</h2>
 
-		<p>{{ "Install example emails with commented templates and example data. The example templates will be created
-		and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
+		<p>
+			{{
+				"Install example emails with commented templates and example data.
+				The example templates will be created and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw
+			}}
+		</p>
 
 		<p><em>{{ "Examples include:"|t }}</em></p>
 
@@ -57,7 +61,13 @@
 
 	{% else %}
 		{% set path = craft.sproutemail.getTemplatePath() %}
-		<h2>{{ "Could not create example templates. Make sure \"" ~  path ~ "\" folder has write access permission."|t }}</h2>
+		<h2>{{ "Your templates directory is not writeable." }}</h2>
+		<p>
+			{{ "We will no be able to copy any of the examples until "}}
+			<code>{{ path }}</code>
+			{{ " becomes writable." }}
+		</p>
+		<hr>
 	{% endif %}
 
 	<div class="buttons">
