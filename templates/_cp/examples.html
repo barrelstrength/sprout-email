@@ -5,78 +5,79 @@
 
 {% block main %}
 
-<div class="grid">
-	<div class="item">
-		<div class="pane">
-
 <style type="text/css">
-	.examples {
-		width: 50%;
-	}
 	.examples .buttons {
 		margin-top: 1em;
 	}
+	.warning:before { font-family: 'Craft'; speak: none; -webkit-font-feature-settings: "liga", "dlig"; -moz-font-feature-settings: "liga=1, dlig=1"; -moz-font-feature-settings: "liga", "dlig"; -ms-font-feature-settings: "liga", "dlig"; -o-font-feature-settings: "liga", "dlig"; font-feature-settings: "liga", "dlig"; text-rendering: optimizeLegibility; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; direction: ltr; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; display: inline-block; text-align: center; font-style: normal; vertical-align: middle; word-wrap: normal !important; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; content: 'alert'; margin-right:3px; }
 </style>
 
-<form method="post" action="" accept-charset="utf-8" class="examples">
+
+<form method="post" action="" accept-charset="utf-8">
 	<input type="hidden" name="action" value="sproutEmail/examples/install">
 
 	{{ getCsrfInput() }}
 
-	{% if craft.sproutemail.canCreateExamples() %}
+	<div class="grid first">
 
-		<h2>{{ "Getting Started"|t }}</h2>
+		<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
+			<div class="pane">
 
-		<p>
-			{{
-				"Install example emails with commented templates and example data.
-				The example templates will be created and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw
-			}}
-		</p>
+				<h2>{{ "Getting Started"|t }}</h2>
 
-		<p><em>{{ "Examples include:"|t }}</em></p>
+				<p>{{ "Install example emails with commented templates and example data. The example templates will be created and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
 
-		<ul class="bullets">
-			<li>{{ "A welcome email for a new user"|t }}</li>
-			<li>{{ "An admin notification email when a new user is created"|t }}</li>
-			<li>{{ "A monthly newsletter email"|t }}</li>
-		</ul>
-		<br>
+				<p><em>{{ "Examples include:"|t }}</em></p>
 
-		<ul class="bullets">
-			<li>{{ "Example notification templates (HTML/Text) using dynamic variables"|t }}</li>
-			<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
-			requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
-		</ul>
+				<ul class="bullets">
+					<li>{{ "A welcome email for a new user"|t }}</li>
+					<li>{{ "An admin notification email when a new user is created"|t }}</li>
+					<li>{{ "A monthly newsletter email"|t }}</li>
+				</ul>
+				<br>
 
-		{% if craft.sproutemail.hasExamples() %}
-			<h3>{{ "Example templates and entry has already been created."|t }}</h3>
-		{% else %}
-			<div class="buttons">
-				<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
+				<ul class="bullets">
+					<li>{{ "Example notification templates (HTML/Text) using dynamic variables"|t }}</li>
+					<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
+				requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
+				</ul>
+
+				{% if craft.sproutEmail.hasExamples() %}
+					<p class="warning">{{ "Example templates and entries have already been created."|t }}</p>
+				{% endif %}
+
+				<div class="buttons">
+					<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" {% if not craft.sproutEmail
+					.canCreateExamples() %}disabled style="background-color: #ccc;"{% endif %} />
+					<a href="{{ url('sproutemail/entries') }}" class="btn delete">{{ "Take me to Sprout Email"|t }}</a>
+				</div>
+
 			</div>
-		{% endif %}
+		</div>
 
-		<p>{{ "Don't install any example emails or data, I will build the emails I need myself."|t }}</p>
+		<div class="item"  data-colspan="1">
 
-	{% else %}
-		{% set path = craft.sproutemail.getTemplatePath() %}
-		<h2>{{ "Your templates directory is not writeable." }}</h2>
-		<p>
-			{{ "We will no be able to copy any of the examples until "}}
-			<code>{{ path }}</code>
-			{{ " becomes writable." }}
-		</p>
-		<hr>
-	{% endif %}
+			{% if not craft.sproutEmail.canCreateExamples() %}
 
-	<div class="buttons">
-		<a href="{{ url('sproutemail/entries') }}" class="btn delete">{{ "Take me to Sprout Email"|t }}</a>
+			<div class="pane">
+
+				{% set path = craft.sproutemail.getTemplatePath() %}
+
+				<p class="warning">
+					{{ "Your templates directory does not have the correct permissions." }}
+				</p>
+
+				<p>{{ "Sprout Email will not be able to install
+					the example templates until your <a href='http://buildwithcraft.com/docs/installing#step-2-set-the-permissions' target='_blank'>templates directory is writeable</a>: "}}</p>
+
+
+				<p><code>{{ path }}</code></p>
+			</div>
+
+			{% endif %}
+		</div>
 	</div>
 
 </form>
 
-		</div>
-	</div>
-</div>
 {% endblock %}
