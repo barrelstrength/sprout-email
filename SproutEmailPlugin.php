@@ -61,6 +61,14 @@ class SproutEmailPlugin extends BasePlugin
 	}
 
 	/**
+	 * Get Settings URL
+	 */
+	public function getSettingsUrl()
+	{
+		return 'sproutforms/settings';
+	}
+
+	/**
 	 * @return array
 	 */
 	public function registerUserPermissions()
