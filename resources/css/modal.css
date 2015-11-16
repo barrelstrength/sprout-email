@@ -2,3 +2,7 @@
 	max-width: 33%;
 	min-width: 400px !important;
 }
+
+.modal table td {
+	vertical-align: top;
+}
