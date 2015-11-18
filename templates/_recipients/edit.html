@@ -15,12 +15,8 @@
 			data-saveshortcut="1"
 			data-saveshortcut-redirect="{{ continueEditingUrl }}">
 			<input type="hidden" id="action" name="action" value="sproutEmail/defaultMailer/saveRecipient">
+			<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
 
-			{% if selectedListId and selectedListId != 'undefined' %}
-				<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/{{ selectedListId }}">
-			{% else %}
-				<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
-			{% endif %}
 			{{ getCsrfInput() }}
 
 			{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
