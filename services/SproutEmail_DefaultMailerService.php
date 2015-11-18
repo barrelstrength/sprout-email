@@ -1,6 +1,11 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmail_DefaultMailerService
+ *
+ * @package Craft
+ */
 class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 {
 	/**
@@ -78,7 +83,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	/**
 	 * @param int $entryId
 	 *
-	 * @return SproutEmail_DefaultMailerRecipientListModel|null
+	 * @return SproutEmail_DefaultMailerRecipientListModel[]|null
 	 */
 	public function getRecipientListsByEntryId($entryId)
 	{
@@ -106,7 +111,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$recipients         = array();
 		$onTheFlyRecipients = $entry->getRecipients($element);
 
-		if(is_string($onTheFlyRecipients))
+		if (is_string($onTheFlyRecipients))
 		{
 			$onTheFlyRecipients = explode(",", $onTheFlyRecipients);
 		}
@@ -218,7 +223,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param null|array $selected
+	 * @param null $element
 	 *
 	 * @return \Twig_Markup
 	 */
@@ -259,8 +264,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$html = craft()->templates->renderMacro(
 			'_includes/forms', 'field', array(
 				array(
-					'id'      => 'recipientLists',
-					'errors'  => $element->getErrors('recipientLists')
+					'id'     => 'recipientLists',
+					'errors' => $element->getErrors('recipientLists')
 				),
 				$checkboxGroup
 			)
@@ -422,8 +427,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				}
 				else
 				{
-					throw new Exception(Craft::t('The recipient list with id {listId} does not exists.', array('listId' =>
-						                                                                                              $listId)));
+					throw new Exception(
+						Craft::t(
+							'The recipient list with id {listId} does not exists.',
+							array('listId' => $listId)
+						)
+					);
 				}
 			}
 		}
@@ -434,10 +443,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
 	 * @param mixed|null                $element
+	 * @param bool                      $mocked
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null)
+	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null, $mocked = false)
 	{
 		if (count($campaign->entries))
 		{
@@ -445,29 +455,47 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			foreach ($campaign->entries as $entry)
 			{
-				if(!$entry->enabled) continue;
-				
-				$entry   = SproutEmail_EntryModel::populateModel($entry);
-				$listIds = array();
+				$entry = SproutEmail_EntryModel::populateModel($entry);
 
-				$recipientLists    = $this->getRecipientListsByEntryId($entry->id);
-				$entryRecipients   = $this->getRecipientsFromEntryModel($entry, $element);
-				$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($element);
-
-				if ($recipientLists && count($recipientLists))
+				if (!$entry->isReady())
 				{
-					foreach ($recipientLists as $list)
-					{
-						$listIds[] = $list->id;
-					}
+					continue;
 				}
 
-				$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
-				$recipients     = array_merge(
-					$listRecipients,
-					$entryRecipients,
-					$dynamicRecipients
-				);
+				if (!$mocked)
+				{
+					$listIds           = array();
+					$recipientLists    = $this->getRecipientListsByEntryId($entry->id);
+					$entryRecipients   = $this->getRecipientsFromEntryModel($entry, $element);
+					$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($element);
+
+					if ($recipientLists && count($recipientLists))
+					{
+						foreach ($recipientLists as $list)
+						{
+							$listIds[] = $list->id;
+						}
+					}
+
+					$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
+					$recipients     = array_merge(
+						$listRecipients,
+						$entryRecipients,
+						$dynamicRecipients
+					);
+				}
+				else
+				{
+					$recipient = craft()->config->get('testToEmailAddress');
+
+					if (empty($recipient) || !filter_var($recipient, FILTER_VALIDATE_EMAIL))
+					{
+						$recipient = craft()->userSession->getUser()->email;
+					}
+
+					$recipient  = SproutEmail_SimpleRecipientModel::create(array('email' => $recipient));
+					$recipients = array($recipient);
+				}
 
 				if ($recipients && count($recipients))
 				{
@@ -520,7 +548,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				}
 				else
 				{
-					sproutEmail()->error(Craft::t("No recipients found."));
+					sproutEmail()->error(Craft::t('No recipients found.'));
 				}
 			}
 		}
@@ -546,7 +574,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			{
 				try
 				{
-					return $this->sendNotification($campaign, $event->getMockedParams());
+					return $this->sendNotification($campaign, $event->getMockedParams(), true);
 				}
 				catch (\Exception $e)
 				{

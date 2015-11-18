@@ -3,12 +3,17 @@
 
 <table class="data fullwidth">
 	<tbody>
-	<tr>
-		<td><strong>{{ "Subject Line"|t }}</strong></td>
-		<td>{{ entry.title }}</td>
-	</tr>
+		<tr>
+			<td><strong>{{ "Subject Line"|t }}</strong></td>
+			<td>{{ entry.title }}</td>
+		</tr>
 
-	{% include "sproutemail/_partials/recipients" %}
+		<tr>
+			<td><strong>{{ "Sending To"|t }}</strong></td>
+			<td>
+				{{ recipient }}
+			</td>
+		</tr>
 
 	</tbody>
 </table>

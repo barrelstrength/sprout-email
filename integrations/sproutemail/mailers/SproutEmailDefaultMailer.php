@@ -225,8 +225,6 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			}
 		}
 
-		$response = new SproutEmail_ResponseModel();
-
 		try
 		{
 			$this->getService()->exportEntry($entry, $campaign);
@@ -297,20 +295,11 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	 */
 	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$lists          = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
-		$recipientLists = array();
+		$email = craft()->config->get('testToEmailAddress');
 
-		if (count($lists))
+		if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL))
 		{
-			foreach ($lists as $list)
-			{
-				$recipientList = sproutEmailDefaultMailer()->getRecipientListById($list->list);
-
-				if ($recipientList)
-				{
-					$recipientLists[] = $recipientList;
-				}
-			}
+			$email = craft()->userSession->getUser()->email;
 		}
 
 		return craft()->templates->render(
@@ -318,7 +307,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			array(
 				'entry'          => $entry,
 				'campaign'       => $campaign,
-				'recipientLists' => $recipientLists
+				'recipient'      => $email,
 			)
 		);
 	}

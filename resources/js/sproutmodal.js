@@ -109,13 +109,13 @@ SproutModal.prototype.create = function (content)
 	// Instantiate and show
 	var modal = new Garnish.Modal($modal);
 
-	$("#close", $modal).off().on("click", function ()
+	$("#close", $modal).on("click", function ()
 	{
 		modal.hide();
 		modal.destroy();
 	});
 
-	$("#cancel", $modal).off().on("click", function ()
+	$("#cancel", $modal).on("click", function ()
 	{
 		modal.hide();
 		modal.destroy();
@@ -149,6 +149,9 @@ SproutModal.prototype.create = function (content)
 			}
 
 			$spinner.addClass("hidden");
+
+			modal.hide();
+			modal.destroy();
 
 			modal = self.create(response.content);
 
