@@ -220,45 +220,54 @@ class SproutEmailService extends BaseApplicationComponent
 
 	public function handleOnBeforeSendEmail(Event $event)
 	{
-		$attachmentConfig = 'enableFileAttachments';
+		$variables             = $event->params['variables'];
+		$entry                 = $variables['sproutEmailEntry'];
+		$enableFileAttachments = $entry->enableFileAttachments;
 
-		if (isset($event->params['variables']['elementEntry']) && $this->getConfig($attachmentConfig))
+		if (isset($variables['elementEntry']) && $enableFileAttachments)
 		{
-			$entry = $event->params['variables']['elementEntry'];
-			
+			$entry = $variables['elementEntry'];
+
 			/**
 			 * @var $field FieldModel
 			 */
-			if(method_exists($entry, 'getFields'))
+			if(method_exists($entry->getFieldLayout(), 'getFields'))
 			{
-				foreach ($entry->getFields() as $field)
+				foreach ($entry->getFieldLayout()->getFields() as $fieldLayoutField)
 				{
-					$type = $field->getFieldType();
+					$field = $fieldLayoutField->getField();
+					$type  = $field->getFieldType();
 
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
-						/**
-						 * @var $criteria ElementCriteriaModel
-						 */
-						$criteria = $entry->{$field->handle};
-
-						if ($criteria instanceof ElementCriteriaModel)
-						{
-							$assets = $criteria->find();
-
-							$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
-						}
+						$this->attachAsset($entry, $field, $event);
 					}
+					// @todo validate assets within MatrixFieldType
 				}
-			}
-
-			if (isset($event->params['variables']['elementEntry']) && !$this->getConfig($attachmentConfig))
-			{
-				$this->log('File attachments are currently not enabled for Sprout Email.');
 			}
 		}
 
+		if (isset($variables['elementEntry']) && !$enableFileAttachments)
+		{
+			$this->log('File attachments are currently not enabled for Sprout Email.');
+		}
+	}
 
+	private function attachAsset($entry, $field, $event)
+	{
+		/**
+		 * @var $criteria ElementCriteriaModel
+		 */
+		$criteria = $entry->{$field->handle};
+
+		if ($criteria instanceof ElementCriteriaModel)
+		{
+			$assets = $criteria->find();
+			if($assets)
+			{
+				$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
+			}
+		}
 	}
 
 	/**

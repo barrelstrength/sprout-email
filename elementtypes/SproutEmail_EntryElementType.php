@@ -268,6 +268,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 				, entries.fromEmail as fromEmail
 				, entries.replyTo as replyTo
 				, entries.sent as sent
+				, entries.enableFileAttachments as enableFileAttachments
 				, campaigns.type as type'
 			)
 			->join('sproutemail_campaigns_entries entries', 'entries.id = elements.id')

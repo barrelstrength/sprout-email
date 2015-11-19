@@ -98,13 +98,14 @@ class SproutEmail_EntryModel extends BaseElementModel
 	{
 		$defaults   = parent::defineAttributes();
 		$attributes = array(
-			'subjectLine'    => array(AttributeType::String, 'required' => true),
-			'campaignId'     => array(AttributeType::Number, 'required' => true),
-			'recipients'     => array(AttributeType::String, 'required' => false),
-			'fromName'       => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
-			'fromEmail'      => array(AttributeType::String, 'minLength' => 6, 'required' => false),
-			'replyTo'        => array(AttributeType::String, 'required' => false),
-			'sent'           => AttributeType::Bool,
+			'subjectLine'           => array(AttributeType::String, 'required' => true),
+			'campaignId'            => array(AttributeType::Number, 'required' => true),
+			'recipients'            => array(AttributeType::String, 'required' => false),
+			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
+			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),
+			'replyTo'               => array(AttributeType::String, 'required' => false),
+			'sent'                  => AttributeType::Bool,
+			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			// @related
 			'recipientLists' => Attributetype::Mixed,
 		);

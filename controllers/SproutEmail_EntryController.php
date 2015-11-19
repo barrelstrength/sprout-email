@@ -569,13 +569,14 @@ class SproutEmail_EntryController extends BaseController
 	 */
 	protected function populateEntryModel(SproutEmail_EntryModel $entry)
 	{
-		$entry->campaignId  = $this->campaign->id;
-		$entry->slug        = craft()->request->getPost('slug', $entry->slug);
-		$entry->enabled     = (bool) craft()->request->getPost('enabled', $entry->enabled);
-		$entry->fromName    = craft()->request->getPost('sproutEmail.fromName');
-		$entry->fromEmail   = craft()->request->getPost('sproutEmail.fromEmail');
-		$entry->replyTo     = craft()->request->getPost('sproutEmail.replyTo');
-		$entry->subjectLine = craft()->request->getRequiredPost('subjectLine');
+		$entry->campaignId            = $this->campaign->id;
+		$entry->slug                  = craft()->request->getPost('slug', $entry->slug);
+		$entry->enabled               = (bool) craft()->request->getPost('enabled', $entry->enabled);
+		$entry->fromName              = craft()->request->getPost('sproutEmail.fromName');
+		$entry->fromEmail             = craft()->request->getPost('sproutEmail.fromEmail');
+		$entry->replyTo               = craft()->request->getPost('sproutEmail.replyTo');
+		$entry->subjectLine           = craft()->request->getRequiredPost('subjectLine');
+		$entry->enableFileAttachments = craft()->request->getPost('sproutEmail.enableFileAttachments');
 
 		$entry->getContent()->title = $entry->subjectLine;
 

@@ -33,13 +33,14 @@ class SproutEmail_EntryRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'subjectLine' => array(AttributeType::String, 'required' => true),
-			'campaignId'  => array(AttributeType::Number, 'required' => true),
-			'recipients'  => array(AttributeType::String, 'required' => false),
-			'fromName'    => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
-			'fromEmail'   => array(AttributeType::String, 'required' => false, 'minLength' => 6),
-			'replyTo'     => array(AttributeType::String, 'required' => false),
-			'sent'        => AttributeType::Bool,
+			'subjectLine'           => array(AttributeType::String, 'required' => true),
+			'campaignId'            => array(AttributeType::Number, 'required' => true),
+			'recipients'            => array(AttributeType::String, 'required' => false),
+			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
+			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
+			'replyTo'               => array(AttributeType::String, 'required' => false),
+			'sent'                  => AttributeType::Bool,
+			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 		);
 	}
 
