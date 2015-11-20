@@ -5,8 +5,8 @@
 </head>
 <body>
 
-	{% if object.firstName %}
-		<p>Good Day {{ object.firstName }},</p>
+	{% if object['firstName'] is defined %}
+		<p>Good Day {{ object['firstName'] }},</p>
 	{% else %}
 		<p>Good day!</p>
 	{% endif %}
