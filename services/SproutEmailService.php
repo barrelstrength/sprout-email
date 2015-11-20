@@ -221,6 +221,13 @@ class SproutEmailService extends BaseApplicationComponent
 	public function handleOnBeforeSendEmail(Event $event)
 	{
 		$variables             = $event->params['variables'];
+
+		// Make sure this is a Sprout Email Event
+		if (!isset($variables['sproutEmailEntry']))
+		{
+			return true;
+		}
+
 		$entry                 = $variables['sproutEmailEntry'];
 		$enableFileAttachments = $entry->enableFileAttachments;
 
