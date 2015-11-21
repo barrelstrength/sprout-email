@@ -226,32 +226,61 @@
 						<td class="thin">
 							<section class="buttons">
 								<div class="btngroup submit">
+
 									<input type="submit" class="btn submit first" value="{{ 'Save'|t }}">
-
 									<div class="btn submit menubtn"></div>
 									<div class="menu">
 										<ul>
-											<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">{{ "Save and continue editing"|t }}</a></li>
-											{% if currentUser.can('editSproutEmailSettings') %}
-												<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Save and edit notification settings"|t }}</a></li>
-												<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/new">{{ "Save and add another"|t }}</a></li>
+
+											{% if campaign.type == 'notification' %}
+
+												<li>
+													<a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">
+														{{ "Save and continue editing"|t }}
+													</a>
+												</li>
+
+												{% if currentUser.can('editSproutEmailSettings') %}
+													<li>
+														<a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">
+															{{ "Save and edit notification settings"|t }}
+														</a>
+													</li>
+													<li>
+														<a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/new">
+															{{ "Save and add another"|t }}
+														</a>
+													</li>
+												{% endif %}
+
+											{% endif %}
+
+											{% if campaign.type == 'email' %}
+
+												<li>
+													<a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">
+														{{ "Save and continue editing"|t }}
+													</a>
+												</li>
+
+												<li>
+													<a class="formsubmit" data-redirect="sproutemail/entries/{{ campaign.id }}/new">
+														{{ "Save and add another"|t }}
+													</a>
+												</li>
+
+												{% if entry.id != null %}
+													<li>
+														<a class="formsubmit" data-redirect="sproutemail/entries/edit/{id}" data-param='saveAsNew' data-value="true">
+															{{ "Save as a new email"|t }}
+														</a>
+													</li>
+												{% endif %}
+
 											{% endif %}
 
 										</ul>
 									</div>
-
-									{% if campaign.type == 'email' %}
-									<div class="btn submit menubtn"></div>
-									<div class="menu">
-										<ul>
-											<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id  }}">{{ "Save and continue editing"|t }}</a></li>
-											<li><a class="formsubmit" data-redirect="sproutemail/entries/{{ campaign.id }}/new">{{ "Save and add another"|t }}</a></li>
-											{% if entry.id != null %}
-												<li><a class="formsubmit" data-param='saveAsNew' data-value="true">{{ "Save as a new email"|t }}</a></li>
-											{% endif %}
-										</ul>
-									</div>
-									{% endif %}
 								</div>
 							</section>
 						</td>
