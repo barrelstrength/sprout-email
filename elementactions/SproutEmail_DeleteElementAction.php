@@ -18,17 +18,24 @@ class SproutEmail_DeleteElementAction extends DeleteElementAction
 	{
 		$ids = $criteria->ids();
 
-		// Delete related campaign model
 		if(!empty($ids))
 		{
 			foreach($ids as $id)
 			{
-
 				if($campaign = sproutEmail()->campaigns->getCampaignByEntryId($id))
 				{
-					sproutEmail()->campaigns->deleteCampaign($campaign->id);
-				}
+					if ($campaign->type == 'notification')
+					{
+						// Delete notification and related notification settings
+						sproutEmail()->campaigns->deleteCampaign($campaign->id);
+					}
 
+					if ($campaign->type == 'email')
+					{
+						$entry = sproutEmail()->entries->getEntryById($id);
+						sproutEmail()->entries->deleteEntry($entry);
+					}
+				}
 			}
 		}
 
@@ -36,5 +43,4 @@ class SproutEmail_DeleteElementAction extends DeleteElementAction
 
 		return true;
 	}
-
 }
