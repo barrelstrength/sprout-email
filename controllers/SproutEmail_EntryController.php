@@ -576,7 +576,9 @@ class SproutEmail_EntryController extends BaseController
 		$entry->fromEmail             = craft()->request->getPost('sproutEmail.fromEmail');
 		$entry->replyTo               = craft()->request->getPost('sproutEmail.replyTo');
 		$entry->subjectLine           = craft()->request->getRequiredPost('subjectLine');
-		$entry->enableFileAttachments = craft()->request->getPost('sproutEmail.enableFileAttachments');
+
+		$enableFileAttachments = craft()->request->getPost('sproutEmail.enableFileAttachments');
+		$entry->enableFileAttachments = $enableFileAttachments ? $enableFileAttachments : false;
 
 		$entry->getContent()->title = $entry->subjectLine;
 
