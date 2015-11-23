@@ -232,10 +232,10 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'    		=> $entry,
-					'campaign' 		=> $campaign,
+					'entry'         => $entry,
+					'campaign'      => $campaign,
 					'recipentLists' => $recipientLists,
-					'message'  		=> $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
+					'message'       => $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
 				)
 			);
 		}
@@ -302,12 +302,25 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			$email = craft()->userSession->getUser()->email;
 		}
 
+		$needRule = false;
+
+		if($campaign->isNotification())
+		{
+			$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaign->id));
+
+			if($notification == null)
+			{
+				$needRule = true;
+			}
+		}
+
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',
 			array(
-				'entry'          => $entry,
-				'campaign'       => $campaign,
-				'recipient'      => $email,
+				'entry'     => $entry,
+				'campaign'  => $campaign,
+				'recipient' => $email,
+				'needRule'  => $needRule,
 			)
 		);
 	}

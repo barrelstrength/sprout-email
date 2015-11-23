@@ -1,4 +1,3 @@
-
 <h1>{{ "Test Notification"|t }}</h1>
 
 <table class="data fullwidth">
@@ -14,6 +13,11 @@
 				{{ recipient }}
 			</td>
 		</tr>
+		{% if needRule %}
+			<tr>
+				<td> <p style="color: #d00;">{{"Need to set rule for this notification."|t }}</p></td>
+			</tr>
+		{% endif %}
 
 	</tbody>
 </table>
@@ -21,6 +25,7 @@
 <div class="buttons right">
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
 	<button
+		{% if needRule %} disabled style="opacity: 0.25;" {% endif %}
 		data-mailer="defaultmailer"
 		data-action="sproutEmail/entry/export"
 		data-entry-id="{{ entry.id }}"
