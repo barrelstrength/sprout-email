@@ -21,6 +21,14 @@ class SproutEmailPlugin extends BasePlugin
 	/**
 	 * @return string
 	 */
+	public function getDescription()
+	{
+		return 'Flexible, integrated email marketing and email notifications.';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getVersion()
 	{
 		return '1.2.0';
@@ -40,6 +48,14 @@ class SproutEmailPlugin extends BasePlugin
 	public function getDeveloperUrl()
 	{
 		return 'http://barrelstrengthdesign.com';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDocumentationUrl()
+	{
+		return 'http://sprout.barrelstrengthdesign.com/craft-plugins/email/docs';
 	}
 
 	/**
