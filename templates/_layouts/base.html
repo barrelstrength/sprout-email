@@ -1,15 +1,26 @@
 {% extends "_layouts/cp" %}
 
-{% set selectedTab = craft.request.segment(2) ? craft.request.segment(2) : 'overview' %}
+{% set subnav = {
+	entries: {
+		label: "Email"|t,
+		url: url('sproutemail/entries')
+	},
+	recipients: {
+		label: "Recipients"|t,
+		url: url('sproutemail/recipients')
+	}
+} %}
 
-{% if currentUser.can('editSproutEmailSettings') and craft.request.segment(2) == "" %}
-  {% set extraPageHeaderHtml %}
-    <a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
-  {% endset %}
+{% if currentUser.can('editSproutEmailSettings') %}
+	{% set subnav = subnav|merge({
+		settings: {
+			label: "Settings"|t,
+			url: url('sproutemail/settings')
+		}
+	}) %}
 {% endif %}
 
-{% block content %}
-{% endblock %}
+{% set selectedSubnavItem = craft.request.segment(2) %}
 
 {% includeCssResource "sproutemail/css/sproutemail.css" %}
 {% includeJsResource "sproutemail/js/sproutemail.js" %}

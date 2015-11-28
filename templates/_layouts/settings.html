@@ -3,9 +3,30 @@
 {% set title  = "Settings"|t %}
 
 {% set crumbs = [
-  { label: "Sprout Email"|t, url: url('sproutemail') },
-  { label: "Settings"|t, url: url('sproutemail/settings') },
+  { label: "Settings"|t, url: url('sproutemail/settings') }
 ] %}
+
+{% set subnav = {
+	entries: {
+		label: "Email"|t,
+		url: url('sproutemail/entries')
+	},
+	recipients: {
+		label: "Recipients"|t,
+		url: url('sproutemail/recipients')
+	}
+} %}
+
+{% if currentUser.can('editSproutEmailSettings') %}
+	{% set subnav = subnav|merge({
+	settings: {
+		label: "Settings"|t,
+		url: url('sproutemail/settings')
+	}
+	}) %}
+{% endif %}
+
+{% set selectedSubnavItem = craft.request.segment(2) %}
 
 {% set selectedTab = tab is defined ? tab : 'mailers' %}
 
@@ -32,8 +53,4 @@
 
   {{ body }}
 
-  {% include 'sproutemail/_partials/brand/footer' %}
-
 {% endset %}
-
-{% includeCssResource "sproutemail/css/brand.css" %}
