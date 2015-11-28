@@ -161,6 +161,23 @@ class SproutEmailPlugin extends BasePlugin
 		sproutEmail()->notifications->registerDynamicEventHandler();
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
+
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		{
+			// @todo Craft 3 - update to use info from config.json
+			craft()->templates->includeJsResource('sproutemail/js/brand.js');
+			craft()->templates->includeJs("
+				sproutFormsBrand = new Craft.SproutBrand();
+				sproutFormsBrand.displayFooter({
+					pluginName: 'Sprout Email',
+					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
+					pluginVersion: '" . $this->getVersion() . "',
+					pluginDescription: '" . $this->getDescription() . "',
+					developerName: '(Barrel Strength)',
+					developerUrl: '" . $this->getDeveloperUrl() . "'
+				});
+			");
+		}
 	}
 
 	/**
