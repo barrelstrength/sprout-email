@@ -23,7 +23,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getDescription()
 	{
-		return 'Flexible, integrated email marketing and email notifications.';
+		return 'Flexible, integrated email marketing and notifications.';
 	}
 
 	/**
