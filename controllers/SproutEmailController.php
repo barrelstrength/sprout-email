@@ -8,9 +8,16 @@ class SproutEmailController extends BaseController
 	 */
 	public function actionSettingsIndexTemplate()
 	{
+		if (!craft()->request->getSegment(3))
+		{
+			$this->redirect('sproutemail/settings/general');
+		}
+
+		$variables['settingsTemplate'] = craft()->request->getSegment(3);
+
 		$variables['settings'] = craft()->plugins->getPlugin('sproutemail')->getSettings();
 
-		$this->renderTemplate('sproutemail/settings', $variables);
+		$this->renderTemplate('sproutemail/settings/_tabs/' . $variables['settingsTemplate'], $variables);
 	}
 
 	/**

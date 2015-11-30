@@ -114,13 +114,13 @@ class SproutEmailPlugin extends BasePlugin
 		);
 
 		return array_merge($emailClient, array(
-			'sproutemail/settings/mailers/(?P<mailerId>[a-z]+)' => array(
+			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)' => array(
 				'action' => 'sproutEmail/mailer/editSettings'
 			),
-			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
+			'sproutemail/settings/(?P<settingsTemplate>campaigns)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
 			),
-			'sproutemail/settings/notifications/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
+			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
 			),
 			'sproutemail/entries/new' => array(
@@ -135,12 +135,19 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings' => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
-			'sproutemail/events/new' => 'sproutemail/events/_edit',
-			'sproutemail/events/edit/(?P<eventId>\d+)' => 'sproutemail/events/_edit',
+			'sproutemail/settings/(?P<settingsTemplate>.*)' => array(
+					'action' => 'sproutEmail/settingsIndexTemplate'
+			),
+
+			'sproutemail/events/new' =>
+			'sproutemail/events/_edit',
+
+			'sproutemail/events/edit/(?P<eventId>\d+)' =>
+			'sproutemail/events/_edit',
 
 			// Install Examples
-			'sproutemail/examples' =>
-			'sproutemail/_cp/examples',
+			'sproutemail/settings/examples' =>
+			'sproutemail/settings/_tabs/examples',
 		));
 	}
 

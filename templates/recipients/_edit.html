@@ -1,5 +1,9 @@
-{% extends 'sproutemail/_recipients/cp' %}
+{% extends 'sproutemail/_layouts/base' %}
 {% import '_includes/forms' as forms %}
+
+{% set crumbs = [
+	{ label: "Recipients"|t, url: url('sproutemail/recipients') }
+] %}
 
 {% set selectedTab    = 'recipients' %}
 {% set selectedListId = craft.request.getParam('recipientListId') %}

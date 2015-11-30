@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set crumbs = [
-	{ label: craft.sproutEmail.getName()|t, url: url('sproutemail') },
+	{ label: "Email"|t, url: url('sproutemail') },
 ] %}
 
 {% set title  = entry is defined and entry.title is not empty ? entry.title : 'Create a new Entry' %}

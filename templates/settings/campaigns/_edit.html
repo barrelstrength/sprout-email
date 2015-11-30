@@ -3,8 +3,8 @@
 {% set title = "Edit Campaign"|t %}
 
 {% set crumbs = [
-	{ label: "Sprout Email", url: url('sproutemail/entries') },
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
+	{ label: "Campaigns", url: url('sproutemail/settings/campaigns') },
 ] %}
 
 {% if craft.request.getSegment(6) %}
@@ -129,9 +129,9 @@
 {% else %}
 	<h2>{{ "Setup your first campaign."|t }}</h2>
 
-	<p style="width:40%;">Install and setup a Mailer Service to create your first Campaign. Mailers are available as
+	<p>Install and setup a Mailer Service to create your first Campaign. Mailers are available as
 	separate plugins
-	and can be downloaded from the links listed in the <a href="{{ url('sproutemail/settings?tab=mailers') }}">Mailer
+	and can be downloaded from the links listed in the <a href="{{ url('sproutemail/settings/mailers') }}">Mailer
 	Setttings</a>
 	.</p>
 

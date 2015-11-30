@@ -97,9 +97,10 @@ class SproutEmail_DefaultMailerController extends BaseController
 		$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element']);
 
 		$variables['recipientLists']     = sproutEmailDefaultMailer()->getRecipientLists();
-		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/_recipients/dit/'.$variables['id'] : null;
+		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/recipients/_edit/'.$variables['id'] :
+				null;
 
-		$this->renderTemplate('sproutemail/_recipients/edit', $variables);
+		$this->renderTemplate('sproutemail/recipients/_edit', $variables);
 	}
 
 	/**
@@ -132,7 +133,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 		$variables['recipientLists'] = sproutEmailDefaultMailer()->getRecipientLists();
 		$variables['recipients']     = $recipients;
 
-		$this->renderTemplate('sproutemail/_recipients/index', $variables);
+		$this->renderTemplate('sproutemail/recipients/index', $variables);
 	}
 
 	/**

@@ -1,12 +1,12 @@
-{% extends "_layouts/cp" %}
+{% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
 {% set title = "Edit Notification"|t %}
 {% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
 
 {% set crumbs = [
-	{ label: "Sprout Email", url: url('sproutemail') },
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
+	{ label: "Notifications", url: url('sproutemail/settings/notifications') },
 ] %}
 
 {% set content %}

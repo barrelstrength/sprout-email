@@ -1,11 +1,5 @@
 {% extends "_layouts/cp" %}
 
-{% set title  = "Settings"|t %}
-
-{% set crumbs = [
-  { label: "Settings"|t, url: url('sproutemail/settings') }
-] %}
-
 {% set subnav = {
 	entries: {
 		label: "Email"|t,
@@ -19,38 +13,39 @@
 
 {% if currentUser.can('editSproutEmailSettings') %}
 	{% set subnav = subnav|merge({
-	settings: {
-		label: "Settings"|t,
-		url: url('sproutemail/settings')
-	}
+		settings: {
+			label: "Settings"|t,
+			url: url('sproutemail/settings')
+		}
 	}) %}
 {% endif %}
 
 {% set selectedSubnavItem = craft.request.segment(2) %}
+{% set selectedSidebarItem = craft.request.segment(3) %}
 
-{% set selectedTab = tab is defined ? tab : 'mailers' %}
+{% set fullPageForm = true %}
 
-{% set tabs = {
-	general: {
-		label: "Campaigns"|t,
-		url: "#settings-general"
-	},
-	notifications: {
-		label: "Notifications"|t,
-		url: "#settings-notifications"
-	},
-	mailers: {
-		label: "Mailers"|t,
-		url: "#settings-mailers"
-	},
-	cp: {
-		label: "Control Panel"|t,
-		url: "#settings-cp"
-	}
-} %}
+{% block saveButton %}{% endblock %}
 
-{% set content %}
+{# @todo - improve naming convention, not clear what this does #}
+{% set models = craft.session.hasFlash('models') ? craft.session.getFlash('models') : null %}
 
-  {{ body }}
+{% set sidebar %}
+
+	<nav class="last">
+		<ul>
+			<li><a href="{{ url('sproutemail/settings/general') }}" {% if selectedSidebarItem == 'general'
+				%}class="sel"{% endif %}>General Settings</a></li>
+			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif
+				%}>Mailers</a></li>
+			<li class="heading"><span>Content</span></li>
+			<li><a href="{{ url('sproutemail/settings/campaigns') }}" {% if selectedSidebarItem == 'campaigns' %}class="sel"{% endif
+				%}>Campaigns</a></li>
+			<li><a href="{{ url('sproutemail/settings/notifications') }}" {% if selectedSidebarItem == 'notifications' %}class="sel"{%
+				endif %}>Notifications</a></li>
+			<li><a href="{{ url('sproutemail/settings/examples') }}" {% if selectedSidebarItem == 'examples'
+				%}class="sel"{% endif %}>Examples</a></li>
+		</ul>
+	</nav>
 
 {% endset %}

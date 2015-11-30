@@ -1,24 +1,21 @@
-{% extends "sproutemail/_layouts/base" %}
+{% extends "sproutemail/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Get started with some example emails"|t %}
+{% set title = "Examples"|t %}
 
-{% block main %}
+{% set content %}
 
-<div class="grid">
-	<div class="item">
-		<div class="pane">
 
-<style type="text/css">
-	.examples {
-		width: 50%;
-	}
-	.examples .buttons {
-		margin-top: 1em;
-	}
-</style>
+	<style type="text/css">
+		.examples {
+			width: 50%;
+		}
+		.examples .buttons {
+			margin-top: 1em;
+		}
+	</style>
 
-<form method="post" action="" accept-charset="utf-8" class="examples">
+
 	<input type="hidden" name="action" value="sproutEmail/examples/install">
 
 	{{ getCsrfInput() }}
@@ -53,9 +50,4 @@
 		<a href="{{ url('sproutemail/entries') }}" class="btn delete">{{ "Take me to Sprout Email"|t }}</a>
 	</div>
 
-</form>
-
-		</div>
-	</div>
-</div>
-{% endblock %}
+{% endset %}

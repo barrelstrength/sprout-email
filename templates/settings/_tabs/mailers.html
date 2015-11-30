@@ -1,73 +1,83 @@
+{% extends "sproutemail/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
-{% set mailers       = craft.sproutEmail.getMailers() %}
+{% set title = 'Mailers' %}
+
 {% set shouldRefresh = false %}
 
-{% for mailer in mailers %}
-	{% if loop.first %}
-		<table id="mailers" class="data fullwidth">
-		<thead>
+{% block saveButton %}
+	{% if shouldRefresh %}
+		<hr>
+
+		<div class="notices">
+			<h2 class="error">{{ "Installation Required"|t }}</h2>
+			<p>{{ "Sprout Email has detected mailers not currently installed."|t }}</p>
+
+			<hr>
+
+			<p>
+				<a href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" class="btn" title='{{ "Install Mailers"|t }}'>{{
+					"Install
+			Mailers"|t }}</a>
+			</p>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% set content %}
+
+	{% set mailers       = craft.sproutEmail.getMailers() %}
+
+	{% for mailer in mailers %}
+		{% if loop.first %}
+			<table id="mailers" class="data fullwidth">
+			<thead>
 			<th>{{ "Mailer"|t }}</th>
 			<th>{{ "Settings"|t }}</th>
 			<th>{{ "Description"|t }}</th>
-        </thead>
-	{% endif %}
+			</thead>
+		{% endif %}
 
-	{% if mailer.isInstalled() %}
-		<tr>
-			<td>
-				{{ mailer.getTitle() }}
-			</td>
-			<td>
-				{% if mailer.hasCpSettings() %}
-					<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
-				{% endif %}
-			</td>
-			<td>{{ mailer.getDescription()|md }}</td>
-		</tr>
-	{% else %}
-		{% set shouldRefresh = true %}
-	{% endif %}{# mailer installed? #}
+		{% if mailer.isInstalled() %}
+			<tr>
+				<td>
+					{{ mailer.getTitle() }}
+				</td>
+				<td>
+					{% if mailer.hasCpSettings() %}
+						<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
+					{% endif %}
+				</td>
+				<td>{{ mailer.getDescription()|md }}</td>
+			</tr>
+		{% else %}
+			{% set shouldRefresh = true %}
+		{% endif %}{# mailer installed? #}
 
-	{% if loop.last %}
-		</table>
+		{% if loop.last %}
+			</table>
 
-		<hr>
+			<hr>
 
-		<h3>
-			{{ 'Available Mailers'|t }}
-			<span class="info" style="vertical-align: top;">
+			<h3>
+				{{ 'Available Mailers'|t }}
+				<span class="info" style="vertical-align: top;">
 				{{ 'Mailers are plugins themselves.'|t }}
-				{{ 'They provide Sprout Email with third party email service integration so that it can use those services to send your campaigns.'|t }}
+					{{ 'They provide Sprout Email with third party email service integration so that it can use those services to send your campaigns.'|t }}
 			</span>
-		</h3>
-		<p>
-			{{ 'Please visit our'|t }}
-			<a href="http://sprout.barrelstrengthdesign.com/craft-plugins/email/docs/email-campaigns/campaign-overview" target="_blank" title="Email Campaigns Documentation">
-				{{ 'email campaigns documentation'|t }}
-			</a>
-			{{ 'for the most up to date list of <strong>available mailers</strong> and related documentation.'|t|raw }}
-		</p>
-		<p>
-			<em>{{ 'Once installed, you can update their settings in the list above.'|t }}</em>
-		</p>
-	{% endif %}
+			</h3>
+			<p>
+				{{ 'Please visit our'|t }}
+				<a href="http://sprout.barrelstrengthdesign.com/craft-plugins/email/docs/email-campaigns/campaign-overview" target="_blank" title="Email Campaigns Documentation">
+					{{ 'email campaigns documentation'|t }}
+				</a>
+				{{ 'for the most up to date list of <strong>available mailers</strong> and related documentation.'|t|raw }}
+			</p>
+			<p>
+				<em>{{ 'Once installed, you can update their settings in the list above.'|t }}</em>
+			</p>
+		{% endif %}
 
-{% endfor %}
+	{% endfor %}
 
-{% if shouldRefresh %}
-	<hr>
-
-	<div class="notices">
-		<h2 class="error">{{ "Installation Required"|t }}</h2>
-		<p>{{ "Sprout Email has detected mailers not currently installed."|t }}</p>
-
-		<hr>
-
-		<p>
-			<a href="{{ actionUrl('sproutEmail/mailer/installMailers') }}" class="btn" title='{{ "Install Mailers"|t }}'>{{
-				"Install
-			Mailers"|t }}</a>
-		</p>
-	</div>
-{% endif %}
+{% endset %}
