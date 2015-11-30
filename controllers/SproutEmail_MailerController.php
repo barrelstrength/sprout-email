@@ -6,7 +6,7 @@ class SproutEmail_MailerController extends BaseController
 	/**
 	 * Allows Sprout Email to officially register mailers already installed via Craft
 	 *
-	 * @note This is called onAfterInstall() and on sproutemail/settings/?tab=mailers [Refresh List]
+	 * @note This is called onAfterInstall() and on sproutemail/settings/mailers [Refresh List]
 	 */
 	public function actionInstallMailers()
 	{
@@ -14,7 +14,7 @@ class SproutEmail_MailerController extends BaseController
 
 		craft()->userSession->setNotice(Craft::t('Mailers refreshed successfully.'));
 
-		$this->redirect(UrlHelper::getCpUrl('sproutemail/settings?tab=mailers'));
+		$this->redirect(UrlHelper::getCpUrl('sproutemail/settings/mailers'));
 	}
 
 	/**
