@@ -2,19 +2,52 @@
 {% import "_includes/forms" as forms %}
 
 {% set crumbs = [
-	{ label: craft.sproutEmail.getName()|t, url: url('sproutemail') },
+	{ label: "Email"|t, url: url('sproutemail/entries') },
 ] %}
 
 {% set title  = entry is defined and entry.title is not empty ? campaign.name : 'Create a new Entry' %}
 {% set mailer = craft.sproutemail.getMailer(campaign.mailer) %}
 
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = url('sproutemail/entries/edit/{id}') %}
+
+{% block saveButton %}
+	<section class="buttons">
+		<div class="btngroup submit">
+			<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+				<div class="btn submit menubtn"></div>
+				<div class="menu">
+					<ul>
+
+						{% if entry.id != null %}
+						<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id  }}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+						{% else %}
+						<li><a class="formsubmit" data-redirect="sproutemail/entries/edit/{id}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+						{% endif %}
+
+						{% if campaign.type == 'email' %}
+							<li><a class="formsubmit" data-redirect="sproutemail/entries/{{ campaign.id }}/new">{{ "Save and add another"|t }}</a></li>
+							{% if entry.id != null %}
+								<li><a class="formsubmit" data-param='saveAsNew' data-value="true" data-redirect="sproutemail/entries/edit/{id}">{{ "Save as a new email"|t }}</a></li>
+							{% endif %}
+						{% endif %}
+
+						{% if campaign.type == 'notification' %}
+							<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Save and edit notification settings"|t }}</a></li>
+							<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/new">{{ "Save and add another"|t }}</a></li>
+						{% endif %}
+
+					</ul>
+				</div>
+		</div>
+	</section>
+{% endblock %}
+
 {% block main %}
 
-	<form method="post" accept-charset="UTF-8" enctype="multipart/form-data" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/entries/edit/{id}') }}" data-confirm-unload>
 		<input type="hidden" name="action" value="sproutEmail/entry/saveEntry">
 		<input type="hidden" name="redirect" value="sproutemail/entries">
-
-		{{ getCsrfInput() }}
 
 		{% if entryId is defined and entryId %}
 		<input type="hidden" name="entryId" value="{{ entryId }}">
@@ -32,266 +65,158 @@
 			</div>
 
 			<div class="item" data-position="right" data-colspan="1">
+
 				{% if showPreviewBtn %}
 					{% include campaign.type == "notification" ? "sproutemail/_includes/previewbtns" : "_includes/previewbtns" %}
 				{% endif %}
 
-				<div class="pane">
-					{% set tab  = 1 %}
-					{% set tab2 = false %}
-					{% set tab3 = false %}
-					{% set tab4 = false %}
+				<div class="pane meta">
 
-					{% if entry is defined %}
-						{% if
-							entry.getErrors('fromName')
-							or entry.getErrors('fromEmail')
-							or entry.getErrors('replyTo')
-							%}
-							{% set tab  = 2 %}
-							{% set tab2 = true %}
-						{% endif %}
-						{% if entry.getErrors('recipients') %}
-							{% set tab  = 3 %}
-							{% set tab3 = true %}
-						{% endif %}
-
-					{% endif %}
-					<nav id="tabs" class="tabs">
-						<ul>
-							<li><a class="tab {{ tab == 1 ? ' sel' : '' }}" href="#tab-sproutemail-overview">Overview</a></li>
-							<li><a class="tab {{ tab == 2 ? ' sel' : '' }} {{ tab2 ? 'error' : '' }}" href="#tab-sproutemail-sender">Sender</a></li>
-							<li><a class="tab {{ tab == 3 ? ' sel' : '' }} {{ tab3 ? 'error' : '' }}" href="#tab-sproutemail-recipients">Recipients</a></li>
-
-							{% if campaign.type == 'notification' %}
-							<li><a class="tab{{ tab == 4 ? ' sel' : '' }} {{ tab4 ? 'error' : '' }}" href="#tab-sproutemail-rules">Rules</a></li>
-							{% endif %}
-						</ul>
-					</nav>
-
-					<div>
-						<div class="{{ tab != 1 ? 'hidden' : '' }}" id="tab-sproutemail-overview">
-
-							{{ forms.textField({
-								label: "Slug"|t,
-								locale: entry.locale,
-								id: 'slug',
-								name: 'slug',
-								value: entry.slug,
-								errors: (entry ? entry.getErrors('slug')|merge(entry.getErrors('uri'))),
-							}) }}
-
-							{% set statusInput %}
-								<div class="left">
-									{{ forms.lightswitch({
-										id: 'enabled',
-										name: 'enabled',
-										on: entry.enabled
-									}) }}
-								</div>
-
-								<div class="right">
-									<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}" data-action="sproutEmail/entry/deleteEntry" data-confirm="Are you sure you want to delete this Entry and all of it's data?" data-redirect="sproutemail/entries">
-								</div>
-							{% endset %}
-
-							{{ forms.field({
-								label: "Status"|t,
-								id: 'enabled'
-							}, statusInput) }}
-
+					<div class="field">
+						<div class="heading">
+							<label>Mailer <span class="info">Update your Mailer in the <a href="{{ cpUrl('sproutemail/settings/campaigns/edit') ~ '/' ~ campaignId }}">Campaign Settings</a>. Add new Mailers in the <a href="{{ cpUrl('sproutemail/settings/mailers') }}">Mailer Settings</a></span></label>
 						</div>
-
-						{% if mailer.getId() != 'copypaste' %}
-							<div id="tab-sproutemail-sender" class="{{ tab != 2 ? 'hidden' : '' }}">
-
-								{% set defaultFromName  = "" %}
-								{% set defaultFromEmail = "" %}
-								{% set defaultReplyTo   = "" %}
-
-								{% if mailer.getId() == 'defaultmailer' %}
-									{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
-									{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
-									{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}
-								{% endif %}
-
-								{{ forms.field({
-									label: "From Name <span class='info'>The person or business sending the email</span>"|t,
-										errors: (entry is defined ? entry.getErrors('fromName') : null),
-										required: true,
-									}, forms.textField({
-										name: 'sproutEmail[fromName]',
-										value: (entry.fromName is not empty ? entry.fromName : defaultFromName ),
-								})) }}
-
-								{{ forms.field({
-								    label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
-								    required: true,
-										errors: (entry is defined ? entry.getErrors('fromEmail') : null),
-									}, forms.textField({
-										name: 'sproutEmail[fromEmail]',
-										value: (entry.fromEmail is not empty ? entry.fromEmail : defaultFromEmail),
-								})) }}
-
-								{{ forms.field({
-								    label: "Reply To Email <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
-								    required: true,
-										errors: (entry is defined ? entry.getErrors('replyTo') : null),
-									}, forms.textField({
-										name: 'sproutEmail[replyTo]',
-										value: (entry.replyTo is not empty ? entry.replyTo : defaultReplyTo),
-								})) }}
-
-							</div>
-
-							<div id="tab-sproutemail-recipients" class="{{ tab != 3 ? 'hidden' : '' }}">
-
-								<div id="recipients">
-									{% if campaign.isNotification() %}
-										{{ forms.textField({
-											label: "Recipients"|t,
-											instructions: "A comma separated list of email addresses."|t,
-											placeholder: "user@domain.com, other@domain.com"|t,
-											name: "recipient[onTheFlyRecipients]",
-											class: "code",
-											value: entry is defined ? entry.recipients : "",
-											errors: entry is defined ? entry.getErrors('recipients')
-										}) }}
-									{% endif %}
-
-									<h2>Recipients Lists</h2>
-									{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
-								</div>
-							</div>
-						{% else %}
-							{% set name = mailer.getTitle() %}
-							<div id="tab-sproutemail-sender" class="{{ tab != 2 ? 'hidden' : '' }}">
-								<p>
-									<strong>{{ name }}</strong>
-									<br>No sender is required
-								</p>
-							</div>
-							<div id="tab-sproutemail-recipients" class="hidden">
-								<p>
-									<strong>{{ name }}</strong>
-									<br>No recipients are required.
-								</p>
-							</div>
-
-						{% endif %}
-
-						{% if campaign.type == 'notification' %}
-						<div id="tab-sproutemail-rules" class="{{ tab != 4 ? 'hidden' : '' }}">
-
-							{% set events = craft.sproutemail.getAvailableEvents() %}
-
-							{% if events|length %}
-								{{ forms.selectField({
-									id: "notificationEvent",
-									name: "notificationEvent",
-									label: "Event"|t,
-									instructions: "The event that will trigger your notification."|t,
-									options: [{label: "Select event..."|t, value: null}]|merge(events),
-									value: notificationEvent is defined ? notificationEvent : null,
-								}) }}
-
-								{% for id, event in events %}
-									{% if event.getId is defined and event.getOptionsHtml is defined %}
-										<div class="event-options-block {{ event.getId() }}">
-											{% set options = craft.sproutemail.getSelectedOptions(event, campaignId) %}
-											{{ event.getOptionsHtml({forms: forms, options: options})|raw }}
-										</div>
-									{% endif %}
-								{% endfor %}
-							{% endif %}
-
-							{{ forms.lightswitchField({
-								first: true,
-								label: "Enable File Attachments"|t,
-								instructions: "All files submitted with your entries will be attached to the notification email"|t,
-								id: 'sproutEmail[enableFileAttachments]',
-								name: 'sproutEmail[enableFileAttachments]',
-								on: entry.enableFileAttachments,
-								onLabel: "Enable"|t,
-								offLabel: "Disable"|t
-							}) }}
+						<div class="input">
+							<h6>{{ mailer.getTitle() }}</h6>
 						</div>
-						{% endif %}
 					</div>
+
+					{{ forms.textField({
+						label: "Slug"|t,
+						locale: entry.locale,
+						id: 'slug',
+						name: 'slug',
+						value: entry.slug,
+						errors: (entry ? entry.getErrors('slug')|merge(entry.getErrors('uri'))),
+					}) }}
+
+					{% set statusInput %}
+						<div class="left">
+							{{ forms.lightswitch({
+								id: 'enabled',
+								name: 'enabled',
+								on: entry.enabled
+							}) }}
+						</div>
+
+						<div class="right">
+							<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}" data-action="sproutEmail/entry/deleteEntry" data-confirm="Are you sure you want to delete this Entry and all of it's data?" data-redirect="sproutemail/entries">
+						</div>
+					{% endset %}
+
+					{{ forms.field({
+						label: "Status"|t,
+						id: 'enabled'
+					}, statusInput) }}
 
 				</div>
 
-				<table class="inputs fullwidth">
-					<tr>
-						<td class="thin">
-							<section class="buttons">
-								<div class="btngroup submit">
+				{% if mailer.getId() != 'copypaste' %}
 
-									<input type="submit" class="btn submit first" value="{{ 'Save'|t }}">
-									<div class="btn submit menubtn"></div>
-									<div class="menu">
-										<ul>
+					<div id="tab-sproutemail-sender" class="pane meta">
 
-											{% if campaign.type == 'notification' %}
+						{% set defaultFromName  = "" %}
+						{% set defaultFromEmail = "" %}
+						{% set defaultReplyTo   = "" %}
 
-												<li>
-													<a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">
-														{{ "Save and continue editing"|t }}
-													</a>
-												</li>
+						{% if mailer.getId() == 'defaultmailer' %}
+							{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
+							{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
+							{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}
+						{% endif %}
 
-												{% if currentUser.can('editSproutEmailSettings') %}
-													<li>
-														<a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">
-															{{ "Save and edit notification settings"|t }}
-														</a>
-													</li>
-													<li>
-														<a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/new">
-															{{ "Save and add another"|t }}
-														</a>
-													</li>
-												{% endif %}
+						{{ forms.textField({
+							label: "From Name <span class='info'>The person or business sending the email</span>"|t,
+							name: 'sproutEmail[fromName]',
+							value: (entry.fromName is not empty ? entry.fromName : defaultFromName ),
+							errors: (entry is defined ? entry.getErrors('fromName') : null),
+							required: true
+						}) }}
 
-											{% endif %}
+						{{ forms.textField({
+							name: 'sproutEmail[fromEmail]',
+							value: (entry.fromEmail is not empty ? entry.fromEmail : defaultFromEmail),
+							label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
+							errors: (entry is defined ? entry.getErrors('fromEmail') : null),
+							required: true
+						}) }}
 
-											{% if campaign.type == 'email' %}
+						{{ forms.textField({
+							name: 'sproutEmail[replyTo]',
+							value: (entry.replyTo is not empty ? entry.replyTo : defaultReplyTo),
+							label: "Reply To <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
+							errors: (entry is defined ? entry.getErrors('replyTo') : null),
+							required: true
+						}) }}
 
-												<li>
-													<a class="formsubmit" data-redirect="sproutemail/entries/edit/{{ entry.id }}">
-														{{ "Save and continue editing"|t }}
-													</a>
-												</li>
+					</div>
 
-												<li>
-													<a class="formsubmit" data-redirect="sproutemail/entries/{{ campaign.id }}/new">
-														{{ "Save and add another"|t }}
-													</a>
-												</li>
+					<div id="tab-sproutemail-recipients" class="pane meta">
 
-												{% if entry.id != null %}
-													<li>
-														<a class="formsubmit" data-redirect="sproutemail/entries/edit/{id}" data-param='saveAsNew' data-value="true">
-															{{ "Save as a new email"|t }}
-														</a>
-													</li>
-												{% endif %}
+							{% if campaign.isNotification() %}
+								{{ forms.textField({
+									label: "Recipients <span class='info'>A comma separated list of email addresses.</span>"|t,
+									placeholder: "user@domain.com, other@domain.com"|t,
+									name: "recipient[onTheFlyRecipients]",
+									class: "code",
+									value: entry is defined ? entry.recipients : "",
+									errors: entry is defined ? entry.getErrors('recipients')
+								}) }}
+							{% endif %}
 
-											{% endif %}
+							<div class="field mailing-lists">
+								<div class="heading">
+									Lists
+								</div>
+								<div class="input">
+								{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
+								</div>
+							</div>
 
-										</ul>
+					</div>
+
+				{% endif %}
+
+				{% if campaign.type == 'notification' %}
+					<div id="tab-sproutemail-rules" class="pane meta">
+
+						{% set events = craft.sproutemail.getAvailableEvents() %}
+
+						{% if events|length %}
+
+							{{ forms.selectField({
+								id: "notificationEvent",
+								name: "notificationEvent",
+								label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
+								options: [{label: "Select event..."|t, value: null}]|merge(events),
+								value: notificationEvent is defined ? notificationEvent : null,
+							}) }}
+
+							{% for id, event in events %}
+								{% if event.getId is defined and event.getOptionsHtml is defined %}
+
+								<div class="field event-options {{ event.getId() }}">
+									<div class="heading">
+										Settings
+									</div>
+									<div class="input">
+										{% set options = craft.sproutemail.getSelectedOptions(event, campaignId) %}
+										{{ event.getOptionsHtml({forms: forms, options: options})|raw }}
+
 									</div>
 								</div>
-							</section>
-						</td>
-					</tr>
-				</table>
+
+								{% endif %}
+							{% endfor %}
+
+						{% endif %}
+					</div>
+				{% endif %}
 
 			</div>
 
 		</div>
 
-	</form>
 {% endblock %}
 
 {% if not entry.slug %}

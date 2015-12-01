@@ -1,73 +1,30 @@
+{% extends "sproutemail/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
-{% set entries = craft.sproutEmail.getCampaigns('email') %}
+{% set title = 'General Settings' %}
 
-{% if entries|length %}
+{% set content %}
 
-	{% for campaign in entries %}
-		{% if loop.first %}
+	<input type="hidden" name="action" value="sproutEmail/savePluginSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings/general">
 
-			<table id="campaigns" class="data fullwidth">
-			<thead>
-			<th width="25%">
-				{{ "Campaign"|t }}
-        <span class="info">
-          <p>{{ "Create multiple Campaigns with unique fields, layouts, and email service provider integrations."|t
-	          }}</p>
-        </span>
-			</th>
-			<th width="20%">{{ "Handle"|t }}</th>
-			<th width="20%">{{ "Mailer"|t }}</th>
-			<th width="10%">{{ "Template"|t }}</th>
-			<th class="thin"></th>
-			</thead>
-		{% endif %}
-		<tr data-id="{{ campaign.id }}" data-name="{{ campaign.name }}">
-			<td>
-				<a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a>
-			</td>
-			<td>
-				<code>{{ campaign.handle }}</code>
-			</td>
-			<td>{{ campaign.mailer }}</td>
-			<td><code>{{ campaign.template }}</code></td>
-			<td colspan="3" class="thin">
-				<a class="delete icon" title='{{ "Delete"|t }}'></a>
-			</td>
-		</tr>
-		{% if loop.last %}
-			</table>
-		{% endif %}
+	{% namespace 'settings' %}
 
-	{% endfor %}
+	{{ forms.textField({
+		label: "Plugin Name"|t,
+		id: 'pluginNameOverride',
+		name: 'pluginNameOverride',
+		instructions: "Intuitive, human-readable plugin name for the end user."|t,
+		value: settings.pluginNameOverride ? settings.pluginNameOverride : 'Sprout Email',
+		autofocus: true,
+		first: true,
+		errors: ''
+	}) }}
+
+	{% endnamespace %}
 
 	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Campaign"|t
-			}}</a>
+		<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
 	</div>
 
-{% else %}
-
-	<div style="width:40%;">
-
-		<h2>{{ "Create your first Campaign"|t }}</h2>
-
-		<p>{{ "Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated
-			email program to manage your email."|t }}</p>
-
-		<div class="buttons">
-			<a class="btn submit icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "Create an
-				Campaign"|t }} &raquo;</a>
-		</div>
-
-	</div>
-{% endif %}
-
-{% set js %}
-new Craft.AdminTable({
-	tableSelector: '#campaigns',
-	noObjectsSelector: '#nocampaigns',
-	deleteAction: 'sproutEmail/campaign/deleteCampaign'
-});
 {% endset %}
-{% includeJs js %}

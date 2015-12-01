@@ -1,24 +1,18 @@
 {% extends "sproutemail/_layouts/elementindex" %}
 
-{% includeJsResource "sproutemail/js/recipients.js" %}
-
 {% set selectedTab = 'recipients' %}
 {% set elementType = 'SproutEmail_DefaultMailerRecipient' %}
 
-{% if currentUser.can('editSproutEmailSettings') and craft.request.segment(2) == "" %}
-	{% set extraPageHeaderHtml %}
-	<a class="btn settings icon" href="{{ url('sproutemail/settings') }}" title="{{ 'Settings'|t }}"></a>
-	{% endset %}
-{% endif %}
-
-{% block sidebar %}
-
+{% set extraPageHeaderHtml %}
 	{% if recipientLists %}
 		<div class="buttons">
 			{% set newRecipientUrl = url('sproutemail/recipients/new') %}
 			<a id="newrecipientbtn" href="{{ newRecipientUrl }}" class="submit btn add icon">{{ "New Recipient"|t }}</a>
 		</div>
 	{% endif %}
+{% endset %}
+
+{% block sidebar %}
 
 	<nav>
 		<ul id="lists">
@@ -54,3 +48,5 @@
 {% block content %}
 	{{ parent() }}
 {% endblock %}
+
+{% includeJsResource "sproutemail/js/recipients.js" %}

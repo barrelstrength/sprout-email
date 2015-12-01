@@ -1,0 +1,35 @@
+{% extends "sproutemail/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Examples"|t %}
+
+{% set content %}
+
+	<input type="hidden" name="action" value="sproutEmail/examples/install">
+
+	{{ getCsrfInput() }}
+
+	<p>{{ "Install <strong>example emails</strong> with <strong>commented templates</strong> and <strong>example data</strong>. The example templates will
+	 be created
+	and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
+
+	<p><em>{{ "Examples include:"|t }}</em></p>
+
+	<ul class="bullets">
+		<li>{{ "A welcome email for a new user"|t }}</li>
+		<li>{{ "An admin notification email when a new user is created"|t }}</li>
+		<li>{{ "A monthly newsletter email"|t }}</li>
+	</ul>
+	<br>
+
+	<ul class="bullets">
+		<li>{{ "Example notification templates (HTML/Text) using dynamic variables"|t }}</li>
+		<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
+		requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
+	</ul>
+	
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
+	</div>
+
+{% endset %}

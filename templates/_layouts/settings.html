@@ -1,39 +1,51 @@
 {% extends "_layouts/cp" %}
 
-{% set title  = "Settings"|t %}
-
-{% set crumbs = [
-  { label: "Sprout Email"|t, url: url('sproutemail') },
-  { label: "Settings"|t, url: url('sproutemail/settings') },
-] %}
-
-{% set selectedTab = tab is defined ? tab : 'mailers' %}
-
-{% set tabs = {
-	general: {
-		label: "Campaigns"|t,
-		url: "#settings-general"
+{% set subnav = {
+	entries: {
+		label: "Email"|t,
+		url: url('sproutemail/entries')
 	},
-	notifications: {
-		label: "Notifications"|t,
-		url: "#settings-notifications"
-	},
-	mailers: {
-		label: "Mailers"|t,
-		url: "#settings-mailers"
-	},
-	cp: {
-		label: "Control Panel"|t,
-		url: "#settings-cp"
+	recipients: {
+		label: "Recipients"|t,
+		url: url('sproutemail/recipients')
 	}
 } %}
 
-{% set content %}
+{% if currentUser.can('editSproutEmailSettings') %}
+	{% set subnav = subnav|merge({
+		settings: {
+			label: "Settings"|t,
+			url: url('sproutemail/settings')
+		}
+	}) %}
+{% endif %}
 
-  {{ body }}
+{% set selectedSubnavItem = craft.request.segment(2) %}
+{% set selectedSidebarItem = craft.request.segment(3) %}
 
-  {% include 'sproutemail/_partials/brand/footer' %}
+{% set fullPageForm = true %}
+
+{% block saveButton %}{% endblock %}
+
+{# @todo - improve naming convention, not clear what this does #}
+{% set models = craft.session.hasFlash('models') ? craft.session.getFlash('models') : null %}
+
+{% set sidebar %}
+
+	<nav class="last">
+		<ul>
+			<li><a href="{{ url('sproutemail/settings/general') }}" {% if selectedSidebarItem == 'general'
+				%}class="sel"{% endif %}>General Settings</a></li>
+			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif
+				%}>Mailers</a></li>
+			<li class="heading"><span>Content</span></li>
+			<li><a href="{{ url('sproutemail/settings/campaigns') }}" {% if selectedSidebarItem == 'campaigns' %}class="sel"{% endif
+				%}>Campaigns</a></li>
+			<li><a href="{{ url('sproutemail/settings/notifications') }}" {% if selectedSidebarItem == 'notifications' %}class="sel"{%
+				endif %}>Notifications</a></li>
+			<li><a href="{{ url('sproutemail/settings/examples') }}" {% if selectedSidebarItem == 'examples'
+				%}class="sel"{% endif %}>Examples</a></li>
+		</ul>
+	</nav>
 
 {% endset %}
-
-{% includeCssResource "sproutemail/css/brand.css" %}

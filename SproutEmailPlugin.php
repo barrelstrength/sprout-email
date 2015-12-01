@@ -21,6 +21,14 @@ class SproutEmailPlugin extends BasePlugin
 	/**
 	 * @return string
 	 */
+	public function getDescription()
+	{
+		return 'Flexible, integrated email marketing and notifications.';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getVersion()
 	{
 		return '1.2.3';
@@ -43,6 +51,14 @@ class SproutEmailPlugin extends BasePlugin
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getDocumentationUrl()
+	{
+		return 'http://sprout.barrelstrengthdesign.com/craft-plugins/email/docs';
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function hasCpSection()
@@ -61,6 +77,14 @@ class SproutEmailPlugin extends BasePlugin
 	}
 
 	/**
+	 * Get Settings URL
+	 */
+	public function getSettingsUrl()
+	{
+		return 'sproutforms/settings';
+	}
+
+	/**
 	 * @return array
 	 */
 	public function registerUserPermissions()
@@ -70,7 +94,7 @@ class SproutEmailPlugin extends BasePlugin
 				'label' => Craft::t('Manage Email Section')
 			),
 			'editSproutEmailSettings' => array(
-				'label' => Craft::t('Edit Email Settings')
+				'label' => Craft::t('Edit Settings')
 			)
 		);
 	}
@@ -90,13 +114,13 @@ class SproutEmailPlugin extends BasePlugin
 		);
 
 		return array_merge($emailClient, array(
-			'sproutemail/settings/mailers/(?P<mailerId>[a-z]+)' => array(
+			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)' => array(
 				'action' => 'sproutEmail/mailer/editSettings'
 			),
-			'sproutemail/settings/campaigns/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
+			'sproutemail/settings/(?P<settingsTemplate>campaigns)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
 			),
-			'sproutemail/settings/notifications/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
+			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
 			),
 			'sproutemail/entries/new' => array(
@@ -111,12 +135,19 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings' => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
-			'sproutemail/events/new' => 'sproutemail/events/_edit',
-			'sproutemail/events/edit/(?P<eventId>\d+)' => 'sproutemail/events/_edit',
+			'sproutemail/settings/(?P<settingsTemplate>.*)' => array(
+					'action' => 'sproutEmail/settingsIndexTemplate'
+			),
+
+			'sproutemail/events/new' =>
+			'sproutemail/events/_edit',
+
+			'sproutemail/events/edit/(?P<eventId>\d+)' =>
+			'sproutemail/events/_edit',
 
 			// Install Examples
-			'sproutemail/examples' =>
-			'sproutemail/_cp/examples',
+			'sproutemail/settings/examples' =>
+			'sproutemail/settings/_tabs/examples',
 		));
 	}
 
@@ -137,6 +168,23 @@ class SproutEmailPlugin extends BasePlugin
 		sproutEmail()->notifications->registerDynamicEventHandler();
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
+
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		{
+			// @todo Craft 3 - update to use info from config.json
+			craft()->templates->includeJsResource('sproutemail/js/brand.js');
+			craft()->templates->includeJs("
+				sproutFormsBrand = new Craft.SproutBrand();
+				sproutFormsBrand.displayFooter({
+					pluginName: 'Sprout Email',
+					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
+					pluginVersion: '" . $this->getVersion() . "',
+					pluginDescription: '" . $this->getDescription() . "',
+					developerName: '(Barrel Strength)',
+					developerUrl: '" . $this->getDeveloperUrl() . "'
+				});
+			");
+		}
 	}
 
 	/**
@@ -213,6 +261,20 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			sproutEmail()->error($e->getMessage());
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function sproutMigrateRegisterElements()
+	{
+		return array(
+				'sproutemail_entry'     => array(
+						'model'   => 'Craft\\SproutEmail_Entry',
+						'method'  => 'saveEntry',
+						'service' => 'sproutEmail_entry',
+				)
+		);
 	}
 }
 

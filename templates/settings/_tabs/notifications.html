@@ -1,12 +1,13 @@
+{% extends "sproutemail/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
 {% set title = 'Notifications'|t %}
 
 {% set crumbs = [
-{ label: "Sprout Email"|t, url: url('sproutemail') }
+	{ label: "Settings"|t, url: url('sproutemail/settings') }
 ] %}
 
-{% block main %}
+{% set content %}
 
 	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
 
@@ -68,7 +69,7 @@
 		{{ brandMessageFooter }}
 	{% endif %}
 
-{% endblock %}
+{% endset %}
 
 {% set js %}
 new Craft.AdminTable({
