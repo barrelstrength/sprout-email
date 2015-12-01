@@ -13,10 +13,10 @@
 
 {% if currentUser.can('editSproutEmailSettings') %}
 	{% set subnav = subnav|merge({
-	settings: {
-	label: "Settings"|t,
-	url: url('sproutemail/settings')
-	}
+		settings: {
+			label: "Settings"|t,
+			url: url('sproutemail/settings')
+		}
 	}) %}
 {% endif %}
 
