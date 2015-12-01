@@ -37,6 +37,14 @@ class SproutEmailPlugin extends BasePlugin
 	/**
 	 * @return string
 	 */
+	public function getSchemaVersion()
+	{
+		return '2.5.0';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDeveloper()
 	{
 		return 'Barrel Strength Design';
