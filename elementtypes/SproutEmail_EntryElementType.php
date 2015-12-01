@@ -154,19 +154,36 @@ class SproutEmail_EntryElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns the attributes that can be shown/sorted by in table views.
-	 *
-	 * @param string|null $source
+	 * Returns the attributes that can be selected as table columns
 	 *
 	 * @return array
 	 */
-	public function defineTableAttributes($source = null)
+	public function defineAvailableTableAttributes()
 	{
-		return array(
-			'title'       => Craft::t('Title'),
-			'dateCreated' => Craft::t('Date Created'),
-			'dateUpdated' => Craft::t('Date Updated'),
+		$attributes = array(
+				'title'       => array('label' => Craft::t('Title')),
+				'dateCreated' => array('label' => Craft::t('Date Created')),
+				'dateUpdated' => array('label' => Craft::t('Date Updated')),
+
 		);
+
+		return $attributes;
+	}
+
+	/**
+	 * Returns default table columns for table views
+	 *
+	 * @return array
+	 */
+	public function getDefaultTableAttributes($source = null)
+	{
+		$attributes = array();
+
+		$attributes[] = 'title';
+		$attributes[] = 'dateCreated';
+		$attributes[] = 'dateUpdated';
+
+		return $attributes;
 	}
 
 	/**
