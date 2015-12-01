@@ -209,6 +209,16 @@
 								{% endif %}
 							{% endfor %}
 
+							{{ forms.lightswitchField({
+								first: true,
+								label: "Attach Files <span class='info'>All files submitted with your entries will be attached to the notification email</span>"|t,
+								id: 'sproutEmail[enableFileAttachments]',
+								name: 'sproutEmail[enableFileAttachments]',
+								on: entry.enableFileAttachments,
+								onLabel: "Enable"|t,
+								offLabel: "Disable"|t
+							}) }}
+
 						{% endif %}
 					</div>
 				{% endif %}
