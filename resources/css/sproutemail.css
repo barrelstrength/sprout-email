@@ -1,3 +1,7 @@
-.event-options-block {
-	margin: 20px 0;
+.field.mailing-lists .heading,
+.field.event-options .heading,
+.field.mailing-lists .input,
+.field.event-options .input {
+	padding-top: .4em;
+	align-self: flex-start;
 }
