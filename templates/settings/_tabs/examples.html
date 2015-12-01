@@ -9,7 +9,35 @@
 
 	{{ getCsrfInput() }}
 
-	<p>{{ "Install <strong>example emails</strong> with <strong>commented templates</strong> and <strong>example data</strong>. The example templates will
+	{% if craft.sproutEmail.hasExamples() %}
+		<div class="pane first field">
+			<span class="warning" style="font-size:1em;">
+				{{ "Example templates and entries are already installed."|t }}
+			</span>
+		</div>
+	{% endif %}
+
+	{% if not craft.sproutEmail.canCreateExamples() %}
+
+		<div class="pane first">
+
+			{% set path = craft.sproutemail.getTemplatePath() %}
+
+			<p class="field">
+				<span class="warning" style="font-size:1em;">
+					{{ "Your templates directory does not have the correct permissions:"|t }}<br>
+
+					<code>{{ path }}</code>
+				</span>
+			</p>
+
+			<p>{{ "Sprout Email will not be able to install the example templates until your <a href='http://buildwithcraft.com/docs/installing#step-2-set-the-permissions' target='_blank'>templates directory is writeable</a>: "}}</p>
+
+		</div>
+
+	{% endif %}
+
+	<p class="first">{{ "Install <strong>example emails</strong> with <strong>commented templates</strong> and <strong>example data</strong>. The example templates will
 	 be created
 	and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
 
@@ -27,7 +55,7 @@
 		<li>{{ 'Example newsletter templates (HTML/Text) and email resources.<br> <i>The Newsletter Campaign example
 		requires that you first install the <a href="http://sprout.barrelstrengthdesign.com/content/plugins/SproutEmailCopyPaste-0.4.0.zip" target="_blank">Copy & Paste</a> Mailer</i>'|t|raw }}</li>
 	</ul>
-	
+
 	<div class="buttons">
 		<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
 	</div>
