@@ -21,7 +21,7 @@
 				<div class="checkbox" title="Select"></div>
 			</td>
 			<td data-titlecell>
-				<span class="status {{ entry.status }}"></span>
+				<span class="status {{ entry.status == 'ready' ? 'enabled' : entry.status }}"></span>
 				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry'|t }}</a>
 			</td>
 			<td>
