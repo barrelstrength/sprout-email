@@ -262,6 +262,20 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->error($e->getMessage());
 		}
 	}
+
+	/**
+	 * @return array
+	 */
+	public function sproutMigrateRegisterElements()
+	{
+		return array(
+				'sproutemail_entry'     => array(
+						'model'   => 'Craft\\SproutEmail_Entry',
+						'method'  => 'saveEntry',
+						'service' => 'sproutEmail_entry',
+				)
+		);
+	}
 }
 
 /**
