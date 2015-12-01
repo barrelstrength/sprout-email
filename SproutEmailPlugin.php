@@ -271,7 +271,7 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->mailers->installMailers();
 
 			// Redirect to examples after installation
-			craft()->request->redirect(UrlHelper::getCpUrl().'/sproutemail/examples');
+			craft()->request->redirect(UrlHelper::getCpUrl().'/sproutemail/settings/examples');
 		}
 		catch (\Exception $e)
 		{
