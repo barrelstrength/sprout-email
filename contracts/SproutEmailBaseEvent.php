@@ -91,6 +91,7 @@ class SproutEmailBaseEvent
 	 */
 	public function getOptionsHtml()
 	{
+		return "—";
 	}
 
 	/**
