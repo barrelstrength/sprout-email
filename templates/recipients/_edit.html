@@ -75,13 +75,6 @@
 			}) }}
 		</section>
 
-		<hr>
-
-		<section class="recipient-lists">
-			<h2>Recipient Lists</h2>
-			{{ recipientListsHtml }}
-		</section>
-
 		</div>
 	</div>
 
@@ -89,6 +82,14 @@
 
 		<div class="item" data-position="right" data-colspan="1">
 			<div class="pane meta">
+				<div class="field">
+					<div class="heading">
+						<label>Recipient Lists</label>
+					</div>
+					<div class="input">
+						{{ recipientListsHtml }}
+					</div>
+				</div>
 
 				{% set statusInput %}
 
