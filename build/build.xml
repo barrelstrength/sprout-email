@@ -4,7 +4,7 @@
 
     <property name="pluginFileName" value="SproutEmail" />
     <property name="pluginName" value="sproutemail" />
-    <property name="pluginVersion" value="1.2.3" />
+    <property name="pluginVersion" value="2.0.0" />
 
     <target name="release">
         <echo msg="Preparing release distro..." />
