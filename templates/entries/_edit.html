@@ -201,8 +201,10 @@
 									</div>
 									<div class="input">
 										{% set options = craft.sproutemail.getSelectedOptions(event, campaignId) %}
-										{{ event.getOptionsHtml({forms: forms, options: options})|raw }}
-
+										{{ event.getOptionsHtml({
+											forms: forms,
+											options: options
+										})|raw }}
 									</div>
 								</div>
 
