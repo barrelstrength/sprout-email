@@ -25,3 +25,11 @@
 	</div>
 
 {% endset %}
+
+{% block sidebar %}
+
+	{% set customizableSources = false %}
+
+	{{ parent() }}
+
+{% endblock %}
