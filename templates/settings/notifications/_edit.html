@@ -40,11 +40,11 @@
 
 		</div>
 
-		{% if campaign.type is defined and campaign.type == "notification" and entry.id is not defined %}
 		<div class="secondary-buttons" style="float:left;">
-			<a class="btn icon add submit" href="{{ cpUrl('sproutemail/entries/' ~ campaignId) }}/new" title="{{ "Create Notification Email"|t }}" style="float:none;margin:5px 5px 0 0;">{{ "Create Notification Email"|t }}</a>
-		</div>
+		{% if entry is defined %}
+			<a class="btn icon add submit" href="{{ cpUrl('sproutemail/entries/edit/' ~ entry.id) }}" title="{{ "Edit Notification Email"|t }}" style="float:none;margin:5px 5px 0 0;">{{ "Edit Notification Email"|t }}</a>
 		{% endif %}
+		</div>
 	</div>
 
 {% endblock %}
@@ -54,7 +54,13 @@
 	{% if isMailerInstalled %}
 
 		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
-		<input type="hidden" name="redirect" value="sproutemail/settings/notifications">
+
+		{% if entry['id'] is defined %}
+			<input type="hidden" name="redirect" value="sproutemail/settings/notifications">
+		{% else %}
+			<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
+		{% endif %}
+
 		<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 		<input type="hidden" name="tab" value="fields">
 		<input type="hidden" name="sproutEmail[mailer]" value="defaultmailer">
