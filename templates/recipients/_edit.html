@@ -39,14 +39,15 @@
 		<input type="hidden" id="action" name="action" value="sproutEmail/defaultMailer/saveRecipient">
 
 		{% if selectedListId and selectedListId != 'undefined' %}
-			<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/{{ selectedListId }}">
-		{% else %}
-			<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
+			<input type="hidden" id="recipientLists-selectedListId" name="recipient[recipientLists][]" value="{{ selectedListId }}">
 		{% endif %}
+		<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
 		{{ getCsrfInput() }}
 
 		{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
 		{% if craft.isLocalized() %}<input type="hidden" name="locale" value="{{ element.locale }}">{% endif %}
+
+
 
 		{# BEGIN FORM #}
 		<section id="default-fields">
