@@ -97,7 +97,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getSettingsUrl()
 	{
-		return 'sproutforms/settings';
+		return 'sproutemail/settings';
 	}
 
 	/**
