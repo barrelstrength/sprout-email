@@ -33,7 +33,7 @@
 							{% endif %}
 						{% endif %}
 
-						{% if campaign.type == 'notification' %}
+						{% if campaign.type == 'notification' and currentUser.can('editSproutEmailSettings') %}
 							<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Save and edit notification settings"|t }}</a></li>
 							<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/new">{{ "Save and add another"|t }}</a></li>
 						{% endif %}
