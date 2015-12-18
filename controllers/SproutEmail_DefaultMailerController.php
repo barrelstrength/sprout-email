@@ -84,13 +84,8 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 			else
 			{
-				if (craft()->request->getParam('recipientListId'))
-				{
-					$selectedLists[] = craft()->request->getParam('recipientListId');
-				}
-
-				$variables['title']   = Craft::t('New Recipient');
-				$variables['element'] = new SproutEmail_DefaultMailerRecipientModel();
+				$variables['title']   		= Craft::t('New Recipient');
+				$variables['element'] 		= new SproutEmail_DefaultMailerRecipientModel();
 			}
 		}
 
