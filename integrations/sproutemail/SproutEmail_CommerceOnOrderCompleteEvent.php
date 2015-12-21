@@ -54,7 +54,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 */
 	public function getOptionsHtml($context = array())
 	{
-		$context['statuses'] = $this->getAllOrderStatuses();
+		$context['statuses'] = $this->getAllTransactionStatuses();
 
 		return craft()->templates->render('sproutemail/_events/orderComplete', $context);
 	}
@@ -80,14 +80,29 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, EntryModel $entry, array $params = array())
+	public function validateOptions($options, Commerce_OrderModel  $order, array $params = array())
 	{
-		Craft::dd($entry);
+
+		if(!empty($options['commerceStatuses']))
+		{
+			// Get first transaction which is the current transaction
+			if (!in_array($order->transactions[0]->status, $options['commerceStatuses']))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
-	public function getAllOrderStatuses()
+	public function getAllTransactionStatuses()
 	{
-		$statuses = craft()->commerce_orderStatuses->getAllOrderStatuses();
+		$statuses = [
+			Commerce_TransactionRecord::STATUS_PENDING,
+			Commerce_TransactionRecord::STATUS_REDIRECT,
+			Commerce_TransactionRecord::STATUS_SUCCESS,
+			Commerce_TransactionRecord::STATUS_FAILED
+		];
 		$options = array();
 		if(!empty($statuses))
 		{
@@ -95,8 +110,8 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 			{
 				array_push(
 					$options, array(
-						'label' => $status->name,
-						'value' => $status->id
+						'label' => ucwords($status),
+						'value' => $status
 					)
 				);
 			}
