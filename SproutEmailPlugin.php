@@ -239,7 +239,8 @@ class SproutEmailPlugin extends BasePlugin
 
 		if($commercePlugin->isEnabled)
 		{
-			$events['commerce_orders.onOrderComplete'] = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
 		}
 
 		return $events;

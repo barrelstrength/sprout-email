@@ -41,22 +41,10 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 * @return mixed
 	 */
 	public function prepareParams(Event $event)
-{
-	return array(
-		'value'      => $event->params['order']
-	);
-}
-
-	/**
-	 * Returns a rendered html string to use for capturing user input
-	 *
-	 * @return string
-	 */
-	public function getOptionsHtml($context = array())
 	{
-		$context['statuses'] = $this->getAllTransactionStatuses();
-
-		return craft()->templates->render('sproutemail/_events/orderComplete', $context);
+		return array(
+			'value'      => $event->params['order']
+		);
 	}
 
 	/**
@@ -66,9 +54,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 */
 	public function prepareOptions()
 	{
-		return array(
-			'commerceStatuses' =>  craft()->request->getPost('commerceStatuses')
-		);
+		return array();
 	}
 
 	/**
@@ -82,41 +68,6 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, Commerce_OrderModel  $order, array $params = array())
 	{
-
-		if(!empty($options['commerceStatuses']))
-		{
-			// Get first transaction which is the current transaction
-			if (!in_array($order->transactions[0]->status, $options['commerceStatuses']))
-			{
-				return false;
-			}
-		}
-
 		return true;
-	}
-
-	public function getAllTransactionStatuses()
-	{
-		$statuses = [
-			Commerce_TransactionRecord::STATUS_PENDING,
-			Commerce_TransactionRecord::STATUS_REDIRECT,
-			Commerce_TransactionRecord::STATUS_SUCCESS,
-			Commerce_TransactionRecord::STATUS_FAILED
-		];
-		$options = array();
-		if(!empty($statuses))
-		{
-			foreach($statuses as $status)
-			{
-				array_push(
-					$options, array(
-						'label' => ucwords($status),
-						'value' => $status
-					)
-				);
-			}
-		}
-
-		return $options;
 	}
 }
