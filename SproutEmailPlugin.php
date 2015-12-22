@@ -236,11 +236,13 @@ class SproutEmailPlugin extends BasePlugin
 
 		// Check if craft commerce plugin is installed and enabled
 		$commercePlugin = craft()->plugins->getPlugin('commerce', false);
-
+		
+		// Commerce events goes here
 		if($commercePlugin->isEnabled)
 		{
 			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
 			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
+			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
 		}
 
 		return $events;

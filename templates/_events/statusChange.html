@@ -1,0 +1,10 @@
+{{ forms.field({
+		label: "Order Statuses"|t,
+		instructions: "Select status or leave unchecked for all statuses."|t,
+		errors: errors is defined ? errors : null,
+	},
+	forms.checkboxGroup({
+		name: "commerceOrderStatuses",
+		options : statuses,
+		values: options.commerceStatuses is defined ? options.commerceStatuses : null
+})) }}
