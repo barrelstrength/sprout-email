@@ -535,6 +535,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 									);
 
 									$processedRecipients[$email->toEmail] = craft()->email->sendEmail($email, $vars);
+
 								}
 								catch (\Exception $e)
 								{

@@ -201,6 +201,83 @@ class SproutEmailPlugin extends BasePlugin
 				});
 			");
 		}
+
+		// Logs sent element types
+		craft()->on('email.onSendEmail', function(Event $event) {
+
+			$variables  = $event->params['variables'];
+			$emailModel =  $event->params['emailModel'];
+
+
+			// To make sure you run the sprout email events only
+			$sproutEmailEntry = isset($variables['sproutEmailEntry']) ? $variables['sproutEmailEntry'] : null;
+
+			if($sproutEmailEntry != null)
+			{
+				$entryId = $sproutEmailEntry->id;
+				$notificationRecord = SproutEmail_NotificationRecord::model()->findById($sproutEmailEntry->campaignId);
+				$notificationId = isset($notificationRecord) ? $notificationRecord->id : null;
+
+				$sentModel  = new SproutEmail_SentEmailModel();
+				// validate the element type & throw an exception if it fails
+				$element = craft()->elements->getElementType($sentModel->getElementType());
+				if (!$element)
+				{
+					throw new Exception(Craft::t('The {t} element type is not available.',
+						array('t' => $model->getElementType())
+					));
+				}
+
+				// set global Element attributes
+				$sentModel->uri           = '';
+				$sentModel->slug          = '';
+				$sentModel->archived      = false;
+				$sentModel->localeEnabled = $element->isLocalized();
+
+				$sentModel->campaignEntryId        = $entryId;
+				$sentModel->campaignNotificationId = $notificationId;
+				$sentModel->subject   = $emailModel->subject;
+				$sentModel->fromEmail = $emailModel->fromEmail;
+				$sentModel->fromName  = $emailModel->fromName;
+				$sentModel->toEmail   = $emailModel->toEmail;
+				$sentModel->body      = $emailModel->body;
+				$sentModel->htmlBody  = $emailModel->htmlBody;
+				$sentModel->sender    = $emailModel->sender;
+
+				$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+				try
+				{
+					if(craft()->elements->saveElement($sentModel))
+					{
+						$sentRecord = new SproutEmail_SentEmailRecord();
+
+						// set the Records attributes
+						$sentRecord->setAttributes($sentModel->getAttributes(), false);
+						if($sentRecord->save())
+						{
+							if ($transaction != null)
+							{
+								$transaction->commit();
+							}
+						}
+
+
+					}
+
+				}
+				catch (\Exception $e)
+				{
+
+					if ($transaction != null)
+					{
+						$transaction->rollback();
+					}
+
+					throw $e;
+				}
+			}
+		});
 	}
 
 	/**
