@@ -18,6 +18,13 @@
 			url: url('sproutemail/settings')
 		}
 	}) %}
+
+	{% set subnav = subnav|merge({
+		sentemails: {
+			label: "Sent Emails"|t,
+			url: url('sproutemail/sentemails')
+		}
+	}) %}
 {% endif %}
 
 {% set selectedSubnavItem = craft.request.segment(2) %}

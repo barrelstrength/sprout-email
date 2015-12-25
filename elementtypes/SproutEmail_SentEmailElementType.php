@@ -45,6 +45,16 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		return false;
 	}
 
+	public function getSources($context = null)
+	{
+		$sources = array(
+			'*' => array(
+				'label'    => Craft::t('All Sent Emails'),
+			)
+		);
+
+		return $sources;
+	}
 
 	/**
 	 * Returns the attributes that can be selected as table columns
@@ -54,10 +64,11 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-				'subject'       => array('label' => Craft::t('Subject')),
+				'title'     => array('label' => Craft::t('Title')),
+				'subject'     => array('label' => Craft::t('Subject')),
+				'fromEmail'   => array('label' => Craft::t('From Email')),
 				'dateCreated' => array('label' => Craft::t('Date Created')),
-				'dateUpdated' => array('label' => Craft::t('Date Updated')),
-
+				'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
@@ -72,8 +83,10 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	{
 		$attributes = array();
 
+
 		$attributes[] = 'subject';
 		$attributes[] = 'fromEmail';
+		$attributes[] = 'toEmail';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 
@@ -88,19 +101,25 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'subject'          => AttributeType::String,
-			'fromEmail'    	   => AttributeType::String
+
+			'subject'     => AttributeType::String,
+			'fromEmail'   => AttributeType::String,
+			'toEmail'     => AttributeType::String
 		);
 	}
 
-	/**
-	 * Defines which model attributes should be searchable.
-	 *
-	 * @return array
-	 */
-	public function defineSearchableAttributes()
+
+	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-		return array('subject');
+
+		switch ($attribute) {
+
+			default:
+			{
+				return parent::getTableAttributeHtml($element, $attribute);
+			}
+		}
+
 	}
 
 	/**
