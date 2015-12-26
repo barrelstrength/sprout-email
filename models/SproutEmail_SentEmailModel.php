@@ -23,7 +23,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 		$attributes = array(
 			'campaignEntryId'        => array(AttributeType::Number, 'required' => false),
 			'campaignNotificationId' => array(AttributeType::Number, 'required' => false),
-			'subject'                => array(AttributeType::String, 'required' => false),
+			'emailSubject'           => array(AttributeType::String, 'required' => false),
 			'fromEmail'              => array(AttributeType::String, 'required' => false),
 			'fromName'               => array(AttributeType::String, 'required' => false),
 			'toEmail'                => array(AttributeType::String, 'required' => false),

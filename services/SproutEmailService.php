@@ -366,7 +366,8 @@ class SproutEmailService extends BaseApplicationComponent
 	public function logSentEmail($sproutEmailEntry, $emailModel)
 	{
 		$entryId = $sproutEmailEntry->id;
-		$notificationRecord = SproutEmail_NotificationRecord::model()->findById($sproutEmailEntry->campaignId);
+		$notificationRecord = SproutEmail_NotificationRecord::model()->findByAttributes(array('campaignId' => $sproutEmailEntry->campaignId));
+
 		$notificationId = isset($notificationRecord) ? $notificationRecord->id : null;
 
 		$sentModel  = new SproutEmail_SentEmailModel();
@@ -389,13 +390,13 @@ class SproutEmailService extends BaseApplicationComponent
 		$sentModel->campaignNotificationId = $notificationId;
 
 		$sentModel->getContent()->title = $emailModel->subject;
-		$sentModel->subject   = $emailModel->subject;
-		$sentModel->fromEmail = $emailModel->fromEmail;
-		$sentModel->fromName  = $emailModel->fromName;
-		$sentModel->toEmail   = $emailModel->toEmail;
-		$sentModel->body      = $emailModel->body;
-		$sentModel->htmlBody  = $emailModel->htmlBody;
-		$sentModel->sender    = $emailModel->sender;
+		$sentModel->emailSubject 		= $emailModel->subject;
+		$sentModel->fromEmail 			= $emailModel->fromEmail;
+		$sentModel->fromName  			= $emailModel->fromName;
+		$sentModel->toEmail   			= $emailModel->toEmail;
+		$sentModel->body      			= $emailModel->body;
+		$sentModel->htmlBody  			= $emailModel->htmlBody;
+		$sentModel->sender    			= $emailModel->sender;
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 

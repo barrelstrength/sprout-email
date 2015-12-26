@@ -64,15 +64,24 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-				'title'     => array('label' => Craft::t('Title')),
-				'subject'     => array('label' => Craft::t('Subject')),
-				'fromEmail'   => array('label' => Craft::t('From Email')),
-				'dateCreated' => array('label' => Craft::t('Date Created')),
-				'dateUpdated' => array('label' => Craft::t('Date Updated'))
+				'title'        => array('label' => Craft::t('')),
+				'emailSubject' => array('label' => Craft::t('Subject')),
+				'fromEmail'    => array('label' => Craft::t('From Email')),
+				'dateCreated'  => array('label' => Craft::t('Date Created')),
+				'dateUpdated'  => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
 	}
+
+	public function defineSortableAttributes()
+	{
+		return array(
+			'emailSubject' => Craft::t('Subject'),
+			'dateCreated'  => Craft::t('Date Created')
+		);
+	}
+
 
 	/**
 	 * Returns default table columns for table views
@@ -83,8 +92,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	{
 		$attributes = array();
 
-
-		$attributes[] = 'subject';
+		$attributes[] = 'emailSubject';
 		$attributes[] = 'fromEmail';
 		$attributes[] = 'toEmail';
 		$attributes[] = 'dateCreated';
@@ -101,8 +109,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-
-			'subject'     => AttributeType::String,
+			'emailSubject'=> AttributeType::String,
 			'fromEmail'   => AttributeType::String,
 			'toEmail'     => AttributeType::String
 		);
