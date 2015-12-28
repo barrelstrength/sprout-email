@@ -15,7 +15,8 @@
 		</tr>
 		{% if needRule %}
 			<tr>
-				<td> <p style="color: #d00;">{{"Need to set rule for this notification."|t }}</p></td>
+				{% set errorMessage = "Must <a href='" ~ entry.getCpUrl() ~ "' style='color:inherit;text-decoration:underline;'>add trigger event</a> in notification entry before testing." %}
+				<td colspan="2"><p class="error">{{ errorMessage|t|raw }}</p></td>
 			</tr>
 		{% endif %}
 
