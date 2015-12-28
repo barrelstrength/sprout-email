@@ -1,0 +1,49 @@
+{% spaceless %}
+
+{% if loop.first and craft.request.getPost("elementAction") == null %}
+	<div class="tableview">
+	<table id="entries" class="data fullwidth">
+		<thead>
+			<th>Subject</th>
+			<th>Date Created</th>
+			<th>From Email</th>
+			<th>To Email</th>
+			<th>Content</th>
+
+		</thead>
+		<tbody>
+
+{% endif %}
+
+
+		<tr data-id="{{ entry.id }}" data-name="{{ entry.emailSubject|t }}">
+				<td data-titlecell>
+					<a href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ entry.title }}</a>
+				</td>
+
+				<td>
+					{{ entry.dateCreated }}
+				</td>
+
+				<td>
+					{{ entry.fromEmail }}
+				</td>
+
+				<td>
+					{{ entry.toEmail }}
+				</td>
+
+				<td>
+					<a href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
+				</td>
+		</tr>
+
+{% if loop.last and craft.request.getPost("elementAction") == null %}
+
+	 </tbody>
+	</table>
+{% endif %}
+
+</div><!-- tableview  -->
+
+{% endspaceless -%}

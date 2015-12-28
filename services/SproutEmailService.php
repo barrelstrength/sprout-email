@@ -389,7 +389,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$sentModel->campaignEntryId        = $entryId;
 		$sentModel->campaignNotificationId = $notificationId;
 
-		$sentModel->getContent()->title = $emailModel->subject;
+		$sentModel->title 				= $emailModel->subject;
 		$sentModel->emailSubject 		= $emailModel->subject;
 		$sentModel->fromEmail 			= $emailModel->fromEmail;
 		$sentModel->fromName  			= $emailModel->fromName;
@@ -397,6 +397,8 @@ class SproutEmailService extends BaseApplicationComponent
 		$sentModel->body      			= $emailModel->body;
 		$sentModel->htmlBody  			= $emailModel->htmlBody;
 		$sentModel->sender    			= $emailModel->sender;
+
+		$sentModel->getContent()->setAttribute('title', $sentModel->title);
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 

@@ -16,7 +16,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	 */
 	public function hasTitles()
 	{
-		return false;
+		return true;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-				'title'        => array('label' => Craft::t('')),
+				//'title'        => array('label' => Craft::t('')),
 				'emailSubject' => array('label' => Craft::t('Subject')),
 				'fromEmail'    => array('label' => Craft::t('From Email')),
 				'dateCreated'  => array('label' => Craft::t('Date Created')),
@@ -111,7 +111,8 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		return array(
 			'emailSubject'=> AttributeType::String,
 			'fromEmail'   => AttributeType::String,
-			'toEmail'     => AttributeType::String
+			'toEmail'     => AttributeType::String,
+			'dateCreated' => AttributeType::Mixed
 		);
 	}
 
@@ -129,6 +130,32 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 	}
 
+	public function getIndexHtml(
+		$criteria,
+		$disabledElementIds,
+		$viewState,
+		$sourceKey,
+		$context,
+		$includeContainer,
+		$showCheckboxes
+	) {
+
+		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
+		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
+
+		$criteria->limit = null;
+		$criteria->order = sprintf('%s %s', $order, $sort);
+
+		return craft()->templates->render(
+			'sproutemail/sentemails/_entryindex', array(
+				'context'            => $context,
+				'elementType'        => new ElementTypeVariable($this),
+				'disabledElementIds' => $disabledElementIds,
+				'elements'           => $criteria->find(),
+			)
+		);
+	}
+
 	/**
 	 * Modifies an element query targeting elements of this type.
 	 *
@@ -140,8 +167,27 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		// join with the table
-		$query->addSelect('sentemail.*')
+		$query->addSelect('sentemail.*, sentemail.dateCreated')
 			->join('sproutemail_sentemail sentemail', 'sentemail.id = elements.id');
+
+		if ($criteria->order)
+		{
+			// Trying to order by date creates ambiguity errors
+			// Let's make sure mysql knows what we want to sort by
+			if (stripos($criteria->order, 'elements.') === false)
+			{
+				$criteria->order = str_replace('dateCreated', 'sentemail.dateCreated', $criteria->order);
+				$criteria->order = str_replace('dateUpdated', 'sentemail.dateUpdated', $criteria->order);
+			}
+
+			// If we are sorting by title and do not have a source
+			// We won't be able to sort, so bail on it
+			if (stripos($criteria->order, 'title') !== false)
+			{
+				$criteria->order = null;
+			}
+		}
+
 	}
 
 

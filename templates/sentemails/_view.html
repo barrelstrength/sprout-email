@@ -1,0 +1,18 @@
+{% extends "sproutemail/_layouts/base" %}
+
+{% set title  = entry is defined and entry.title is not empty ? entry.title : '' %}
+{% set crumbs = [
+{ label: "Sent Emails"|t, url: url('sproutemail/sentemails') },
+] %}
+{% block main %}
+	<div class="grid first" data-max-cols="3">
+		<div class="item">
+			<div class="pane">
+				{% if entry.body is not empty %}
+					{{ entry.body|raw('html')|nl2br }}
+				{% endif %}
+			</div>
+		</div>
+
+	</div>
+{% endblock %}

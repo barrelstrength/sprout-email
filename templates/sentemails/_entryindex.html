@@ -1,0 +1,7 @@
+{% for entry in elements %}
+
+	{% include 'sproutemail/_partials/sentemailindex' with {
+		entry : entry
+	} %}
+
+{% endfor %}
