@@ -8,6 +8,9 @@
 			<th>Date Created</th>
 			<th>From Email</th>
 			<th>To Email</th>
+			{% if entry.campaignNotificationId is defined %}
+				<th>{{ "Notification Type"|t }}</th>
+			{% endif %}
 			<th>Content</th>
 
 		</thead>
@@ -22,7 +25,7 @@
 				</td>
 
 				<td>
-					{{ entry.dateCreated }}
+					{{ entry.dateCreated|date('m/d/Y') }}
 				</td>
 
 				<td>
@@ -32,6 +35,13 @@
 				<td>
 					{{ entry.toEmail }}
 				</td>
+
+				{% if entry.campaignNotificationId is defined %}
+					<td>
+						{% set notification = craft.sproutEmail.getNotificationById(entry.campaignNotificationId) %}
+						{{ notification.eventId is defined ? notification.eventId : '' }}
+					</td>
+				{% endif %}
 
 				<td>
 					<a href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>

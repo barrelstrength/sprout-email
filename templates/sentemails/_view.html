@@ -8,8 +8,18 @@
 	<div class="grid first" data-max-cols="3">
 		<div class="item">
 			<div class="pane">
-				{% if entry.body is not empty %}
-					{{ entry.body|raw('html')|nl2br }}
+				{% if body is not empty %}
+					<h2>{{ 'Plain Text Email'|t }}</h2>
+					<div class="pane">
+						{{ body|raw('html')|nl2br }}
+					</div>
+					<hr />
+				{% endif %}
+				{% if htmlBody is not empty %}
+					<h2>{{ 'HTML Email'|t }}</h2>
+					<div class="pane">
+						<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="loaderFrame"></iframe>
+					</div>
 				{% endif %}
 			</div>
 		</div>

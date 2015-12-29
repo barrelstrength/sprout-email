@@ -196,6 +196,16 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	}
 
 	/**
+	 * @param id
+	 *
+	 * @return SproutEmail_NotificationRecord
+	 */
+	public function getNotificationById($id)
+	{
+		return $this->getNotification(array('id' => $id ));
+	}
+
+	/**
 	 * @param $id
 	 *
 	 * @return SproutEmailBaseEvent|null

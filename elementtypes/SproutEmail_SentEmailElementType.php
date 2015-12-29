@@ -47,11 +47,50 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 	public function getSources($context = null)
 	{
+		// Grab all of our Notifications
+		$notifications   = SproutEmail_CampaignRecord::model()->with('entries')->findAllByAttributes(array('type' => 'notification'));
+		$notificationIds = array();
+
 		$sources = array(
 			'*' => array(
-				'label'    => Craft::t('All Sent Emails'),
-			)
+				'label' => Craft::t('All Sent Emails'),
+			),
 		);
+
+		if (count($notifications))
+		{
+			// Create a list of Notification IDs we can use as criteria to filter by
+			foreach ($notifications as $notification)
+			{
+				$notificationIds[] = $notification->entries[0]->id;
+			}
+
+			$sources['notifications'] = array(
+				'label'    => Craft::t('Notifications'),
+				'criteria' => array(
+					'campaignEntryId' => $notificationIds
+				)
+			);
+		}
+
+		// Prepare the data for our sources sidebar
+		$campaigns = SproutEmail_CampaignRecord::model()->with('entries')->findAllByAttributes(array('type' => 'email'));;
+
+		if (count($campaigns))
+		{
+			$sources[] = array('heading' => Craft::t('Campaigns'));
+
+			foreach ($campaigns as $campaign)
+			{
+				$key = 'campaign:'.$campaign->entries[0]->id;
+
+				$sources[$key] = array(
+					'label'    => $campaign->name,
+					'data'     => array('campaignEntryId' => $campaign->id),
+					'criteria' => array('campaignEntryId' => $campaign->id)
+				);
+			}
+		}
 
 		return $sources;
 	}
@@ -64,9 +103,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-				//'title'        => array('label' => Craft::t('')),
 				'emailSubject' => array('label' => Craft::t('Subject')),
 				'fromEmail'    => array('label' => Craft::t('From Email')),
+				'campaignNotificationId'    => array('label' => Craft::t('Notification Type')),
 				'dateCreated'  => array('label' => Craft::t('Date Created')),
 				'dateUpdated'  => array('label' => Craft::t('Date Updated'))
 		);
@@ -77,6 +116,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineSortableAttributes()
 	{
 		return array(
+			'campaignNotificationId' => Craft::t('Notification Type'),
 			'emailSubject' => Craft::t('Subject'),
 			'dateCreated'  => Craft::t('Date Created')
 		);
@@ -94,6 +134,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 		$attributes[] = 'emailSubject';
 		$attributes[] = 'fromEmail';
+		$attributes[] = 'campaignNotificationId';
 		$attributes[] = 'toEmail';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
@@ -109,10 +150,12 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'emailSubject'=> AttributeType::String,
-			'fromEmail'   => AttributeType::String,
-			'toEmail'     => AttributeType::String,
-			'dateCreated' => AttributeType::Mixed
+			'campaignNotificationId' => AttributeType::Number,
+			'campaignEntryId' => AttributeType::Number,
+			'emailSubject'    => AttributeType::String,
+			'fromEmail'       => AttributeType::String,
+			'toEmail'         => AttributeType::String,
+			'dateCreated'     => AttributeType::Mixed
 		);
 	}
 
@@ -170,6 +213,11 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$query->addSelect('sentemail.*, sentemail.dateCreated')
 			->join('sproutemail_sentemail sentemail', 'sentemail.id = elements.id');
 
+		if ($criteria->campaignEntryId)
+		{
+			$query->andWhere(DbHelper::parseParam('sentemail.campaignEntryId', $criteria->campaignEntryId, $query->params));
+		}
+
 		if ($criteria->order)
 		{
 			// Trying to order by date creates ambiguity errors
@@ -180,12 +228,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				$criteria->order = str_replace('dateUpdated', 'sentemail.dateUpdated', $criteria->order);
 			}
 
-			// If we are sorting by title and do not have a source
-			// We won't be able to sort, so bail on it
-			if (stripos($criteria->order, 'title') !== false)
-			{
-				$criteria->order = null;
-			}
 		}
 
 	}

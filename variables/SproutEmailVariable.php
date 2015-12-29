@@ -109,6 +109,11 @@ class SproutEmailVariable
 		return sproutEmail()->notifications->getNotificationEntryByCampaignId($id);
 	}
 
+	public function getNotificationById($id)
+	{
+		return sproutEmail()->notifications->getNotificationById($id);
+	}
+
 	/**
 	 * Return Campaign model by passing entry id
 	 * @param $id
