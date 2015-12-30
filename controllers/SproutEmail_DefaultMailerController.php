@@ -89,9 +89,23 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 		}
 
-		$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element']);
+		$recipientListOptions = array();
+		$recipientLists = sproutEmailDefaultMailer()->getRecipientLists();
 
-		$variables['recipientLists']     = sproutEmailDefaultMailer()->getRecipientLists();
+		if(isset($recipientLists))
+		{
+			foreach($recipientLists as $recipientList)
+			{
+				$recipientListOptions[$recipientList->id] = $recipientList->name;
+			}
+		}
+
+		$variables['recipientListsHtml']   = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element']);
+
+		$variables['recipientLists']       = $recipientLists;
+
+		$variables['recipientListOptions'] = $recipientListOptions;
+
 		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/recipients/_edit/'.$variables['id'] :
 				null;
 
@@ -156,7 +170,8 @@ class SproutEmail_DefaultMailerController extends BaseController
 			$model = new SproutEmail_DefaultMailerRecipientModel();
 		}
 
-		$model->setAttributes(craft()->request->getPost('recipient'));
+		$posts = craft()->request->getPost('recipient');
+		$model->setAttributes($posts);
 
 		if ($model->validate() && sproutEmailDefaultMailer()->saveRecipient($model))
 		{
@@ -164,6 +179,10 @@ class SproutEmail_DefaultMailerController extends BaseController
 
 			$this->redirectToPostedUrl($model);
 			craft()->end();
+		}
+		if(empty($posts['recipientLists'][0]))
+		{
+			$model->addError('recipientListId', Craft::t('Recipient list is required. Choose a list.'));
 		}
 
 		craft()->userSession->setError(Craft::t('Unable to save recipient.'));
