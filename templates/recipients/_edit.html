@@ -51,6 +51,18 @@
 
 		{# BEGIN FORM #}
 		<section id="default-fields">
+
+			{% if selectedListId is empty and recipientListOptions is not empty %}
+				{{ forms.selectField({
+					id: "recipientLists",
+					name: "recipient[recipientLists][]",
+					label: "Choose a recipient list."|t,
+					options: [{label: "Select list..."|t, value: null}]|merge(recipientListOptions),
+					value:  element.recipientLists[0] is defined ? element.recipientLists[0] : null,
+					errors: element is defined and element.hasErrors('recipientListId') ? element.getErrors('recipientListId') : null
+				}) }}
+			{% endif %}
+
 			{{ forms.textField({
 				id: 'email',
 				name: 'recipient[email]',
