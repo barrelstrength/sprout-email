@@ -20,7 +20,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 */
 	public function getTitle()
 	{
-		return Craft::t('When an order is completed.');
+		return Craft::t('When an Craft Commerce order is completed.');
 	}
 
 	/**

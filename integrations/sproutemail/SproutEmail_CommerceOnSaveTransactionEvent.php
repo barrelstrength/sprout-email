@@ -20,7 +20,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	 */
 	public function getTitle()
 	{
-		return Craft::t('When payment is made on an order.');
+		return Craft::t('When a Craft Commerce transaction is saved.');
 	}
 
 	/**

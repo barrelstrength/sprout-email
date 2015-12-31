@@ -20,7 +20,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function getTitle()
 	{
-		return Craft::t('When an order status is changed.');
+		return Craft::t('When an Craft Commerce order status is changed.');
 	}
 
 	/**
