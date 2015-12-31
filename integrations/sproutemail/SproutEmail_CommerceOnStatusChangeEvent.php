@@ -43,7 +43,8 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		return array(
-			'value' => $event->params['order']
+			'value' 	   => $event->params['order'],
+			'orderHistory' => $event->params['orderHistory']
 		);
 	}
 
@@ -77,16 +78,25 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, Commerce_OrderModel  $order, array $params = array())
 	{
-		if(!empty($options['commerceOrderStatuses']))
+		// This will ensure that order updated at the backend only get triggered.
+		$prevStatusId = $params['orderHistory']->prevStatusId;
+		if($prevStatusId != null)
 		{
-			// Get first transaction which is the current transaction
-			if (!in_array($order->orderStatusId, $options['commerceOrderStatuses']))
+			if(!empty($options['commerceOrderStatuses']))
 			{
-				return false;
+				// Get first transaction which is the current transaction
+				if (!in_array($order->orderStatusId, $options['commerceOrderStatuses']))
+				{
+					return false;
+				}
 			}
-		}
 
-		return true;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public function getAllOrderStatuses()
