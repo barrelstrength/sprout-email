@@ -26,10 +26,20 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 			'email'          => array(AttributeType::Email, 'required' => true),
 			'firstName'      => array(AttributeType::String, 'required' => false),
 			'lastName'       => array(AttributeType::String, 'required' => false),
-			'recipientLists' => array(AttributeType::Mixed, 'required' => true)
+			'recipientLists' => array(AttributeType::Mixed)
 		);
 
 		return array_merge(parent::defineAttributes(), $defaults);
+	}
+
+
+	public function rules()
+	{
+		$rules = parent::rules();
+
+		$rules[] = ['recipientLists', 'required', 'message' => Craft::t('Please choose a recipient list.')];
+
+		return $rules;
 	}
 
 	/**
