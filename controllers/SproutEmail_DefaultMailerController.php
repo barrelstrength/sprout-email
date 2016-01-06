@@ -64,7 +64,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 	{
 		$variables['title']              = Craft::t('Recipient');
 		$variables['recipientListsHtml'] = null;
-
+		$defaultRecipientList = array();
 		// @todo - Refactor and improve
 		if(isset($variables['recipient']))
 		{
@@ -86,6 +86,12 @@ class SproutEmail_DefaultMailerController extends BaseController
 			{
 				$variables['title']   		= Craft::t('New Recipient');
 				$variables['element'] 		= new SproutEmail_DefaultMailerRecipientModel();
+
+				$recipientListId = craft()->request->getParam('recipientListId');
+				if($recipientListId != null)
+				{
+					$defaultRecipientList[] = $recipientListId;
+				}
 			}
 		}
 
@@ -100,7 +106,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 		}
 
-		$variables['recipientListsHtml']   = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element']);
+		$variables['recipientListsHtml']   = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element'], $defaultRecipientList);
 
 		$variables['recipientLists']       = $recipientLists;
 
