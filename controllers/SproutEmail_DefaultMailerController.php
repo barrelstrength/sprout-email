@@ -180,10 +180,6 @@ class SproutEmail_DefaultMailerController extends BaseController
 			$this->redirectToPostedUrl($model);
 			craft()->end();
 		}
-		if(empty($posts['recipientLists'][0]))
-		{
-			$model->addError('recipientListId', Craft::t('Recipient list is required. Choose a list.'));
-		}
 
 		craft()->userSession->setError(Craft::t('Unable to save recipient.'));
 		craft()->urlManager->setRouteVariables(array('recipient' => $model));

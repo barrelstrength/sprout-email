@@ -52,17 +52,6 @@
 		{# BEGIN FORM #}
 		<section id="default-fields">
 
-			{% if selectedListId is empty and recipientListOptions is not empty %}
-				{{ forms.selectField({
-					id: "recipientLists",
-					name: "recipient[recipientLists][]",
-					label: "Choose a recipient list."|t,
-					options: [{label: "Select list..."|t, value: null}]|merge(recipientListOptions),
-					value:  element.recipientLists[0] is defined ? element.recipientLists[0] : null,
-					errors: element is defined and element.hasErrors('recipientListId') ? element.getErrors('recipientListId') : null
-				}) }}
-			{% endif %}
-
 			{{ forms.textField({
 				id: 'email',
 				name: 'recipient[email]',
@@ -91,41 +80,37 @@
 		</div>
 	</div>
 
-	{% if element.id is defined and element.id %}
+	<div class="item" data-position="right" data-colspan="1">
+		<div class="pane meta">
+			<div class="field">
+				<div class="heading">
+					<label>Recipient Lists</label>
+				</div>
+				<div class="input">
+					{{ recipientListsHtml }}
+				</div>
+			</div>
 
-		<div class="item" data-position="right" data-colspan="1">
-			<div class="pane meta">
-				<div class="field">
-					<div class="heading">
-						<label>Recipient Lists</label>
-					</div>
-					<div class="input">
-						{{ recipientListsHtml }}
-					</div>
+			{% set statusInput %}
+
+				<div class="right">
+					<input
+							type="button"
+							class="btn small formsubmit"
+							data-action="sproutEmail/defaultMailer/deleteRecipient"
+							data-confirm="{{ 'Are you sure you want to delete this recipient?'|t }}"
+							data-redirect="sproutemail/recipients"
+							value="{{ 'Delete'|t }}">
 				</div>
 
-				{% set statusInput %}
+			{% endset %}
 
-					<div class="right">
-						<input
-								type="button"
-								class="btn small formsubmit"
-								data-action="sproutEmail/defaultMailer/deleteRecipient"
-								data-confirm="{{ 'Are you sure you want to delete this recipient?'|t }}"
-								data-redirect="sproutemail/recipients"
-								value="{{ 'Delete'|t }}">
-					</div>
+			{{ forms.field({
+				label: '&nbsp;'
+			}, statusInput) }}
 
-				{% endset %}
-
-				{{ forms.field({
-					label: '&nbsp;'
-				}, statusInput) }}
-
-			</div>
 		</div>
-
-	{% endif %}
+	</div>
 
 </div>
 
