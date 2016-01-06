@@ -14,7 +14,21 @@ class SproutEmail_SentEmailController extends BaseController
 		{
 			// Get only the body content
 			preg_match("/<body[^>]*>(.*?)<\/body>/is", $entry->htmlBody, $matches);
-			$htmlBody = $matches[1];
+			if(!empty($matches))
+			{
+				$htmlBody = $matches[1];
+				$string = trim(preg_replace('/\s+/', ' ', $matches[1]));
+
+				craft()->templates->includeJsResource('sproutemail/js/sentemail.js');
+				craft()->templates->includeJs("
+					 new Craft.SproutSentEmail('" . $string . "');
+				");
+			}
+			else
+			{
+				$entry->body = $entry->htmlBody;
+				$htmlBody = '';
+			}
 		}
 		else
 		{
@@ -24,15 +38,6 @@ class SproutEmail_SentEmailController extends BaseController
 
 		$variables['body'] 	   = $body;
 		$variables['htmlBody'] = $htmlBody;
-
-		$string = trim(preg_replace('/\s+/', ' ', $matches[1]));
-
-		$a = stripslashes($string);
-
-		craft()->templates->includeJsResource('sproutemail/js/sentemail.js');
-		craft()->templates->includeJs("
-			 new Craft.SproutSentEmail('" . $string . "');
-		");
 
 		$this->renderTemplate('sproutemail/sentemails/_view', $variables);
 	}
