@@ -47,21 +47,8 @@
 		{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
 		{% if craft.isLocalized() %}<input type="hidden" name="locale" value="{{ element.locale }}">{% endif %}
 
-
-
 		{# BEGIN FORM #}
 		<section id="default-fields">
-
-			{% if selectedListId is empty and recipientListOptions is not empty %}
-				{{ forms.selectField({
-					id: "recipientLists",
-					name: "recipient[recipientLists][]",
-					label: "Recipient List"|t,
-					options: [{label: "Select list..."|t, value: null}]|merge(recipientListOptions),
-					value:  element.recipientLists[0] is defined ? element.recipientLists[0] : null,
-					errors: element is defined and element.hasErrors('recipientListId') ? element.getErrors('recipientListId') : null
-				}) }}
-			{% endif %}
 
 			{{ forms.textField({
 				id: 'email',
