@@ -314,6 +314,32 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			}
 		}
 
+		$errors = array();
+		$emailTemplate = $campaign->template;
+		if(empty($emailTemplate))
+		{
+			$errors[] = Craft::t('Could not send test email because the email template is empty.');
+		}
+		else
+		{
+			// Look for the template
+			$oldPath = craft()->path->getTemplatesPath();
+
+			$siteTemplatesPath = craft()->path->getSiteTemplatesPath();
+
+			craft()->path->setTemplatesPath($siteTemplatesPath);
+
+			$find = craft()->templates->findTemplate($emailTemplate);
+			if($find == false)
+			{
+				$errors[] = Craft::t('Could not send test email because the email template could not be found.');
+			}
+
+			craft()->path->setTemplatesPath($oldPath);
+		}
+
+
+
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',
 			array(
@@ -321,6 +347,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 				'campaign'  => $campaign,
 				'recipient' => $email,
 				'needRule'  => $needRule,
+				'errors'	=> $errors
 			)
 		);
 	}

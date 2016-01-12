@@ -20,22 +20,35 @@
 			</tr>
 		{% endif %}
 
+		{% if errors is not empty %}
+			<tr>
+				<td>
+					{% for error in errors %}
+						<p class="error">{{ error }}</p>
+					{% endfor %}
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+		{% endif %}
 	</tbody>
 </table>
 
 <div class="buttons right">
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
-	<button
-		{% if needRule %} disabled style="opacity: 0.25;" {% endif %}
-		data-mailer="defaultmailer"
-		data-action="sproutEmail/entry/export"
-		data-entry-id="{{ entry.id }}"
-		data-campaign-id="{{ campaign.id }}"
-		class="btn submit actions">
-		{% if campaign.isNotification() %}
-			{{- "Send Test"|t -}}
-		{% else %}
-			{{- "Send Campaign"|t -}}
-		{% endif %}
-	</button>
+
+	{% if errors is empty %}
+		<button
+			{% if needRule %} disabled style="opacity: 0.25;" {% endif %}
+			data-mailer="defaultmailer"
+			data-action="sproutEmail/entry/export"
+			data-entry-id="{{ entry.id }}"
+			data-campaign-id="{{ campaign.id }}"
+			class="btn submit actions">
+			{% if campaign.isNotification() %}
+				{{- "Send Test"|t -}}
+			{% else %}
+				{{- "Send Campaign"|t -}}
+			{% endif %}
+		</button>
+	{% endif %}
 </div>
