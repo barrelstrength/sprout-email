@@ -39,7 +39,7 @@ SproutModal.prototype.init = function ()
 				return self.createErrorModal(response.message);
 			}
 
-			// Close error loading modal if no error
+			// Close error loading modal if no error on request
 			if(modalLoader != null)
 			{
 				modalLoader.hide();
