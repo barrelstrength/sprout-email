@@ -21,10 +21,10 @@ SproutModal.prototype.init = function ()
 		e.preventDefault();
 
 		var $t = $(e.target);
-
+		var modalLoader = null;
 		if ($t.data('mailer') === 'copypaste')
 		{
-			self.createLoadingModal();
+			modalLoader = self.createLoadingModal();
 		}
 
 		self.postToControllerAction($t.data(), function handle(error, response)
@@ -38,6 +38,14 @@ SproutModal.prototype.init = function ()
 			{
 				return self.createErrorModal(response.message);
 			}
+
+			// Close error loading modal if no error
+			if(modalLoader != null)
+			{
+				modalLoader.hide();
+				modalLoader.destroy();
+			}
+
 
 			self.create(response.content);
 		});
@@ -181,5 +189,6 @@ SproutModal.prototype.createLoadingModal = function()
 
 	var modal = new SproutModal();
 
-	modal.create($content.html());
+	return modal.create($content.html());
+
 };
