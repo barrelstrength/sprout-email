@@ -1,10 +1,17 @@
-{{ forms.field({
-		label: "Order Statuses"|t,
-		instructions: "Select status or leave unchecked for all statuses."|t,
-		errors: errors is defined ? errors : null,
-	},
-	forms.checkboxGroup({
-		name: "commerceOrderStatuses",
-		options : statuses,
-		values: options.commerceStatuses is defined ? options.commerceStatuses : null
-})) }}
+{{ forms.checkboxSelectField({
+	label: "Old Status"|t,
+	name: "commerceOrderStatuses",
+	options : statuses,
+	values: options.commerceOrderStatuses is defined ? options.commerceOrderStatuses : null,
+	errors: errors is defined ? errors : null,
+}) }}
+
+{{ forms.checkboxSelectField({
+	label: "New Status"|t,
+	name: "commerceOrderStatuses",
+	options : statuses,
+	values: options.commerceOrderStatuses is defined ? options.commerceOrderStatuses : null,
+	errors: errors is defined ? errors : null,
+}) }}
+
+<p class="light"><em>An event will be triggered when an order is updated from an Old Status to a New Status.</em></p>

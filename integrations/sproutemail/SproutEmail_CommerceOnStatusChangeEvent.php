@@ -20,7 +20,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function getTitle()
 	{
-		return Craft::t('When an Craft Commerce order status is changed.');
+		return Craft::t('When an Craft Commerce order status is changed');
 	}
 
 	/**
@@ -30,7 +30,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function getDescription()
 	{
-		return Craft::t('Triggers when an order status is changed.');
+		return Craft::t('Triggers when an order status is changed');
 	}
 
 	/**
@@ -78,25 +78,20 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, Commerce_OrderModel  $order, array $params = array())
 	{
-		// This will ensure that order updated at the backend only get triggered.
+		// This ensures that we will only trigger orders being updated
 		$prevStatusId = $params['orderHistory']->prevStatusId;
-		if($prevStatusId != null)
-		{
-			if(!empty($options['commerceOrderStatuses']))
-			{
-				// Get first transaction which is the current transaction
-				if (!in_array($order->orderStatusId, $options['commerceOrderStatuses']))
-				{
-					return false;
-				}
-			}
 
-			return true;
-		}
-		else
+		if(!$prevStatusId OR empty($options['commerceOrderStatuses']))
 		{
 			return false;
 		}
+
+		if (in_array($order->orderStatusId, $options['commerceOrderStatuses']))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	public function getAllOrderStatuses()
