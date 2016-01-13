@@ -36,9 +36,8 @@
 <div class="buttons right">
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
 
-	{% if errors is empty %}
 		<button
-			{% if needRule %} disabled style="opacity: 0.25;" {% endif %}
+			{% if needRule or errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
 			data-action="sproutEmail/entry/export"
 			data-entry-id="{{ entry.id }}"
@@ -50,5 +49,5 @@
 				{{- "Send Campaign"|t -}}
 			{% endif %}
 		</button>
-	{% endif %}
+
 </div>
