@@ -13,19 +13,15 @@
 				{{ recipient }}
 			</td>
 		</tr>
-		{% if needRule %}
-			<tr>
-				{% set errorMessage = "Must <a href='" ~ entry.getCpUrl() ~ "' style='color:inherit;text-decoration:underline;'>add trigger event</a> in notification entry before testing." %}
-				<td colspan="2"><p class="error">{{ errorMessage|t|raw }}</p></td>
-			</tr>
-		{% endif %}
 
 		{% if errors is not empty %}
 			<tr>
-				<td>
+				<td colspan="2">
+					<ul class="error bullets">
 					{% for error in errors %}
-						<p class="error">{{ error }}</p>
+						<li>{{ error | raw }}</li>
 					{% endfor %}
+					</ul>
 				</td>
 				<td>&nbsp;</td>
 			</tr>
@@ -37,7 +33,7 @@
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
 
 		<button
-			{% if needRule or errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
+			{% if errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
 			data-action="sproutEmail/entry/export"
 			data-entry-id="{{ entry.id }}"
@@ -51,3 +47,10 @@
 		</button>
 
 </div>
+
+<style>
+	.error a {
+		color: inherit;
+		text-decoration: underline;
+	}
+</style>
