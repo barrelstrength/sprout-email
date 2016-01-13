@@ -112,7 +112,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array
@@ -189,7 +189,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel             $campaign
+	 * @param SproutEmail_CampaignModel $campaign
 	 * @param BaseModel|BaseElementModel|array|null $element
 	 *
 	 * @return bool
@@ -200,7 +200,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @throws \Exception
@@ -238,8 +238,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 					'message'       => $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
 				)
 			);
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			sproutEmail()->error($e->getMessage());
 
@@ -255,7 +254,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array
@@ -269,8 +268,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			$this->getService()->exportEntry($entry, $campaign);
 
 			$success = true;
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			sproutEmail()->error($e->getMessage());
 		}
@@ -288,7 +286,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return string
@@ -302,23 +300,26 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			$email = craft()->userSession->getUser()->email;
 		}
 
-		$needRule = false;
+		$errors = array();
 
-		if($campaign->isNotification())
+		if ($campaign->isNotification())
 		{
 			$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaign->id));
 
-			if($notification == null)
+			if (is_null($notification))
 			{
-				$needRule = true;
+				$notificationEditUrl = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $entry->id);
+
+				$errors[] = Craft::t('No Event is selected. <a href="' . $notificationEditUrl .
+					'">Edit Notification</a>.');
 			}
 		}
 
-		$errors = array();
-		$emailTemplate = $campaign->template;
-		if(empty($emailTemplate))
+		if (empty($campaign->template))
 		{
-			$errors[] = Craft::t('Could not send test email because the email template is empty.');
+			$notificationEditUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
+
+			$errors[] = Craft::t('Email Template setting is blank. <a href="' . $notificationEditUrl . '">Edit Settings</a>.');
 		}
 		else
 		{
@@ -329,16 +330,17 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 
 			craft()->path->setTemplatesPath($siteTemplatesPath);
 
-			$find = craft()->templates->findTemplate($emailTemplate);
-			if($find == false)
+			$templateExists = craft()->templates->findTemplate($campaign->template);
+
+			if (!$templateExists)
 			{
-				$errors[] = Craft::t('Could not send test email because the email template could not be found.');
+				$notificationEditUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
+
+				$errors[] = Craft::t('Email template could not be found. <a href="' . $notificationEditUrl . '">Edit Settings</a>.');
 			}
 
 			craft()->path->setTemplatesPath($oldPath);
 		}
-
-
 
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',
@@ -346,8 +348,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 				'entry'     => $entry,
 				'campaign'  => $campaign,
 				'recipient' => $email,
-				'needRule'  => $needRule,
-				'errors'	=> $errors
+				'errors'    => $errors
 			)
 		);
 	}
