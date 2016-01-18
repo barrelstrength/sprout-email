@@ -189,6 +189,12 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
+		// Add this to prevent search error
+		if (!empty($viewState['order']) && $viewState['order'] == 'score')
+		{
+			$criteria->order = 'score';
+		}
+
 		return craft()->templates->render(
 			'sproutemail/sentemails/_entryindex', array(
 				'context'            => $context,
@@ -231,7 +237,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		}
 
 	}
-
 
 	/**
 	 * Populates an element model based on a query result.
