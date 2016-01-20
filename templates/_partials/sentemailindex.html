@@ -4,14 +4,12 @@
 	<div class="tableview">
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th>Subject</th>
-			<th>Date Created</th>
-			<th>From Email</th>
-			<th>To Email</th>
-			{% if entry.campaignNotificationId is defined %}
-				<th>{{ "Notification Type"|t }}</th>
-			{% endif %}
-			<th>Content</th>
+			<th>{{ "Subject"|t }}</th>
+			<th>{{ "Send Date"|t }}</th>
+			<th>{{ "Sender"|t }}</th>
+			<th>{{ "Recipient"|t }}</th>
+
+			<th>&nbsp;</th>
 
 		</thead>
 		<tbody>
@@ -25,7 +23,7 @@
 				</td>
 
 				<td>
-					{{ entry.dateCreated|date('m/d/Y') }}
+					{{ entry.dateCreated|date('F d, Y H:i a') }}
 				</td>
 
 				<td>
@@ -35,13 +33,6 @@
 				<td>
 					{{ entry.toEmail }}
 				</td>
-
-				{% if entry.campaignNotificationId is defined %}
-					<td>
-						{% set notification = craft.sproutEmail.getNotificationById(entry.campaignNotificationId) %}
-						{{ notification.eventId is defined ? notification.eventId : '' }}
-					</td>
-				{% endif %}
 
 				<td>
 					<a href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
