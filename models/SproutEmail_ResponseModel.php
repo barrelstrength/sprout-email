@@ -69,9 +69,10 @@ class SproutEmail_ResponseModel extends BaseModel
 	public function defineAttributes()
 	{
 		return array(
-			'success' => array(AttributeType::Bool, 'default' => false),
-			'message' => array(AttributeType::Bool, 'default' => null),
-			'content' => array(AttributeType::String, 'required' => true),
+			'success'    => array(AttributeType::Bool, 'default' => false),
+			'message'    => array(AttributeType::Bool, 'default' => null),
+			'content'    => array(AttributeType::String, 'required' => true),
+			'emailModel' => array(AttributeType::Mixed, 'required' => false)
 		);
 	}
 }

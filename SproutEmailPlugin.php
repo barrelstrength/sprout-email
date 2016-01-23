@@ -207,7 +207,7 @@ class SproutEmailPlugin extends BasePlugin
 			");
 		}
 
-		// Logs sent element types
+		// Logs sent element types for notifications
 		craft()->on('email.onSendEmail', function(Event $event) {
 
 			$variables  = $event->params['variables'];
@@ -220,6 +220,14 @@ class SproutEmailPlugin extends BasePlugin
 			{
 				sproutEmail()->logSentEmail($sproutEmailEntry, $emailModel);
 			}
+		});
+
+		craft()->on('sproutEmail_mailer.onExportEntry', function(Event $event) {
+
+			$entryModel = $event->params['entryModel'];
+			$emailModel = $event->params['emailModel'];
+
+			sproutEmail()->logSentEmail($entryModel, $emailModel);
 		});
 	}
 

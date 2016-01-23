@@ -533,4 +533,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', $vars));
 		}
 	}
+
+	public function onExportEntry(SproutEmail_EntryModel $model, $emailModel)
+	{
+		$event = new Event($this, array('entryModel' => $model, 'emailModel' => $emailModel));
+		$this->raiseEvent('onExportEntry', $event);
+	}
 }
