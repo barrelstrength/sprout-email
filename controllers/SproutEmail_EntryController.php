@@ -183,8 +183,11 @@ class SproutEmail_EntryController extends BaseController
 				{
 					if($response->success == true)
 					{
-						$emailModel = $response->emailModel;
-						sproutEmail()->mailers->onExportEntry($entry, $emailModel);
+						if($response->emailModel != null)
+						{
+							$emailModel = $response->emailModel;
+							sproutEmail()->mailers->onExportEntry($entry, $emailModel);
+						}
 					}
 
 					$this->returnJson($response);

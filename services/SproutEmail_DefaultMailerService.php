@@ -597,6 +597,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
+		$response = array();
+
 		if ($campaign->isNotification())
 		{
 			try
@@ -655,6 +657,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				throw $e;
 			}
 		}
+
+		$response['emailModel'] = $email;
+
+		return $response;
 	}
 
 
