@@ -165,10 +165,6 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings/examples' =>
 			'sproutemail/settings/_tabs/examples',
 
-			// Show sent emails content
-			'sproutemail/sentemails/view/(?P<entryId>\d+)' => array(
-				'action' => 'sproutEmail/sentEmail/showSentEmailTemplate'
-			),
 		));
 	}
 

@@ -35,7 +35,7 @@
 				</td>
 
 				<td>
-					<a href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
+					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-entry-id="{{ entry.id }}" href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
 				</td>
 		</tr>
 
@@ -43,6 +43,8 @@
 
 	 </tbody>
 	</table>
+
+	{% include "sproutemail/_modals/box" %}
 {% endif %}
 
 </div><!-- tableview  -->

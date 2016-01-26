@@ -195,6 +195,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			$criteria->order = 'score';
 		}
 
+		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
+		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
+
 		return craft()->templates->render(
 			'sproutemail/sentemails/_entryindex', array(
 				'context'            => $context,

@@ -3,9 +3,14 @@ namespace Craft;
 
 class SproutEmail_SentEmailController extends BaseController
 {
-	public function actionShowSentEmailTemplate(array $variables = array())
+
+	public function actionGetViewContentModal()
 	{
-		$entryId = $variables['entryId'];
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$variables  = array();
+		$entryId    = craft()->request->getRequiredPost('entryId');
 
 		$entry = SproutEmail_SentEmailRecord::model()->findById($entryId);
 		$variables['entry']    = $entry;
@@ -18,11 +23,8 @@ class SproutEmail_SentEmailController extends BaseController
 			{
 				$htmlBody = $matches[1];
 				$string = trim(preg_replace('/\s+/', ' ', $matches[1]));
+				$htmlBody = $string;
 
-				craft()->templates->includeJsResource('sproutemail/js/sentemail.js');
-				craft()->templates->includeJs("
-					 new Craft.SproutSentEmail('" . $string . "');
-				");
 			}
 			else
 			{
@@ -39,6 +41,11 @@ class SproutEmail_SentEmailController extends BaseController
 		$variables['body'] 	   = $body;
 		$variables['htmlBody'] = $htmlBody;
 
-		$this->renderTemplate('sproutemail/sentemails/_view', $variables);
+		$output = craft()->templates->render('sproutemail/sentemails/_view', $variables);
+
+		$response = new SproutEmail_ResponseModel();
+		$response->content =$output;
+		$response->success = true;
+		$this->returnJson($response->getAttributes());
 	}
 }

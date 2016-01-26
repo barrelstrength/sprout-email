@@ -26,7 +26,7 @@ SproutModal.prototype.init = function ()
 		{
 			self.createLoadingModal();
 		}
-
+		
 		self.postToControllerAction($t.data(), function handle(error, response)
 		{
 			if (error)

@@ -1,0 +1,36 @@
+{# Placeholder Sprout Modal #}
+<div id="sproutmodal" class="modal fitted hidden" style="padding: 1em;">
+	<div class="body">
+		<div id="content"></div>
+		<div class="spinner hidden"></div>
+	</div>
+</div>
+
+{# Placeholder Sprout Modal Content #}
+<div id="sproutmodalcontent" class="hidden" style="padding: 1em;">
+	<h2>Response Message</h2>
+	<p class="innercontent error"></p>
+	<hr>
+	<div class="buttons right">
+		<button id="close" class="btn">{{ "Close"|t }}</button>
+	</div>
+</div>
+
+{# Placeholder Sprout Modal Loading #}
+<div id="sproutmodalloading" class="hidden" style="padding: 1em;">
+	<h2>Loading...</h2>
+	<div class="spinner"></div>
+</div>
+{% set statusSnippet %}
+.status.ready {
+background-position: 0 0; // @green
+}
+.status.pending {
+background-position: 0 -10px; // @orange
+}
+.status.disabled {
+background-position: 0 -20px; // @red
+}
+{% endset %}
+
+{% includeCss(statusSnippet) %}
