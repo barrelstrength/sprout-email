@@ -116,7 +116,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineSortableAttributes()
 	{
 		return array(
-			'campaignNotificationId' => Craft::t('Notification Type'),
 			'emailSubject' => Craft::t('Subject'),
 			'dateCreated'  => Craft::t('Date Created')
 		);
