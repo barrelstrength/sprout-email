@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m160122_065238_sproutEmail_addSentEmail extends BaseMigration
+class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -24,30 +24,44 @@ class m160122_065238_sproutEmail_addSentEmail extends BaseMigration
 			craft()->db->createCommand()->createTable($tableName, array(
 				'id'                 		=> array('column' => 'integer', 'required' => true, 'primaryKey' => true),
 				'campaignEntryId'    		=> array('column' => 'integer', 'required' => true),
-				'campaignNotificationId'    => array('column' => 'integer'),
-				'emailSubject' 				=> array('column' => 'text'),
-				'title' 					=> array('column' => 'text'),
-				'fromEmail' 				=> array(
-													'maxLength' => 255,
-													'column' => 'varchar'
-												),
+				'campaignNotificationId'    => array('column' => 'integer', 'required' => false),
+				'emailSubject' 			=> array(
+					'required' => false,
+					'column' => 'text'
+				),
+				'title' 					=> array(
+					'required' => false,
+					'column' => 'text'
+				),
+				'fromEmail' 				=>  array(
+					'required' => false,
+					'column'   => 'text'
+				),
 				'fromName' 					=> array(
-													'maxLength' => 255,
-													'column' => 'varchar'
-												),
+					'required' => false,
+					'column'   => 'text'
+				),
 				'toEmail' 					=> array(
-													'maxLength' => 255,
-													'column' => 'varchar'
-												),
-				'body' 						=> array('column' => 'text'),
-				'htmlBody' 					=> array('column' => 'text'),
-				'sender' 					=> array('column' => 'text'),
+					'required' => false,
+					'column'   => 'text'
+				),
+				'body' 						=> array(
+					'required' => false,
+					'column'   => 'text'
+				),
+				'htmlBody' 					=> array(
+					'required' => false,
+					'column'   => 'text'
+				)
 
 			), null, false);
 
 			// Add foreign keys to craft_sproutemail_campaigns_entries
 			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE', null);
 			craft()->db->createCommand()->addForeignKey($tableName, 'campaignEntryId', 'sproutemail_campaigns_entries', 'id', 'CASCADE', null);
+			craft()->db->createCommand()->addForeignKey($tableName, 'campaignNotificationId', 'sproutemail_campaigns_notifications', 'id', 'SET NULL', null);
+
+
 		}
 
 		return true;
