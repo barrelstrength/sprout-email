@@ -55,7 +55,7 @@
 			</td>
 	</tr>
 
-{% if loop.last and craft.request.getPost("elementAction") == null %}
+{% if loop.last %}
 	 </tbody>
 	</table>
 
@@ -82,6 +82,7 @@
 		<h2>Loading...</h2>
 		<div class="spinner"></div>
 	</div>
+
 {% set statusSnippet %}
 	.status.ready {
 		background-position: 0 0; // @green
