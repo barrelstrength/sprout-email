@@ -1,16 +1,16 @@
 {{ forms.checkboxSelectField({
 	label: "Old Status"|t,
-	name: "commerceOrderStatuses",
+	name: "commerceOrderStatuses[old]",
 	options : statuses,
-	values: options.commerceOrderStatuses is defined ? options.commerceOrderStatuses : null,
+	values: options.commerceOrderStatuses.old is defined ? options.commerceOrderStatuses.old : null,
 	errors: errors is defined ? errors : null,
 }) }}
 
 {{ forms.checkboxSelectField({
 	label: "New Status"|t,
-	name: "commerceOrderStatuses",
+	name: "commerceOrderStatuses[new]",
 	options : statuses,
-	values: options.commerceOrderStatuses is defined ? options.commerceOrderStatuses : null,
+	values: options.commerceOrderStatuses.new is defined ? options.commerceOrderStatuses.new : null,
 	errors: errors is defined ? errors : null,
 }) }}
 

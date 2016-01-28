@@ -86,7 +86,11 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 			return false;
 		}
 
-		if (in_array($order->orderStatusId, $options['commerceOrderStatuses']))
+		$newStatusId = $order->orderStatusId;
+		
+		$isMatch = $this->isOldAndNewMatch($prevStatusId, $newStatusId, $options);
+
+		if($isMatch == true)
 		{
 			return true;
 		}
@@ -112,5 +116,17 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 		}
 
 		return $options;
+	}
+
+	private function isOldAndNewMatch($oldId, $newId, $options)
+	{
+		if (in_array($oldId, $options['commerceOrderStatuses']['old']) AND in_array($newId, $options['commerceOrderStatuses']['new']))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
