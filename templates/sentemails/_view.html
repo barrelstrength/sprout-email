@@ -1,26 +1,69 @@
+<div class="btngroup sproutemail-right sentemail-btngroup">
+	<button data-box="text" class="btn active sentemail-btn">{{ 'Text'|t }}</button> <button data-box="html" class="btn sentemail-btn">{{ 'HTML'|t }}</button>
+</div>
+
+<div class="sproutemail-clear"></div>
 {% if body is not empty %}
-	<h2>{{ 'Plain Text Email'|t }}</h2>
-	<div class="pane">
+	<div class="pane sentemail-pane active sentemail-text">
+		<h2>{{ 'Plain Text Email'|t }}</h2>
+		<hr />
 		{{ body|raw('html')|nl2br }}
 	</div>
-	<hr />
+
 {% endif %}
 {% if htmlBody is not empty %}
-	<h2>{{ 'HTML Email'|t }}</h2>
-	<div class="pane">
+
+	<div class="pane sentemail-pane sentemail-html">
+		<h2>{{ 'HTML Email'|t }}</h2>
+		<hr />
 		<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="loaderFrame"></iframe>
 	</div>
 
-		<script type="text/javascript">
+	<script type="text/javascript">
 
-				// This will disable current file global css styles
-				if(jQuery('#loaderFrame').length)
-				{
-					jQuery('#loaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
-				}
-		</script>
+			// This will disable current file global css styles
+			if(jQuery('#loaderFrame').length)
+			{
+				jQuery('#loaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
+			}
+
+			jQuery(".sentemail-btn").click(function() {
+
+				jQuery(".sentemail-btn").removeClass('active');
+				jQuery(this).addClass('active');
+
+				var box = jQuery(this).data('box');
+				var boxClass = ".sentemail-" + box;
+
+				jQuery('.sentemail-pane').removeClass('active');
+				jQuery(boxClass).addClass('active');
+
+			})
+	</script>
 
 {% endif %}
+
+<style type="text/css">
+
+	.sentemail-pane {
+		display: none;
+		min-height: 500px;
+		min-width: 500px
+	}
+
+	.sentemail-pane.active {
+		display: block;
+	}
+
+	.sproutemail-right {
+		float: right;
+	}
+
+	.sproutemail-clear {
+		clear: both;
+	}
+
+</style>
 
 
 
