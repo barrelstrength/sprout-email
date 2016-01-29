@@ -87,15 +87,10 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 		}
 
 		$newStatusId = $order->orderStatusId;
-		
+
 		$isMatch = $this->isOldAndNewMatch($prevStatusId, $newStatusId, $options);
 
-		if($isMatch == true)
-		{
-			return true;
-		}
-
-		return false;
+		return $isMatch;
 	}
 
 	public function getAllOrderStatuses()
@@ -120,6 +115,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 
 	private function isOldAndNewMatch($oldId, $newId, $options)
 	{
+
 		if (in_array($oldId, $options['commerceOrderStatuses']['old']) AND in_array($newId, $options['commerceOrderStatuses']['new']))
 		{
 			return true;
