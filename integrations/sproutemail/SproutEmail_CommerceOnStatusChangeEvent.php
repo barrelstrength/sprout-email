@@ -116,7 +116,23 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	private function isOldAndNewMatch($oldId, $newId, $options)
 	{
 
-		if (in_array($oldId, $options['commerceOrderStatuses']['old']) AND in_array($newId, $options['commerceOrderStatuses']['new']))
+		if (($this->isSettingsMatch($oldId, 'old', $options) OR $options['commerceOrderStatuses']['old'] == "*")
+			AND
+			($this->isSettingsMatch($newId, 'new', $options) OR $options['commerceOrderStatuses']['new'] == "*"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private function isSettingsMatch($id, $key = 'old', $options)
+	{
+		if(is_array($options['commerceOrderStatuses'][$key])
+			AND
+			in_array($id, $options['commerceOrderStatuses'][$key]))
 		{
 			return true;
 		}

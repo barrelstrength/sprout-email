@@ -85,16 +85,25 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 		// This will ensure to trigger the event after the payment is made
 		if($model->reference != null)
 		{
-			if(!empty($options['commerceStatuses']))
+			$statuses = $options['commerceStatuses'];
+			if(!empty($statuses))
 			{
-				// Get first transaction which is the current transaction
-				if (!in_array($model->status, $options['commerceStatuses']))
+				if(is_string($statuses) && $statuses == "*")
 				{
-					return false;
+					return true;
+				}
+
+				if(is_array($statuses))
+				{
+					// Get first transaction which is the current transaction
+					if (in_array($model->status, $statuses))
+					{
+						return true;
+					}
 				}
 			}
 
-			return true;
+			return false;
 		}
 		else
 		{
