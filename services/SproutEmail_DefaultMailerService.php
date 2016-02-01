@@ -532,6 +532,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 									$vars = array(
 										'sproutEmailEntry' => $entry,
 										'elementEntry'     => $element,
+										'campaign'     	   => $campaign,
+										'mocked'           => $mocked
 									);
 
 									$processedRecipients[$email->toEmail] = craft()->email->sendEmail($email, $vars);

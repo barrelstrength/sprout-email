@@ -2,7 +2,7 @@
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-	{ label: "Recipients"|t, url: url('sproutemail/recipients') }
+{ label: "Recipients"|t, url: url('sproutemail/recipients') }
 ] %}
 
 {% set selectedTab    = 'recipients' %}
@@ -32,53 +32,51 @@
 
 {% block main %}
 
-<div class="grid first" data-max-cols="3">
-	<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
-		<div class="pane">
+	<div class="grid first" data-max-cols="3">
+		<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
+			<div class="pane">
 
-		<input type="hidden" id="action" name="action" value="sproutEmail/defaultMailer/saveRecipient">
+				<input type="hidden" id="action" name="action" value="sproutEmail/defaultMailer/saveRecipient">
 
-		{% if selectedListId and selectedListId != 'undefined' %}
-			<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/{{ selectedListId }}">
-		{% else %}
-			<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
-		{% endif %}
-		{{ getCsrfInput() }}
+				{% if selectedListId and selectedListId != 'undefined' %}
+					<input type="hidden" id="recipientLists-selectedListId" name="recipient[recipientLists][]" value="{{ selectedListId }}">
+				{% endif %}
+				<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
+				{{ getCsrfInput() }}
 
-		{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
-		{% if craft.isLocalized() %}<input type="hidden" name="locale" value="{{ element.locale }}">{% endif %}
+				{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
+				{% if craft.isLocalized() %}<input type="hidden" name="locale" value="{{ element.locale }}">{% endif %}
 
-		{# BEGIN FORM #}
-		<section id="default-fields">
-			{{ forms.textField({
-				id: 'email',
-				name: 'recipient[email]',
-				label: "Email"|t,
-				required: true,
-				autofocus: true,
-				value: element is defined ? element.email : null,
-				errors: element is defined and element.hasErrors('email') ? element.getErrors('email') : null
-			}) }}
-			{{ forms.textField({
-				id: 'firstName',
-				name: 'recipient[firstName]',
-				label: "First Name"|t,
-				value: element is defined ? element.firstName : null,
-				errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
-			}) }}
-			{{ forms.textField({
-				id: 'lastName',
-				name: 'recipient[lastName]',
-				label: "Last Name"|t,
-				value: element is defined ? element.lastName : null,
-				errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null
-			}) }}
-		</section>
+				{# BEGIN FORM #}
+				<section id="default-fields">
 
+					{{ forms.textField({
+						id: 'email',
+						name: 'recipient[email]',
+						label: "Email"|t,
+						required: true,
+						autofocus: true,
+						value: element is defined ? element.email : null,
+						errors: element is defined and element.hasErrors('email') ? element.getErrors('email') : null
+					}) }}
+					{{ forms.textField({
+						id: 'firstName',
+						name: 'recipient[firstName]',
+						label: "First Name"|t,
+						value: element is defined ? element.firstName : null,
+						errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
+					}) }}
+					{{ forms.textField({
+						id: 'lastName',
+						name: 'recipient[lastName]',
+						label: "Last Name"|t,
+						value: element is defined ? element.lastName : null,
+						errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null
+					}) }}
+				</section>
+
+			</div>
 		</div>
-	</div>
-
-	{% if element.id is defined and element.id %}
 
 		<div class="item" data-position="right" data-colspan="1">
 			<div class="pane meta">
@@ -93,15 +91,15 @@
 
 				{% set statusInput %}
 
-					<div class="right">
-						<input
-								type="button"
-								class="btn small formsubmit"
-								data-action="sproutEmail/defaultMailer/deleteRecipient"
-								data-confirm="{{ 'Are you sure you want to delete this recipient?'|t }}"
-								data-redirect="sproutemail/recipients"
-								value="{{ 'Delete'|t }}">
-					</div>
+				<div class="right">
+					<input
+							type="button"
+							class="btn small formsubmit"
+							data-action="sproutEmail/defaultMailer/deleteRecipient"
+							data-confirm="{{ 'Are you sure you want to delete this recipient?'|t }}"
+							data-redirect="sproutemail/recipients"
+							value="{{ 'Delete'|t }}">
+				</div>
 
 				{% endset %}
 
@@ -112,9 +110,7 @@
 			</div>
 		</div>
 
-	{% endif %}
-
-</div>
+	</div>
 
 
 {% endblock %}

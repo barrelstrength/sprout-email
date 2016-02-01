@@ -22,16 +22,15 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 		$defaults   = parent::defineAttributes();
 		$attributes = array(
 			'campaignEntryId'        => array(AttributeType::Number, 'required' => false),
-			'campaignEntryId'        => array(AttributeType::Number, 'required' => false),
 			'campaignNotificationId' => array(AttributeType::Number, 'required' => false),
-			'title'           		 => array(AttributeType::String, 'required' => false),
-			'emailSubject'           => array(AttributeType::String, 'required' => false),
-			'fromEmail'              => array(AttributeType::String, 'required' => false),
-			'fromName'               => array(AttributeType::String, 'required' => false),
-			'toEmail'                => array(AttributeType::String, 'required' => false),
-			'body'                   => array(AttributeType::String, 'required' => false),
+			'emailSubject'           => array(AttributeType::Mixed,  'required' => false),
+			'title'              	 => array(AttributeType::Mixed,  'required' => false),
+			'fromEmail'              => array(AttributeType::Mixed,  'required' => false),
+			'fromName'               => array(AttributeType::Mixed,  'required' => false),
+			'toEmail'                => array(AttributeType::Mixed,  'required' => false),
+			'body'                   => array(AttributeType::Mixed,  'required' => false),
 			'htmlBody'               => array(AttributeType::Mixed,  'required' => false),
-			'sender'                 => array(AttributeType::String, 'required' => false)
+			'type'                   => array(AttributeType::Mixed,  'required' => false)
 		);
 
 		return array_merge($defaults, $attributes);

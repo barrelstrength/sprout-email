@@ -363,7 +363,7 @@ class SproutEmailService extends BaseApplicationComponent
 		return true;
 	}
 
-	public function logSentEmail($sproutEmailEntry, $emailModel)
+	public function logSentEmail($sproutEmailEntry, $emailModel, $type = '')
 	{
 		$entryId = $sproutEmailEntry->id;
 		$notificationRecord = SproutEmail_NotificationRecord::model()->findByAttributes(array('campaignId' => $sproutEmailEntry->campaignId));
@@ -396,7 +396,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$sentModel->toEmail   			= $emailModel->toEmail;
 		$sentModel->body      			= $emailModel->body;
 		$sentModel->htmlBody  			= $emailModel->htmlBody;
-		$sentModel->sender    			= $emailModel->sender;
+		$sentModel->type    			= $type;
 
 		$sentModel->getContent()->setAttribute('title', $sentModel->title);
 

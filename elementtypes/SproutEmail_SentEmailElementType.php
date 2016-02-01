@@ -47,50 +47,12 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 	public function getSources($context = null)
 	{
-		// Grab all of our Notifications
-		$notifications   = SproutEmail_CampaignRecord::model()->with('entries')->findAllByAttributes(array('type' => 'notification'));
-		$notificationIds = array();
 
 		$sources = array(
 			'*' => array(
 				'label' => Craft::t('All Sent Emails'),
 			),
 		);
-
-		if (count($notifications))
-		{
-			// Create a list of Notification IDs we can use as criteria to filter by
-			foreach ($notifications as $notification)
-			{
-				$notificationIds[] = $notification->entries[0]->id;
-			}
-
-			$sources['notifications'] = array(
-				'label'    => Craft::t('Notifications'),
-				'criteria' => array(
-					'campaignEntryId' => $notificationIds
-				)
-			);
-		}
-
-		// Prepare the data for our sources sidebar
-		$campaigns = SproutEmail_CampaignRecord::model()->with('entries')->findAllByAttributes(array('type' => 'email'));;
-
-		if (count($campaigns))
-		{
-			$sources[] = array('heading' => Craft::t('Campaigns'));
-
-			foreach ($campaigns as $campaign)
-			{
-				$key = 'campaign:'.$campaign->entries[0]->id;
-
-				$sources[$key] = array(
-					'label'    => $campaign->name,
-					'data'     => array('campaignEntryId' => $campaign->id),
-					'criteria' => array('campaignEntryId' => $campaign->id)
-				);
-			}
-		}
 
 		return $sources;
 	}
@@ -220,11 +182,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		// join with the table
 		$query->addSelect('sentemail.*, sentemail.dateCreated')
 			->join('sproutemail_sentemail sentemail', 'sentemail.id = elements.id');
-
-		if ($criteria->campaignEntryId)
-		{
-			$query->andWhere(DbHelper::parseParam('sentemail.campaignEntryId', $criteria->campaignEntryId, $query->params));
-		}
 
 		if ($criteria->order)
 		{

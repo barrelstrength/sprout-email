@@ -64,7 +64,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 	{
 		$variables['title']              = Craft::t('Recipient');
 		$variables['recipientListsHtml'] = null;
-
+		$defaultRecipientList = array();
 		// @todo - Refactor and improve
 		if(isset($variables['recipient']))
 		{
@@ -84,21 +84,36 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 			else
 			{
-				if (craft()->request->getParam('recipientListId'))
-				{
-					$selectedLists[] = craft()->request->getParam('recipientListId');
-				}
+				$variables['title']   		= Craft::t('New Recipient');
+				$variables['element'] 		= new SproutEmail_DefaultMailerRecipientModel();
 
-				$variables['title']   = Craft::t('New Recipient');
-				$variables['element'] = new SproutEmail_DefaultMailerRecipientModel();
+				$recipientListId = craft()->request->getParam('recipientListId');
+				if($recipientListId != null)
+				{
+					$defaultRecipientList[] = $recipientListId;
+				}
 			}
 		}
 
-		$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element']);
+		$recipientListOptions = array();
+		$recipientLists = sproutEmailDefaultMailer()->getRecipientLists();
 
-		$variables['recipientLists']     = sproutEmailDefaultMailer()->getRecipientLists();
+		if(isset($recipientLists))
+		{
+			foreach($recipientLists as $recipientList)
+			{
+				$recipientListOptions[$recipientList->id] = $recipientList->name;
+			}
+		}
+
+		$variables['recipientListsHtml']   = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element'], $defaultRecipientList);
+
+		$variables['recipientLists']       = $recipientLists;
+
+		$variables['recipientListOptions'] = $recipientListOptions;
+
 		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/recipients/_edit/'.$variables['id'] :
-				null;
+			null;
 
 		$this->renderTemplate('sproutemail/recipients/_edit', $variables);
 	}
@@ -161,7 +176,8 @@ class SproutEmail_DefaultMailerController extends BaseController
 			$model = new SproutEmail_DefaultMailerRecipientModel();
 		}
 
-		$model->setAttributes(craft()->request->getPost('recipient'));
+		$posts = craft()->request->getPost('recipient');
+		$model->setAttributes($posts);
 
 		if ($model->validate() && sproutEmailDefaultMailer()->saveRecipient($model))
 		{

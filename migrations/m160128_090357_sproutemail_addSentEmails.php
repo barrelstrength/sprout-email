@@ -52,6 +52,10 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 				'htmlBody' 					=> array(
 					'required' => false,
 					'column'   => 'text'
+				),
+				'type' 					    => array(
+					'required' => false,
+					'column'   => 'text'
 				)
 
 			), null, false);

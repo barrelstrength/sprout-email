@@ -536,7 +536,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	public function onExportEntry(SproutEmail_EntryModel $model, $emailModel)
 	{
-		$event = new Event($this, array('entryModel' => $model, 'emailModel' => $emailModel));
+		$event = new Event($this, array('entryModel' => $model, 'emailModel' => $emailModel, 'campaign' => $campaign));
 		$this->raiseEvent('onExportEntry', $event);
 	}
 }
