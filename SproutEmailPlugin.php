@@ -201,30 +201,31 @@ class SproutEmailPlugin extends BasePlugin
 		}
 
 		// Logs sent element types for notifications
-		craft()->on('email.onSendEmail', function(Event $event) {
+		craft()->on('sproutEmail_sentEmails.onSendNotification', function(Event $event) {
 
-			$variables  = $event->params['variables'];
-			$emailModel = $event->params['emailModel'];
+			$params = $event->params;
 
+			$emailModel = $params['emailModel'];
+			//Craft::dd($params, 10, false);
 			// To make sure you run the sprout notification email events only
-			$sproutEmailEntry = isset($variables['sproutEmailEntry']) ? $variables['sproutEmailEntry'] : null;
-			$mocked           = $variables['mocked'];
+			$sproutEmailEntry = isset($params['sproutEmailEntry']) ? $params['sproutEmailEntry'] : null;
+			$mocked           = $params['mocked'];
 
 			if($sproutEmailEntry != null)
 			{
 				$type = ($mocked == true) ? 'Test Notification' : 'Notification';
-				sproutEmail()->logSentEmail($sproutEmailEntry, $emailModel, $type);
+				sproutEmail()->sentemails->logSentEmail($sproutEmailEntry, $emailModel, $type);
 			}
 		});
 
 		// This will trigger campaign emails
-		craft()->on('sproutEmail_mailer.onExportEntry', function(Event $event) {
+		craft()->on('sproutEmail_mailer.onSendCampaign', function(Event $event) {
 
 			$entryModel = $event->params['entryModel'];
 			$emailModel = $event->params['emailModel'];
 			$campaign   = $event->params['campaign'];
 
-			sproutEmail()->logSentEmail($entryModel, $emailModel, "Campaign");
+			sproutEmail()->sentemails->logSentEmail($entryModel, $emailModel, "Campaign");
 		});
 	}
 

@@ -59,7 +59,7 @@ class SproutEmail_SentEmailRecord extends BaseRecord
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
-			'campaign'       => array(
+			'campaignEntry' => array(
 				static::BELONGS_TO,
 				'SproutEmail_EntryRecord',
 				'campaignEntryId',

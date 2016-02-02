@@ -256,4 +256,9 @@ class SproutEmailVariable
 	{
 		return sproutEmail()->hasExamples();
 	}
+
+	public function getMailerBySentEmailId($id)
+	{
+		return SproutEmail()->sentemails->getMailerBySentEmailId($id);
+	}
 }

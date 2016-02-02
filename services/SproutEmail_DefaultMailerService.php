@@ -524,6 +524,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					{
 						$processedRecipients = array();
 
+						$vars = array(
+							'sproutEmailEntry' => $entry,
+							'elementEntry'     => $element,
+							'campaign'     	   => $campaign,
+							'mocked'           => $mocked,
+							'recipientEmails'  => array()
+						);
+
 						foreach ($recipients as $recipient)
 						{
 							$email->toEmail     = sproutEmail()->renderObjectTemplateSafely($recipient->email, $element);
@@ -534,21 +542,25 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 							{
 								try
 								{
-									$vars = array(
-										'sproutEmailEntry' => $entry,
-										'elementEntry'     => $element,
-										'campaign'     	   => $campaign,
-										'mocked'           => $mocked
-									);
-
-									$processedRecipients[$email->toEmail] = craft()->email->sendEmail($email, $vars);
-
+									if(craft()->email->sendEmail($email, $vars))
+									{
+										$processedRecipients[] = $email->toEmail;
+									}
 								}
 								catch (\Exception $e)
 								{
 									sproutEmail()->error($e->getMessage());
 								}
 							}
+						}
+
+						if(!empty($processedRecipients))
+						{
+							// Trigger on send notification event.
+							$vars['recipientEmails'] = $processedRecipients;
+							$email->toEmail = implode(', ', $processedRecipients);
+							$vars['emailModel']      = $email;
+							sproutEmail()->sentemails->onSendNotification($vars);
 						}
 
 						return true;

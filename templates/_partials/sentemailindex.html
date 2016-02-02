@@ -8,6 +8,7 @@
 			<th>{{ "Send Date"|t }}</th>
 			<th>{{ "Sender"|t }}</th>
 			<th>{{ "Recipient"|t }}</th>
+			<th>{{ "Mailer"|t }}</th>
 			<th>{{ "Type"|t }}</th>
 
 			<th>&nbsp;</th>
@@ -20,7 +21,7 @@
 
 		<tr data-id="{{ entry.id }}" data-name="{{ entry.emailSubject|t }}">
 				<td data-titlecell>
-					<a href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ entry.title }}</a>
+					<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title }}</a>
 				</td>
 
 				<td>
@@ -33,6 +34,10 @@
 
 				<td>
 					{{ entry.toEmail }}
+				</td>
+
+				<td>
+				{{ craft.sproutEmail.getMailerBySentEmailId(entry.id) | capitalize }}
 				</td>
 
 				<td>

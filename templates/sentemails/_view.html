@@ -3,46 +3,46 @@
 </div>
 
 <div class="sproutemail-clear"></div>
-{% if body is not empty %}
-	<div class="pane sentemail-pane active sentemail-text">
-		<h2>{{ 'Plain Text Email'|t }}</h2>
-		<hr />
-		{{ body|raw('html')|nl2br }}
-	</div>
+<div class="pane sentemail-pane active sentemail-text">
+	{% if body is not empty %}
 
-{% endif %}
-{% if htmlBody is not empty %}
+			<h2>{{ 'Plain Text Email'|t }}</h2>
+			<hr />
+			{{ body|raw('html')|nl2br }}
+	{% endif %}
+</div>
 
-	<div class="pane sentemail-pane sentemail-html">
-		<h2>{{ 'HTML Email'|t }}</h2>
-		<hr />
-		<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="loaderFrame"></iframe>
-	</div>
+<div class="pane sentemail-pane sentemail-html">
+	<h2>{{ 'HTML Email'|t }}</h2>
+	<hr />
+	{% if htmlBody is not empty %}
+			<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="loaderFrame"></iframe>
 
+		<script type="text/javascript">
+
+				// This will disable current file global css styles
+				if(jQuery('#loaderFrame').length)
+				{
+					jQuery('#loaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
+				}
+		</script>
+
+	{% endif %}
 	<script type="text/javascript">
+		jQuery(".sentemail-btn").click(function() {
 
-			// This will disable current file global css styles
-			if(jQuery('#loaderFrame').length)
-			{
-				jQuery('#loaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
-			}
+			jQuery(".sentemail-btn").removeClass('active');
+			jQuery(this).addClass('active');
 
-			jQuery(".sentemail-btn").click(function() {
+			var box = jQuery(this).data('box');
+			var boxClass = ".sentemail-" + box;
 
-				jQuery(".sentemail-btn").removeClass('active');
-				jQuery(this).addClass('active');
+			jQuery('.sentemail-pane').removeClass('active');
+			jQuery(boxClass).addClass('active');
 
-				var box = jQuery(this).data('box');
-				var boxClass = ".sentemail-" + box;
-
-				jQuery('.sentemail-pane').removeClass('active');
-				jQuery(boxClass).addClass('active');
-
-			})
+		})
 	</script>
-
-{% endif %}
-
+</div>
 <style type="text/css">
 
 	.sentemail-pane {

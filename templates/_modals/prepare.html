@@ -14,7 +14,7 @@
 			</td>
 		</tr>
 
-		{% if errors is not empty %}
+		{% if errors is defined and errors is not empty %}
 			<tr>
 				<td colspan="2">
 					<ul class="error bullets">
@@ -33,7 +33,7 @@
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
 
 		<button
-			{% if errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
+			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
 			data-action="sproutEmail/entry/export"
 			data-entry-id="{{ entry.id }}"
