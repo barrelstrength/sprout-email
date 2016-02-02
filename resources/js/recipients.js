@@ -21,7 +21,13 @@ var RecipientAdmin = Garnish.Base.extend(
 		$('#newrecipientbtn').on('click', function(e) {
 			var $target = $(e.target);
 
-			$target.attr('href', $target.attr('href') + '?recipientListId=' + self.getSelectedList().data('id'));
+			var param = '';
+			if(self.getSelectedList().data('id') != undefined)
+			{
+				param = '?recipientListId=' + self.getSelectedList().data('id');
+			}
+
+			$target.attr('href', $target.attr('href') + param);
 		});
 
 		var $listSettingsBtn = $('#listsettingsbtn');

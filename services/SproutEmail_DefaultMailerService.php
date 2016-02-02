@@ -227,7 +227,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return \Twig_Markup
 	 */
-	public function getRecipientListsHtml($element = null)
+	public function getRecipientListsHtml($element = null, $default = array())
 	{
 		$lists   = $this->getRecipientLists();
 		$options = array();
@@ -248,6 +248,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		if (count($element->getRecipientListIds()))
 		{
 			$values = $element->getRecipientListIds();
+		}
+
+		if(!empty($default))
+		{
+			$values = $default;
 		}
 
 		// @todo - Move template code to the template

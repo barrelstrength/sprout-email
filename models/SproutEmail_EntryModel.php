@@ -173,6 +173,11 @@ class SproutEmail_EntryModel extends BaseElementModel
 		}
 	}
 
+	public function getCpUrl()
+	{
+		return UrlHelper::getCpUrl('sproutemail/entries/edit/' . $this->id);
+	}
+
 	/**
 	 * Pending -  has all required attributes and is disabled or
 	 *              does not have all required attributes

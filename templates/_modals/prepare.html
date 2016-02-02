@@ -1,4 +1,3 @@
-
 <h1>{{ "Test Notification"|t }}</h1>
 
 <table class="data fullwidth">
@@ -15,21 +14,43 @@
 			</td>
 		</tr>
 
+		{% if errors is not empty %}
+			<tr>
+				<td colspan="2">
+					<ul class="error bullets">
+					{% for error in errors %}
+						<li>{{ error | raw }}</li>
+					{% endfor %}
+					</ul>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+		{% endif %}
 	</tbody>
 </table>
 
 <div class="buttons right">
 	<button id="close" class="btn">{{ "Cancel"|t }}</button>
-	<button
-		data-mailer="defaultmailer"
-		data-action="sproutEmail/entry/export"
-		data-entry-id="{{ entry.id }}"
-		data-campaign-id="{{ campaign.id }}"
-		class="btn submit actions">
-		{% if campaign.isNotification() %}
-			{{- "Send Test"|t -}}
-		{% else %}
-			{{- "Send Campaign"|t -}}
-		{% endif %}
-	</button>
+
+		<button
+			{% if errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
+			data-mailer="defaultmailer"
+			data-action="sproutEmail/entry/export"
+			data-entry-id="{{ entry.id }}"
+			data-campaign-id="{{ campaign.id }}"
+			class="btn submit actions">
+			{% if campaign.isNotification() %}
+				{{- "Send Test"|t -}}
+			{% else %}
+				{{- "Send Campaign"|t -}}
+			{% endif %}
+		</button>
+
 </div>
+
+<style>
+	.error a {
+		color: inherit;
+		text-decoration: underline;
+	}
+</style>
