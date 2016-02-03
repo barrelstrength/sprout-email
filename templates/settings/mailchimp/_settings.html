@@ -1,0 +1,16 @@
+<p>
+	<a href="http://templates.mailchimp.com/resources/inline-css" target="_blank" title="CSS Inliner">{{ 'Inline'|t }}</a>
+	{{ "Rendered Template Styles?"|t }}
+</p>
+{{ forms.lightswitch({
+	name: "mailchimp[inlineCss]",
+	on:   settings.inlineCss
+}) }}
+<hr>
+{{ forms.textField({
+	label: "API Key"|t,
+	name: "mailchimp[apiKey]",
+	instructions: "Enter your **mail chimp** API Key."|t,
+	value: (settings.apiKey is defined ? settings.apiKey : null),
+	first: true
+}) }}
