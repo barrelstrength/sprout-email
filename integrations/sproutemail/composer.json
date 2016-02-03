@@ -1,4 +1,5 @@
 {
+<<<<<<< cb49024c18e915ee04a87c4d581d548b161c1146
   "name"   : "barrelstrengthdesign/sproutemailmailchimp",
   "require": {
     "mailchimp/mailchimp": "2.0.6",
@@ -11,3 +12,9 @@
     }
   ]
 }
+=======
+    "require": {
+        "mailchimp/mailchimp": "^2.0"
+    }
+}
+>>>>>>> Merge mailchimp mailer. #689140

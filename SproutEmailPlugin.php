@@ -265,16 +265,13 @@ class SproutEmailPlugin extends BasePlugin
 
 		foreach($pluginMailers as $handle => $class)
 		{
-
 			$namespace = "Craft\\" . $class;
 			$mailerClass = new $namespace();
 
 			$mailers[$handle] = $mailerClass;
-
 		}
 
 		return $mailers;
-
 	}
 
 	/**
