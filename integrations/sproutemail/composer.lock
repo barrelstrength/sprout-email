@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-<<<<<<< cb49024c18e915ee04a87c4d581d548b161c1146
     "hash": "5111d17f19bb3baa930e33a3e884a01f",
     "content-hash": "2f4c3954786d1fda504d11e99b996004",
     "packages": [
@@ -66,12 +65,10 @@
             "time": "2015-12-14 17:54:23"
         },
         {
-=======
-    "hash": "f75079a418a8bb6502a8551e1dabb391",
-    "content-hash": "88884f86ac8b781d1fb0103a12567574",
-    "packages": [
+        "hash": "f75079a418a8bb6502a8551e1dabb391",
+        "content-hash": "88884f86ac8b781d1fb0103a12567574",
+        "packages": [
         {
->>>>>>> Merge mailchimp mailer. #689140
             "name": "mailchimp/mailchimp",
             "version": "2.0.6",
             "source": {

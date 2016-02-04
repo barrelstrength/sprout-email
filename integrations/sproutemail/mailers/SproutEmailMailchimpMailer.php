@@ -75,7 +75,7 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 	{
 		$context['settings'] = $this->getSettings();
 
-		return craft()->templates->render('sproutemail/settings/mailchimp/_settings', $context);
+		return craft()->templates->render('sproutemail/mailers/mailchimp/_settings', $context);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 		}
 
 		return craft()->templates->render(
-			'sproutemail/_modals/mailchimp/_prepare',
+			'sproutemail/mailers/mailchimp/_prepare',
 			array(
 				'entry'    => $entry,
 				'lists'    => $recipientLists,
@@ -132,12 +132,12 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 
 		if($lists == false)
 		{
-			return craft()->templates->render('sproutemail/lists/_sslerror');
+			return craft()->templates->render('sproutemail/mailers/mailchimp/lists/_sslerror');
 		}
 
 		if (!count($lists))
 		{
-			return craft()->templates->render('sproutemail/lists/_norecipientlists');
+			return craft()->templates->render('sproutemail/mailers/mailchimp/lists/_norecipientlists');
 		}
 
 		if (count($lists))
@@ -151,7 +151,7 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 					if ($recipients = $this->getService()->getRecipientsByListId($list['id']))
 					{
 						$info = craft()->templates->render(
-							'sproutemail/lists/_info',
+							'sproutemail/mailers/mailchimp/lists/_info',
 							array(
 								'limit'      => 10,
 								'recipients' => $recipients
@@ -261,7 +261,7 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 		}
 
 		$response->content = craft()->templates->render(
-			'sproutemail/_modals/mailchimp/_export',
+			'sproutemail/mailers/mailchimp/_export',
 			array(
 				'entry'       => $entry,
 				'campaign'    => $campaign,
