@@ -1,0 +1,16 @@
+{{ forms.checkboxSelectField({
+	label: "Old Status"|t,
+	name: "commerceOrderStatuses[old]",
+	options : statuses,
+	values: options.commerceOrderStatuses.old is defined ? options.commerceOrderStatuses.old : null,
+	errors: errors is defined ? errors : null,
+}) }}
+
+{{ forms.checkboxSelectField({
+	label: "New Status"|t,
+	name: "commerceOrderStatuses[new]",
+	options : statuses,
+	values: options.commerceOrderStatuses.new is defined ? options.commerceOrderStatuses.new : null,
+	errors: errors is defined ? errors : null,
+}) }}
+<p class="light"><em>An event will be triggered when an order is updated from an Old Status to a New Status.</em></p>

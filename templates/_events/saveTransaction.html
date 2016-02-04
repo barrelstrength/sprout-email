@@ -1,0 +1,8 @@
+{{ forms.checkboxSelectField({
+	label: "Status"|t,
+	instructions: "Select which transaction statuses will trigger the notification."|t,
+	name: "commerceStatuses",
+	options : statuses,
+	values: options.commerceStatuses is defined ? options.commerceStatuses : null,
+	errors: errors is defined ? errors : null,
+}) }}
