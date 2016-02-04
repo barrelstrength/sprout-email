@@ -184,12 +184,13 @@ class SproutEmail_EntryController extends BaseController
 					$this->returnJson($response);
 				}
 
-				$errorMessage = 'Mailer did not return a valid response model after entry export.';
+				$errorMessage = Craft::t('Mailer did not return a valid response model after entry export.');
 
 				if(!$response)
 				{
-					$errorMessage = "Failed to send email.";
+					$errorMessage = Craft::t('Unable to send email.');
 				}
+
 				$this->returnJson(
 					SproutEmail_ResponseModel::createErrorModalResponse(
 						'sproutemail/_modals/export',
