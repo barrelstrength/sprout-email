@@ -63,26 +63,6 @@ var SproutEmail = {
 	 */
 	onCampaignMailerSelect: function()
 	{
-		this.toggleCopyPasteTemplateView($("#mailer").val());
-	},
 
-	/**
-	 * Toggles campaign copy/paste template based on mailer selected
-	 *
-	 * @param {string} mailerSelected
-	 * @returns {*}
-	 */
-	toggleCopyPasteTemplateView: function(mailerSelected)
-	{
-		var $template = $("#templateCopyPaste").closest(".field");
-
-		if (mailerSelected === "copypaste")
-		{
-			$template.show()
-		}
-		else
-		{
-			$template.hide();
-		}
 	}
 }

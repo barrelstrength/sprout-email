@@ -257,7 +257,8 @@ class SproutEmailPlugin extends BasePlugin
 
 		return array(
 			'defaultmailer' => new SproutEmailDefaultMailer(),
-			'mailchimp'     => new SproutEmailMailchimpMailer()
+			'mailchimp'     => new SproutEmailMailchimpMailer(),
+			'copypaste' 	=> new SproutEmailCopyPasteMailer()
 		);
 	}
 
