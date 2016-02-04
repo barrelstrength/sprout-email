@@ -13,10 +13,11 @@ namespace Craft;
  */
 class SproutEmailService extends BaseApplicationComponent
 {
-	public $mailers;
-	public $entries;
-	public $campaigns;
-	public $notifications;
+	public  $mailers;
+	public  $entries;
+	public  $campaigns;
+	public  $notifications;
+	private $error = '';
 
 	public function init()
 	{
@@ -187,7 +188,17 @@ class SproutEmailService extends BaseApplicationComponent
 			$msg = print_r($msg, true);
 		}
 
+		$this->error = $msg;
+
 		SproutEmailPlugin::log($msg, LogLevel::Error);
+	}
+
+	/**
+	 * @return mixed error
+	 */
+	public function getError()
+	{
+		return $this->error;
 	}
 
 	/**
