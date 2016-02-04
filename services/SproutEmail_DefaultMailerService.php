@@ -504,11 +504,13 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 				if ($recipients && count($recipients))
 				{
+
 					$email->subject   = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $element);
 					$email->fromName  = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $element);
 					$email->fromEmail = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $element);
 					$email->replyTo   = sproutEmail()->renderObjectTemplateSafely($entry->replyTo, $element);
 
+					$email->subject   = sproutEmail()->encodeSubjectLine($email->subject);
 					if (strpos($email->replyTo, '{') === 0)
 					{
 						$email->replyTo = $email->fromEmail;
