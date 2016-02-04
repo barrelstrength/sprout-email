@@ -550,6 +550,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 							}
 						}
 
+						if(empty($processedRecipients))
+						{
+							return false;
+						}
+
 						return true;
 					}
 				}
