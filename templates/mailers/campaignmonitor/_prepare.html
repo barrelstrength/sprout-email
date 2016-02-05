@@ -1,0 +1,48 @@
+{% import "_includes/forms" as forms %}
+
+<h1>Review &amp; Send</h1>
+
+<table class="data fullwidth">
+	<tbody>
+		<tr>
+			<td><strong>Subject</strong></td>
+			<td>{{ entry.subjectLine }}</td>
+		</tr>
+		<tr>
+			<td><strong>From Name</strong></td>
+			<td>{{ entry.fromName }}</td>
+		</tr>
+		<tr>
+			<td><strong>From Email</strong></td>
+			<td>{{ entry.fromEmail }}</td>
+		</tr>
+		<tr>
+			<td><strong>Reply To</strong></td>
+			<td>{{ entry.replyTo }}</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top;">
+				<strong>Recipient Lists</strong>
+			</td>
+			<td>
+				<ul>
+					{% for list in lists %}
+				  	<li>{{ list }}</li>
+					{% endfor %}
+				</ul>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="buttons right">
+	<div class="buttons">
+		<button id="cancel" class="btn">{{ "Cancel"|t }}</button>
+		<button
+	        data-mailer="campaignmonitor"
+			data-action="sproutEmail/entry/export"
+	        data-entry-id="{{ entry.id }}"
+	        data-campaign-id="{{ campaign.id }}"
+	        class="btn submit icon actions send-campaign">{{ "Send Campaign"|t }}</button>
+	</div>
+</div>
