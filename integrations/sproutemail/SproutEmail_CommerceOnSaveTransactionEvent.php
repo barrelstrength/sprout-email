@@ -135,4 +135,28 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 
 		return $options;
 	}
+
+	/**
+	 * @throws Exception
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getMockedParams()
+	{
+
+		$order = craft()->sproutEmail_commerce->getFirstOrder();
+		// Return the oldest order
+		if (!empty($order))
+		{
+			$orderId = $order->id;
+			$transactions = craft()->commerce_transactions->getAllTransactionsByOrderId($orderId);
+			if(!empty($transactions))
+			{
+				return $transactions[0];
+			}
+		}
+
+		return array();
+
+	}
 }

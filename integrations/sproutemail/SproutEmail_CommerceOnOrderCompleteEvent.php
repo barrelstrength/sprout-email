@@ -70,4 +70,14 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	{
 		return true;
 	}
+
+	/**
+	 * @throws Exception
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getMockedParams()
+	{
+		return craft()->sproutEmail_commerce->getFirstOrder();
+	}
 }
