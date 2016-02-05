@@ -227,7 +227,12 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 
 		try
 		{
-			$this->getService()->exportEntry($entry, $campaign);
+			$response = $this->getService()->exportEntry($entry, $campaign);
+
+			if(!$response)
+			{
+				return false;
+			}
 
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/export',
@@ -238,7 +243,8 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 					'message'       => $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
 				)
 			);
-		} catch (\Exception $e)
+		}
+		catch (\Exception $e)
 		{
 			sproutEmail()->error($e->getMessage());
 
@@ -315,32 +321,26 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			}
 		}
 
+		$notificationEditUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
 		if (empty($campaign->template))
 		{
-			$notificationEditUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
-
 			$errors[] = Craft::t('Email Template setting is blank. <a href="' . $notificationEditUrl . '">Edit Settings</a>.');
 		}
-		else
+
+		$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+
+		$element = $event->getMockedParams();
+
+		$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($entry, $element);
+
+		$template = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);
+
+		if(empty($template))
 		{
-			// Look for the template
-			$oldPath = craft()->path->getTemplatesPath();
-
-			$siteTemplatesPath = craft()->path->getSiteTemplatesPath();
-
-			craft()->path->setTemplatesPath($siteTemplatesPath);
-
-			$templateExists = craft()->templates->findTemplate($campaign->template);
-
-			if (!$templateExists)
-			{
-				$notificationEditUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
-
-				$errors[] = Craft::t('Email template could not be found. <a href="' . $notificationEditUrl . '">Edit Settings</a>.');
-			}
-
-			craft()->path->setTemplatesPath($oldPath);
+			$error = sproutEmail()->getError();
+			$errors[] = Craft::t($error . ' <a href="' . $notificationEditUrl . '">Edit Settings</a>');
 		}
+
 
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',

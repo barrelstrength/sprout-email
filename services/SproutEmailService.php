@@ -13,10 +13,11 @@ namespace Craft;
  */
 class SproutEmailService extends BaseApplicationComponent
 {
-	public $mailers;
-	public $entries;
-	public $campaigns;
-	public $notifications;
+	public  $mailers;
+	public  $entries;
+	public  $campaigns;
+	public  $notifications;
+	private $error = '';
 
 	public function init()
 	{
@@ -187,7 +188,17 @@ class SproutEmailService extends BaseApplicationComponent
 			$msg = print_r($msg, true);
 		}
 
+		$this->error = $msg;
+
 		SproutEmailPlugin::log($msg, LogLevel::Error);
+	}
+
+	/**
+	 * @return mixed error
+	 */
+	public function getError()
+	{
+		return $this->error;
 	}
 
 	/**
@@ -361,5 +372,14 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param $subject
+	 * @return string
+	 */
+	public function encodeSubjectLine($subject)
+	{
+		return '=?UTF-8?B?'.base64_encode($subject).'?=';
 	}
 }
