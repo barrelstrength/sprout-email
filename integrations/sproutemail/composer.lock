@@ -4,9 +4,66 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5d92aac2582b1f6b4ba5e70585140ce7",
-    "content-hash": "b1184650f681345dbc495521c236dac6",
+    "hash": "5111d17f19bb3baa930e33a3e884a01f",
+    "content-hash": "2f4c3954786d1fda504d11e99b996004",
     "packages": [
+        {
+            "name": "campaignmonitor/createsend-php",
+            "version": "v5.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/campaignmonitor/createsend-php.git",
+                "reference": "b15c6ccc1d9fd595c80cfe29eedcbc79268e3f65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/campaignmonitor/createsend-php/zipball/b15c6ccc1d9fd595c80cfe29eedcbc79268e3f65",
+                "reference": "b15c6ccc1d9fd595c80cfe29eedcbc79268e3f65",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "lastcraft/simpletest": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "csrest_administrators.php",
+                    "csrest_campaigns.php",
+                    "csrest_clients.php",
+                    "csrest_general.php",
+                    "csrest_lists.php",
+                    "csrest_people.php",
+                    "csrest_segments.php",
+                    "csrest_subscribers.php",
+                    "csrest_templates.php",
+                    "csrest_transactional_classicemail.php",
+                    "csrest_transactional_smartemail.php",
+                    "csrest_transactional_timeline.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Toby Brain",
+                    "email": "tobio85@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A php library which implements the complete functionality of the Campaign Monitor API.",
+            "homepage": "http://campaignmonitor.github.io/createsend-php/",
+            "keywords": [
+                "api",
+                "campaign",
+                "monitor"
+            ],
+            "time": "2015-12-14 17:54:23"
+        },
         {
             "name": "mailchimp/mailchimp",
             "version": "2.0.6",
