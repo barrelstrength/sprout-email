@@ -277,7 +277,7 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 
 	public function includeModalResources()
 	{
-		craft()->templates->includeJsResource('sproutemail/js/mailchimp.js');
+		craft()->templates->includeJsResource('sproutemail/js/mailers/mailchimp.js');
 	}
 
 	/**

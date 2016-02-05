@@ -256,9 +256,10 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
 
 		return array(
-			'defaultmailer' => new SproutEmailDefaultMailer(),
-			'mailchimp'     => new SproutEmailMailchimpMailer(),
-			'copypaste' 	=> new SproutEmailCopyPasteMailer()
+			'defaultmailer'   => new SproutEmailDefaultMailer(),
+			'mailchimp'       => new SproutEmailMailchimpMailer(),
+			'copypaste' 	  => new SproutEmailCopyPasteMailer(),
+			'campaignmonitor' => new SproutEmailCampaignMonitorMailer()
 		);
 	}
 
