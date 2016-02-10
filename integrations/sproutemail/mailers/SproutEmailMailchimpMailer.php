@@ -150,6 +150,7 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 
 					if ($recipients = $this->getService()->getRecipientsByListId($list['id']))
 					{
+						$length = count($recipients);
 						$info = craft()->templates->render(
 							'sproutemail/mailers/mailchimp/lists/_info',
 							array(
@@ -158,10 +159,11 @@ class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
 							)
 						);
 					}
+					$listUrl = "https://us7.admin.mailchimp.com/lists/members/?id=" . $list['web_id'];
 
 					// @todo Provide a way for info to become a Craft tooltip in the UI
 					$options[] = array(
-						'label' => sprintf('%s %s', $list['name'], $info),
+						'label' => sprintf('<a target="_blank" href="%s">%s (%d)</a>', $listUrl, $list['name'], $length),
 						'value' => $list['id']
 					);
 				}
