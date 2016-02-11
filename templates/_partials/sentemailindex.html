@@ -4,14 +4,12 @@
 	<div class="tableview">
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th>{{ "Subject"|t }}</th>
-			<th>{{ "Send Date"|t }}</th>
-			<th>{{ "Sender"|t }}</th>
+			<th>{{ "Sent On"|t }}</th>
 			<th>{{ "Recipient"|t }}</th>
-			<th>{{ "Mailer"|t }}</th>
-			<th>{{ "Type"|t }}</th>
+			<th>{{ "Subject"|t }}</th>
 
-			<th>&nbsp;</th>
+			<th></th>
+			<th></th>
 
 		</thead>
 		<tbody>
@@ -19,35 +17,37 @@
 {% endif %}
 
 
-		<tr data-id="{{ entry.id }}" data-name="{{ entry.emailSubject|t }}">
-				<td data-titlecell>
-					<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title }}</a>
-				</td>
-
+		<tr class="infoRow"
+				data-id="{{ entry.id }}"
+				data-name="{{ entry.emailSubject|t }}"
+				data-inforow='[
+					{"label":"Sender","attribute":"sender"},
+					{"label":"Mailer","attribute":"mailer"},
+					{"label":"Email Type","attribute":"emailtype"}
+					]'
+					data-sender="{{ entry.fromEmail }}"
+					data-mailer="{{ craft.sproutEmail.getMailerBySentEmailId(entry.id) | capitalize }}"
+					data-emailtype="{{ entry.type }}">
 				<td>
-					{{ entry.dateCreated|date('F d, Y H:i a') }}
-				</td>
-
-				<td>
-					{{ entry.fromEmail }}
+					{{ entry.dateCreated|date('M j, Y g:ia') }}
 				</td>
 
 				<td>
 					{{ entry.toEmail }}
 				</td>
 
-				<td>
-				{{ craft.sproutEmail.getMailerBySentEmailId(entry.id) | capitalize }}
-				</td>
-
-				<td>
-					{{ entry.type }}
+				<td data-titlecell>
+					<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title }}</a>
 				</td>
 
 				<td>
 					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-entry-id="{{ entry.id }}" href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
 				</td>
-		</tr>
+
+				<td>
+					<span class="tableRowInfo" data-icon="info" href="#"></span>
+				</td>
+		</>
 
 {% if loop.last and craft.request.getPost("elementAction") == null %}
 
@@ -60,3 +60,15 @@
 </div><!-- tableview  -->
 
 {% endspaceless -%}
+
+{% includeJsResource 'sproutemail/js/TableRowAdditionalInfoIcon.js' %}
+
+{% set js %}
+
+	$.each($('.tableRowInfo'), function () {
+		new Craft.SproutEmail.TableRowAdditionalInfoIcon(this);
+	});
+
+{% endset %}
+
+{% includeJs js %}
