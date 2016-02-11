@@ -1,5 +1,5 @@
 {# Placeholder Sprout Modal #}
-<div id="sproutmodal" class="modal fitted hidden" style="padding: 1em;">
+<div id="sproutmodal" class="modal fitted hidden">
 	<div class="body">
 		<div id="content"></div>
 		<div class="spinner hidden"></div>
@@ -21,7 +21,11 @@
 	<h2>Loading...</h2>
 	<div class="spinner"></div>
 </div>
-{% set statusSnippet %}
+{% set css %}
+#sproutmodal #content {
+	padding: 1em;
+}
+
 .status.ready {
 background-position: 0 0; // @green
 }
@@ -33,4 +37,4 @@ background-position: 0 -20px; // @red
 }
 {% endset %}
 
-{% includeCss(statusSnippet) %}
+{% includeCss(css) %}
