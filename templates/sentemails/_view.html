@@ -18,7 +18,7 @@
 <div class="sentemail-pane sentemail-text">
 
 	{% if body is not empty %}
-		{{ body|raw('html')|nl2br }}
+		<pre>{{ body }}</pre>
 	{% endif %}
 
 </div>
