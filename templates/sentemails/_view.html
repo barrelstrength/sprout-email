@@ -1,66 +1,78 @@
-<div class="btngroup sproutemail-right sentemail-btngroup">
-	<button data-box="text" class="btn active sentemail-btn">{{ 'Text'|t }}</button> <button data-box="html" class="btn sentemail-btn">{{ 'HTML'|t }}</button>
+<div class="sproutemail-sentemail-header">
+	<div class="btngroup sentemail-btngroup">
+		<button data-box="html" class="btn active sentemail-btn">{{ 'HTML'|t }}</button>
+		<button data-box="text" class="btn sentemail-btn">{{ 'Text'|t }}</button>
+	</div>
 </div>
 
-<div class="sproutemail-clear"></div>
-<div class="pane sentemail-pane active sentemail-text">
-	{% if body is not empty %}
+<div class="sentemail-pane sentemail-html active">
 
-			<h2>{{ 'Plain Text Email'|t }}</h2>
-			<hr />
-			{{ body|raw('html')|nl2br }}
-	{% endif %}
-</div>
-
-<div class="pane sentemail-pane sentemail-html">
-	<h2>{{ 'HTML Email'|t }}</h2>
-	<hr />
 	{% if htmlBody is not empty %}
-			<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="loaderFrame"></iframe>
 
-		<script type="text/javascript">
-
-				// This will disable current file global css styles
-				if(jQuery('#loaderFrame').length)
-				{
-					jQuery('#loaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
-				}
-		</script>
+		<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="htmlLoaderFrame"></iframe>
 
 	{% endif %}
-	<script type="text/javascript">
-		jQuery(".sentemail-btn").click(function() {
 
-			jQuery(".sentemail-btn").removeClass('active');
-			jQuery(this).addClass('active');
-
-			var box = jQuery(this).data('box');
-			var boxClass = ".sentemail-" + box;
-
-			jQuery('.sentemail-pane').removeClass('active');
-			jQuery(boxClass).addClass('active');
-
-		})
-	</script>
 </div>
+
+<div class="sentemail-pane sentemail-text">
+
+	{% if body is not empty %}
+		{{ body|raw('html')|nl2br }}
+	{% endif %}
+
+</div>
+
+<script type="text/javascript">
+
+	// This will disable current file global css styles
+	if(jQuery('#htmlLoaderFrame').length)
+	{
+		jQuery('#htmlLoaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
+	}
+
+	jQuery(".sentemail-btn").click(function() {
+
+		jQuery(".sentemail-btn").removeClass('active');
+		jQuery(this).addClass('active');
+
+		var box = jQuery(this).data('box');
+		var boxClass = ".sentemail-" + box;
+
+		jQuery('.sentemail-pane').removeClass('active');
+		jQuery(boxClass).addClass('active');
+
+	})
+</script>
+
 <style type="text/css">
+
+	.sproutemail-sentemail-header {
+		border-bottom: 1px solid #eee;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		text-align: right;
+		width: 100%;
+	}
 
 	.sentemail-pane {
 		display: none;
 		min-height: 500px;
-		min-width: 500px
+		min-width: 500px;
+		position: relative;
+
+		/* 24px padding panel, 13px padding #content, 14px padding here = 51px */
+		margin-top: 44px;
 	}
 
 	.sentemail-pane.active {
 		display: block;
 	}
 
-	.sproutemail-right {
-		float: right;
-	}
-
-	.sproutemail-clear {
-		clear: both;
+	.sentemail-btngroup {
+		margin: 15px 15px;
 	}
 
 </style>
