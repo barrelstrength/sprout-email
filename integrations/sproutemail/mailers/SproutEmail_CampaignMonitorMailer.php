@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmailCampaignMonitorMailer extends SproutEmailBaseMailer
+class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 {
 	/**
 	 * @var SproutEmailCampaignMonitorService

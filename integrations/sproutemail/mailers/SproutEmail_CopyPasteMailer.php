@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmailCopyPasteMailer extends SproutEmailBaseMailer
+class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 {
 	protected $service;
 
