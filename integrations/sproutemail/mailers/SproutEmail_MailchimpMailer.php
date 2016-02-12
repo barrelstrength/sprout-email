@@ -8,7 +8,7 @@ namespace Craft;
  *
  * @package Craft
  */
-class SproutEmailMailchimpMailer extends SproutEmailBaseMailer
+class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 {
 	/**
 	 * @var SproutEmailMailchimpService
