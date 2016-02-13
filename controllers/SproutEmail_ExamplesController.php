@@ -374,7 +374,7 @@ Email: {email}',
 				$campaign->setFieldLayout($fieldLayout);
 
 				// Save our email again with a layout
-				sproutEmail()->campaigns->saveCampaign($campaign, 'fields');
+				sproutEmail()->campaigns->saveCampaign($campaign);
 
 				$entryRecord = SproutEmail_EntryRecord::model()->findByAttributes(array('campaignId' => $campaign->id));
 

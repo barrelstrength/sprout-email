@@ -266,8 +266,15 @@ class SproutEmail_EntryController extends BaseController
 		$variables['campaign']   = sproutEmail()->campaigns->getCampaignById($campaignId);
 		$variables['campaignId'] = $campaignId;
 
+		$shareParamsHtml = array(
+			'entryId'  => $variables['entry']->id,
+			'template' => 'html'
+		);
 
-
+		$shareParamsText = array(
+			'entryId'  => $variables['entry']->id,
+			'template' => 'txt'
+		);
 
 		// Enable Live Preview?
 		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($variables['campaign']->template))
@@ -288,6 +295,24 @@ class SproutEmail_EntryController extends BaseController
 			);
 
 			$variables['showPreviewBtn'] = true;
+
+			// Should we show the Share button too?
+			if ($variables['entry']->id)
+			{
+				if ($variables['entry']->enabled)
+				{
+					$variables['shareUrl'] = $variables['entry']->getUrl();
+				}
+				else
+				{
+					$shareParams = array(
+						'entryId'    => $variables['entry']->id,
+						'campaignId' => $variables['campaign']->id
+					);
+
+					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
+				}
+			}
 
 		}
 		else

@@ -32,9 +32,9 @@ class SproutEmail_CampaignController extends BaseController
 			$campaign->setFieldLayout($fieldLayout);
 		}
 
-		$tab = craft()->request->getPost('tab');
 
-		if (($campaign = sproutEmail()->campaigns->saveCampaign($campaign, $tab)) && !$campaign->hasErrors())
+
+		if (($campaign = sproutEmail()->campaigns->saveCampaign($campaign)) && !$campaign->hasErrors())
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));
 
