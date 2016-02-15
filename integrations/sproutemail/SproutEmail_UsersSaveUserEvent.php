@@ -107,6 +107,12 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 			return false;
 		}
 
+		// If user group ids settings are unchecked
+		if($options['craft']['saveUser']['userGroupIds'] == '')
+		{
+			return false;
+		}
+
 		return true;
 	}
 

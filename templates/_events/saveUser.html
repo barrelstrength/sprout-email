@@ -4,9 +4,6 @@
 {% set whenUpdated = (options.craft.saveUser.whenUpdated is defined)
 		                 ? options.craft.saveUser.whenUpdated
 		                 : false %}
-{% set userGroupIds = (options.craft.saveUser.userGroupIds is defined)
-		                  ? options.craft.saveUser.userGroupIds
-		                  : null %}
 
 {{ forms.checkboxField({
 		label: "When the user is created?"|t,
@@ -20,15 +17,25 @@
 		checked: whenUpdated
 }) }}
 
-{% if groups is iterable and groups|length %}
-	{{ forms.field({
-			label: "Groups"|t,
-			instructions: "Select groups or leave unchecked for all groups."|t,
-			errors: errors is defined ? errors : null,
-		},
-		forms.checkboxGroup({
-			name: "rules[craft][saveUser][userGroupIds]",
-			options : groups,
-			values: userGroupIds
-	})) }}
+{% set fieldValue = '*' %}
+{% if options.craft.saveUser.userGroupIds is defined %}
+
+	{% if options.craft.saveUser.userGroupIds is not empty %}
+
+		{% set fieldValue = options.craft.saveUser.userGroupIds %}
+
+	{% else %}
+
+		{% set fieldValue = 'x' %}
+
+	{% endif %}
+
 {% endif %}
+
+{{ forms.checkboxSelectField({
+	label: "Groups"|t,
+	name: "rules[craft][saveUser][userGroupIds]",
+	options : groups,
+	values: fieldValue,
+	errors: errors is defined ? errors : null,
+}) }}
