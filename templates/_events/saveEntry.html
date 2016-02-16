@@ -4,9 +4,6 @@
 {% set whenUpdated = (options.craft.saveEntry.whenUpdated is defined)
 		                 ? options.craft.saveEntry.whenUpdated
 		                 : false %}
-{% set sectionIds = (options.craft.saveEntry.sectionIds is defined)
-		                ? options.craft.saveEntry.sectionIds
-		                : null %}
 
 {{ forms.checkboxField({
 		label: "When the entry is created?"|t,
@@ -20,13 +17,26 @@
 		checked: whenUpdated
 }) }}
 
-{{ forms.field({
-		label: "Sections"|t,
-		instructions: "Select sections or leave unchecked for all sections."|t,
-		errors: errors is defined ? errors : null,
-	},
-	forms.checkboxGroup({
-		name: "rules[craft][saveEntry][sectionIds]",
-		options : availableSections,
-		values: sectionIds
-})) }}
+{% set fieldValue = '*' %}
+{% if options.craft.saveEntry.sectionIds is defined %}
+
+	{% if options.craft.saveEntry.sectionIds is not empty %}
+
+		{% set fieldValue = options.craft.saveEntry.sectionIds %}
+
+	{% else %}
+
+		{% set fieldValue = 'x' %}
+
+	{% endif %}
+
+{% endif %}
+
+{{ forms.checkboxSelectField({
+	label: "Sections"|t,
+	instructions: "Select sections"|t,
+	name: "rules[craft][saveEntry][sectionIds]",
+	options : availableSections,
+	values: fieldValue,
+	errors: errors is defined ? errors : null,
+}) }}
