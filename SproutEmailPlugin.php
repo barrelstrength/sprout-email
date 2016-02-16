@@ -206,15 +206,26 @@ class SproutEmailPlugin extends BasePlugin
 			$params = $event->params;
 
 			$emailModel = $params['emailModel'];
-			//Craft::dd($params, 10, false);
+
 			// To make sure you run the sprout notification email events only
 			$sproutEmailEntry = isset($params['sproutEmailEntry']) ? $params['sproutEmailEntry'] : null;
 			$mocked           = $params['mocked'];
 
 			if($sproutEmailEntry != null)
 			{
+
+				$entryId = $sproutEmailEntry->id;
+				$notificationRecord = SproutEmail_NotificationRecord::model()->findByAttributes(array('campaignId' => $sproutEmailEntry->campaignId));
+
+				$notificationId = isset($notificationRecord) ? $notificationRecord->id : null;
+
+				$info = array(
+							'campaignEntryId'        => $entryId,
+							'campaignNotificationId' => $notificationId
+						);
+
 				$type = ($mocked == true) ? 'Test Notification' : 'Notification';
-				sproutEmail()->sentemails->logSentEmail($sproutEmailEntry, $emailModel, $type);
+				sproutEmail()->sentemails->logSentEmail($emailModel, $type, $info);
 			}
 		});
 
@@ -225,7 +236,24 @@ class SproutEmailPlugin extends BasePlugin
 			$emailModel = $event->params['emailModel'];
 			$campaign   = $event->params['campaign'];
 
-			sproutEmail()->sentemails->logSentEmail($entryModel, $emailModel, "Campaign");
+			$info = array(
+						'campaignEntryId' => $entryModel->id
+					);
+
+			sproutEmail()->sentemails->logSentEmail($emailModel, "Campaign", $info);
+		});
+
+		craft()->on('email.onSendEmail', function(Event $event) {
+
+			$params = $event->params;
+			$emailModel = $params['emailModel'];
+
+			$sproutEmailEntry = isset($params['sproutEmailEntry']) ? $params['sproutEmailEntry'] : null;
+
+			if($sproutEmailEntry == null)
+			{
+				sproutEmail()->sentemails->logSentEmail($emailModel, "Others");
+			}
 		});
 	}
 

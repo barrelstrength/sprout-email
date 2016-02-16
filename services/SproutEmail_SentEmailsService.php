@@ -20,12 +20,8 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 * @throws \Exception
 	 */
 
-	public function logSentEmail($sproutEmailEntry, $emailModel, $type = '')
+	public function logSentEmail($emailModel, $type = '', $info = array())
 	{
-		$entryId = $sproutEmailEntry->id;
-		$notificationRecord = SproutEmail_NotificationRecord::model()->findByAttributes(array('campaignId' => $sproutEmailEntry->campaignId));
-
-		$notificationId = isset($notificationRecord) ? $notificationRecord->id : null;
 
 		$sentModel  = new SproutEmail_SentEmailModel();
 		// validate the element type & throw an exception if it fails
@@ -37,14 +33,13 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 			));
 		}
 
+		$sentModel->info = $info;
+
 		// set global Element attributes
 		$sentModel->uri           = '';
 		$sentModel->slug          = '';
 		$sentModel->archived      = false;
 		$sentModel->localeEnabled = $element->isLocalized();
-
-		$sentModel->campaignEntryId        = $entryId;
-		$sentModel->campaignNotificationId = $notificationId;
 
 		$sentModel->title 				= $emailModel->subject;
 		$sentModel->emailSubject 		= $emailModel->subject;
@@ -101,12 +96,20 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	{
 		$record = SproutEmail_SentEmailRecord::model()->findByPk($id);
 
-		if($mailer = $record->campaignEntry->campaign->mailer)
+		$campaignEntryId = (isset($record->info['campaignEntryId'])) ? $record->info['campaignEntryId'] : null;
+		$mailer = Craft::t('defaultmailer');
+		if($campaignEntryId != null)
 		{
-			return $mailer;
+			$entry = sproutEmail()->entries->getEntryById($campaignEntryId);
+
+			$campaignId = $entry->campaignId;
+
+			$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+
+			$mailer = $campaign->mailer;
 		}
 
-		return false;
+		return $mailer;
 	}
 
 	/**

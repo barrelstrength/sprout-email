@@ -33,8 +33,7 @@ class SproutEmail_SentEmailRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'campaignEntryId'        => array(AttributeType::Number, 'required' => false),
-			'campaignNotificationId' => array(AttributeType::Number, 'required' => false),
+			'info' 					 => array(AttributeType::Mixed,  'required' => false),
 			'emailSubject'           => array(AttributeType::Mixed,  'required' => false),
 			'title'              	 => array(AttributeType::Mixed,  'required' => false),
 			'fromEmail'              => array(AttributeType::Mixed,  'required' => false),
@@ -58,18 +57,6 @@ class SproutEmail_SentEmailRecord extends BaseRecord
 				'id',
 				'required' => true,
 				'onDelete' => static::CASCADE
-			),
-			'campaignEntry' => array(
-				static::BELONGS_TO,
-				'SproutEmail_EntryRecord',
-				'campaignEntryId',
-				'required' => true,
-				'onDelete' => static::CASCADE
-			),
-			'notification' => array(
-				static::BELONGS_TO,
-				'SproutEmail_NotificationRecord',
-				'campaignNotificationId'
 			)
 		);
 	}

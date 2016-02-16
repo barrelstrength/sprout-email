@@ -95,7 +95,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 		$attributes[] = 'emailSubject';
 		$attributes[] = 'fromEmail';
-		$attributes[] = 'campaignNotificationId';
 		$attributes[] = 'toEmail';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
@@ -111,8 +110,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'campaignNotificationId' => AttributeType::Number,
-			'campaignEntryId' => AttributeType::Number,
 			'emailSubject'    => AttributeType::String,
 			'fromEmail'       => AttributeType::String,
 			'toEmail'         => AttributeType::String,
