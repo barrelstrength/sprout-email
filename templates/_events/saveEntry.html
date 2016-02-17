@@ -17,21 +17,6 @@
 		checked: whenUpdated
 }) }}
 
-{% set fieldValue = '*' %}
-{% if options.craft.saveEntry.sectionIds is defined %}
-
-	{% if options.craft.saveEntry.sectionIds is not empty %}
-
-		{% set fieldValue = options.craft.saveEntry.sectionIds %}
-
-	{% else %}
-
-		{% set fieldValue = 'x' %}
-
-	{% endif %}
-
-{% endif %}
-
 {{ forms.checkboxSelectField({
 	label: "Sections"|t,
 	instructions: "Select sections"|t,

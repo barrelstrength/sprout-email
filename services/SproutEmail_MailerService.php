@@ -533,4 +533,24 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', $vars));
 		}
 	}
+
+	public function getCheckboxFieldValue($options)
+	{
+		$value = '*';
+
+		if(isset($options))
+		{
+			if($options == '')
+			{
+				// Uncheck all checkboxes
+				$value = 'x';
+			}
+			else
+			{
+				$value = $options;
+			}
+		}
+
+		return $value;
+	}
 }
