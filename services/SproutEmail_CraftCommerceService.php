@@ -3,7 +3,7 @@
 namespace Craft;
 
 
-class SproutEmail_CommerceService extends BaseApplicationComponent
+class SproutEmail_CraftCommerceService extends BaseApplicationComponent
 {
 
 	public function getFirstOrder()
