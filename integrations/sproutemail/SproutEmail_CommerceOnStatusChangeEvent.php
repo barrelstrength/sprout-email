@@ -159,7 +159,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	{
 		$values = array();
 
-		if($order = craft()->sproutEmail_craftCommerce->getFirstOrder())
+		if($order = craft()->sproutEmail_craftCommerce->getLatestRandomOrder())
 		{
 			$values['order'] = $order;
 			$orderId = $order->id;
