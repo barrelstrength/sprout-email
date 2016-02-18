@@ -25,6 +25,9 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 			$context['groups'] = $this->getAllGroupsOptions();
 		}
 
+		$options = $context['options']['craft']['saveUser']['userGroupIds'];
+		$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
+
 		return craft()->templates->render('sproutemail/_events/saveUser', $context);
 	}
 

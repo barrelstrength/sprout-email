@@ -17,21 +17,6 @@
 		checked: whenUpdated
 }) }}
 
-{% set fieldValue = '*' %}
-{% if options.craft.saveUser.userGroupIds is defined %}
-
-	{% if options.craft.saveUser.userGroupIds is not empty %}
-
-		{% set fieldValue = options.craft.saveUser.userGroupIds %}
-
-	{% else %}
-
-		{% set fieldValue = 'x' %}
-
-	{% endif %}
-
-{% endif %}
-
 {{ forms.checkboxSelectField({
 	label: "Groups"|t,
 	instructions: "Select groups"|t,

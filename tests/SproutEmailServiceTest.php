@@ -10,25 +10,24 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$this->assertInstanceOf('\\Craft\\SproutEmailService', sproutEmail());
 	}
 
-	public function testCheckboxSelectFieldValue()
+	public function checkboxOptionProvider()
 	{
-		$options = null;
-		$value = sproutEmail()->mailers->getCheckboxFieldValue($options);
-		$this->assertEquals('*', $value);
+		$array = array('one', 'two');
+		return array(
+			array(null, '*'),
+			array('*', '*'),
+			array($array, $array)
+		);
+	}
 
-		$options = '*';
-		$value = sproutEmail()->mailers->getCheckboxFieldValue($options);
-		$this->assertEquals('*', $value);
-
-		$options = '';
-		$value = sproutEmail()->mailers->getCheckboxFieldValue($options);
-		$this->assertEquals('x', $value);
-
-		$options = array('one', 'two');
-		$value = sproutEmail()->mailers->getCheckboxFieldValue($options);
-
-		$this->assertEquals($options, $value);
-
+	/**
+	 *
+	 * @dataProvider checkboxOptionProvider
+	 */
+	public function testCheckboxSelectFieldValue($option, $expected)
+	{
+		$value = sproutEmail()->mailers->getCheckboxFieldValue($option);
+		$this->assertEquals($expected, $value);
 	}
 
 	/**

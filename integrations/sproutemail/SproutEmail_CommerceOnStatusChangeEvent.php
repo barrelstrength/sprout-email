@@ -65,6 +65,12 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	{
 		$context['statuses'] = $this->getAllOrderStatuses();
 
+		$oldOptions = $context['options']['commerceOrderStatuses']['old'];
+		$context['oldFieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($oldOptions);
+
+		$newOptions = $context['options']['commerceOrderStatuses']['new'];
+		$context['newFieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($newOptions);
+
 		return craft()->templates->render('sproutemail/_events/statusChange', $context);
 	}
 
