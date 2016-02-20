@@ -31,7 +31,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.0.2';
+		return '2.1.3';
 	}
 
 	/**
@@ -275,9 +275,10 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailEvents()
 	{
+
 		if ($this->isEnabled && $this->isInstalled)
 		{
-			return array(
+			$events = array(
 				'entries.saveEntry'   => new SproutEmail_EntriesSaveEntryEvent(),
 				'entries.deleteEntry' => new SproutEmail_EntriesDeleteEntryEvent(),
 				'userSession.login'   => new SproutEmail_UserSessionLoginEvent(),
@@ -286,6 +287,19 @@ class SproutEmailPlugin extends BasePlugin
 				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent(),
 			);
 		}
+
+		// Check if craft commerce plugin is installed and enabled
+		$commercePlugin = craft()->plugins->getPlugin('commerce', false);
+
+		// Commerce events goes here
+		if(isset($commercePlugin->isEnabled) && $commercePlugin->isEnabled)
+		{
+			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
+			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
+		}
+
+		return $events;
 	}
 
 	/**

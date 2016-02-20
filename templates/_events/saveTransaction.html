@@ -1,0 +1,23 @@
+{% set fieldValue = '*' %}
+{% if options.commerceStatuses is defined %}
+
+	{% if options.commerceStatuses is not empty %}
+
+		{% set fieldValue = options.commerceStatuses %}
+
+	{% else %}
+
+		{% set fieldValue = 'x' %}
+
+	{% endif %}
+
+{% endif %}
+
+{{ forms.checkboxSelectField({
+	label: "Status"|t,
+	instructions: "Select which transaction statuses will trigger the notification."|t,
+	name: "commerceStatuses",
+	options : statuses,
+	values: fieldValue,
+	errors: errors is defined ? errors : null,
+}) }}

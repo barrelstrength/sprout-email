@@ -1,10 +1,15 @@
 <?php
 namespace Craft;
 
-use Mockery as m;
+require CRAFT_BASE_PATH . 'vendor/autoload.php';
+
+use \Mockery as m;
+
+
 
 class SproutEmailBaseTest extends BaseTest
 {
+
 	/**
 	 * @var \Mockery\MockInterface
 	 */
@@ -55,16 +60,18 @@ class SproutEmailBaseTest extends BaseTest
 		$campaignService      = new SproutEmail_CampaignsService();
 		$campaignEntryService = new SproutEmail_EntriesService();
 		$notificationsService = new SproutEmail_NotificationsService();
+		$mailersService 	  = new SproutEmail_MailerService();
 
 		$this->setComponent(craft(), 'sproutEmail_campaign', $campaignService);
 		$this->setComponent(craft(), 'sproutEmail_campaignEntry', $campaignEntryService);
 		$this->setComponent(craft(), 'sproutEmail_notifications', $notificationsService);
+		$this->setComponent(craft(), 'sproutEmail_mailer', $mailersService);
 
 		$mainService->init();
 		$this->setComponent(craft(), 'sproutEmail', $mainService);
 
 		$plugin = new SproutEmailPlugin();
-		$plugin->init();
+		//$plugin->init();
 
 		$pluginService = m::mock('Craft\PluginsService[getPlugin]');
 		$pluginService->shouldReceive('getPlugin')->with('sproutemail')->andReturn($plugin);
@@ -88,6 +95,7 @@ class SproutEmailBaseTest extends BaseTest
 			'\\Craft\\SproutEmail_CampaignsService'      => '../services/SproutEmail_CampaignsService.php',
 			'\\Craft\\SproutEmail_EntriesService'       => '../services/SproutEmail_EntriesService.php',
 			'\\Craft\\SproutEmail_NotificationsService' => '../services/SproutEmail_NotificationsService.php',
+			'\\Craft\\SproutEmail_MailerService'        => '../services/SproutEmail_MailerService.php',
 			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
 			'\\Craft\\SproutEmail_EntryRecord'          => '../records/SproutEmail_EntryRecord.php',

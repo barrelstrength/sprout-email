@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-use Mockery as m;
+require 'SproutEmailBaseTest.php';
 
 class SproutEmailServiceTest extends SproutEmailBaseTest
 {
@@ -17,5 +17,6 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 	public function setUp()
 	{
 		parent::setUp();
+
 	}
 }

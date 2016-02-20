@@ -146,6 +146,10 @@ SproutModal.prototype.create = function (content)
 
 		self.postToControllerAction($self.data(), function handleResponse(error, response)
 		{
+			// Close previous modal
+			modal.hide();
+			modal.destroy();
+
 			if (error)
 			{
 				return self.createErrorModal(error);
@@ -157,9 +161,6 @@ SproutModal.prototype.create = function (content)
 			}
 
 			$spinner.addClass("hidden");
-
-			modal.hide();
-			modal.destroy();
 
 			modal = self.create(response.content);
 

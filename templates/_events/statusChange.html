@@ -1,0 +1,46 @@
+{% set oldFieldValue = '*' %}
+{% if options.commerceOrderStatuses.old is defined %}
+
+	{% if options.commerceOrderStatuses.old is not empty %}
+
+		{% set oldFieldValue = options.commerceOrderStatuses.old %}
+
+	{% else %}
+
+		{% set oldFieldValue = 'x' %}
+
+	{% endif %}
+
+{% endif %}
+
+{{ forms.checkboxSelectField({
+	label: "Old Status"|t,
+	name: "commerceOrderStatuses[old]",
+	options : statuses,
+	values: oldFieldValue,
+	errors: errors is defined ? errors : null,
+}) }}
+
+{% set newFieldValue = '*' %}
+{% if options.commerceOrderStatuses.new is defined %}
+
+	{% if options.commerceOrderStatuses.new is not empty %}
+
+		{% set newFieldValue = options.commerceOrderStatuses.new %}
+
+	{% else %}
+
+		{% set newFieldValue = 'x' %}
+
+	{% endif %}
+
+{% endif %}
+
+{{ forms.checkboxSelectField({
+	label: "New Status"|t,
+	name: "commerceOrderStatuses[new]",
+	options : statuses,
+	values: newFieldValue,
+	errors: errors is defined ? errors : null,
+}) }}
+<p class="light"><em>An event will be triggered when an order is updated from an Old Status to a New Status.</em></p>
