@@ -19,14 +19,8 @@
 			<tr class="infoRow"
 				data-id="{{ entry.id }}"
 				data-name="{{ entry.emailSubject|t }}"
-				data-inforow='[
-					{"label":"Sender","attribute":"sender"},
-					{"label":"Mailer","attribute":"mailer"},
-					{"label":"Email Type","attribute":"emailtype"}
-					]'
-					data-sender="{{ entry.fromEmail }}"
-					data-mailer="{{ craft.sproutEmail.getMailerBySentEmailId(entry.id) | capitalize }}"
-					data-emailtype="{{ entry.type }}">
+					{{ entry.getInfoRow() }}
+					>
 				<td>
 					{{ entry.dateCreated|date('M j, Y g:ia') }}
 				</td>

@@ -92,10 +92,11 @@ class SproutEmailBaseTest extends BaseTest
 		$map = array(
 			'\\Craft\\SproutEmailPlugin'                => '../SproutEmailPlugin.php',
 			'\\Craft\\SproutEmailService'               => '../services/SproutEmailService.php',
-			'\\Craft\\SproutEmail_CampaignsService'      => '../services/SproutEmail_CampaignsService.php',
+			'\\Craft\\SproutEmail_CampaignsService'     => '../services/SproutEmail_CampaignsService.php',
 			'\\Craft\\SproutEmail_EntriesService'       => '../services/SproutEmail_EntriesService.php',
 			'\\Craft\\SproutEmail_NotificationsService' => '../services/SproutEmail_NotificationsService.php',
 			'\\Craft\\SproutEmail_MailerService'        => '../services/SproutEmail_MailerService.php',
+			'\\Craft\\SproutEmail_SentEmailsService'    => '../services/SproutEmail_SentEmailsService.php',
 			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
 			'\\Craft\\SproutEmail_EntryRecord'          => '../records/SproutEmail_EntryRecord.php',

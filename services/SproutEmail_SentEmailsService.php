@@ -122,4 +122,35 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$event = new Event($this, $vars);
 		$this->raiseEvent('onSendNotification', $event);
 	}
+
+	public function getSentEmailInfo($id)
+	{
+		$record = SproutEmail_SentEmailRecord::model()->findByPk($id);
+
+		return $record->info;
+	}
+
+	public function getInfoRow($id = false)
+	{
+		$string = '';
+		$infos = $this->getSentEmailInfo($id);
+
+		if(!empty($infos))
+		{
+			$row = array();
+			$dataRow = array();
+			foreach($infos as $infoKey => $info)
+			{
+				$attribute = str_replace(' ', '',strtolower($infoKey));
+				$row[] = '{"label":"' . $infoKey . '","attribute":"' . $attribute . '"}';
+				$dataRow[] = "data-" . $attribute . "='" . $info . "'";
+			}
+			$infoString = "data-inforow='[" . implode(",",$row) . "]'";
+			$dataString = implode(' ', $dataRow);
+			$string = $infoString . ' ' . $dataString;
+		}
+
+		return TemplateHelper::getRaw($string);
+	}
+
 }
