@@ -191,7 +191,17 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			}
 
 		}
+		if ($criteria->toEmail)
+		{
+			$query->andWhere(DbHelper::parseParam('sentemail.toEmail', $criteria->toEmail, $query->params));
+		}
 
+
+	}
+
+	public function defineSearchableAttributes()
+	{
+		return array('title', 'toEmail');
 	}
 
 	/**
