@@ -28,8 +28,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 			'fromName'               => array(AttributeType::Mixed, 'required' => false),
 			'toEmail'                => array(AttributeType::Mixed, 'required' => false),
 			'body'                   => array(AttributeType::Mixed, 'required' => false),
-			'htmlBody'               => array(AttributeType::Mixed, 'required' => false),
-			'type'                   => array(AttributeType::Mixed, 'required' => false)
+			'htmlBody'               => array(AttributeType::Mixed, 'required' => false)
 		);
 
 		return array_merge($defaults, $attributes);

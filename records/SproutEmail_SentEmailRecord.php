@@ -1,20 +1,6 @@
 <?php
 namespace Craft;
 
-/**
- * Class SproutEmail_EntryRecord
- *
- * @package Craft
- * --
- * @property int    $id
- * @property int    $campaignId
- * @property int    $recipientListId
- * @property string $subjectLine
- * @property string $fromName
- * @property string $fromEmail
- * @property string $replyTo
- * @property bool   $sent
- */
 class SproutEmail_SentEmailRecord extends BaseRecord
 {
 	/**
@@ -40,8 +26,7 @@ class SproutEmail_SentEmailRecord extends BaseRecord
 			'fromName'               => array(AttributeType::Mixed,  'required' => false),
 			'toEmail'                => array(AttributeType::Mixed,  'required' => false),
 			'body'                   => array(AttributeType::Mixed,  'required' => false),
-			'htmlBody'               => array(AttributeType::Mixed,  'required' => false),
-			'type'                   => array(AttributeType::Mixed,  'required' => false)
+			'htmlBody'               => array(AttributeType::Mixed,  'required' => false)
 		);
 	}
 

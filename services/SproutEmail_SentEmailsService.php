@@ -20,7 +20,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 * @throws \Exception
 	 */
 
-	public function logSentEmail($emailModel, $type = '', $info = array())
+	public function logSentEmail($emailModel, $info = array())
 	{
 
 		$sentModel  = new SproutEmail_SentEmailModel();
@@ -48,7 +48,6 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$sentModel->toEmail   			= $emailModel->toEmail;
 		$sentModel->body      			= $emailModel->body;
 		$sentModel->htmlBody  			= $emailModel->htmlBody;
-		$sentModel->type    			= $type;
 
 		$sentModel->getContent()->setAttribute('title', $sentModel->title);
 
@@ -84,32 +83,6 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 
 			throw $e;
 		}
-	}
-
-	/**
-	 * Returns sent email mailer
-	 *
-	 * @param $id Campaign Entry Id
-	 * @return string mailer
-	 */
-	public function getMailerBySentEmailId($id)
-	{
-		$record = SproutEmail_SentEmailRecord::model()->findByPk($id);
-
-		$campaignEntryId = (isset($record->info['campaignEntryId'])) ? $record->info['campaignEntryId'] : null;
-		$mailer = Craft::t('defaultmailer');
-		if($campaignEntryId != null)
-		{
-			$entry = sproutEmail()->entries->getEntryById($campaignEntryId);
-
-			$campaignId = $entry->campaignId;
-
-			$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
-
-			$mailer = $campaign->mailer;
-		}
-
-		return $mailer;
 	}
 
 	/**

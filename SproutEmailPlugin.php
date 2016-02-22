@@ -219,13 +219,12 @@ class SproutEmailPlugin extends BasePlugin
 
 				$notificationId = isset($notificationRecord) ? $notificationRecord->id : null;
 
-				$info = array(
-							'campaignEntryId'        => $entryId,
-							'campaignNotificationId' => $notificationId
-						);
-
 				$type = ($mocked == true) ? 'Test Notification' : 'Notification';
-				sproutEmail()->sentemails->logSentEmail($emailModel, $type, $info);
+				$info = array();
+				$info['Sender'] = $sproutEmailEntry->fromEmail;
+				$info['Type']   = $type;
+
+				sproutEmail()->sentemails->logSentEmail($emailModel, $info);
 			}
 		});
 
@@ -236,23 +235,45 @@ class SproutEmailPlugin extends BasePlugin
 			$emailModel = $event->params['emailModel'];
 			$campaign   = $event->params['campaign'];
 
-			$info = array(
-						'campaignEntryId' => $entryModel->id
-					);
+			$entryId =  $entryModel->id;
 
-			sproutEmail()->sentemails->logSentEmail($emailModel, "Campaign", $info);
+			$info = array();
+			$info['Sender'] = $entryModel->fromEmail;
+			$mailer = $campaign->mailer;
+			$info['Mailer'] = ucwords($mailer);
+			$info['Type']   = "Campaign";
+
+			sproutEmail()->sentemails->logSentEmail($emailModel, $info);
 		});
 
 		craft()->on('email.onSendEmail', function(Event $event) {
 
 			$params = $event->params;
 			$emailModel = $params['emailModel'];
+			$variables  = $params['variables'];
 
-			$sproutEmailEntry = isset($params['sproutEmailEntry']) ? $params['sproutEmailEntry'] : null;
+			$sproutEmailEntry = isset($variables['sproutEmailEntry']) ? $variables['sproutEmailEntry'] : null;
 
 			if($sproutEmailEntry == null)
 			{
-				sproutEmail()->sentemails->logSentEmail($emailModel, "Others");
+				$info = array();
+
+				$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
+
+				if($emailKey == 'test_email')
+				{
+					$emailModel->toEmail = $variables['settings']['emailAddress'];
+				}
+
+				if($emailKey != null)
+				{
+					$type = ucwords(str_replace('_', ' ', $emailKey));
+					$info['Type'] = $type;
+				}
+
+				$info['Sender'] = $emailModel->fromEmail;
+
+				sproutEmail()->sentemails->logSentEmail($emailModel, $info);
 			}
 		});
 	}

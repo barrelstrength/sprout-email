@@ -30,7 +30,7 @@
 				</td>
 
 				<td data-titlecell>
-					<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title }}</a>
+					{{ entry.title }}
 				</td>
 
 				<td>
@@ -40,7 +40,7 @@
 				<td>
 					<span class="tableRowInfo" data-icon="info" href="#"></span>
 				</td>
-		</>
+		</tr>
 
 {% if loop.last and craft.request.getPost("elementAction") == null %}
 
