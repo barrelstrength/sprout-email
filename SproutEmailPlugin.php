@@ -228,6 +228,7 @@ class SproutEmailPlugin extends BasePlugin
 				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
 				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
 				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent(),
+				'userGroups.onBeforeAssignUserToGroups'  => new SproutEmail_UserAssignToGroups(),
 			);
 		}
 
