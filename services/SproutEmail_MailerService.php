@@ -68,6 +68,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 						{
 							if (!$installedOnly || $mailer->isInstalled())
 							{
+								// Prioritize built in mailers
+								$mailers = $this->mailers;
+								if($this->isMailerExists($mailer->getId(), $mailers)) continue;
+
 								$this->mailers[$mailer->getId()] = $mailer;
 							}
 						}
@@ -457,6 +461,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		$vars   = array('name' => $name);
 		$mailer = $this->getMailerByName($name, true);
 
+		$builtInMailers = array('copypaste', 'campaignmonitor', 'mailchimp');
+
+		// Do not remove builtin mailers settings
+		if(in_array($name, $builtInMailers)) return false;
+
 		if (!$mailer)
 		{
 			throw new Exception(Craft::t('The {name} mailer was not found.', $vars));
@@ -532,5 +541,26 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', $vars));
 		}
+	}
+
+	/**
+	 * Check mailers by key if it exists
+	 * @param $id key
+	 * @param $mailers
+	 * @return bool
+	 */
+	protected function isMailerExists($id, $mailers)
+	{
+		if($mailers != null)
+		{
+			$mailerKeys = array_keys($mailers);
+
+			if(in_array($id, $mailerKeys))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
