@@ -1,0 +1,15 @@
+{{ forms.lightswitchField({
+	label: "Inline CSS Styles"|t,
+	instructions: "Use the MailChimp 'Automatic CSS Inliner' which applies all of your CSS as inline styles (except media
+queries)"|t,
+	name: "mailchimp[inlineCss]",
+	on:   settings.inlineCss,
+	first: true
+}) }}
+
+{{ forms.textField({
+	label: "API Key"|t,
+	name: "mailchimp[apiKey]",
+	instructions: "API Keys can be found in your MailChimp Account under: Account->Extras->API Keys"|t,
+	value: (settings.apiKey is defined ? settings.apiKey : null)
+}) }}
