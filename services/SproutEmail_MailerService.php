@@ -563,4 +563,44 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		return false;
 	}
+
+	public function getCheckboxFieldValue($options)
+	{
+		$value = '*';
+
+		if(isset($options))
+		{
+			if($options == '')
+			{
+				// Uncheck all checkboxes
+				$value = 'x';
+			}
+			else
+			{
+				$value = $options;
+			}
+		}
+
+		return $value;
+	}
+
+	public function isArraySettingsMatch($array = array(), $options)
+	{
+		if($options == '*')
+		{
+			return true;
+		}
+
+		if(is_array($options))
+		{
+			$intersect = array_intersect($array, $options);
+
+			if(!empty($intersect))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

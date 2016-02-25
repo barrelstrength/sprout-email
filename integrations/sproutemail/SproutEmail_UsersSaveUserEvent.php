@@ -25,6 +25,9 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 			$context['groups'] = craft()->sproutEmail_defaultMailer->getAllGroupsOptions();
 		}
 
+		$options = $context['options']['craft']['saveUser']['userGroupIds'];
+		$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
+
 		return craft()->templates->render('sproutemail/_events/saveUser', $context);
 	}
 
@@ -104,6 +107,12 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 		if (($whenUpdated && $isNewUser) && !$whenNew)
 		{
 			SproutEmailPlugin::log(Craft::t("No match. 'When a user is updated' is selected but the user is new."));
+			return false;
+		}
+
+		// If user groups settings are unchecked
+		if($options['craft']['saveUser']['userGroupIds'] == '')
+		{
 			return false;
 		}
 
