@@ -50,7 +50,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	{
 		$context['settings'] = $this->getSettings();
 
-		$html = craft()->templates->render('sproutemail/mailers/campaignmonitor/_settings', $context);
+		$html = craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/settings', $context);
 
 		return TemplateHelper::getRaw($html);
 	}
@@ -75,7 +75,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 		if (!count($lists))
 		{
-			return craft()->templates->render('sproutemail/mailers/campaignmonitor/recipientlists/_norecipientlists');
+			return craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/recipientlists/norecipientlists');
 		}
 
 		if (count($lists))
@@ -164,7 +164,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		$response          = new SproutEmail_ResponseModel();
 		$response->success = true;
 		$response->content = craft()->templates->render(
-			'sproutemail/mailers/campaignmonitor/_export',
+			'sproutemail/settings/_mailers/campaignmonitor/export',
 			array(
 				'entry'             => $entry,
 				'campaign'          => $campaign,
@@ -208,7 +208,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 			$details['textUrl'] = stripslashes($urls['text']);
 		}
 
-		return craft()->templates->render('sproutemail/mailers/campaignmonitor/_prepare', $details);
+		return craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/prepare', $details);
 	}
 
 	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
