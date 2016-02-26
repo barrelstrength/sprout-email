@@ -252,11 +252,29 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailMailers()
 	{
-		require_once dirname(__FILE__).'/integrations/sproutemail/mailers/SproutEmailDefaultMailer.php';
+		$mailers = array();
 
-		return array(
-			'defaultmailer' => new SproutEmailDefaultMailer()
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
+		$mailers['defaultmailer'] = new SproutEmailDefaultMailer();
+
+		$pluginMailers = array(
+			'mailchimp'       => 'SproutEmail_MailchimpMailer',
+			'copypaste'       => 'SproutEmail_CopyPasteMailer',
+			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
 		);
+
+		foreach($pluginMailers as $handle => $class)
+		{
+
+			$namespace = "Craft\\" . $class;
+			$mailerClass = new $namespace();
+
+			$mailers[$handle] = $mailerClass;
+
+		}
+
+		return $mailers;
+
 	}
 
 	/**
