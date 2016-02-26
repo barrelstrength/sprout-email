@@ -13,17 +13,21 @@ namespace Craft;
  */
 class SproutEmailService extends BaseApplicationComponent
 {
-	public $mailers;
-	public $entries;
-	public $campaigns;
-	public $notifications;
-	public $sentemails;
+	public  $mailers;
+	public  $entries;
+	public  $campaigns;
+	public  $notifications;
+	public  $defaultmailer;
+	public  $sentemails;
+
+	private $error = '';
 
 	public function init()
 	{
 		parent::init();
 
 		$this->mailers       = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->defaultmailer = Craft::app()->getComponent('sproutEmail_defaultMailer');
 		$this->entries       = Craft::app()->getComponent('sproutEmail_entries');
 		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
@@ -363,5 +367,19 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param $subject
+	 * @return string
+	 */
+	public function encodeSubjectLine($subject)
+	{
+		return '=?UTF-8?B?'.base64_encode($subject).'?=';
+	}
+
+	public function test()
+	{
+		echo "test is siis";
 	}
 }

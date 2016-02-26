@@ -57,7 +57,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 * @throws \Exception
 	 * @return int CampaignRecordId
 	 */
-	public function saveCampaign(SproutEmail_CampaignModel $campaign, $tab = 'info')
+	public function saveCampaign(SproutEmail_CampaignModel $campaign)
 	{
 		$campaignRecord = new SproutEmail_CampaignRecord();
 		$oldCampaign = null;
@@ -70,110 +70,33 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-		// @todo - Refactor. We no longer use tabs in the CP section.
-		switch ($tab)
+		$fieldLayout = $campaign->getFieldLayout();
+		craft()->fields->saveLayout($fieldLayout);
+
+		// Delete our previous record
+		if ($campaign->id && $oldCampaign && $oldCampaign->fieldLayoutId)
 		{
-			case 'fields':
-			{
-				$fieldLayout = $campaign->getFieldLayout();
-				craft()->fields->saveLayout($fieldLayout);
-
-				// Delete our previous record
-				if ($campaign->id && $oldCampaign && $oldCampaign->fieldLayoutId)
-				{
-					craft()->fields->deleteLayoutById($oldCampaign->fieldLayoutId);
-				}
-
-				// Assign our new layout id info to our
-				// form model and records
-				$campaign->fieldLayoutId       = $fieldLayout->id;
-				$campaignRecord->fieldLayoutId = $fieldLayout->id;
-
-				$campaignRecord = $this->saveCampaignInfo($campaign);
-
-				if ($campaignRecord->hasErrors())
-				{
-					if ($transaction)
-					{
-						$transaction->rollBack();
-					}
-
-					return $campaign;
-				}
-				break;
-
-				// save the campaign
-			}
-			default:
-			{
-				if ($campaign->type == 'notification')
-				{
-					$campaign->type = Campaign::Notification;
-				}
-				else
-				{
-					$campaign->type = Campaign::Email;
-				}
-
-				try
-				{
-					// Save the Campaign
-					$campaignRecord = $this->saveCampaignInfo($campaign);
-
-					// Rollback if saving fails
-					if ($campaignRecord->hasErrors())
-					{
-						$transaction->rollBack();
-
-						return $campaign;
-					}
-
-					// If we have a Notification, also Save the Entry
-					if ($campaign->type == Campaign::Notification)
-					{
-						if (isset($oldCampaign->id))
-						{
-							$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
-							$criteria->campaignId = $oldCampaign->id;
-							$entry = $criteria->first();
-						}
-
-						if (isset($entry))
-						{
-							// if we have a blast already, update it
-							$entry->campaignId          = $campaignRecord->id;
-							$entry->subjectLine         = ($entry->subjectLine != '') ? $entry->subjectLine : $campaign->name;
-							$entry->getContent()->title = $campaign->name;
-						}
-						else
-						{
-							// If we don't have a blast yet, create a new entry
-							$entry                      = new SproutEmail_EntryModel();
-							$entry->campaignId          = $campaignRecord->id;
-							$entry->subjectLine         = $campaign->name;
-							$entry->getContent()->title = $campaign->name;
-						}
-
-						if (sproutEmail()->entries->saveEntry($entry, $campaign))
-						{
-							// @todo - redirect and such
-						}
-						else
-						{
-							SproutEmailPlugin::log(json_encode($entry->getErrors()));
-						}
-					}
-				}
-				catch (\Exception $e)
-				{
-					SproutEmailPlugin::log(json_encode($e));
-
-					throw new Exception(Craft::t('Error: Campaign could not be saved.'));
-				}
-
-				break;
-			}
+			craft()->fields->deleteLayoutById($oldCampaign->fieldLayoutId);
 		}
+
+		// Assign our new layout id info to our
+		// form model and records
+		$campaign->fieldLayoutId       = $fieldLayout->id;
+		$campaignRecord->fieldLayoutId = $fieldLayout->id;
+
+		$campaignRecord = $this->saveCampaignInfo($campaign);
+
+		if ($campaignRecord->hasErrors())
+		{
+			if ($transaction)
+			{
+				$transaction->rollBack();
+			}
+
+			return $campaign;
+		}
+
+
 
 		if ($transaction)
 		{

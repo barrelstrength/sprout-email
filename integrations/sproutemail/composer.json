@@ -1,0 +1,13 @@
+{
+  "name"   : "barrelstrengthdesign/sproutemailmailchimp",
+  "require": {
+    "mailchimp/mailchimp": "2.0.6",
+    "campaignmonitor/createsend-php": "~5.0.0"
+  },
+  "authors": [
+    {
+      "name" : "Selvin Ortiz",
+      "email": "selvin@barrelstrengthdesign.com"
+    }
+  ]
+}

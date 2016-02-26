@@ -12,21 +12,47 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$this->assertInstanceOf('\\Craft\\SproutEmailService', sproutEmail());
 	}
 
-	public function testSentInfo()
+	public function checkboxOptionProvider()
 	{
-		$mockInfo = array('Mailer' => 'Mailchimp', 'Email Type' => 'Notification');
+		$array = array('one', 'two');
+		return array(
+			array(null, '*'),
+			array('*', '*'),
+			array($array, $array)
+		);
+	}
 
-		$mock = m::mock('\Craft\SproutEmail_SentEmailsService[getSentEmailInfo]')
-				->shouldReceive('getSentEmailInfo')
-				->andReturn($mockInfo)
-				->mock();
+	/**
+	 *
+	 * @dataProvider checkboxOptionProvider
+	 */
+	public function testCheckboxSelectFieldValue($option, $expected)
+	{
+		$value = sproutEmail()->mailers->getCheckboxFieldValue($option);
+		$this->assertEquals($expected, $value);
+	}
 
-		$infoRow = $mock->getInfoRow(1);
+	public function optionSettingsProvider()
+	{
+		return array(
+			array(array(1, 4, 3), true),
+			array(array(1, 3, 6), false),
+			array('*', true),
+			array('', false)
+		);
+	}
 
-		$expectedString = 'data-inforow=\'[{"label":"Mailer","attribute":"mailer"},{"label":"Email Type","attribute":"emailtype"}]\'';
-		$expectedString.=" data-mailer='Mailchimp' data-emailtype='Notification'";
+	/**
+	 *
+	 * @dataProvider optionSettingsProvider
+	 */
+	public function testIsArraySettingsMatch($options, $expected)
+	{
+		$array   = array(2, 4, 5);
 
-		$this->assertEquals($expectedString,$infoRow);
+		$result = sproutEmail()->mailers->isArraySettingsMatch($array, $options);
+
+		$this->assertEquals($result, $expected);
 	}
 
 	/**

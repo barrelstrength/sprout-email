@@ -173,7 +173,7 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
 
-		if (sproutEmailDefaultMailer()->enableDynamicLists())
+		if (sproutEmail()->defaultmailer->enableDynamicLists())
 		{
 			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
 			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
@@ -306,6 +306,7 @@ class SproutEmailPlugin extends BasePlugin
 				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
 				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
 				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent(),
+				'userGroups.onBeforeAssignUserToGroups'  => new SproutEmail_UserAssignToGroups(),
 			);
 		}
 
@@ -330,11 +331,26 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailMailers()
 	{
-		require_once dirname(__FILE__).'/integrations/sproutemail/mailers/SproutEmailDefaultMailer.php';
+		$mailers = array();
 
-		return array(
-			'defaultmailer' => new SproutEmailDefaultMailer()
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
+		$mailers['defaultmailer'] = new SproutEmailDefaultMailer();
+
+		$pluginMailers = array(
+			'mailchimp'       => 'SproutEmail_MailchimpMailer',
+			'copypaste'       => 'SproutEmail_CopyPasteMailer',
+			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
 		);
+
+		foreach($pluginMailers as $handle => $class)
+		{
+			$namespace = "Craft\\" . $class;
+			$mailerClass = new $namespace();
+
+			$mailers[$handle] = $mailerClass;
+		}
+		
+		return $mailers;
 	}
 
 	/**

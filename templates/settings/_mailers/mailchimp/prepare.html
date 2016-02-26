@@ -1,0 +1,57 @@
+{% import "_includes/forms" as forms %}
+
+<h1>{{ mailer.getTitle() }}</h1>
+<h2>Your content is ready to send.</h2>
+
+<table class="data fullwidth">
+	<tbody>
+		<tr>
+			<td><strong>Subject</strong></td>
+			<td>{{ entry.title }}</td>
+		</tr>
+		<tr>
+			<td><strong>From Name</strong></td>
+			<td>{{ entry.fromName }}</td>
+		</tr>
+		<tr>
+			<td><strong>From Email</strong></td>
+			<td>{{ entry.fromEmail }}</td>
+		</tr>
+		<tr>
+			<td><strong>Reply To</strong></td>
+			<td>{{ entry.replyTo }}</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>Preview</strong>
+			</td>
+			<td>
+				{% if craft.sproutEmail.doesSiteTemplateExist(campaign.template) %}
+					<a href="{{ entry.getUrl() }}" title="{{ entry.title }}" target="_blank">HTML</a>
+					<a href="{{ entry.getUrl() ~ '?type=text' }}" title="{{ entry.title }}" target="_blank">Text</a>
+				{% endif %}
+			</td>
+		</tr>
+		<tr>
+			<td><strong>Recipient Lists</strong></td>
+			<td>
+				{% for list in lists %}
+					<li>{{ list.name }} ({{ list.stats.member_count }})</li>
+				{% endfor %}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="buttons right">
+	<div class="buttons">
+		<button id="cancel" class="btn">{{ "Cancel"|t }}</button>
+		<button
+			data-mailer="mailchimp"
+			data-action="sproutEmail/entry/export"
+			data-entry-id="{{ entry.id }}"
+			data-campaign-id="{{ campaign.id }}"
+			class="btn submit icon actions send-campaign">{{ "Send Campaign"|t }}
+		</button>
+	</div>
+</div>

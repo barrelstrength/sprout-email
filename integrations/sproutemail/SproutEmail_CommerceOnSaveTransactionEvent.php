@@ -56,6 +56,8 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	{
 		$context['statuses'] = $this->getAllTransactionStatuses();
 
+		$options =  $context['options']['commerceStatuses'];
+		$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
 		return craft()->templates->render('sproutemail/_events/saveTransaction', $context);
 	}
 
@@ -134,5 +136,29 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 		}
 
 		return $options;
+	}
+
+	/**
+	 * @throws Exception
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getMockedParams()
+	{
+
+		$order = craft()->sproutEmail_craftCommerce->getLatestRandomOrder();
+		// Return the oldest order
+		if (!empty($order))
+		{
+			$orderId = $order->id;
+			$transactions = craft()->commerce_transactions->getAllTransactionsByOrderId($orderId);
+			if(!empty($transactions))
+			{
+				return $transactions[0];
+			}
+		}
+
+		return array();
+
 	}
 }

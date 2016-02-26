@@ -32,7 +32,6 @@
 
 	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
 	<input type="hidden" name="redirect" value="sproutemail/settings/campaigns">
-	<input type="hidden" name="tab" value="fields">
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 	<input type="hidden" name="sproutEmail[type]" value="email">
 
@@ -82,16 +81,6 @@
 			placeholder: '_emails/emailtemplate',
 			value: (campaign is defined ? campaign.template : null),
 			errors: (campaign is defined ? campaign.getErrors('template') : null)
-		}) }}
-
-		{{ forms.textField({
-			id: 'templateCopyPaste',
-			label: "Entry Copy/Paste Template"|t,
-			name: 'sproutEmail[templateCopyPaste]',
-			instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
-			placeholder: '_emails/copypaste-template',
-			value: (campaign is defined ? campaign.templateCopyPaste : null),
-			errors: (campaign is defined ? campaign.getErrors('templateCopyPaste') : null)
 		}) }}
 
 		<hr>

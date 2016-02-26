@@ -68,6 +68,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 						{
 							if (!$installedOnly || $mailer->isInstalled())
 							{
+								// Prioritize built in mailers
+								$mailers = $this->mailers;
+								if($this->isMailerExists($mailer->getId(), $mailers)) continue;
+
 								$this->mailers[$mailer->getId()] = $mailer;
 							}
 						}
@@ -457,6 +461,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		$vars   = array('name' => $name);
 		$mailer = $this->getMailerByName($name, true);
 
+		$builtInMailers = array('copypaste', 'campaignmonitor', 'mailchimp');
+
+		// Do not remove builtin mailers settings
+		if(in_array($name, $builtInMailers)) return false;
+
 		if (!$mailer)
 		{
 			throw new Exception(Craft::t('The {name} mailer was not found.', $vars));
@@ -534,16 +543,64 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 	}
 
-	/**
-	 * Send campaign event
-	 * @param SproutEmail_EntryModel $model
-	 * @param $emailModel
-	 * @param $campaign
-	 * @throws \CException
+	/*
+	 * Check mailers by key if it exists
+	 * @param $id key
+	 * @param $mailers
+	 * @return bool
 	 */
-	public function onSendCampaign(SproutEmail_EntryModel $model, $emailModel, $campaign)
+	protected function isMailerExists($id, $mailers)
 	{
-		$event = new Event($this, array('entryModel' => $model, 'emailModel' => $emailModel, 'campaign' => $campaign));
-		$this->raiseEvent('onSendCampaign', $event);
+		if($mailers != null)
+		{
+			$mailerKeys = array_keys($mailers);
+
+			if(in_array($id, $mailerKeys))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function getCheckboxFieldValue($options)
+	{
+		$value = '*';
+
+		if(isset($options))
+		{
+			if($options == '')
+			{
+				// Uncheck all checkboxes
+				$value = 'x';
+			}
+			else
+			{
+				$value = $options;
+			}
+		}
+
+		return $value;
+	}
+
+	public function isArraySettingsMatch($array = array(), $options)
+	{
+		if($options == '*')
+		{
+			return true;
+		}
+
+		if(is_array($options))
+		{
+			$intersect = array_intersect($array, $options);
+
+			if(!empty($intersect))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
