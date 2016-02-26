@@ -30,6 +30,30 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$this->assertEquals($expected, $value);
 	}
 
+	public function optionSettingsProvider()
+	{
+		return array(
+			array(array(1, 4, 3), true),
+			array(array(1, 3, 6), false),
+			array('*', true),
+			array('', false)
+		);
+	}
+
+	/**
+	 *
+	 * @dataProvider optionSettingsProvider
+	 */
+	public function testIsArraySettingsMatch($options, $expected)
+	{
+		$array   = array(2, 4, 5);
+
+		$result = sproutEmail()->mailers->isArraySettingsMatch($array, $options);
+
+		$this->assertEquals($result, $expected);
+
+	}
+
 	/**
 	 * ENVIRONMENT
 	 * -----------

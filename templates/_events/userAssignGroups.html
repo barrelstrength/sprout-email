@@ -1,0 +1,17 @@
+{{ forms.checkboxSelectField({
+	label: "Old Groups"|t,
+	instructions: "Select old groups."|t,
+	name: "assignedGroups[old]",
+	options : groups,
+	values: oldFieldValue,
+	errors: errors is defined ? errors : null,
+}) }}
+
+{{ forms.checkboxSelectField({
+	label: "New Groups"|t,
+	instructions: "Select new groups."|t,
+	name: "assignedGroups[new]",
+	options : groups,
+	values: newFieldValue,
+	errors: errors is defined ? errors : null,
+}) }}

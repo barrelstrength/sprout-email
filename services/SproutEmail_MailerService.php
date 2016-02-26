@@ -543,6 +543,27 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 	}
 
+	/**
+	 * Check mailers by key if it exists
+	 * @param $id key
+	 * @param $mailers
+	 * @return bool
+	 */
+	protected function isMailerExists($id, $mailers)
+	{
+		if($mailers != null)
+		{
+			$mailerKeys = array_keys($mailers);
+
+			if(in_array($id, $mailerKeys))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function getCheckboxFieldValue($options)
 	{
 		$value = '*';
@@ -563,19 +584,18 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		return $value;
 	}
 
-	/**
-	 * Check mailers by key if it exists
-	 * @param $id key
-	 * @param $mailers
-	 * @return bool
-	 */
-	protected function isMailerExists($id, $mailers)
+	public function isArraySettingsMatch($array = array(), $options)
 	{
-		if($mailers != null)
+		if($options == '*')
 		{
-			$mailerKeys = array_keys($mailers);
+			return true;
+		}
 
-			if(in_array($id, $mailerKeys))
+		if(is_array($options))
+		{
+			$intersect = array_intersect($array, $options);
+
+			if(!empty($intersect))
 			{
 				return true;
 			}

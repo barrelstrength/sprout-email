@@ -740,4 +740,38 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			}
 		}
 	}
+
+	/**
+	 * Returns an array of groups suitable for use in checkbox field
+	 *
+	 * @return array
+	 */
+	public function getAllGroupsOptions()
+	{
+		try
+		{
+			$groups = craft()->userGroups->getAllGroups();
+		}
+		catch (\Exception $e)
+		{
+			$groups = array();
+		}
+
+		$options = array();
+
+		if (count($groups))
+		{
+			foreach ($groups as $key => $group)
+			{
+				array_push(
+					$options, array(
+						'label' => $group->name,
+						'value' => $group->id
+					)
+				);
+			}
+		}
+
+		return $options;
+	}
 }
