@@ -70,7 +70,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 							{
 								// Prioritize built in mailers
 								$mailers = $this->mailers;
-								if($this->isMailerExists($mailer->getId(), $mailers)) continue;
+								if ($this->isMailerExists($mailer->getId(), $mailers))
+								{
+									continue;
+								}
 
 								$this->mailers[$mailer->getId()] = $mailer;
 							}
@@ -95,7 +98,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param string $name
-	 * @param bool   $includeMailersNotYetLoaded
+	 * @param bool $includeMailersNotYetLoaded
 	 *
 	 * @return SproutEmailBaseMailer|null
 	 */
@@ -179,8 +182,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$link = craft()->templates->renderObjectTemplate($template, $vars);
 
 			return TemplateHelper::getRaw($link);
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			sproutEmail()->error('Unable to create Control Panel Section link for {name}', $vars);
 
@@ -229,8 +231,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				$response->content = $mailer->getPrepareModalHtml($entry, $campaign);
 
 				return $response;
-			}
-			catch (\Exception $e)
+			} catch (\Exception $e)
 			{
 				$response->success = false;
 				$response->message = $e->getMessage();
@@ -242,7 +243,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			$name              = $mailer->getTitle();
 			$response->success = false;
-			$response->message = "<h1>$name</h1><br><p>".Craft::t('No actions available for this campaign entry.')."</p>";
+			$response->message = "<h1>$name</h1><br><p>" . Craft::t('No actions available for this campaign entry.') . "</p>";
 		}
 
 		return $response;
@@ -279,7 +280,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			$name = $mailer->getTitle();
 
-			$response->content = "<h1>$name</h1><br><p>".Craft::t('No actions available for this campaign entry.')."</p>";
+			$response->content = "<h1>$name</h1><br><p>" . Craft::t('No actions available for this campaign entry.') . "</p>";
 		}
 
 		return $response;
@@ -302,7 +303,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 *
 	 * @throws Exception
 	 * @throws \Exception
@@ -341,8 +342,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				try
 				{
 					$record->save();
-				}
-				catch (\Exception $e)
+				} catch (\Exception $e)
 				{
 					throw $e;
 				}
@@ -353,7 +353,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array
@@ -373,15 +373,14 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		try
 		{
 			return $mailer->exportEntry($entry, $campaign);
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			throw $e;
 		}
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array
@@ -401,8 +400,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		try
 		{
 			return $mailer->previewEntry($entry, $campaign);
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			throw $e;
 		}
@@ -464,7 +462,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		$builtInMailers = array('copypaste', 'campaignmonitor', 'mailchimp');
 
 		// Do not remove builtin mailers settings
-		if(in_array($name, $builtInMailers)) return false;
+		if (in_array($name, $builtInMailers))
+		{
+			return false;
+		}
 
 		if (!$mailer)
 		{
@@ -498,12 +499,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		try
 		{
 			return $record->save();
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			$vars = array(
 				'name'    => $mailer->getId(),
-				'message' => PHP_EOL.$e->getMessage(),
+				'message' => PHP_EOL . $e->getMessage(),
 			);
 
 			sproutEmail()->error(Craft::t('Unable to install the {name} mailer.{message}', $vars));
@@ -531,12 +531,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		try
 		{
 			return $record->delete();
-		}
-		catch (\Exception $e)
+		} catch (\Exception $e)
 		{
 			$vars = array(
 				'name'    => $name,
-				'message' => PHP_EOL.$e->getMessage(),
+				'message' => PHP_EOL . $e->getMessage(),
 			);
 
 			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', $vars));
@@ -551,11 +550,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	protected function isMailerExists($id, $mailers)
 	{
-		if($mailers != null)
+		if ($mailers != null)
 		{
 			$mailerKeys = array_keys($mailers);
 
-			if(in_array($id, $mailerKeys))
+			if (in_array($id, $mailerKeys))
 			{
 				return true;
 			}
@@ -568,9 +567,9 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	{
 		$value = '*';
 
-		if(isset($options))
+		if (isset($options))
 		{
-			if($options == '')
+			if ($options == '')
 			{
 				// Uncheck all checkboxes
 				$value = 'x';
@@ -586,21 +585,40 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	public function isArraySettingsMatch($array = array(), $options)
 	{
-		if($options == '*')
+		if ($options == '*')
 		{
 			return true;
 		}
 
-		if(is_array($options))
+		if (is_array($options))
 		{
 			$intersect = array_intersect($array, $options);
 
-			if(!empty($intersect))
+			if (!empty($intersect))
 			{
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * Send campaign event
+	 *
+	 * @param SproutEmail_EntryModel $model
+	 * @param $emailModel
+	 * @param $campaign
+	 * @throws \CException
+	 */
+	public function onSendCampaign(SproutEmail_EntryModel $model, $emailModel, $campaign)
+	{
+		$event = new Event($this, array(
+			'entryModel' => $model,
+			'emailModel' => $emailModel,
+			'campaign'   => $campaign
+		));
+
+		$this->raiseEvent('onSendCampaign', $event);
 	}
 }
