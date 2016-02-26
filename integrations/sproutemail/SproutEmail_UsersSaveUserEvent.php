@@ -62,7 +62,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
 
 		// If any user groups were checked, make sure the user is in one of the groups
-		if (!empty($options['craft']['saveUser']['userGroupIds']) && count($options['craft']['saveUser']['userGroupIds']))
+		if (is_array($options['craft']['saveUser']['userGroupIds']) && !empty($options['craft']['saveUser']['userGroupIds']) && count($options['craft']['saveUser']['userGroupIds']))
 		{
 			$inGroup = false;
 			$existingUserGroups = $user->getGroups('id');
