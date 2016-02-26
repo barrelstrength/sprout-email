@@ -4,7 +4,6 @@
 .DS_Store
 # --
 etc
-vendor
 sync.sh
 docs.sh
 apigen.neon
