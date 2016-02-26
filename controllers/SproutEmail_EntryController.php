@@ -266,33 +266,6 @@ class SproutEmail_EntryController extends BaseController
 		$variables['campaign']   = sproutEmail()->campaigns->getCampaignById($campaignId);
 		$variables['campaignId'] = $campaignId;
 
-		// Tabs
-		$variables['tabs'] = array();
-
-		foreach ($variables['campaign']->getFieldLayout()->getTabs() as $index => $tab)
-		{
-			// Do any of the fields on this tab have errors?
-			$hasErrors = false;
-
-			if ($variables['entry']->hasErrors())
-			{
-				foreach ($tab->getFields() as $field)
-				{
-					if ($variables['entry']->getErrors($field->getField()->handle))
-					{
-						$hasErrors = true;
-						break;
-					}
-				}
-			}
-
-			$variables['tabs'][] = array(
-				'url'   => '#tab'.($index + 1),
-				'label' => Craft::t($tab->name),
-				'class' => ($hasErrors ? 'error' : null)
-			);
-		}
-
 		$shareParamsHtml = array(
 			'entryId'  => $variables['entry']->id,
 			'template' => 'html'
@@ -340,6 +313,7 @@ class SproutEmail_EntryController extends BaseController
 					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 				}
 			}
+
 		}
 		else
 		{
@@ -359,8 +333,6 @@ class SproutEmail_EntryController extends BaseController
 			$variables['notificationEvent'] = $notificationId;
 		}
 
-		$variables['shareUrlHtml'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsHtml);
-		$variables['shareUrlText'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParamsText);
 		// end <
 
 		$variables['recipientLists'] = sproutEmail()->entries->getRecipientListsByEntryId($entryId);
