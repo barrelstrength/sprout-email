@@ -204,7 +204,45 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 			}
 		}
 
-		return $campaignIds;
+
+		$recipientLists = array();
+		$toEmails       = array();
+		if (is_array($lists) && count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$current = $this->getRecipientListById($list->list);
+
+				array_push($recipientLists, $current);
+			}
+
+
+		}
+
+		if(!empty($recipientLists))
+		{
+			foreach ($recipientLists as $recipientList)
+			{
+				$toEmails[] = $recipientList['name'] . " (" . $recipientList['stats']['member_count'] . ")";
+			}
+		}
+
+
+		$email = new EmailModel();
+
+		$email->subject   = $entry->title;
+		$email->fromName  = $entry->fromName;
+		$email->fromEmail = $entry->fromEmail;
+		$email->body      = $content['text'];
+		$email->htmlBody  = $content['html'];
+
+		if(!empty($toEmails))
+		{
+			$email->toEmail = implode(', ', $toEmails);
+		}
+
+
+		return array('ids' => $campaignIds, 'emailModel' => $email);
 	}
 
 	/**

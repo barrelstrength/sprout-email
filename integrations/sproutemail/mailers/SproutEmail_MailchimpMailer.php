@@ -250,7 +250,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 		try
 		{
-			$sentCampaignIds   = $this->getService()->export($entry, $campaign);
+			$sentCampaign  = $this->getService()->export($entry, $campaign);
+
+			$sentCampaignIds      = $sentCampaign['ids'];
+			
+			$response->emailModel = $sentCampaign['emailModel'];
+
 			$response->success = true;
 			$response->message = Craft::t('Campaign successfully sent to {count} recipient lists.', array('count' => count($sentCampaignIds)));
 		}
