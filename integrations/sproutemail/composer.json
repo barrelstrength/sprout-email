@@ -4,7 +4,9 @@
     "mailchimp/mailchimp": "2.0.6",
     "campaignmonitor/createsend-php": "~5.0.0"
   },
-  "preferred-install": "dist",
+  "config": {
+    "preferred-install": "dist"
+  },
   "authors": [
     {
       "name" : "Selvin Ortiz",
