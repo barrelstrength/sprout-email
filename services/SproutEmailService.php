@@ -17,6 +17,7 @@ class SproutEmailService extends BaseApplicationComponent
 	public  $entries;
 	public  $campaigns;
 	public  $notifications;
+	public  $defaultmailer;
 	private $error = '';
 
 	public function init()
@@ -24,6 +25,7 @@ class SproutEmailService extends BaseApplicationComponent
 		parent::init();
 
 		$this->mailers       = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->defaultmailer = Craft::app()->getComponent('sproutEmail_defaultMailer');
 		$this->entries       = Craft::app()->getComponent('sproutEmail_entries');
 		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
@@ -381,5 +383,10 @@ class SproutEmailService extends BaseApplicationComponent
 	public function encodeSubjectLine($subject)
 	{
 		return '=?UTF-8?B?'.base64_encode($subject).'?=';
+	}
+
+	public function test()
+	{
+		echo "test is siis";
 	}
 }

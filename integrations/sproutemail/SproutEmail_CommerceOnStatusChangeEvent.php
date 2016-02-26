@@ -42,10 +42,11 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function prepareParams(Event $event)
 	{
-		return array(
-			'value' 	   => $event->params['order'],
-			'orderHistory' => $event->params['orderHistory']
-		);
+		$values = array();
+		$values['value']['order']        = $event->params['order'];
+		$values['value']['orderHistory'] = $event->params['orderHistory'];
+
+		return $values;
 	}
 
 	/**
@@ -64,6 +65,12 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	{
 		$context['statuses'] = $this->getAllOrderStatuses();
 
+		$oldOptions = $context['options']['commerceOrderStatuses']['old'];
+		$context['oldFieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($oldOptions);
+
+		$newOptions = $context['options']['commerceOrderStatuses']['new'];
+		$context['newFieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($newOptions);
+
 		return craft()->templates->render('sproutemail/_events/statusChange', $context);
 	}
 
@@ -76,17 +83,18 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, Commerce_OrderModel  $order, array $params = array())
+	public function validateOptions($options, $order, array $params = array())
 	{
+
 		// This ensures that we will only trigger orders being updated
-		$prevStatusId = $params['orderHistory']->prevStatusId;
+		$prevStatusId = $order['orderHistory']->prevStatusId;
 
 		if(!$prevStatusId OR empty($options['commerceOrderStatuses']))
 		{
 			return false;
 		}
 
-		$newStatusId = $order->orderStatusId;
+		$newStatusId = $order['order']->orderStatusId;
 
 		$isMatch = $this->isOldAndNewMatch($prevStatusId, $newStatusId, $options);
 
@@ -140,5 +148,31 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * @throws Exception
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getMockedParams()
+	{
+		$values = array();
+
+		if($order = craft()->sproutEmail_commerce->getFirstOrder())
+		{
+			$values['order'] = $order;
+			$orderId = $order->id;
+
+			$orderHistory = Commerce_OrderHistoryRecord::model()->findByAttributes(array('orderId' => $orderId));
+
+			if($orderHistory != null)
+			{
+				$values['orderHistory'] = $orderHistory;
+			}
+
+		}
+
+		return $values;
 	}
 }

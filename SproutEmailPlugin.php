@@ -172,7 +172,7 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
 
-		if (sproutEmailDefaultMailer()->enableDynamicLists())
+		if (sproutEmail()->defaultmailer->enableDynamicLists())
 		{
 			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
 			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
@@ -265,16 +265,13 @@ class SproutEmailPlugin extends BasePlugin
 
 		foreach($pluginMailers as $handle => $class)
 		{
-
 			$namespace = "Craft\\" . $class;
 			$mailerClass = new $namespace();
 
 			$mailers[$handle] = $mailerClass;
-
 		}
-
+		
 		return $mailers;
-
 	}
 
 	/**

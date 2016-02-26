@@ -543,6 +543,26 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 	}
 
+	public function getCheckboxFieldValue($options)
+	{
+		$value = '*';
+
+		if(isset($options))
+		{
+			if($options == '')
+			{
+				// Uncheck all checkboxes
+				$value = 'x';
+			}
+			else
+			{
+				$value = $options;
+			}
+		}
+
+		return $value;
+	}
+
 	/**
 	 * Check mailers by key if it exists
 	 * @param $id key
