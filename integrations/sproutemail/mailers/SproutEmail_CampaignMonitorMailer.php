@@ -154,16 +154,18 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	{
 		try
 		{
-			$createdCampaignId = $this->getService()->exportEntry($entry, $campaign);
+			$result = $this->getService()->exportEntry($entry, $campaign);
+			$createdCampaignId = $result['id'];
 		}
 		catch (\Exception $e)
 		{
 			throw $e;
 		}
 
-		$response          = new SproutEmail_ResponseModel();
-		$response->success = true;
-		$response->content = craft()->templates->render(
+		$response             = new SproutEmail_ResponseModel();
+		$response->emailModel = $result['emailModel'];
+		$response->success    = true;
+		$response->content    = craft()->templates->render(
 			'sproutemail/settings/_mailers/campaignmonitor/export',
 			array(
 				'entry'             => $entry,

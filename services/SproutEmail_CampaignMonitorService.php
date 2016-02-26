@@ -86,11 +86,27 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 		$lists          = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $entry->id));
 		$recipientLists = array();
-
+		$toEmails = array();
 		foreach ($lists as $list)
 		{
 			array_push($recipientLists, $list->list);
+			$toEmails[] = $this->getListLabel($list->list);
 		}
+
+		$params = array(
+			'entry'     => $entry,
+			'campaign'  => $campaign,
+			'recipient' => array(
+				'firstName' => 'First',
+				'lastName'  => 'Last',
+				'email'     => 'user@domain.com'
+			)
+		);
+
+		$content = array(
+			'html' => sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params),
+			'text' => sproutEmail()->renderSiteTemplateIfExists($campaign->template.'.txt', $params),
+		);
 
 		try
 		{
@@ -110,6 +126,20 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 			$draftCampaign = new CS_REST_Campaigns(null, $auth);
 			$response      = $draftCampaign->create($this->settings['clientId'], $params);
 
+			$email = new EmailModel();
+
+			$email->subject   = $entry->subjectLine;
+			$email->fromName  = $entry->fromName;
+			$email->fromEmail = $entry->fromEmail;
+			$email->body      = $content['text'];
+			$email->htmlBody  = $content['html'];
+
+			if(!empty($toEmails))
+			{
+				$email->toEmail = implode(', ', $toEmails);
+			}
+
+
 			// Conditional return for success/fail response from Campaign Monitor
 			if (!$response->was_successful())
 			{
@@ -123,7 +153,8 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 				$this->sendEntry($entry, $response->response, $auth);
 
-				return $response->response;
+
+				return array('id' => $response->response, 'emailModel' => $email);
 			}
 		}
 		catch (\Exception $e)
@@ -324,5 +355,15 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		}
 
 		return $urls;
+	}
+
+
+	public function getListLabel($id)
+	{
+		$details = $this->getDetails($id);
+
+		$stats = $this->getListStats($id)->TotalActiveSubscribers;
+
+		return sprintf('%s (%d)', $details->Title, $stats);
 	}
 }
