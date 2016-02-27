@@ -10,7 +10,6 @@ namespace Craft;
 
 class SproutEmail_SentEmailsService extends BaseApplicationComponent
 {
-
 	/**
 	 * Stores sent email on Sent Email Element type
 	 *
@@ -24,46 +23,36 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 */
 	public function logSentEmail($emailModel, $info = array())
 	{
+		$sentEmail = new SproutEmail_SentEmailModel();
 
-		$sentModel = new SproutEmail_SentEmailModel();
-		// validate the element type & throw an exception if it fails
-		$element = craft()->elements->getElementType($sentModel->getElementType());
-		if (!$element)
-		{
-			throw new Exception(Craft::t('The {t} element type is not available.',
-				array('t' => $model->getElementType())
-			));
-		}
+		$sentEmail->title = $emailModel->subject;
+		$sentEmail->emailSubject = $emailModel->subject;
+		$sentEmail->fromEmail = $emailModel->fromEmail;
+		$sentEmail->fromName = $emailModel->fromName;
+		$sentEmail->toEmail = $emailModel->toEmail;
+		$sentEmail->body = $emailModel->body;
+		$sentEmail->htmlBody = $emailModel->htmlBody;
 
-		$sentModel->info = $info;
+		$sentEmail->getContent()->setAttribute('title', $sentEmail->title);
 
-		// set global Element attributes
-		$sentModel->uri = '';
-		$sentModel->slug = '';
-		$sentModel->archived = false;
-		$sentModel->localeEnabled = $element->isLocalized();
+		$sentEmail->info = $info;
 
-		$sentModel->title = $emailModel->subject;
-		$sentModel->emailSubject = $emailModel->subject;
-		$sentModel->fromEmail = $emailModel->fromEmail;
-		$sentModel->fromName = $emailModel->fromName;
-		$sentModel->toEmail = $emailModel->toEmail;
-		$sentModel->body = $emailModel->body;
-		$sentModel->htmlBody = $emailModel->htmlBody;
-
-		$sentModel->getContent()->setAttribute('title', $sentModel->title);
+		// @todo - why do we need to set this to blank?
+		// Where are Global Sets and other Element Types handling this? They do not
+		// add a value for slug in the craft_elements table
+		$sentEmail->slug = '';
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
 		try
 		{
-			if (craft()->elements->saveElement($sentModel))
+			if (craft()->elements->saveElement($sentEmail))
 			{
-				$sentRecord = new SproutEmail_SentEmailRecord();
+				$sentEmailRecord = new SproutEmail_SentEmailRecord();
 
-				// set the Records attributes
-				$sentRecord->setAttributes($sentModel->getAttributes(), false);
-				if ($sentRecord->save())
+				$sentEmailRecord->setAttributes($sentEmail->getAttributes(), false);
+
+				if ($sentEmailRecord->save())
 				{
 					if ($transaction != null)
 					{
