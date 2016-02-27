@@ -22,7 +22,10 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 
 			// Create the craft_sproutemail_sentemail table
 			craft()->db->createCommand()->createTable($tableName, array(
-				'id'           => array('column' => 'integer', 'required' => true, 'primaryKey' => true),
+				'id'           => array(
+					'column' => 'integer',
+					'required' => true
+				),
 				'title'        => array(
 					'required' => false,
 					'column'   => 'text'
@@ -51,10 +54,6 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 					'required' => false,
 					'column'   => 'text'
 				),
-				'type'         => array(
-					'required' => false,
-					'column'   => 'text'
-				),
 				'info'         => array(
 					'required' => false,
 					'column'   => 'text'
@@ -62,10 +61,9 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 
 			), null, false);
 
-			// Add foreign keys to craft_sproutemail_campaigns_entries
-			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE', null);
-			craft()->db->createCommand()->addForeignKey($tableName, 'campaignEntryId', 'sproutemail_campaigns_entries', 'id', 'CASCADE', null);
-			craft()->db->createCommand()->addForeignKey($tableName, 'campaignNotificationId', 'sproutemail_campaigns_notifications', 'id', 'SET NULL', null);
+			craft()->db->createCommand()->addPrimaryKey($tableName, 'id');
+			craft()->db->createCommand()->createIndex($tableName, 'id');
+			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE');
 		}
 
 		return true;
