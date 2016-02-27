@@ -11,17 +11,14 @@ namespace Craft;
 class SproutEmail_SentEmailsService extends BaseApplicationComponent
 {
 	/**
-	 * Stores sent email on Sent Email Element type
+	 * Save email snapshot using the Sent Email Element Type
 	 *
-	 * @param        $sproutEmailEntry
-	 * @param        $emailModel
-	 * @param string $type
+	 * @param       $emailModel
+	 * @param array $info
 	 *
-	 * @throws Exception
-	 * @throws \CDbException
 	 * @throws \Exception
 	 */
-	public function logSentEmail($emailModel, $info = array())
+	public function saveSentEmail($emailModel, $info = array())
 	{
 		$sentEmail = new SproutEmail_SentEmailModel();
 

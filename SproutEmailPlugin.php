@@ -177,31 +177,14 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
 
-		if (sproutEmail()->defaultmailer->enableDynamicLists())
-		{
-			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
-			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
-		}
-
 		sproutEmail()->notifications->registerDynamicEventHandler();
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
 
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		if (sproutEmail()->defaultmailer->enableDynamicLists())
 		{
-			// @todo Craft 3 - update to use info from config.json
-			craft()->templates->includeJsResource('sproutemail/js/brand.js');
-			craft()->templates->includeJs("
-				sproutFormsBrand = new Craft.SproutBrand();
-				sproutFormsBrand.displayFooter({
-					pluginName: 'Sprout Email',
-					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
-					pluginVersion: '" . $this->getVersion() . "',
-					pluginDescription: '" . $this->getDescription() . "',
-					developerName: '(Barrel Strength)',
-					developerUrl: '" . $this->getDeveloperUrl() . "'
-				});
-			");
+			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
+			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
 		}
 
 		// Logs sent element types for notifications
@@ -229,7 +212,7 @@ class SproutEmailPlugin extends BasePlugin
 				$info['Sender'] = $sproutEmailEntry->fromEmail;
 				$info['Type'] = $type;
 
-				sproutEmail()->sentemails->logSentEmail($emailModel, $info);
+				sproutEmail()->sentEmails->saveSentEmail($emailModel, $info);
 			}
 		});
 
@@ -249,7 +232,7 @@ class SproutEmailPlugin extends BasePlugin
 			$info['Mailer'] = ucwords($mailer);
 			$info['Type'] = "Campaign";
 
-			sproutEmail()->sentemails->logSentEmail($emailModel, $info);
+			sproutEmail()->sentEmails->saveSentEmail($emailModel, $info);
 		});
 
 		craft()->on('email.onSendEmail', function (Event $event)
@@ -280,9 +263,28 @@ class SproutEmailPlugin extends BasePlugin
 
 				$info['Sender'] = $emailModel->fromEmail;
 
-				sproutEmail()->sentemails->logSentEmail($emailModel, $info);
+				sproutEmail()->sentEmails->saveSentEmail($emailModel, $info);
 			}
 		});
+
+
+
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		{
+			// @todo Craft 3 - update to use info from config.json
+			craft()->templates->includeJsResource('sproutemail/js/brand.js');
+			craft()->templates->includeJs("
+				sproutFormsBrand = new Craft.SproutBrand();
+				sproutFormsBrand.displayFooter({
+					pluginName: 'Sprout Email',
+					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
+					pluginVersion: '" . $this->getVersion() . "',
+					pluginDescription: '" . $this->getDescription() . "',
+					developerName: '(Barrel Strength)',
+					developerUrl: '" . $this->getDeveloperUrl() . "'
+				});
+			");
+		}
 	}
 
 	/**
