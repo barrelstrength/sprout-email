@@ -5,7 +5,7 @@
 		required: true,  
 	}, forms.textField({
 		name: 'sproutEmail[fromName]',
-		value: (entry is defined ? entry.fromName : 'Selvin Ortiz'),
+		value: (entry is defined ? entry.fromName : ''),
 })) }}
 
 {{ forms.field({
@@ -14,7 +14,7 @@
 		errors: (entry is defined ? entry.getErrors('fromEmail') : null),
 	}, forms.textField({
 		name: 'sproutEmail[fromEmail]',
-		value: (entry is defined ? entry.fromEmail : 'selvin@selvin.co'),
+		value: (entry is defined ? entry.fromEmail : ''),
 })) }}
 
 {{ forms.field({
@@ -23,5 +23,5 @@
 		errors: (entry is defined ? entry.getErrors('replyTo') : null),
 	}, forms.textField({
 		name: 'sproutEmail[replyTo]',
-		value: (entry is defined ? entry.replyTo : 'selvin@selvin.co'),
+		value: (entry is defined ? entry.replyTo : ''),
 })) }}
