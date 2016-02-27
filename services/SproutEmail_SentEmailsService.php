@@ -22,7 +22,6 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 * @throws \CDbException
 	 * @throws \Exception
 	 */
-
 	public function logSentEmail($emailModel, $info = array())
 	{
 
@@ -75,7 +74,6 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-
 			if ($transaction != null)
 			{
 				$transaction->rollback();
@@ -86,29 +84,23 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Event for send notification
+	 * Get a Sent Email Element Type by ID
 	 *
-	 * @param $vars
+	 * @param $sentEmailId
 	 *
-	 * @throws \CException
+	 * @return mixed
 	 */
-	public function onSendNotification($vars)
+	public function getSentEmailById($sentEmailId)
 	{
-		$event = new Event($this, $vars);
-		$this->raiseEvent('onSendNotification', $event);
+		return craft()->elements->getElementById($sentEmailId, 'SproutEmail_SentEmail');
 	}
 
-	public function getSentEmailInfo($id)
-	{
-		$record = SproutEmail_SentEmailRecord::model()->findByPk($id);
-
-		return $record->info;
-	}
-
-	public function getInfoRow($id = false)
+	public function getInfoRow($sentEmailId)
 	{
 		$string = '';
-		$infos = $this->getSentEmailInfo($id);
+		$sentEmail = $this->getSentEmailById($sentEmailId);
+
+		$infos = $sentEmail->info;
 
 		if (!empty($infos))
 		{
@@ -128,4 +120,16 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		return TemplateHelper::getRaw($string);
 	}
 
+	/**
+	 * Event for send notification
+	 *
+	 * @param $vars
+	 *
+	 * @throws \CException
+	 */
+	public function onSendNotification($vars)
+	{
+		$event = new Event($this, $vars);
+		$this->raiseEvent('onSendNotification', $event);
+	}
 }
