@@ -22,14 +22,14 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	{
 		$defaults = parent::defineAttributes();
 		$attributes = array(
-			'info'         => array(AttributeType::Mixed, 'required' => false),
-			'emailSubject' => array(AttributeType::Mixed, 'required' => false),
 			'title'        => array(AttributeType::Mixed, 'required' => false),
+			'emailSubject' => array(AttributeType::Mixed, 'required' => false),
 			'fromEmail'    => array(AttributeType::Mixed, 'required' => false),
 			'fromName'     => array(AttributeType::Mixed, 'required' => false),
 			'toEmail'      => array(AttributeType::Mixed, 'required' => false),
 			'body'         => array(AttributeType::Mixed, 'required' => false),
-			'htmlBody'     => array(AttributeType::Mixed, 'required' => false)
+			'htmlBody'     => array(AttributeType::Mixed, 'required' => false),
+		  'info'         => array(AttributeType::Mixed, 'required' => false)
 		);
 
 		return array_merge($defaults, $attributes);
