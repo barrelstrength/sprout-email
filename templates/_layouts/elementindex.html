@@ -5,6 +5,10 @@
 		label: "Email"|t,
 		url: url('sproutemail/entries')
 	},
+	sentemails: {
+		label: "Sent Email"|t,
+		url: url('sproutemail/sentemails')
+	},
 	recipients: {
 		label: "Recipients"|t,
 		url: url('sproutemail/recipients')
@@ -16,13 +20,6 @@
 		settings: {
 			label: "Settings"|t,
 			url: url('sproutemail/settings')
-		}
-	}) %}
-
-	{% set subnav = subnav|merge({
-		sentemails: {
-			label: "Sent Emails"|t,
-			url: url('sproutemail/sentemails')
 		}
 	}) %}
 {% endif %}
