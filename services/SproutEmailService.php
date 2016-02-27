@@ -379,8 +379,27 @@ class SproutEmailService extends BaseApplicationComponent
 		return '=?UTF-8?B?' . base64_encode($subject) . '?=';
 	}
 
-	public function test()
+	/**
+	 * On Send Notification Event
+	 */
+	public function onSendNotification(Event $event)
 	{
-		echo "test is siis";
+		$this->raiseEvent('onSendNotification', $event);
+	}
+
+	/**
+	 * On Send Campaign Event
+	 */
+	public function onSendCampaign(Event $event)
+	{
+		$this->raiseEvent('onSendCampaign', $event);
+	}
+
+	/**
+	 * On Set Status Event
+	 */
+	public function onSetStatus(Event $event)
+	{
+		$this->raiseEvent('onSetStatus', $event);
 	}
 }

@@ -68,31 +68,18 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 		// Clear their template caches
 		craft()->templateCache->deleteCachesByElementId($elementIds);
 
-		// Fire an 'onSetStatus' event
-		$this->onSetStatus(
-			new Event(
-				$this,
-				array(
-					'criteria'   => $criteria,
-					'elementIds' => $elementIds,
-					'status'     => $status,
-				)
-			)
-		);
+		// Trigger an 'onSetStatus' event
+		$event = new Event($this, array(
+			'criteria'   => $criteria,
+			'elementIds' => $elementIds,
+			'status'     => $status
+		));
+
+		sproutEmail()->onSetStatus($event);
 
 		$this->setMessage(Craft::t('Statuses updated.'));
 
 		return true;
-	}
-
-	/**
-	 * @param Event $event
-	 *
-	 * @throws \CException
-	 */
-	public function onSetStatus(Event $event)
-	{
-		$this->raiseEvent('onSetStatus', $event);
 	}
 
 	/**

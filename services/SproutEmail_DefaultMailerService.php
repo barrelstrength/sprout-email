@@ -555,11 +555,15 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 						if (!empty($processedRecipients))
 						{
-							// Trigger on send notification event.
-							$vars['recipientEmails'] = $processedRecipients;
 							$email->toEmail = implode(', ', $processedRecipients);
-							$vars['emailModel'] = $email;
-							sproutEmail()->sentemails->onSendNotification($vars);
+
+							// Trigger on send notification event
+							$event = new Event($this, array(
+								'recipientEmails' => $processedRecipients,
+							  'emailModel' => $email
+							));
+
+							sproutEmail()->onSendNotification($event);
 						}
 
 						return true;

@@ -205,7 +205,7 @@ class SproutEmailPlugin extends BasePlugin
 		}
 
 		// Logs sent element types for notifications
-		craft()->on('sproutEmail_sentEmails.onSendNotification', function (Event $event)
+		craft()->on('sproutEmail.onSendNotification', function (Event $event)
 		{
 
 			$params = $event->params;
@@ -234,7 +234,7 @@ class SproutEmailPlugin extends BasePlugin
 		});
 
 		// This will trigger campaign emails
-		craft()->on('sproutEmail_mailer.onSendCampaign', function (Event $event)
+		craft()->on('sproutEmail.onSendCampaign', function (Event $event)
 		{
 
 			$entryModel = $event->params['entryModel'];

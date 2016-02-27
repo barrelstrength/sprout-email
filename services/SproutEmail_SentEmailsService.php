@@ -108,17 +108,4 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 
 		return TemplateHelper::getRaw($string);
 	}
-
-	/**
-	 * Event for send notification
-	 *
-	 * @param $vars
-	 *
-	 * @throws \CException
-	 */
-	public function onSendNotification($vars)
-	{
-		$event = new Event($this, $vars);
-		$this->raiseEvent('onSendNotification', $event);
-	}
 }

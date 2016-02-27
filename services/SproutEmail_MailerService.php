@@ -609,24 +609,4 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		return false;
 	}
-
-	/**
-	 * Send campaign event
-	 *
-	 * @param SproutEmail_EntryModel $model
-	 * @param                        $emailModel
-	 * @param                        $campaign
-	 *
-	 * @throws \CException
-	 */
-	public function onSendCampaign(SproutEmail_EntryModel $model, $emailModel, $campaign)
-	{
-		$event = new Event($this, array(
-			'entryModel' => $model,
-			'emailModel' => $emailModel,
-			'campaign'   => $campaign
-		));
-
-		$this->raiseEvent('onSendCampaign', $event);
-	}
 }

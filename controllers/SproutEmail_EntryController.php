@@ -185,7 +185,14 @@ class SproutEmail_EntryController extends BaseController
 						if ($response->emailModel != null)
 						{
 							$emailModel = $response->emailModel;
-							sproutEmail()->mailers->onSendCampaign($entry, $emailModel, $campaign);
+
+							$event = new Event($this, array(
+								'entryModel' => $entry,
+								'emailModel' => $emailModel,
+								'campaign'   => $campaign
+							));
+
+							sproutEmail()->onSendCampaign($event);
 						}
 					}
 
