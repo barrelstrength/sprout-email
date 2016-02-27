@@ -22,40 +22,40 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 
 			// Create the craft_sproutemail_sentemail table
 			craft()->db->createCommand()->createTable($tableName, array(
-				'id'                 		=> array('column' => 'integer', 'required' => true, 'primaryKey' => true),
-				'info' 			=> array(
-					'required' => false,
-					'column' => 'text'
-				),
-				'emailSubject' 			=> array(
-					'required' => false,
-					'column' => 'text'
-				),
-				'title' 					=> array(
-					'required' => false,
-					'column' => 'text'
-				),
-				'fromEmail' 				=>  array(
+				'id'           => array('column' => 'integer', 'required' => true, 'primaryKey' => true),
+				'info'         => array(
 					'required' => false,
 					'column'   => 'text'
 				),
-				'fromName' 					=> array(
+				'emailSubject' => array(
 					'required' => false,
 					'column'   => 'text'
 				),
-				'toEmail' 					=> array(
+				'title'        => array(
 					'required' => false,
 					'column'   => 'text'
 				),
-				'body' 						=> array(
+				'fromEmail'    => array(
 					'required' => false,
 					'column'   => 'text'
 				),
-				'htmlBody' 					=> array(
+				'fromName'     => array(
 					'required' => false,
 					'column'   => 'text'
 				),
-				'type' 					    => array(
+				'toEmail'      => array(
+					'required' => false,
+					'column'   => 'text'
+				),
+				'body'         => array(
+					'required' => false,
+					'column'   => 'text'
+				),
+				'htmlBody'     => array(
+					'required' => false,
+					'column'   => 'text'
+				),
+				'type'         => array(
 					'required' => false,
 					'column'   => 'text'
 				)
@@ -66,8 +66,6 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE', null);
 			craft()->db->createCommand()->addForeignKey($tableName, 'campaignEntryId', 'sproutemail_campaigns_entries', 'id', 'CASCADE', null);
 			craft()->db->createCommand()->addForeignKey($tableName, 'campaignNotificationId', 'sproutemail_campaigns_notifications', 'id', 'SET NULL', null);
-
-
 		}
 
 		return true;

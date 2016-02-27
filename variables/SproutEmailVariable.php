@@ -116,7 +116,9 @@ class SproutEmailVariable
 
 	/**
 	 * Return Campaign model by passing entry id
+	 *
 	 * @param $id
+	 *
 	 * @return bool|SproutEmail_CampaignModel
 	 */
 	public function getCampaignByEntryId($id)
@@ -179,7 +181,7 @@ class SproutEmailVariable
 	 */
 	public function getAllUserGroups($indexBy = null)
 	{
-		$groups  = craft()->userGroups->getAllGroups($indexBy);
+		$groups = craft()->userGroups->getAllGroups($indexBy);
 		$options = array();
 
 		foreach ($groups as $group)
@@ -220,7 +222,7 @@ class SproutEmailVariable
 
 	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
-		$customTemplate       = 'sproutemail/_providers/'.$emailProvider.'/generalCampaignSettings';
+		$customTemplate = 'sproutemail/_providers/' . $emailProvider . '/generalCampaignSettings';
 		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
 
 		// if there is a custom set of general settings for this provider, return those; if not, return the default

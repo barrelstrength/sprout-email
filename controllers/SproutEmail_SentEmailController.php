@@ -9,22 +9,21 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$variables  = array();
-		$entryId    = craft()->request->getRequiredPost('entryId');
+		$variables = array();
+		$entryId = craft()->request->getRequiredPost('entryId');
 
 		$entry = SproutEmail_SentEmailRecord::model()->findById($entryId);
-		$variables['entry']    = $entry;
+		$variables['entry'] = $entry;
 
-		if(!empty($entry->htmlBody))
+		if (!empty($entry->htmlBody))
 		{
 			// Get only the body content
 			preg_match("/<body[^>]*>(.*?)<\/body>/is", $entry->htmlBody, $matches);
-			if(!empty($matches))
+			if (!empty($matches))
 			{
 				$htmlBody = $matches[1];
 				$string = trim(preg_replace('/\s+/', ' ', $matches[1]));
 				$htmlBody = $string;
-
 			}
 			else
 			{
@@ -38,13 +37,13 @@ class SproutEmail_SentEmailController extends BaseController
 		}
 		$body = (!empty($entry->body)) ? $entry->body : false;
 
-		$variables['body'] 	   = $body;
+		$variables['body'] = $body;
 		$variables['htmlBody'] = $htmlBody;
 
 		$output = craft()->templates->render('sproutemail/sentemails/_view', $variables);
 
 		$response = new SproutEmail_ResponseModel();
-		$response->content =$output;
+		$response->content = $output;
 		$response->success = true;
 		$this->returnJson($response->getAttributes());
 	}

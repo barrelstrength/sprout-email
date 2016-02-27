@@ -12,6 +12,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	 * @var string
 	 */
 	protected $elementType = 'SproutEmail_SentEmail';
+
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *
@@ -19,16 +20,16 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	 */
 	public function defineAttributes()
 	{
-		$defaults   = parent::defineAttributes();
+		$defaults = parent::defineAttributes();
 		$attributes = array(
-			'info' 					 => array(AttributeType::Mixed, 'required' => false),
-			'emailSubject'           => array(AttributeType::Mixed, 'required' => false),
-			'title'              	 => array(AttributeType::Mixed, 'required' => false),
-			'fromEmail'              => array(AttributeType::Mixed, 'required' => false),
-			'fromName'               => array(AttributeType::Mixed, 'required' => false),
-			'toEmail'                => array(AttributeType::Mixed, 'required' => false),
-			'body'                   => array(AttributeType::Mixed, 'required' => false),
-			'htmlBody'               => array(AttributeType::Mixed, 'required' => false)
+			'info'         => array(AttributeType::Mixed, 'required' => false),
+			'emailSubject' => array(AttributeType::Mixed, 'required' => false),
+			'title'        => array(AttributeType::Mixed, 'required' => false),
+			'fromEmail'    => array(AttributeType::Mixed, 'required' => false),
+			'fromName'     => array(AttributeType::Mixed, 'required' => false),
+			'toEmail'      => array(AttributeType::Mixed, 'required' => false),
+			'body'         => array(AttributeType::Mixed, 'required' => false),
+			'htmlBody'     => array(AttributeType::Mixed, 'required' => false)
 		);
 
 		return array_merge($defaults, $attributes);
@@ -41,7 +42,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/sentemail/edit/'.$this->id);
+		$url = UrlHelper::getCpUrl('sproutemail/sentemail/edit/' . $this->id);
 
 		return $url;
 	}
@@ -49,6 +50,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	public function getInfoRow()
 	{
 		$id = $this->id;
+
 		return SproutEmail()->sentemails->getInfoRow($id);
 	}
 }

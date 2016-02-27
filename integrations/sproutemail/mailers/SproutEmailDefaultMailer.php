@@ -119,7 +119,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	 */
 	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$ids   = craft()->request->getPost('recipient.recipientLists');
+		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
 
 		if ($ids)
@@ -149,8 +149,8 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	 */
 	public function getRecipientListsHtml(array $values = null)
 	{
-		$lists    = $this->getRecipientLists();
-		$options  = array();
+		$lists = $this->getRecipientLists();
+		$options = array();
 		$selected = array();
 
 		if (!count($lists))
@@ -209,7 +209,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 	 */
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$lists          = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
 		$recipientLists = array();
 
 		if (count($lists))
@@ -232,11 +232,11 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'    		=> $entry,
-					'campaign' 		=> $campaign,
+					'entry'         => $entry,
+					'campaign'      => $campaign,
 					'emailModel'    => $response['emailModel'],
 					'recipentLists' => $recipientLists,
-					'message'  		=> $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
+					'message'       => $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
 				)
 			);
 		}
@@ -306,9 +306,9 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',
 			array(
-				'entry'          => $entry,
-				'campaign'       => $campaign,
-				'recipient'      => $email,
+				'entry'     => $entry,
+				'campaign'  => $campaign,
+				'recipient' => $email,
 			)
 		);
 	}

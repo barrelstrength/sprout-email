@@ -32,7 +32,6 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 		return array_merge(parent::defineAttributes(), $defaults);
 	}
 
-
 	public function rules()
 	{
 		$rules = parent::rules();
@@ -71,7 +70,7 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		return UrlHelper::getCpUrl('sproutemail/recipients/edit/'.$this->id);
+		return UrlHelper::getCpUrl('sproutemail/recipients/edit/' . $this->id);
 	}
 
 	/**
@@ -90,7 +89,7 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 		if (is_null($this->recipientListsIds))
 		{
 			$this->recipientListsIds = array();
-			$recipientLists          = $this->getRecipientLists();
+			$recipientLists = $this->getRecipientLists();
 
 			if (count($recipientLists))
 			{

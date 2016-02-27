@@ -45,7 +45,7 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 			}
 		}
 
-		$entryRecord->campaignId  = $entry->campaignId;
+		$entryRecord->campaignId = $entry->campaignId;
 		$entryRecord->subjectLine = $entry->subjectLine;
 
 		$entryRecord->setAttributes($entry->getAttributes());
@@ -53,13 +53,12 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 		$entryRecord->validate();
 
-		if($entry->saveAsNew)
+		if ($entry->saveAsNew)
 		{
 			// Prevent subjectLine to be appended by a number
 			$entryRecord->subjectLine = $entry->subjectLine;
 
 			$entry->getContent()->title = $entry->subjectLine;
-
 		}
 
 		$entry->addErrors($entryRecord->getErrors());
@@ -192,16 +191,18 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	 *
 	 * @param string $field
 	 * @param string $value
+	 *
 	 * @return SproutEmail_EntryRecord
 	 */
 	public function getFieldValue($field, $value)
 	{
 		$criteria = new \CDbCriteria();
 		$criteria->condition = "{$field} =:value";
-		$criteria->params = array(':value'=>$value);
+		$criteria->params = array(':value' => $value);
 		$criteria->limit = 1;
 
 		$result = SproutEmail_EntryRecord::model()->find($criteria);
+
 		return $result;
 	}
 
@@ -221,6 +222,5 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 		$entry->saveAsNew = true;
 
 		return sproutEmail()->entries->saveEntry($entry, $campaign);
-
 	}
 }

@@ -11,7 +11,7 @@ class m151119_142508_sproutEmail_addFileAttachments extends BaseMigration
 	public function safeUp()
 	{
 		// specify the table name here
-		$tableName  = 'sproutemail_campaigns_entries';
+		$tableName = 'sproutemail_campaigns_entries';
 		$columnName = 'enableFileAttachments';
 
 		if (!craft()->db->columnExists($tableName, $columnName))
@@ -34,6 +34,7 @@ class m151119_142508_sproutEmail_addFileAttachments extends BaseMigration
 			// tell craft that we couldn't create the column as it alredy exists.
 			SproutEmailPlugin::log("Column `$columnName` already exists in the `$tableName` table.", LogLevel::Info, true);
 		}
+
 		// return true and let craft know its done
 		return true;
 	}

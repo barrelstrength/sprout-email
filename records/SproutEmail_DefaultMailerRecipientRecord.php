@@ -29,7 +29,7 @@ class SproutEmail_DefaultMailerRecipientRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'element' => array(
+			'element'        => array(
 				static::BELONGS_TO,
 				'ElementRecord',
 				'id',

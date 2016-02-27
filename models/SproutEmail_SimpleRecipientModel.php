@@ -6,16 +6,16 @@ namespace Craft;
  *
  * @package Craft
  *
- * @property string  $firstName
- * @property string  $lastName
- * @property string  $email
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $email
  */
 class SproutEmail_SimpleRecipientModel extends BaseModel
 {
 	/**
 	 * Returns an instance of self
 	 *
-	 * @param  array  $attributes
+	 * @param  array $attributes
 	 *
 	 * @return SproutEmail_SimpleRecipientModel
 	 */

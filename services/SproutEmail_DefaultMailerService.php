@@ -108,7 +108,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function getRecipientsFromEntryModel(SproutEmail_EntryModel $entry, $element)
 	{
-		$recipients         = array();
+		$recipients = array();
 		$onTheFlyRecipients = $entry->getRecipients($element);
 
 		if (is_string($onTheFlyRecipients))
@@ -207,8 +207,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function getRecipientListsByRecipientId($id)
 	{
-		$lists         = array();
-		$record        = SproutEmail_DefaultMailerRecipientListRecipientRecord::model();
+		$lists = array();
+		$record = SproutEmail_DefaultMailerRecipientListRecipientRecord::model();
 		$relationships = $record->findAllByAttributes(array('recipientId' => $id));
 
 		if (count($relationships))
@@ -229,7 +229,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function getRecipientListsHtml($element = null, $default = array())
 	{
-		$lists   = $this->getRecipientLists();
+		$lists = $this->getRecipientLists();
 		$options = array();
 
 		if (count($lists))
@@ -250,7 +250,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			$values = $element->getRecipientListIds();
 		}
 
-		if(!empty($default))
+		if (!empty($default))
 		{
 			$values = $default;
 		}
@@ -276,7 +276,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			)
 		);
 
-
 		return TemplateHelper::getRaw($html);
 	}
 
@@ -295,8 +294,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			$record = new SproutEmail_DefaultMailerRecipientListRecord();
 
-			$record->name    = $model->name;
-			$record->handle  = $model->handle;
+			$record->name = $model->name;
+			$record->handle = $model->handle;
 			$record->dynamic = (int) $model->dynamic;
 		}
 
@@ -422,7 +421,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				{
 					$relation = new SproutEmail_DefaultMailerRecipientListRecipientRecord();
 
-					$relation->recipientId     = $recipientId;
+					$relation->recipientId = $recipientId;
 					$relation->recipientListId = $list->id;
 
 					if (!$relation->save(false))
@@ -469,9 +468,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 				if (!$mocked)
 				{
-					$listIds           = array();
-					$recipientLists    = $this->getRecipientListsByEntryId($entry->id);
-					$entryRecipients   = $this->getRecipientsFromEntryModel($entry, $element);
+					$listIds = array();
+					$recipientLists = $this->getRecipientListsByEntryId($entry->id);
+					$entryRecipients = $this->getRecipientsFromEntryModel($entry, $element);
 					$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($element);
 
 					if ($recipientLists && count($recipientLists))
@@ -483,7 +482,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					}
 
 					$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
-					$recipients     = array_merge(
+					$recipients = array_merge(
 						$listRecipients,
 						$entryRecipients,
 						$dynamicRecipients
@@ -498,16 +497,16 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 						$recipient = craft()->userSession->getUser()->email;
 					}
 
-					$recipient  = SproutEmail_SimpleRecipientModel::create(array('email' => $recipient));
+					$recipient = SproutEmail_SimpleRecipientModel::create(array('email' => $recipient));
 					$recipients = array($recipient);
 				}
 
 				if ($recipients && count($recipients))
 				{
-					$email->subject   = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $element);
-					$email->fromName  = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $element);
+					$email->subject = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $element);
+					$email->fromName = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $element);
 					$email->fromEmail = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $element);
-					$email->replyTo   = sproutEmail()->renderObjectTemplateSafely($entry->replyTo, $element);
+					$email->replyTo = sproutEmail()->renderObjectTemplateSafely($entry->replyTo, $element);
 
 					if (strpos($email->replyTo, '{') === 0)
 					{
@@ -516,8 +515,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 					sproutEmail()->renderObjectContentSafely($entry, $element);
 
-					$vars            = sproutEmail()->notifications->prepareNotificationTemplateVariables($entry, $element);
-					$email->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template.'.txt', $vars);
+					$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($entry, $element);
+					$email->body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $vars);
 					$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);
 
 					if (!empty($email->htmlBody))
@@ -527,22 +526,22 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 						$vars = array(
 							'sproutEmailEntry' => $entry,
 							'elementEntry'     => $element,
-							'campaign'     	   => $campaign,
+							'campaign'         => $campaign,
 							'mocked'           => $mocked,
 							'recipientEmails'  => array()
 						);
 
 						foreach ($recipients as $recipient)
 						{
-							$email->toEmail     = sproutEmail()->renderObjectTemplateSafely($recipient->email, $element);
+							$email->toEmail = sproutEmail()->renderObjectTemplateSafely($recipient->email, $element);
 							$email->toFirstName = $recipient->firstName;
-							$email->toLastName  = $recipient->lastName;
+							$email->toLastName = $recipient->lastName;
 
 							if (!array_key_exists($email->toEmail, $processedRecipients))
 							{
 								try
 								{
-									if(craft()->email->sendEmail($email, $vars))
+									if (craft()->email->sendEmail($email, $vars))
 									{
 										$processedRecipients[] = $email->toEmail;
 									}
@@ -554,12 +553,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 							}
 						}
 
-						if(!empty($processedRecipients))
+						if (!empty($processedRecipients))
 						{
 							// Trigger on send notification event.
 							$vars['recipientEmails'] = $processedRecipients;
 							$email->toEmail = implode(', ', $processedRecipients);
-							$vars['emailModel']      = $email;
+							$vars['emailModel'] = $email;
 							sproutEmail()->sentemails->onSendNotification($vars);
 						}
 
@@ -631,7 +630,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 
 		$params = array('entry' => $entry, 'campaign' => $campaign);
-		$email  = array(
+		$email = array(
 			'fromEmail' => $entry->fromEmail,
 			'fromName'  => $entry->fromName,
 			'subject'   => $entry->subjectLine,
@@ -662,8 +661,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			try
 			{
 				$params['recipient'] = $recipient;
-				$email->body         = sproutEmail()->renderSiteTemplateIfExists($campaign->template.'.txt', $params);
-				$email->htmlBody     = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
+				$email->body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params);
+				$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
 
 				$email->setAttribute('toEmail', $recipient->email);
 				$email->setAttribute('toFirstName', $recipient->firstName);
@@ -682,7 +681,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		return $response;
 	}
 
-
 	/**
 	 * Handles sproutCommerce.saveProduct events to create dynamic recipient lists
 	 *
@@ -695,8 +693,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			$list = new SproutEmail_DefaultMailerRecipientListModel();
 
-			$list->name    = $event->params['product']->title;
-			$list->handle  = sproutEmail()->createHandle($event->params['product']->title);
+			$list->name = $event->params['product']->title;
+			$list->handle = sproutEmail()->createHandle($event->params['product']->title);
 			$list->dynamic = 1;
 
 			try
@@ -731,10 +729,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					{
 						foreach ($order->payments as $payment)
 						{
-							$recipient                 = new SproutEmail_DefaultMailerRecipientModel();
-							$recipient->email          = $payment->email;
-							$recipient->firstName      = $payment->firstName;
-							$recipient->lastName       = $payment->lastName;
+							$recipient = new SproutEmail_DefaultMailerRecipientModel();
+							$recipient->email = $payment->email;
+							$recipient->firstName = $payment->firstName;
+							$recipient->lastName = $payment->lastName;
 							$recipient->recipientLists = array($list->id);
 
 							try

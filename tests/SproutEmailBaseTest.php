@@ -5,8 +5,6 @@ require CRAFT_BASE_PATH . 'vendor/autoload.php';
 
 use \Mockery as m;
 
-
-
 class SproutEmailBaseTest extends BaseTest
 {
 
@@ -56,11 +54,11 @@ class SproutEmailBaseTest extends BaseTest
 
 		$this->setComponent(craft(), 'config', $this->config);
 
-		$mainService          = new SproutEmailService();
-		$campaignService      = new SproutEmail_CampaignsService();
+		$mainService = new SproutEmailService();
+		$campaignService = new SproutEmail_CampaignsService();
 		$campaignEntryService = new SproutEmail_EntriesService();
 		$notificationsService = new SproutEmail_NotificationsService();
-		$mailersService 	  = new SproutEmail_MailerService();
+		$mailersService = new SproutEmail_MailerService();
 
 		$this->setComponent(craft(), 'sproutEmail_campaign', $campaignService);
 		$this->setComponent(craft(), 'sproutEmail_campaignEntry', $campaignEntryService);

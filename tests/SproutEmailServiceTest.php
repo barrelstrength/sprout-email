@@ -15,6 +15,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 	public function checkboxOptionProvider()
 	{
 		$array = array('one', 'two');
+
 		return array(
 			array(null, '*'),
 			array('*', '*'),
@@ -48,7 +49,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 	 */
 	public function testIsArraySettingsMatch($options, $expected)
 	{
-		$array   = array(2, 4, 5);
+		$array = array(2, 4, 5);
 
 		$result = sproutEmail()->mailers->isArraySettingsMatch($array, $options);
 
@@ -62,6 +63,5 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 	public function setUp()
 	{
 		parent::setUp();
-
 	}
 }

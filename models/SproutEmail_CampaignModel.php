@@ -25,6 +25,7 @@ class SproutEmail_CampaignModel extends BaseModel
 	protected $fields;
 
 	public $saveAsNew;
+
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *
@@ -62,7 +63,7 @@ class SproutEmail_CampaignModel extends BaseModel
 			// @related
 			'entries'           => AttributeType::Mixed,
 			'fieldLayoutId'     => AttributeType::Number,
-			'entryId'     		=> AttributeType::Number
+			'entryId'           => AttributeType::Number
 		);
 	}
 
@@ -96,9 +97,9 @@ class SproutEmail_CampaignModel extends BaseModel
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field           = $fieldLayoutField->getField();
+				$field = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->fields[]  = $field;
+				$this->fields[] = $field;
 			}
 		}
 
@@ -124,10 +125,10 @@ class SproutEmail_CampaignModel extends BaseModel
 	{
 		$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
 
-		$criteria->limit      = null;
-		$criteria->status     = SproutEmail_EntryModel::READY;
+		$criteria->limit = null;
+		$criteria->status = SproutEmail_EntryModel::READY;
 		$criteria->campaignId = $this->id;
-		$this->entries        = $criteria->find();
+		$this->entries = $criteria->find();
 	}
 
 	/**

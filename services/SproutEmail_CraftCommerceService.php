@@ -2,7 +2,6 @@
 
 namespace Craft;
 
-
 class SproutEmail_CraftCommerceService extends BaseApplicationComponent
 {
 
@@ -16,10 +15,9 @@ class SproutEmail_CraftCommerceService extends BaseApplicationComponent
 	{
 		$criteria = craft()->elements->getCriteria("Commerce_Order");
 
-		$criteria->order         = 'id asc';
+		$criteria->order = 'id asc';
 		$criteria->orderStatusId = 'not NULL';
-		$criteria->limit         = 1;
-
+		$criteria->limit = 1;
 
 		// Return the oldest order
 		if ($order = $criteria->first())
@@ -43,7 +41,7 @@ class SproutEmail_CraftCommerceService extends BaseApplicationComponent
 
 		$ids = $this->getOrderIds();
 
-		if(!empty($ids))
+		if (!empty($ids))
 		{
 			$randomId = $ids[array_rand($ids)];
 
@@ -57,17 +55,17 @@ class SproutEmail_CraftCommerceService extends BaseApplicationComponent
 	{
 		$criteria = craft()->elements->getCriteria("Commerce_Order");
 
-		$criteria->order         = 'id desc';
+		$criteria->order = 'id desc';
 		$criteria->orderStatusId = 'not NULL';
-		$criteria->limit         = $limit;
+		$criteria->limit = $limit;
 
 		$ids = array();
 
 		$orders = $criteria->find();
 
-		if(!empty($orders))
+		if (!empty($orders))
 		{
-			foreach($orders as $order)
+			foreach ($orders as $order)
 			{
 				$ids[] = $order->id;
 			}

@@ -23,7 +23,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 	 */
 	public function init()
 	{
-		require_once dirname(__FILE__).'/../integrations/sproutemail/vendor/autoload.php';
+		require_once dirname(__FILE__) . '/../integrations/sproutemail/vendor/autoload.php';
 	}
 
 	/**
@@ -58,7 +58,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			if($e->getMessage() == 'API call to lists/list failed: SSL certificate problem: unable to get local issuer certificate')
+			if ($e->getMessage() == 'API call to lists/list failed: SSL certificate problem: unable to get local issuer certificate')
 			{
 				return false;
 			}
@@ -115,10 +115,10 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$type   = craft()->request->getPost('contentType', 'html');
-		$ext    = strtolower($type) == 'text' ? '.txt' : null;
+		$type = craft()->request->getPost('contentType', 'html');
+		$ext = strtolower($type) == 'text' ? '.txt' : null;
 		$params = array('entry' => $entry, 'campaign' => $campaign);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template.$ext, $params);
+		$body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}
@@ -133,12 +133,12 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 	 */
 	public function export($entry, $campaign, $sendOnExport = true)
 	{
-		$lists       = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
 		$campaignIds = array();
 
 		if ($lists && count($lists))
 		{
-			$type    = 'regular';
+			$type = 'regular';
 			$options = array(
 				'title'      => $entry->title,
 				'subject'    => $entry->title,
@@ -163,7 +163,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 			$content = array(
 				'html' => sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params),
-				'text' => sproutEmail()->renderSiteTemplateIfExists($campaign->template.'.txt', $params),
+				'text' => sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params),
 			);
 
 			foreach ($lists as $list)
@@ -177,7 +177,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 				try
 				{
-					$campaign      = $this->client->campaigns->create($type, $options, $content);
+					$campaign = $this->client->campaigns->create($type, $options, $content);
 					$campaignIds[] = $campaign['id'];
 
 					sproutEmail()->info($campaign);
@@ -204,9 +204,8 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 			}
 		}
 
-
 		$recipientLists = array();
-		$toEmails       = array();
+		$toEmails = array();
 		if (is_array($lists) && count($lists))
 		{
 			foreach ($lists as $list)
@@ -215,11 +214,9 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 				array_push($recipientLists, $current);
 			}
-
-
 		}
 
-		if(!empty($recipientLists))
+		if (!empty($recipientLists))
 		{
 			foreach ($recipientLists as $recipientList)
 			{
@@ -227,20 +224,18 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 			}
 		}
 
-
 		$email = new EmailModel();
 
-		$email->subject   = $entry->title;
-		$email->fromName  = $entry->fromName;
+		$email->subject = $entry->title;
+		$email->fromName = $entry->fromName;
 		$email->fromEmail = $entry->fromEmail;
-		$email->body      = $content['text'];
-		$email->htmlBody  = $content['html'];
+		$email->body = $content['text'];
+		$email->htmlBody = $content['html'];
 
-		if(!empty($toEmails))
+		if (!empty($toEmails))
 		{
 			$email->toEmail = implode(', ', $toEmails);
 		}
-
 
 		return array('ids' => $campaignIds, 'emailModel' => $email);
 	}

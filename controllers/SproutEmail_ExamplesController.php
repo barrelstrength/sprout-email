@@ -35,12 +35,11 @@ class SproutEmail_ExamplesController extends BaseController
 			$dir = @mkdir($path . 'sproutemail');
 
 			$fileHelper->copyDirectory(craft()->path->getPluginsPath() . 'sproutemail/templates/_special/examples/emails',
-					craft()->path->getSiteTemplatesPath() . 'sproutemail');
+				craft()->path->getSiteTemplatesPath() . 'sproutemail');
 
 			$message = Craft::t("Example templates and entries has been created.");
 
 			craft()->userSession->setNotice($message);
-
 		}
 		catch (\Exception $e)
 		{
@@ -63,54 +62,54 @@ class SproutEmail_ExamplesController extends BaseController
 
 			$emailSettings = array(
 				array(
-					'name' => 'Welcome Email - User Notification',
-					'handle' => 'welcomeEmail',
-					'type' => 'notification',
-					'mailer' => 'defaultmailer',
-					'hasUrls' => false,
-					'urlFormat' => null,
+					'name'              => 'Welcome Email - User Notification',
+					'handle'            => 'welcomeEmail',
+					'type'              => 'notification',
+					'mailer'            => 'defaultmailer',
+					'hasUrls'           => false,
+					'urlFormat'         => null,
 					'hasAdvancedTitles' => false,
-					'template' => 'sproutemail/notification',
+					'template'          => 'sproutemail/notification',
 					'templateCopyPaste' => null
 				),
 				array(
-					'name' => 'New User - Admin Notification',
-					'handle' => 'newUserEmail',
-					'type' => 'notification',
-					'mailer' => 'defaultmailer',
-					'hasUrls' => false,
-					'urlFormat' => null,
+					'name'              => 'New User - Admin Notification',
+					'handle'            => 'newUserEmail',
+					'type'              => 'notification',
+					'mailer'            => 'defaultmailer',
+					'hasUrls'           => false,
+					'urlFormat'         => null,
 					'hasAdvancedTitles' => false,
-					'template' => 'sproutemail/notification',
+					'template'          => 'sproutemail/notification',
 					'templateCopyPaste' => null
 				),
 				array(
-					'name' => 'Monthly Newsletter',
-					'handle' => 'monthlyNewsletter',
-					'type' => 'email',
-					'mailer' => 'copypaste',
-					'hasUrls' => true,
+					'name'              => 'Monthly Newsletter',
+					'handle'            => 'monthlyNewsletter',
+					'type'              => 'email',
+					'mailer'            => 'copypaste',
+					'hasUrls'           => true,
 					'hasAdvancedTitles' => false,
-					'urlFormat' => 'sproutemail/{slug}',
-					'template' => 'sproutemail/newsletter',
+					'urlFormat'         => 'sproutemail/{slug}',
+					'template'          => 'sproutemail/newsletter',
 					'templateCopyPaste' => 'sproutemail/newsletter'
 				),
 			);
 
 			$fieldSettings = array(
-				'welcomeEmail' => array(
+				'welcomeEmail'      => array(
 					'Content' => array(
 						array(
-			        'name' => 'HTML Email Body',
-			        'handle' => 'exampleHtmlEmailBody',
-			        'instructions' => '',
-			        'type' => 'RichText',
-							'required' => 1,
-			        'settings' => array(
-								'configFile' => '',
-		            'cleanupHtml' => '1',
-		            'purifyHtml' => '',
-		            'columnType' => 'text'
+							'name'         => 'HTML Email Body',
+							'handle'       => 'exampleHtmlEmailBody',
+							'instructions' => '',
+							'type'         => 'RichText',
+							'required'     => 1,
+							'settings'     => array(
+								'configFile'  => '',
+								'cleanupHtml' => '1',
+								'purifyHtml'  => '',
+								'columnType'  => 'text'
 							)
 						),
 						array(
@@ -120,26 +119,26 @@ class SproutEmail_ExamplesController extends BaseController
 							'required' => 1,
 							'settings' => array(
 								'placeholder' => '',
-								'maxLength' => '',
-								'multiline' => 1,
+								'maxLength'   => '',
+								'multiline'   => 1,
 								'initialRows' => 4,
 							)
 						)
 					)
 				),
-				'newUserEmail' => array(
+				'newUserEmail'      => array(
 					'Content' => array(
 						array(
-							'name' => 'HTML Email Body',
-							'handle' => 'exampleHtmlEmailBody',
+							'name'         => 'HTML Email Body',
+							'handle'       => 'exampleHtmlEmailBody',
 							'instructions' => '',
-							'type' => 'RichText',
-							'required' => 1,
-							'settings' => array(
-								'configFile' => '',
+							'type'         => 'RichText',
+							'required'     => 1,
+							'settings'     => array(
+								'configFile'  => '',
 								'cleanupHtml' => '1',
-								'purifyHtml' => '',
-								'columnType' => 'text'
+								'purifyHtml'  => '',
+								'columnType'  => 'text'
 							)
 						),
 						array(
@@ -149,8 +148,8 @@ class SproutEmail_ExamplesController extends BaseController
 							'required' => 1,
 							'settings' => array(
 								'placeholder' => '',
-								'maxLength' => '',
-								'multiline' => 1,
+								'maxLength'   => '',
+								'multiline'   => 1,
 								'initialRows' => 4,
 							)
 						)
@@ -159,16 +158,16 @@ class SproutEmail_ExamplesController extends BaseController
 				'monthlyNewsletter' => array(
 					'Content' => array(
 						array(
-							'name' => 'HTML Email Body',
-							'handle' => 'exampleHtmlEmailBody',
+							'name'         => 'HTML Email Body',
+							'handle'       => 'exampleHtmlEmailBody',
 							'instructions' => '',
-							'type' => 'RichText',
-							'required' => 1,
-							'settings' => array(
-								'configFile' => '',
+							'type'         => 'RichText',
+							'required'     => 1,
+							'settings'     => array(
+								'configFile'  => '',
 								'cleanupHtml' => '1',
-								'purifyHtml' => '',
-								'columnType' => 'text'
+								'purifyHtml'  => '',
+								'columnType'  => 'text'
 							)
 						),
 						array(
@@ -178,8 +177,8 @@ class SproutEmail_ExamplesController extends BaseController
 							'required' => 1,
 							'settings' => array(
 								'placeholder' => '',
-								'maxLength' => '',
-								'multiline' => 1,
+								'maxLength'   => '',
+								'multiline'   => 1,
 								'initialRows' => 4,
 							)
 						)
@@ -190,102 +189,102 @@ class SproutEmail_ExamplesController extends BaseController
 			$currentUser = craft()->userSession->getUser();
 
 			$emailExamples = array(
-				'welcomeEmail' => array(
-					'title' => 'Welcome!',
-					'subjectLine' => 'Welcome!',
-					'slug' => 'welcome',
-					'uri' => null,
-					'campaignId' => null,
-					'sproutEmail' => array(
-						'fromName' => craft()->getSiteName(),
+				'welcomeEmail'      => array(
+					'title'         => 'Welcome!',
+					'subjectLine'   => 'Welcome!',
+					'slug'          => 'welcome',
+					'uri'           => null,
+					'campaignId'    => null,
+					'sproutEmail'   => array(
+						'fromName'  => craft()->getSiteName(),
 						'fromEmail' => $currentUser->email,
-						'replyTo' => $currentUser->email,
+						'replyTo'   => $currentUser->email,
 					),
-					'recipient' => array(
+					'recipient'     => array(
 						'onTheFlyRecipients' => '{email}',
 					),
-					'rules' => array(
+					'rules'         => array(
 						'craft' => array(
 							'saveUser' => array(
-								'whenNew' => '1',
-								'whenUpdated' => '',
+								'whenNew'      => '1',
+								'whenUpdated'  => '',
 								'userGroupIds' => ''
 							)
 						),
 					),
-					'enabled' => true,
-					'archived' => '0',
-					'locale' => $currentUser->locale,
+					'enabled'       => true,
+					'archived'      => '0',
+					'locale'        => $currentUser->locale,
 					'localeEnabled' => '1',
-					'sent' => '0',
-					'htmlBody' => '<p>Thanks for becoming a member.</p>
+					'sent'          => '0',
+					'htmlBody'      => '<p>Thanks for becoming a member.</p>
 <ul>
 	<li>Username: <strong>{username}</strong></li>
 	<li>Email: <strong>{email}</strong></li>
 </ul>',
-					'textBody' => 'Thanks for becoming a member.
+					'textBody'      => 'Thanks for becoming a member.
 
 Username: {username}
 Email: {email}',
 				),
-				'newUserEmail' => array(
-					'title' => 'A new user has created an account',
-					'subjectLine' => 'A new user has created an account',
-					'slug' => 'a-new-user-has-created-an-account',
-					'uri' => null,
-					'campaignId' => null,
-					'sproutEmail' => array(
-						'fromName' => craft()->getSiteName(),
+				'newUserEmail'      => array(
+					'title'         => 'A new user has created an account',
+					'subjectLine'   => 'A new user has created an account',
+					'slug'          => 'a-new-user-has-created-an-account',
+					'uri'           => null,
+					'campaignId'    => null,
+					'sproutEmail'   => array(
+						'fromName'  => craft()->getSiteName(),
 						'fromEmail' => $currentUser->email,
-						'replyTo' => $currentUser->email,
+						'replyTo'   => $currentUser->email,
 					),
-					'recipient' => array(
+					'recipient'     => array(
 						'onTheFlyRecipients' => $currentUser->email,
 					),
-					'rules' => array(
+					'rules'         => array(
 						'craft' => array(
 							'saveUser' => array(
-								'whenNew' => '1',
-                'whenUpdated' => '',
-                'userGroupIds' => ''
-              )
+								'whenNew'      => '1',
+								'whenUpdated'  => '',
+								'userGroupIds' => ''
+							)
 						)
 					),
-					'enabled' => true,
-					'archived' => '0',
-					'locale' => $currentUser->locale,
+					'enabled'       => true,
+					'archived'      => '0',
+					'locale'        => $currentUser->locale,
 					'localeEnabled' => '1',
-					'sent' => '0',
-					'htmlBody' => '<p>A new user has been created:</p>
+					'sent'          => '0',
+					'htmlBody'      => '<p>A new user has been created:</p>
 <ul>
 	<li>Username: <strong>{username}</strong></li>
 	<li>Email: <strong>{email}</strong></li>
 </ul>',
-					'textBody' => 'A new user has been created:
+					'textBody'      => 'A new user has been created:
 
 Username: {username}
 Email: {email}',
 				),
 				'monthlyNewsletter' => array(
-					'title' => 'Best Practices for your Email Subject Line',
-					'subjectLine' => 'Best Practices for your Email Subject Line',
-					'slug' => 'best-practices-for-your-email-subject-line',
-					'uri' => 'sproutemail/best-practices-for-your-email-subject-line',
-					'campaignId' => null,
-					'sproutEmail' => array(
-						'fromName' => craft()->getSiteName(),
+					'title'         => 'Best Practices for your Email Subject Line',
+					'subjectLine'   => 'Best Practices for your Email Subject Line',
+					'slug'          => 'best-practices-for-your-email-subject-line',
+					'uri'           => 'sproutemail/best-practices-for-your-email-subject-line',
+					'campaignId'    => null,
+					'sproutEmail'   => array(
+						'fromName'  => craft()->getSiteName(),
 						'fromEmail' => $currentUser->email,
-						'replyTo' => $currentUser->email,
+						'replyTo'   => $currentUser->email,
 					),
-					'recipient' => array(),
-					'rules' => array(),
-					'enabled' => true,
-					'archived' => '0',
-					'locale' => $currentUser->locale,
+					'recipient'     => array(),
+					'rules'         => array(),
+					'enabled'       => true,
+					'archived'      => '0',
+					'locale'        => $currentUser->locale,
 					'localeEnabled' => '1',
-					'sent' => '0',
-					'htmlBody' => '<p>Say something interesting!</p>',
-					'textBody' => 'Say something interesting!',
+					'sent'          => '0',
+					'htmlBody'      => '<p>Say something interesting!</p>',
+					'textBody'      => 'Say something interesting!',
 				)
 			);
 
@@ -295,25 +294,26 @@ Email: {email}',
 				$campaign = new SproutEmail_CampaignModel();
 
 				// Assign our email settings
-				$campaign->name              = $settings['name'];
-				$campaign->handle            = $settings['handle'];
-				$campaign->type              = $settings['type'];
-				$campaign->mailer            = $settings['mailer'];
-				$campaign->hasUrls           = $settings['hasUrls'];
-				$campaign->urlFormat         = $settings['urlFormat'];
+				$campaign->name = $settings['name'];
+				$campaign->handle = $settings['handle'];
+				$campaign->type = $settings['type'];
+				$campaign->mailer = $settings['mailer'];
+				$campaign->hasUrls = $settings['hasUrls'];
+				$campaign->urlFormat = $settings['urlFormat'];
 				$campaign->hasAdvancedTitles = $settings['hasAdvancedTitles'];
-				$campaign->template          = $settings['template'];
+				$campaign->template = $settings['template'];
 				$campaign->templateCopyPaste = $settings['templateCopyPaste'];
 
 				// Only install our campaign example if CopyPaste Mailer is installed
 				if ($campaign->mailer == 'copypaste' &&
-					 !craft()->plugins->getPlugin('SproutEmailCopyPaste'))
+					!craft()->plugins->getPlugin('SproutEmailCopyPaste')
+				)
 				{
 					break;
 				}
 
 				// Create the Email
-				if (! $campaign = sproutEmail()->campaigns->saveCampaign($campaign))
+				if (!$campaign = sproutEmail()->campaigns->saveCampaign($campaign))
 				{
 					SproutEmailPlugin::log('Campaign NOT CREATED');
 
@@ -344,15 +344,15 @@ Email: {email}',
 				{
 					foreach ($newFields as $newField)
 					{
-						if (! $field = craft()->fields->getFieldByHandle($newField['handle']))
+						if (!$field = craft()->fields->getFieldByHandle($newField['handle']))
 						{
 							$field = new FieldModel();
-							$field->groupId     = $sproutEmailFieldGroup->id;
-							$field->name        = $newField['name'];
-							$field->handle      = $newField['handle'];
-							$field->type        = $newField['type'];
-							$field->required    = $newField['required'];
-							$field->settings    = $newField['settings'];
+							$field->groupId = $sproutEmailFieldGroup->id;
+							$field->name = $newField['name'];
+							$field->handle = $newField['handle'];
+							$field->type = $newField['type'];
+							$field->required = $newField['required'];
+							$field->settings = $newField['settings'];
 
 							// Save our field
 							craft()->fields->saveField($field);
@@ -378,7 +378,7 @@ Email: {email}',
 
 				$entryRecord = SproutEmail_EntryRecord::model()->findByAttributes(array('campaignId' => $campaign->id));
 
-				if (! $entryRecord)
+				if (!$entryRecord)
 				{
 					$entry = new SproutEmail_EntryModel();
 				}
@@ -389,18 +389,18 @@ Email: {email}',
 
 				$entryData = $emailExamples[$campaign->handle];
 
-				$_POST['sproutEmail']       = $entryData['sproutEmail'];
-				$_POST['recipient']         = $entryData['recipient'];
-				$_POST['rules']             = $entryData['rules'];
+				$_POST['sproutEmail'] = $entryData['sproutEmail'];
+				$_POST['recipient'] = $entryData['recipient'];
+				$_POST['rules'] = $entryData['rules'];
 
 				unset($entryData['recipient']);
 				unset($entryData['rules']);
 
 				$entry->setAttributes($entryData);
-				$entry->campaignId          = $campaign->id;
-				$entry->fromName    = craft()->request->getPost('sproutEmail.fromName');
-				$entry->fromEmail   = craft()->request->getPost('sproutEmail.fromEmail');
-				$entry->replyTo     = craft()->request->getPost('sproutEmail.replyTo');
+				$entry->campaignId = $campaign->id;
+				$entry->fromName = craft()->request->getPost('sproutEmail.fromName');
+				$entry->fromEmail = craft()->request->getPost('sproutEmail.fromEmail');
+				$entry->replyTo = craft()->request->getPost('sproutEmail.replyTo');
 
 				$entry->getContent()->title = $entryData['title'];
 				$entry->getContent()->exampleHtmlEmailBody = $entryData['htmlBody'];
@@ -422,6 +422,7 @@ Email: {email}',
 
 	/**
 	 * @param $sproutEmailFieldGroup
+	 *
 	 * @return bool
 	 */
 	private function _createFieldGroup()
@@ -453,6 +454,7 @@ Email: {email}',
 	 * Handle installation errors
 	 *
 	 * @param Exception $exception
+	 *
 	 * @return void
 	 */
 	private function _handleError($exception)

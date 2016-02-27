@@ -52,7 +52,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param string $tab
+	 * @param string                    $tab
 	 *
 	 * @throws \Exception
 	 * @return int CampaignRecordId
@@ -65,7 +65,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		if (is_numeric($campaign->id) && !$campaign->saveAsNew)
 		{
 			$campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
-			$oldCampaign    = SproutEmail_CampaignModel::populateModel($campaignRecord);
+			$oldCampaign = SproutEmail_CampaignModel::populateModel($campaignRecord);
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
@@ -81,7 +81,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 		// Assign our new layout id info to our
 		// form model and records
-		$campaign->fieldLayoutId       = $fieldLayout->id;
+		$campaign->fieldLayoutId = $fieldLayout->id;
 		$campaignRecord->fieldLayoutId = $fieldLayout->id;
 
 		$campaignRecord = $this->saveCampaignInfo($campaign);
@@ -95,8 +95,6 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 			return $campaign;
 		}
-
-
 
 		if ($transaction)
 		{
@@ -130,23 +128,23 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		}
 
 		// Set common attributes
-		$campaignRecord->fieldLayoutId     = $campaign->fieldLayoutId;
-		$campaignRecord->name              = $campaign->name;
-		$campaignRecord->handle            = $campaign->handle;
-		$campaignRecord->type              = $campaign->type;
-		$campaignRecord->titleFormat       = $campaign->titleFormat;
-		$campaignRecord->hasUrls           = $campaign->hasUrls;
+		$campaignRecord->fieldLayoutId = $campaign->fieldLayoutId;
+		$campaignRecord->name = $campaign->name;
+		$campaignRecord->handle = $campaign->handle;
+		$campaignRecord->type = $campaign->type;
+		$campaignRecord->titleFormat = $campaign->titleFormat;
+		$campaignRecord->hasUrls = $campaign->hasUrls;
 		$campaignRecord->hasAdvancedTitles = $campaign->hasAdvancedTitles;
-		$campaignRecord->mailer            = $campaign->mailer;
+		$campaignRecord->mailer = $campaign->mailer;
 
-		$campaignRecord->urlFormat         = $campaign->urlFormat;
-		$campaignRecord->template          = $campaign->template;
+		$campaignRecord->urlFormat = $campaign->urlFormat;
+		$campaignRecord->template = $campaign->template;
 		$campaignRecord->templateCopyPaste = $campaign->templateCopyPaste;
 
 		$campaignRecord->validate();
 		$campaign->addErrors($campaignRecord->getErrors());
 
-		if($campaign->saveAsNew)
+		if ($campaign->saveAsNew)
 		{
 			$campaign->name = $campaignRecord->name;
 			$campaign->handle = $campaignRecord->handle;
@@ -192,32 +190,39 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 *
 	 * @param string $field
 	 * @param string $value
+	 *
 	 * @return SproutEmail_CampaignRecord
 	 */
 	public function getFieldValue($field, $value)
 	{
 		$criteria = new \CDbCriteria();
 		$criteria->condition = "{$field} =:value";
-		$criteria->params = array(':value'=>$value);
+		$criteria->params = array(':value' => $value);
 		$criteria->limit = 1;
 
 		$result = SproutEmail_CampaignRecord::model()->find($criteria);
+
 		return $result;
 	}
 
-	/**	Get campaign Model by the related entry id
+	/**  Get campaign Model by the related entry id
+	 *
 	 * @param $entryId
+	 *
 	 * @return bool|SproutEmail_CampaignModel
 	 */
 	public function getCampaignByEntryId($entryId)
 	{
 		$entry = SproutEmail_EntryRecord::model()->findById($entryId);
-		if(!isset($entry->campaignId)) return false;
+		if (!isset($entry->campaignId))
+		{
+			return false;
+		}
 
 		$campaignId = $entry->campaignId;
 
 		$campaign = $this->getCampaignById($campaignId);
-		if($campaign->id != null)
+		if ($campaign->id != null)
 		{
 			return $campaign;
 		}

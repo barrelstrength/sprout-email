@@ -5,7 +5,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 {
 	/**
 	 * Returns the qualified event name to use when registering with craft()->on
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getName()
@@ -43,7 +43,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		$values = array();
-		$values['value']['order']        = $event->params['order'];
+		$values['value']['order'] = $event->params['order'];
 		$values['value']['orderHistory'] = $event->params['orderHistory'];
 
 		return $values;
@@ -57,7 +57,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	public function prepareOptions()
 	{
 		return array(
-			'commerceOrderStatuses' =>  craft()->request->getPost('commerceOrderStatuses')
+			'commerceOrderStatuses' => craft()->request->getPost('commerceOrderStatuses')
 		);
 	}
 
@@ -89,7 +89,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 		// This ensures that we will only trigger orders being updated
 		$prevStatusId = $order['orderHistory']->prevStatusId;
 
-		if(!$prevStatusId OR empty($options['commerceOrderStatuses']))
+		if (!$prevStatusId OR empty($options['commerceOrderStatuses']))
 		{
 			return false;
 		}
@@ -105,9 +105,9 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	{
 		$statuses = craft()->commerce_orderStatuses->getAllOrderStatuses();
 		$options = array();
-		if(!empty($statuses))
+		if (!empty($statuses))
 		{
-			foreach($statuses as $status)
+			foreach ($statuses as $status)
 			{
 				array_push(
 					$options, array(
@@ -126,7 +126,8 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 
 		if (($this->isSettingsMatch($oldId, 'old', $options) OR $options['commerceOrderStatuses']['old'] == "*")
 			AND
-			($this->isSettingsMatch($newId, 'new', $options) OR $options['commerceOrderStatuses']['new'] == "*"))
+			($this->isSettingsMatch($newId, 'new', $options) OR $options['commerceOrderStatuses']['new'] == "*")
+		)
 		{
 			return true;
 		}
@@ -138,9 +139,10 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 
 	private function isSettingsMatch($id, $key = 'old', $options)
 	{
-		if(is_array($options['commerceOrderStatuses'][$key])
+		if (is_array($options['commerceOrderStatuses'][$key])
 			AND
-			in_array($id, $options['commerceOrderStatuses'][$key]))
+			in_array($id, $options['commerceOrderStatuses'][$key])
+		)
 		{
 			return true;
 		}
@@ -159,18 +161,17 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	{
 		$values = array();
 
-		if($order = craft()->sproutEmail_craftCommerce->getLatestRandomOrder())
+		if ($order = craft()->sproutEmail_craftCommerce->getLatestRandomOrder())
 		{
 			$values['order'] = $order;
 			$orderId = $order->id;
 
 			$orderHistory = Commerce_OrderHistoryRecord::model()->findByAttributes(array('orderId' => $orderId));
 
-			if($orderHistory != null)
+			if ($orderHistory != null)
 			{
 				$values['orderHistory'] = $orderHistory;
 			}
-
 		}
 
 		return $values;

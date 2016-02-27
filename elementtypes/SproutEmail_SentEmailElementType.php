@@ -65,11 +65,11 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-				'emailSubject' => array('label' => Craft::t('Subject')),
-				'fromEmail'    => array('label' => Craft::t('From Email')),
-				'campaignNotificationId'    => array('label' => Craft::t('Notification Type')),
-				'dateCreated'  => array('label' => Craft::t('Date Created')),
-				'dateUpdated'  => array('label' => Craft::t('Date Updated'))
+			'emailSubject'           => array('label' => Craft::t('Subject')),
+			'fromEmail'              => array('label' => Craft::t('From Email')),
+			'campaignNotificationId' => array('label' => Craft::t('Notification Type')),
+			'dateCreated'            => array('label' => Craft::t('Date Created')),
+			'dateUpdated'            => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
@@ -82,7 +82,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			'dateCreated'  => Craft::t('Date Created')
 		);
 	}
-
 
 	/**
 	 * Returns default table columns for table views
@@ -110,25 +109,24 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'emailSubject'    => AttributeType::String,
-			'fromEmail'       => AttributeType::String,
-			'toEmail'         => AttributeType::String,
-			'dateCreated'     => AttributeType::Mixed
+			'emailSubject' => AttributeType::String,
+			'fromEmail'    => AttributeType::String,
+			'toEmail'      => AttributeType::String,
+			'dateCreated'  => AttributeType::Mixed
 		);
 	}
-
 
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
 
-		switch ($attribute) {
+		switch ($attribute)
+		{
 
 			default:
 			{
 				return parent::getTableAttributeHtml($element, $attribute);
 			}
 		}
-
 	}
 
 	public function getIndexHtml(
@@ -139,10 +137,11 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$context,
 		$includeContainer,
 		$showCheckboxes
-	) {
+	)
+	{
 
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
-		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
+		$sort = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
@@ -189,14 +188,11 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				$criteria->order = str_replace('dateCreated', 'sentemail.dateCreated', $criteria->order);
 				$criteria->order = str_replace('dateUpdated', 'sentemail.dateUpdated', $criteria->order);
 			}
-
 		}
 		if ($criteria->toEmail)
 		{
 			$query->andWhere(DbHelper::parseParam('sentemail.toEmail', $criteria->toEmail, $query->params));
 		}
-
-
 	}
 
 	public function defineSearchableAttributes()

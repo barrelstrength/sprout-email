@@ -13,13 +13,13 @@ class SproutEmail_CampaignController extends BaseController
 		$this->requirePostRequest();
 
 		$campaignId = craft()->request->getRequiredPost('sproutEmail.id');
-		$campaign   = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
 
 		$campaign->setAttributes(craft()->request->getPost('sproutEmail'));
 
-		if(craft()->request->getPost('saveAsNew'))
+		if (craft()->request->getPost('saveAsNew'))
 		{
-			$campaign->saveAsNew  = true;
+			$campaign->saveAsNew = true;
 			$campaign->id = null;
 		}
 
@@ -32,13 +32,11 @@ class SproutEmail_CampaignController extends BaseController
 			$campaign->setFieldLayout($fieldLayout);
 		}
 
-
-
 		if (($campaign = sproutEmail()->campaigns->saveCampaign($campaign)) && !$campaign->hasErrors())
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));
 
-			if(sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id) == false)
+			if (sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id) == false)
 			{
 				$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
 			}
@@ -53,8 +51,6 @@ class SproutEmail_CampaignController extends BaseController
 			$this->redirectToPostedUrl($campaign);
 			craft()->end();
 		}
-
-
 
 		craft()->userSession->setError(Craft::t('Unable to save campaign.'));
 
@@ -106,14 +102,13 @@ class SproutEmail_CampaignController extends BaseController
 
 		foreach (craft()->request->getPost('settings') as $provider => $settings)
 		{
-			$service = 'sproutEmail_'.lcfirst($provider);
+			$service = 'sproutEmail_' . lcfirst($provider);
 			craft()->$service->saveSettings($settings);
 		}
 
 		craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
 		$this->redirectToPostedUrl();
 	}
-
 
 	public function actionCampaignSettingsTemplate(array $variables = array())
 	{

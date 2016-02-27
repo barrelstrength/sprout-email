@@ -31,8 +31,8 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
 	 */
-	const READY = 'ready';
-	const PENDING = 'pending';
+	const READY    = 'ready';
+	const PENDING  = 'pending';
 	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
 	const ARCHIVED = 'archived';
 
@@ -96,7 +96,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	protected function defineAttributes()
 	{
-		$defaults   = parent::defineAttributes();
+		$defaults = parent::defineAttributes();
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignId'            => array(AttributeType::Number, 'required' => true),
@@ -107,7 +107,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			// @related
-			'recipientLists' => Attributetype::Mixed,
+			'recipientLists'        => Attributetype::Mixed,
 		);
 
 		return array_merge($defaults, $attributes);
@@ -197,7 +197,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getStatus()
 	{
-		$status   = parent::getStatus();
+		$status = parent::getStatus();
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
 		switch ($status)
@@ -248,9 +248,9 @@ class SproutEmail_EntryModel extends BaseElementModel
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field           = $fieldLayoutField->getField();
+				$field = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->fields[]  = $field;
+				$this->fields[] = $field;
 			}
 		}
 
@@ -283,7 +283,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 
 		$url = UrlHelper::getCpUrl($this->uri);
 
-		return str_replace('/'.$cpTrigger, '', $url);
+		return str_replace('/' . $cpTrigger, '', $url);
 	}
 
 	/**
@@ -293,7 +293,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/'.$this->id);
+		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $this->id);
 
 		return $url;
 	}

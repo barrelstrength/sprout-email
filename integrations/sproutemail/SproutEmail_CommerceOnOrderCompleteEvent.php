@@ -5,7 +5,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 {
 	/**
 	 * Returns the qualified event name to use when registering with craft()->on
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getName()
@@ -43,7 +43,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		return array(
-			'value'      => $event->params['order']
+			'value' => $event->params['order']
 		);
 	}
 
@@ -66,7 +66,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, Commerce_OrderModel  $order, array $params = array())
+	public function validateOptions($options, Commerce_OrderModel $order, array $params = array())
 	{
 		return true;
 	}

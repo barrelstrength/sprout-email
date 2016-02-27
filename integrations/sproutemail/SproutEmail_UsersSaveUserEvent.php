@@ -51,15 +51,15 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, UserModel $user, array $params = array())
 	{
-		$isNewUser  = isset($params['isNewUser']) && $params['isNewUser'];
+		$isNewUser = isset($params['isNewUser']) && $params['isNewUser'];
 
-		$whenNew     = isset($options['craft']['saveUser']['whenNew']) &&
+		$whenNew = isset($options['craft']['saveUser']['whenNew']) &&
 			$options['craft']['saveUser']['whenNew'];
 
 		$whenUpdated = isset($options['craft']['saveUser']['whenUpdated']) &&
 			$options['craft']['saveUser']['whenUpdated'];
 
-		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
+		SproutEmailPlugin::log(Craft::t("Sprout Email '" . $this->getTitle() . "' event has been triggered"));
 
 		// If any user groups were checked, make sure the user is in one of the groups
 		if (is_array($options['craft']['saveUser']['userGroupIds']) && !empty($options['craft']['saveUser']['userGroupIds']) && count($options['craft']['saveUser']['userGroupIds']))
@@ -87,6 +87,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 			if (!$inGroup)
 			{
 				SproutEmailPlugin::log(Craft::t('Saved user not in any selected User Group.'));
+
 				return false;
 			}
 		}
@@ -95,23 +96,26 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 		{
 			SproutEmailPlugin::log(Craft::t("No settings have been selected. Please select 'When a user is created' or 'When
 			a user is updated' from the options on the Rules tab."));
+
 			return false;
 		}
 
-		if (($whenNew && !$isNewUser)  && !$whenUpdated)
+		if (($whenNew && !$isNewUser) && !$whenUpdated)
 		{
 			SproutEmailPlugin::log(Craft::t("No match. 'When a user is created' is selected but the user is being updated."));
+
 			return false;
 		}
 
 		if (($whenUpdated && $isNewUser) && !$whenNew)
 		{
 			SproutEmailPlugin::log(Craft::t("No match. 'When a user is updated' is selected but the user is new."));
+
 			return false;
 		}
 
 		// If user groups settings are unchecked
-		if($options['craft']['saveUser']['userGroupIds'] == '')
+		if ($options['craft']['saveUser']['userGroupIds'] == '')
 		{
 			return false;
 		}

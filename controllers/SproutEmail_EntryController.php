@@ -33,7 +33,7 @@ class SproutEmail_EntryController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$campaignId     = craft()->request->getRequiredPost('campaignId');
+		$campaignId = craft()->request->getRequiredPost('campaignId');
 		$this->campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
 
 		if (!$this->campaign)
@@ -44,9 +44,9 @@ class SproutEmail_EntryController extends BaseController
 		$entry = $this->getEntryModel();
 		$entry = $this->populateEntryModel($entry);
 
-		if(craft()->request->getPost('saveAsNew'))
+		if (craft()->request->getPost('saveAsNew'))
 		{
-			$entry->saveAsNew  = true;
+			$entry->saveAsNew = true;
 			$entry->id = null;
 		}
 
@@ -86,7 +86,7 @@ class SproutEmail_EntryController extends BaseController
 
 		// Get the Entry
 		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry   = sproutEmail()->entries->getEntryById($entryId);
+		$entry = sproutEmail()->entries->getEntryById($entryId);
 
 		if (sproutEmail()->entries->deleteEntry($entry))
 		{
@@ -98,7 +98,6 @@ class SproutEmail_EntryController extends BaseController
 			SproutEmailPlugin::log(json_encode($entry->getErrors()));
 		}
 	}
-
 
 	/**
 	 * Gives a mailer the ability to relay method calls to itself from a modal window
@@ -181,9 +180,9 @@ class SproutEmail_EntryController extends BaseController
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{
-					if($response->success == true)
+					if ($response->success == true)
 					{
-						if($response->emailModel != null)
+						if ($response->emailModel != null)
 						{
 							$emailModel = $response->emailModel;
 							sproutEmail()->mailers->onSendCampaign($entry, $emailModel, $campaign);
@@ -195,7 +194,7 @@ class SproutEmail_EntryController extends BaseController
 
 				$errorMessage = Craft::t('Mailer did not return a valid response model after entry export.');
 
-				if(!$response)
+				if (!$response)
 				{
 					$errorMessage = Craft::t('Unable to send email.');
 				}
@@ -248,7 +247,7 @@ class SproutEmail_EntryController extends BaseController
 	 */
 	public function actionEditEntryTemplate(array $variables = array())
 	{
-		$entryId    = craft()->request->getSegment(4);
+		$entryId = craft()->request->getSegment(4);
 		$campaignId = craft()->request->getSegment(3);
 
 		// Check if we already have an entry route variable
@@ -258,7 +257,7 @@ class SproutEmail_EntryController extends BaseController
 		{
 			if (is_numeric($entryId))
 			{
-				$variables['entry']   = craft()->elements->getElementById($entryId);
+				$variables['entry'] = craft()->elements->getElementById($entryId);
 				$variables['entryId'] = $entryId;
 			}
 			else
@@ -272,7 +271,7 @@ class SproutEmail_EntryController extends BaseController
 			$campaignId = $variables['entry']->campaignId;
 		}
 
-		$variables['campaign']   = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$variables['campaign'] = sproutEmail()->campaigns->getCampaignById($campaignId);
 		$variables['campaignId'] = $campaignId;
 
 		$shareParamsHtml = array(
@@ -289,7 +288,7 @@ class SproutEmail_EntryController extends BaseController
 		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($variables['campaign']->template))
 		{
 			craft()->templates->includeJs(
-				'Craft.LivePreview.init('.JsonHelper::encode(
+				'Craft.LivePreview.init(' . JsonHelper::encode(
 					array(
 						'fields'        => '#subjectLine-field, #title-field, #fields > div > div > .field',
 						'extraFields'   => '#settings',
@@ -300,7 +299,7 @@ class SproutEmail_EntryController extends BaseController
 							'campaignId' => $variables['campaign']->id,
 						)
 					)
-				).');'
+				) . ');'
 			);
 
 			$variables['showPreviewBtn'] = true;
@@ -322,7 +321,6 @@ class SproutEmail_EntryController extends BaseController
 					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 				}
 			}
-
 		}
 		else
 		{
@@ -332,7 +330,7 @@ class SproutEmail_EntryController extends BaseController
 		if ($variables['campaign']->type == 'notification')
 		{
 			$notificationId = null;
-			$notification   = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
+			$notification = sproutEmail()->notifications->getNotification(array('campaignId' => $campaignId));
 
 			if ($notification)
 			{
@@ -401,7 +399,7 @@ class SproutEmail_EntryController extends BaseController
 			$entry = new SproutEmail_EntryModel();
 		}
 
-		$entry->subjectLine         = craft()->request->getPost('subjectLine', $entry->subjectLine);
+		$entry->subjectLine = craft()->request->getPost('subjectLine', $entry->subjectLine);
 		$entry->getContent()->title = $entry->subjectLine;
 
 		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
@@ -503,7 +501,7 @@ class SproutEmail_EntryController extends BaseController
 			}
 
 			$this->renderTemplate(
-				$campaign->template.$ext, array(
+				$campaign->template . $ext, array(
 					'entry'     => $entry,
 					'campaign'  => $campaign,
 					'firstName' => '{firstName}',
@@ -557,13 +555,13 @@ class SproutEmail_EntryController extends BaseController
 	 */
 	protected function populateEntryModel(SproutEmail_EntryModel $entry)
 	{
-		$entry->campaignId            = $this->campaign->id;
-		$entry->slug                  = craft()->request->getPost('slug', $entry->slug);
-		$entry->enabled               = (bool) craft()->request->getPost('enabled', $entry->enabled);
-		$entry->fromName              = craft()->request->getPost('sproutEmail.fromName');
-		$entry->fromEmail             = craft()->request->getPost('sproutEmail.fromEmail');
-		$entry->replyTo               = craft()->request->getPost('sproutEmail.replyTo');
-		$entry->subjectLine           = craft()->request->getRequiredPost('subjectLine');
+		$entry->campaignId = $this->campaign->id;
+		$entry->slug = craft()->request->getPost('slug', $entry->slug);
+		$entry->enabled = (bool) craft()->request->getPost('enabled', $entry->enabled);
+		$entry->fromName = craft()->request->getPost('sproutEmail.fromName');
+		$entry->fromEmail = craft()->request->getPost('sproutEmail.fromEmail');
+		$entry->replyTo = craft()->request->getPost('sproutEmail.replyTo');
+		$entry->subjectLine = craft()->request->getRequiredPost('subjectLine');
 
 		$enableFileAttachments = craft()->request->getPost('sproutEmail.enableFileAttachments');
 		$entry->enableFileAttachments = $enableFileAttachments ? $enableFileAttachments : false;

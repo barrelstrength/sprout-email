@@ -29,7 +29,7 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, UserModel $user, array $params = array())
 	{
-		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
+		SproutEmailPlugin::log(Craft::t("Sprout Email '" . $this->getTitle() . "' event has been triggered"));
 
 		return true;
 	}
@@ -43,7 +43,7 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 			return array('value' => $user);
 		}
 
-		sproutEmail()->error('No user found with username/email '.$event->params['username']);
+		sproutEmail()->error('No user found with username/email ' . $event->params['username']);
 	}
 
 	/**

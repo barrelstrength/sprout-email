@@ -54,10 +54,10 @@ class SproutEmail_DefaultMailerRecipientElementType extends BaseElementType
 		{
 			foreach ($recipientLists as $recipientList)
 			{
-				$key = 'recipientlist:'.$recipientList->id;
+				$key = 'recipientlist:' . $recipientList->id;
 
 				$sources[$key] = array(
-					'label'    => Craft::t($recipientList->name) . " (".count($recipientList->recipients).")",
+					'label'    => Craft::t($recipientList->name) . " (" . count($recipientList->recipients) . ")",
 					'criteria' => array('recipientListId' => $recipientList->id),
 				);
 			}
@@ -170,6 +170,6 @@ class SproutEmail_DefaultMailerRecipientElementType extends BaseElementType
 	{
 		$html = craft()->templates->render('sproutemail_defaultmailer/recipients/_edit', compact('element'));
 
-		return $html.parent::getEditorHtml($element);
+		return $html . parent::getEditorHtml($element);
 	}
 }

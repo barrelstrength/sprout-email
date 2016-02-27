@@ -52,15 +52,15 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, EntryModel $entry, array $params = array())
 	{
-		$isNewEntry  = isset($params['isNewEntry']) && $params['isNewEntry'];
+		$isNewEntry = isset($params['isNewEntry']) && $params['isNewEntry'];
 
-		$whenNew     = isset($options['craft']['saveEntry']['whenNew']) &&
-			             $options['craft']['saveEntry']['whenNew'];
+		$whenNew = isset($options['craft']['saveEntry']['whenNew']) &&
+			$options['craft']['saveEntry']['whenNew'];
 
 		$whenUpdated = isset($options['craft']['saveEntry']['whenUpdated']) &&
-			             $options['craft']['saveEntry']['whenUpdated'];
+			$options['craft']['saveEntry']['whenUpdated'];
 
-		SproutEmailPlugin::log(Craft::t("Sprout Email '".$this->getTitle()."' event has been triggered"));
+		SproutEmailPlugin::log(Craft::t("Sprout Email '" . $this->getTitle() . "' event has been triggered"));
 
 		// If any section ids were checked, make sure the entry belongs in one of them
 		if (is_array($options['craft']['saveEntry']['sectionIds']) && !empty($options['craft']['saveEntry']['sectionIds']) && count($options['craft']['saveEntry']['sectionIds']))
@@ -68,6 +68,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 			if (!in_array($entry->getSection()->id, $options['craft']['saveEntry']['sectionIds']))
 			{
 				SproutEmailPlugin::log(Craft::t('Saved entry not in any selected Section.'));
+
 				return false;
 			}
 		}
@@ -76,14 +77,16 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		{
 			SproutEmailPlugin::log(Craft::t("No settings have been selected. Please select 'When an entry is created' or 'When
 			an entry is updated' from the options on the Rules tab."));
+
 			return false;
 		}
 
 		// Make sure new entries are new
-		if (($whenNew && !$isNewEntry)  && !$whenUpdated)
+		if (($whenNew && !$isNewEntry) && !$whenUpdated)
 		{
 			SproutEmailPlugin::log(Craft::t("No match. 'When an entry is created' is selected but the entry is being updated
 			."));
+
 			return false;
 		}
 
@@ -91,11 +94,12 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		if (($whenUpdated && $isNewEntry) && !$whenNew)
 		{
 			SproutEmailPlugin::log(Craft::t("No match. 'When an entry is updated' is selected but the entry is new."));
+
 			return false;
 		}
 
 		// If entry sections settings are unchecked
-		if($options['craft']['saveEntry']['sectionIds'] == '')
+		if ($options['craft']['saveEntry']['sectionIds'] == '')
 		{
 			return false;
 		}
@@ -144,7 +148,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	 */
 	protected function getAllSections()
 	{
-		$result  = craft()->sections->getAllSections();
+		$result = craft()->sections->getAllSections();
 		$options = array();
 
 		foreach ($result as $key => $section)

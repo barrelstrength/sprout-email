@@ -23,7 +23,7 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 	 */
 	public function performAction(ElementCriteriaModel $criteria)
 	{
-		$status   = $this->getParams()->status;
+		$status = $this->getParams()->status;
 		$archived = $enable = 0;
 
 		switch ($status)

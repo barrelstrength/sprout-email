@@ -150,10 +150,11 @@ class SproutEmail_CampaignRecord extends BaseRecord
 
 	/**
 	 * Create a secuencial string for the "name" and "handle" fields if they are already taken
+	 *
 	 * @param string
 	 * @param string
 	 * return string
-	*/
+	 */
 	private function getFieldAsNew($field, $value)
 	{
 		$newField = null;
@@ -161,18 +162,20 @@ class SproutEmail_CampaignRecord extends BaseRecord
 		$band = true;
 		do
 		{
-			$newField = $value.$i;
+			$newField = $value . $i;
 			$campaign = sproutEmail()->campaigns->getFieldValue($field, $newField);
-			if ( is_null($campaign) )
+			if (is_null($campaign))
 			{
 				$band = false;
 			}
 
 			$i++;
-		} while ( $band );
+		}
+		while ($band);
 
 		return $newField;
 	}
+
 	/**
 	 * Before Validate
 	 *
@@ -182,14 +185,14 @@ class SproutEmail_CampaignRecord extends BaseRecord
 		// Validate the name and handle fields when the record is save as new
 		if (isset($_POST["saveAsNew"]))
 		{
-			if($_POST['saveAsNew'])
+			if ($_POST['saveAsNew'])
 			{
-				if(sproutEmail()->campaigns->getFieldValue('name', $this->name))
+				if (sproutEmail()->campaigns->getFieldValue('name', $this->name))
 				{
 					$this->name = $this->getFieldAsNew('name', $this->name);
 				}
 
-				if(sproutEmail()->campaigns->getFieldValue('handle', $this->handle))
+				if (sproutEmail()->campaigns->getFieldValue('handle', $this->handle))
 				{
 					$this->handle = $this->getFieldAsNew('handle', $this->handle);
 				}

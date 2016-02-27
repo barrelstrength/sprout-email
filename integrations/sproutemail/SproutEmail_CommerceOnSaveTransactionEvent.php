@@ -5,7 +5,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 {
 	/**
 	 * Returns the qualified event name to use when registering with craft()->on
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getName()
@@ -43,7 +43,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		return array(
-			'value'      => $event->params['transaction']
+			'value' => $event->params['transaction']
 		);
 	}
 
@@ -56,8 +56,9 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	{
 		$context['statuses'] = $this->getAllTransactionStatuses();
 
-		$options =  $context['options']['commerceStatuses'];
+		$options = $context['options']['commerceStatuses'];
 		$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
+
 		return craft()->templates->render('sproutemail/_events/saveTransaction', $context);
 	}
 
@@ -69,7 +70,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	public function prepareOptions()
 	{
 		return array(
-			'commerceStatuses' =>  craft()->request->getPost('commerceStatuses')
+			'commerceStatuses' => craft()->request->getPost('commerceStatuses')
 		);
 	}
 
@@ -85,17 +86,17 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	public function validateOptions($options, Commerce_TransactionModel $model, array $params = array())
 	{
 		// This will ensure to trigger the event after the payment is made
-		if($model->reference != null)
+		if ($model->reference != null)
 		{
 			$statuses = $options['commerceStatuses'];
-			if(!empty($statuses))
+			if (!empty($statuses))
 			{
-				if(is_string($statuses) && $statuses == "*")
+				if (is_string($statuses) && $statuses == "*")
 				{
 					return true;
 				}
 
-				if(is_array($statuses))
+				if (is_array($statuses))
 				{
 					// Get first transaction which is the current transaction
 					if (in_array($model->status, $statuses))
@@ -122,9 +123,9 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 			Commerce_TransactionRecord::STATUS_FAILED
 		];
 		$options = array();
-		if(!empty($statuses))
+		if (!empty($statuses))
 		{
-			foreach($statuses as $status)
+			foreach ($statuses as $status)
 			{
 				array_push(
 					$options, array(
@@ -152,13 +153,12 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 		{
 			$orderId = $order->id;
 			$transactions = craft()->commerce_transactions->getAllTransactionsByOrderId($orderId);
-			if(!empty($transactions))
+			if (!empty($transactions))
 			{
 				return $transactions[0];
 			}
 		}
 
 		return array();
-
 	}
 }

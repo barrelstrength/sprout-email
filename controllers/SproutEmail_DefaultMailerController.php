@@ -35,7 +35,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 	protected function generateCsvExport(array $elements, $filename = 'recipients.csv', $delimiter = ',')
 	{
 		header('Content-Type: application/csv');
-		header('Content-Disposition: attachment; filename="'.$filename.'";');
+		header('Content-Disposition: attachment; filename="' . $filename . '";');
 
 		$f = fopen('php://output', 'w');
 
@@ -62,11 +62,11 @@ class SproutEmail_DefaultMailerController extends BaseController
 	 */
 	public function actionShowEditRecipientTemplate(array $variables = array())
 	{
-		$variables['title']              = Craft::t('Recipient');
+		$variables['title'] = Craft::t('Recipient');
 		$variables['recipientListsHtml'] = null;
 		$defaultRecipientList = array();
 		// @todo - Refactor and improve
-		if(isset($variables['recipient']))
+		if (isset($variables['recipient']))
 		{
 			// When a form doesn't validate, we can use our SproutEmail_DefaultMailerRecipientModel object here
 			$variables['element'] = $variables['recipient'];
@@ -84,11 +84,11 @@ class SproutEmail_DefaultMailerController extends BaseController
 			}
 			else
 			{
-				$variables['title']   		= Craft::t('New Recipient');
-				$variables['element'] 		= new SproutEmail_DefaultMailerRecipientModel();
+				$variables['title'] = Craft::t('New Recipient');
+				$variables['element'] = new SproutEmail_DefaultMailerRecipientModel();
 
 				$recipientListId = craft()->request->getParam('recipientListId');
-				if($recipientListId != null)
+				if ($recipientListId != null)
 				{
 					$defaultRecipientList[] = $recipientListId;
 				}
@@ -98,21 +98,21 @@ class SproutEmail_DefaultMailerController extends BaseController
 		$recipientListOptions = array();
 		$recipientLists = sproutEmailDefaultMailer()->getRecipientLists();
 
-		if(isset($recipientLists))
+		if (isset($recipientLists))
 		{
-			foreach($recipientLists as $recipientList)
+			foreach ($recipientLists as $recipientList)
 			{
 				$recipientListOptions[$recipientList->id] = $recipientList->name;
 			}
 		}
 
-		$variables['recipientListsHtml']   = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element'], $defaultRecipientList);
+		$variables['recipientListsHtml'] = sproutEmailDefaultMailer()->getRecipientListsHtml($variables['element'], $defaultRecipientList);
 
-		$variables['recipientLists']       = $recipientLists;
+		$variables['recipientLists'] = $recipientLists;
 
 		$variables['recipientListOptions'] = $recipientListOptions;
 
-		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/recipients/_edit/'.$variables['id'] :
+		$variables['continueEditingUrl'] = isset($variables['id']) ? 'sproutemail/recipients/_edit/' . $variables['id'] :
 			null;
 
 		$this->renderTemplate('sproutemail/recipients/_edit', $variables);
@@ -144,9 +144,9 @@ class SproutEmail_DefaultMailerController extends BaseController
 			$recipients = sproutEmailDefaultMailer()->getRecipients();
 		}
 
-		$variables['title']          = Craft::t('Recipients');
+		$variables['title'] = Craft::t('Recipients');
 		$variables['recipientLists'] = sproutEmailDefaultMailer()->getRecipientLists();
-		$variables['recipients']     = $recipients;
+		$variables['recipients'] = $recipients;
 
 		$this->renderTemplate('sproutemail/recipients/index', $variables);
 	}
@@ -257,7 +257,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$id    = craft()->request->getRequiredPost('id');
+		$id = craft()->request->getRequiredPost('id');
 		$model = null;
 
 		if (($model = sproutEmailDefaultMailer()->getRecipientById($id)))
@@ -267,7 +267,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 				throw new Exception(Craft::t('Recipient with id ({id}) was not found.', array('id' => $id)));
 			}
 
-			$vars    = array('recipientId' => $model->id);
+			$vars = array('recipientId' => $model->id);
 			$deleted = SproutEmail_DefaultMailerRecipientRecord::model()->deleteByPk($model->id);
 
 			if ($deleted)
@@ -301,7 +301,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$id    = craft()->request->getRequiredPost('id');
+		$id = craft()->request->getRequiredPost('id');
 		$model = null;
 
 		if (($model = sproutEmailDefaultMailer()->getRecipientListById($id)))
@@ -311,7 +311,7 @@ class SproutEmail_DefaultMailerController extends BaseController
 				throw new Exception(Craft::t('Recipient list with id ({id}) was not found.', array('id' => $id)));
 			}
 
-			$vars    = array('recipientListId' => $model->id);
+			$vars = array('recipientListId' => $model->id);
 			$deleted = SproutEmail_DefaultMailerRecipientListRecord::model()->deleteByPk($model->id);
 
 			if ($deleted)

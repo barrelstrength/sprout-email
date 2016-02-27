@@ -65,7 +65,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function getSources($context = null)
 	{
 		// Grab all of our Notifications
-		$notifications   = sproutEmail()->campaigns->getCampaigns('notification');
+		$notifications = sproutEmail()->campaigns->getCampaigns('notification');
 		$notificationIds = array();
 
 		$sources = array(
@@ -99,7 +99,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 
 			foreach ($campaigns as $campaign)
 			{
-				$key = 'campaign:'.$campaign->id;
+				$key = 'campaign:' . $campaign->id;
 
 				$sources[$key] = array(
 					'label'    => $campaign->name,
@@ -131,14 +131,15 @@ class SproutEmail_EntryElementType extends BaseElementType
 		$context,
 		$includeContainer,
 		$showCheckboxes
-	) {
+	)
+	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
 
 		sproutEmail()->mailers->includeMailerModalResources();
 
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
-		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
+		$sort = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
@@ -161,9 +162,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-				'title'       => array('label' => Craft::t('Title')),
-				'dateCreated' => array('label' => Craft::t('Date Created')),
-				'dateUpdated' => array('label' => Craft::t('Date Updated')),
+			'title'       => array('label' => Craft::t('Title')),
+			'dateCreated' => array('label' => Craft::t('Date Created')),
+			'dateUpdated' => array('label' => Craft::t('Date Updated')),
 
 		);
 
@@ -325,9 +326,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 			$extension = in_array(strtolower($type), array('txt', 'text')) ? '.txt' : null;
 		}
 
-		if (!craft()->templates->doesTemplateExist($campaign->template.$extension))
+		if (!craft()->templates->doesTemplateExist($campaign->template . $extension))
 		{
-			$templateName = $campaign->template.$extension;
+			$templateName = $campaign->template . $extension;
 			sproutEmail()->error(
 				Craft::t(
 					"The template '{templateName}' could not be found", array(
@@ -353,7 +354,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
-				'template'  => $campaign->template.$extension,
+				'template'  => $campaign->template . $extension,
 				'variables' => $vars
 			)
 		);

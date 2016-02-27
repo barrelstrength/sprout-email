@@ -117,6 +117,8 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function registerCpRoutes()
 	{
+		// @formatter:off
+
 		$url         = 'sproutemail';
 		$ctrl        = 'sproutEmail/defaultMailer';
 		$recipients  = $url.'/recipients';
@@ -163,6 +165,8 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings/_tabs/examples',
 
 		));
+
+		// @formatter:on
 	}
 
 	public function init()
@@ -201,7 +205,8 @@ class SproutEmailPlugin extends BasePlugin
 		}
 
 		// Logs sent element types for notifications
-		craft()->on('sproutEmail_sentEmails.onSendNotification', function(Event $event) {
+		craft()->on('sproutEmail_sentEmails.onSendNotification', function (Event $event)
+		{
 
 			$params = $event->params;
 
@@ -209,9 +214,9 @@ class SproutEmailPlugin extends BasePlugin
 
 			// To make sure you run the sprout notification email events only
 			$sproutEmailEntry = isset($params['sproutEmailEntry']) ? $params['sproutEmailEntry'] : null;
-			$mocked           = $params['mocked'];
+			$mocked = $params['mocked'];
 
-			if($sproutEmailEntry != null)
+			if ($sproutEmailEntry != null)
 			{
 
 				$entryId = $sproutEmailEntry->id;
@@ -222,50 +227,52 @@ class SproutEmailPlugin extends BasePlugin
 				$type = ($mocked == true) ? 'Test Notification' : 'Notification';
 				$info = array();
 				$info['Sender'] = $sproutEmailEntry->fromEmail;
-				$info['Type']   = $type;
+				$info['Type'] = $type;
 
 				sproutEmail()->sentemails->logSentEmail($emailModel, $info);
 			}
 		});
 
 		// This will trigger campaign emails
-		craft()->on('sproutEmail_mailer.onSendCampaign', function(Event $event) {
+		craft()->on('sproutEmail_mailer.onSendCampaign', function (Event $event)
+		{
 
 			$entryModel = $event->params['entryModel'];
 			$emailModel = $event->params['emailModel'];
-			$campaign   = $event->params['campaign'];
+			$campaign = $event->params['campaign'];
 
-			$entryId =  $entryModel->id;
+			$entryId = $entryModel->id;
 
 			$info = array();
 			$info['Sender'] = $entryModel->fromEmail;
 			$mailer = $campaign->mailer;
 			$info['Mailer'] = ucwords($mailer);
-			$info['Type']   = "Campaign";
+			$info['Type'] = "Campaign";
 
 			sproutEmail()->sentemails->logSentEmail($emailModel, $info);
 		});
 
-		craft()->on('email.onSendEmail', function(Event $event) {
+		craft()->on('email.onSendEmail', function (Event $event)
+		{
 
 			$params = $event->params;
 			$emailModel = $params['emailModel'];
-			$variables  = $params['variables'];
+			$variables = $params['variables'];
 
 			$sproutEmailEntry = isset($variables['sproutEmailEntry']) ? $variables['sproutEmailEntry'] : null;
 
-			if($sproutEmailEntry == null)
+			if ($sproutEmailEntry == null)
 			{
 				$info = array();
 
 				$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
 
-				if($emailKey == 'test_email')
+				if ($emailKey == 'test_email')
 				{
 					$emailModel->toEmail = $variables['settings']['emailAddress'];
 				}
 
-				if($emailKey != null)
+				if ($emailKey != null)
 				{
 					$type = ucwords(str_replace('_', ' ', $emailKey));
 					$info['Type'] = $type;
@@ -300,13 +307,13 @@ class SproutEmailPlugin extends BasePlugin
 		if ($this->isEnabled && $this->isInstalled)
 		{
 			$events = array(
-				'entries.saveEntry'   => new SproutEmail_EntriesSaveEntryEvent(),
-				'entries.deleteEntry' => new SproutEmail_EntriesDeleteEntryEvent(),
-				'userSession.login'   => new SproutEmail_UserSessionLoginEvent(),
-				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
-				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
-				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent(),
-				'userGroups.onBeforeAssignUserToGroups'  => new SproutEmail_UserAssignToGroups(),
+				'entries.saveEntry'                     => new SproutEmail_EntriesSaveEntryEvent(),
+				'entries.deleteEntry'                   => new SproutEmail_EntriesDeleteEntryEvent(),
+				'userSession.login'                     => new SproutEmail_UserSessionLoginEvent(),
+				'users.saveUser'                        => new SproutEmail_UsersSaveUserEvent(),
+				'users.deleteUser'                      => new SproutEmail_UsersDeleteUserEvent(),
+				'users.activateUser'                    => new SproutEmail_UsersActivateUserEvent(),
+				'userGroups.onBeforeAssignUserToGroups' => new SproutEmail_UserAssignToGroups(),
 			);
 		}
 
@@ -314,11 +321,11 @@ class SproutEmailPlugin extends BasePlugin
 		$commercePlugin = craft()->plugins->getPlugin('commerce', false);
 
 		// Commerce events goes here
-		if(isset($commercePlugin->isEnabled) && $commercePlugin->isEnabled)
+		if (isset($commercePlugin->isEnabled) && $commercePlugin->isEnabled)
 		{
-			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_orders.onOrderComplete'] = new SproutEmail_CommerceOnOrderCompleteEvent();
 			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
-			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
+			$events['commerce_orderHistories.onStatusChange'] = new SproutEmail_CommerceOnStatusChangeEvent();
 		}
 
 		return $events;
@@ -342,14 +349,14 @@ class SproutEmailPlugin extends BasePlugin
 			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
 		);
 
-		foreach($pluginMailers as $handle => $class)
+		foreach ($pluginMailers as $handle => $class)
 		{
 			$namespace = "Craft\\" . $class;
 			$mailerClass = new $namespace();
 
 			$mailers[$handle] = $mailerClass;
 		}
-		
+
 		return $mailers;
 	}
 
@@ -376,7 +383,7 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->mailers->installMailers();
 
 			// Redirect to examples after installation
-			craft()->request->redirect(UrlHelper::getCpUrl().'/sproutemail/settings/examples');
+			craft()->request->redirect(UrlHelper::getCpUrl() . '/sproutemail/settings/examples');
 		}
 		catch (\Exception $e)
 		{
@@ -390,11 +397,11 @@ class SproutEmailPlugin extends BasePlugin
 	public function sproutMigrateRegisterElements()
 	{
 		return array(
-				'sproutemail_entry'     => array(
-						'model'   => 'Craft\\SproutEmail_Entry',
-						'method'  => 'saveEntry',
-						'service' => 'sproutEmail_entry',
-				)
+			'sproutemail_entry' => array(
+				'model'   => 'Craft\\SproutEmail_Entry',
+				'method'  => 'saveEntry',
+				'service' => 'sproutEmail_entry',
+			)
 		);
 	}
 }

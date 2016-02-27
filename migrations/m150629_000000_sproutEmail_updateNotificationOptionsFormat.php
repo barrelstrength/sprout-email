@@ -20,7 +20,7 @@ class m150629_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMig
 
 				if ($count = count($notifications))
 				{
-					SproutEmailPlugin::log('Notifications found: '. $count, LogLevel::Info, true);
+					SproutEmailPlugin::log('Notifications found: ' . $count, LogLevel::Info, true);
 
 					$newOptions = array();
 

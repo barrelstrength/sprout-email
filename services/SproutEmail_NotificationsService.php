@@ -50,7 +50,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			return $this->registeredEvents[$eventId];
 		};
 
-		return function() {};
+		return function ()
+		{
+		};
 	}
 
 	/**
@@ -80,7 +82,8 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 
 			if (count($this->availableEvents))
 			{
-				uasort($this->availableEvents, function($a, $b) {
+				uasort($this->availableEvents, function ($a, $b)
+				{
 					return strlen($a->getId()) > strlen($b->getId());
 				});
 			}
@@ -137,7 +140,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			throw new Exception(Craft::t('The event with id ({id}) does not exist.', array('id' => $eventId)));
 		}
 
-		$attributes   = array('eventId' => $event->getId(), 'campaignId' => $campaignId);
+		$attributes = array('eventId' => $event->getId(), 'campaignId' => $campaignId);
 		$notification = SproutEmail_NotificationRecord::model()->findByAttributes($attributes);
 
 		if (!$notification)
@@ -156,7 +159,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		}
 
 		// Remove all events for a given notification to ensure only one is allowed
-		$params    = array('campaignId' => $campaignId, 'eventId' => $eventId);
+		$params = array('campaignId' => $campaignId, 'eventId' => $eventId);
 		$condition = 'campaignId = :campaignId and eventId != :eventId';
 
 		try
@@ -202,7 +205,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function getNotificationById($id)
 	{
-		return $this->getNotification(array('id' => $id ));
+		return $this->getNotification(array('id' => $id));
 	}
 
 	/**
@@ -239,7 +242,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function registerDynamicEventHandler()
 	{
-		$self   = $this;
+		$self = $this;
 		$events = sproutEmail()->notifications->getAvailableEvents();
 
 		if (count($events))
@@ -250,7 +253,10 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 				{
 					$self->registerEvent($eventId, $self->getDynamicEventHandler());
 
-					if($listener->getName() == 'userSession.login' && craft()->isConsole() == true) continue;
+					if ($listener->getName() == 'userSession.login' && craft()->isConsole() == true)
+					{
+						continue;
+					}
 
 					craft()->on($listener->getName(), function (Event $event) use ($self, $eventId, $listener)
 					{
@@ -302,7 +308,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	 */
 	public function handleDynamicEvent($eventId, Event $event, SproutEmailBaseEvent $listener)
 	{
-		$params  = $listener->prepareParams($event);
+		$params = $listener->prepareParams($event);
 		$element = isset($params['value']) ? $params['value'] : null;
 
 		if (($notifications = $this->getNotifications($eventId)))
@@ -400,7 +406,6 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 				'object'       => $element,
 			)
 		);
-
 
 		return $vars;
 	}

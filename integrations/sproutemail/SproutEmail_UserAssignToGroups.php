@@ -23,7 +23,7 @@ class SproutEmail_UserAssignToGroups extends SproutEmailBaseEvent
 	public function prepareParams(Event $event)
 	{
 		$values = array();
-		$userId  = $event->params['userId'];
+		$userId = $event->params['userId'];
 
 		$user = craft()->users->getUserById($userId);
 
@@ -32,9 +32,9 @@ class SproutEmail_UserAssignToGroups extends SproutEmailBaseEvent
 		$groups = craft()->userGroups->getGroupsByUserId($userId);
 
 		$oldNames = array();
-		if(!empty($groups))
+		if (!empty($groups))
 		{
-			foreach($groups as $group)
+			foreach ($groups as $group)
 			{
 				$oldNames[] = $group->name;
 			}
@@ -42,9 +42,9 @@ class SproutEmail_UserAssignToGroups extends SproutEmailBaseEvent
 
 		$groupIds = $event->params['groupIds'];
 		$newNames = array();
-		if(!empty($groupIds))
+		if (!empty($groupIds))
 		{
-			foreach($groupIds as $id)
+			foreach ($groupIds as $id)
 			{
 				$groupModel = craft()->userGroups->getGroupById($id);
 				$newNames[] = $groupModel->name;
@@ -53,7 +53,7 @@ class SproutEmail_UserAssignToGroups extends SproutEmailBaseEvent
 
 		$values['value']['oldgroups'] = $oldNames;
 		$values['value']['newgroups'] = $newNames;
-		$values['value']['groupIds']  = $groupIds;
+		$values['value']['groupIds'] = $groupIds;
 
 		return $values;
 	}
@@ -92,9 +92,9 @@ class SproutEmail_UserAssignToGroups extends SproutEmailBaseEvent
 
 		$oldGroups = array();
 
-		if(!empty($groups))
+		if (!empty($groups))
 		{
-			foreach($groups as $group)
+			foreach ($groups as $group)
 			{
 				$oldGroups[] = $group->id;
 			}
@@ -109,7 +109,7 @@ class SproutEmail_UserAssignToGroups extends SproutEmailBaseEvent
 
 		$resultNew = sproutEmail()->mailers->isArraySettingsMatch($newGroups, $optionNew);
 
-		if($resultOld == true && $resultNew == true)
+		if ($resultOld == true && $resultNew == true)
 		{
 			return true;
 		}

@@ -6,19 +6,19 @@ namespace Craft;
  *
  * @package Craft
  *
- * @property SproutEmail_MailerService           $mailers
- * @property SproutEmail_EntriesService          $entries
- * @property SproutEmail_CampaignsService        $campaigns
- * @property SproutEmail_NotificationsService    $notifications
+ * @property SproutEmail_MailerService        $mailers
+ * @property SproutEmail_EntriesService       $entries
+ * @property SproutEmail_CampaignsService     $campaigns
+ * @property SproutEmail_NotificationsService $notifications
  */
 class SproutEmailService extends BaseApplicationComponent
 {
-	public  $mailers;
-	public  $entries;
-	public  $campaigns;
-	public  $notifications;
-	public  $defaultmailer;
-	public  $sentemails;
+	public $mailers;
+	public $entries;
+	public $campaigns;
+	public $notifications;
+	public $defaultmailer;
+	public $sentemails;
 
 	private $error = '';
 
@@ -26,12 +26,12 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		parent::init();
 
-		$this->mailers       = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->mailers = Craft::app()->getComponent('sproutEmail_mailer');
 		$this->defaultmailer = Craft::app()->getComponent('sproutEmail_defaultMailer');
-		$this->entries       = Craft::app()->getComponent('sproutEmail_entries');
-		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
+		$this->entries = Craft::app()->getComponent('sproutEmail_entries');
+		$this->campaigns = Craft::app()->getComponent('sproutEmail_campaigns');
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
-		$this->sentemails    = Craft::app()->getComponent('sproutEmail_sentEmails');
+		$this->sentemails = Craft::app()->getComponent('sproutEmail_sentEmails');
 	}
 
 	/**
@@ -70,7 +70,7 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param BaseModel $model
+	 * @param BaseModel   $model
 	 * @param array|mixed $obj
 	 */
 	public function renderObjectContentSafely(&$model, $obj)
@@ -90,7 +90,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 * Renders a site template when using it in control panel context
 	 *
 	 * @param string $template
-	 * @param array $variables
+	 * @param array  $variables
 	 *
 	 * @return null|string
 	 */
@@ -211,7 +211,7 @@ class SproutEmailService extends BaseApplicationComponent
 		{
 			foreach ($words as $word)
 			{
-				$start = $start.ucfirst($word);
+				$start = $start . ucfirst($word);
 			}
 		}
 
@@ -226,7 +226,7 @@ class SproutEmailService extends BaseApplicationComponent
 
 	public function handleOnBeforeSendEmail(Event $event)
 	{
-		$variables             = $event->params['variables'];
+		$variables = $event->params['variables'];
 
 		// Make sure this is a Sprout Email Event
 		if (!isset($variables['sproutEmailEntry']))
@@ -234,7 +234,7 @@ class SproutEmailService extends BaseApplicationComponent
 			return true;
 		}
 
-		$entry                 = $variables['sproutEmailEntry'];
+		$entry = $variables['sproutEmailEntry'];
 		$enableFileAttachments = $entry->enableFileAttachments;
 
 		if (isset($variables['elementEntry']) && $enableFileAttachments)
@@ -244,12 +244,12 @@ class SproutEmailService extends BaseApplicationComponent
 			/**
 			 * @var $field FieldModel
 			 */
-			if(method_exists($entry->getFieldLayout(), 'getFields'))
+			if (method_exists($entry->getFieldLayout(), 'getFields'))
 			{
 				foreach ($entry->getFieldLayout()->getFields() as $fieldLayoutField)
 				{
 					$field = $fieldLayoutField->getField();
-					$type  = $field->getFieldType();
+					$type = $field->getFieldType();
 
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
@@ -276,7 +276,7 @@ class SproutEmailService extends BaseApplicationComponent
 		if ($criteria instanceof ElementCriteriaModel)
 		{
 			$assets = $criteria->find();
-			if($assets)
+			if ($assets)
 			{
 				$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
 			}
@@ -316,7 +316,6 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 	}
 
-
 	/**
 	 * @param AssetFileModel $asset
 	 *
@@ -324,7 +323,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	protected function getAssetFilePath(AssetFileModel $asset)
 	{
-		return $asset->getSource()->getSourceType()->getBasePath().$asset->getFolder()->path.$asset->filename;
+		return $asset->getSource()->getSourceType()->getBasePath() . $asset->getFolder()->path . $asset->filename;
 	}
 
 	/**
@@ -339,12 +338,13 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * Check if example already exist
+	 *
 	 * @return bool
 	 */
 	public function hasExamples()
 	{
 		$path = craft()->path->getSiteTemplatesPath() . 'sproutemail';
-		if(file_exists($path))
+		if (file_exists($path))
 		{
 			return true;
 		}
@@ -361,7 +361,7 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$user = craft()->userSession->getUser();
 
-		if(!$user->can('editSproutEmailSettings'))
+		if (!$user->can('editSproutEmailSettings'))
 		{
 			return false;
 		}
@@ -371,11 +371,12 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * @param $subject
+	 *
 	 * @return string
 	 */
 	public function encodeSubjectLine($subject)
 	{
-		return '=?UTF-8?B?'.base64_encode($subject).'?=';
+		return '=?UTF-8?B?' . base64_encode($subject) . '?=';
 	}
 
 	public function test()

@@ -126,11 +126,11 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	 */
 	public function getRecipientListsHtml(array $values = null)
 	{
-		$lists    = $this->getRecipientLists();
-		$options  = array();
+		$lists = $this->getRecipientLists();
+		$options = array();
 		$selected = array();
 
-		if($lists == false)
+		if ($lists == false)
 		{
 			return craft()->templates->render('sproutemail/settings/_mailers/mailchimp/lists/sslerror');
 		}
@@ -216,7 +216,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	 */
 	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$ids   = craft()->request->getPost('recipient.recipientLists');
+		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
 
 		if ($ids)
@@ -246,14 +246,14 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$sentCampaignIds = array();
-		$response        = new SproutEmail_ResponseModel();
+		$response = new SproutEmail_ResponseModel();
 
 		try
 		{
-			$sentCampaign  = $this->getService()->export($entry, $campaign);
+			$sentCampaign = $this->getService()->export($entry, $campaign);
 
-			$sentCampaignIds      = $sentCampaign['ids'];
-			
+			$sentCampaignIds = $sentCampaign['ids'];
+
 			$response->emailModel = $sentCampaign['emailModel'];
 
 			$response->success = true;

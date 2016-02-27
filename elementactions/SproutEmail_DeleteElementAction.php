@@ -18,11 +18,11 @@ class SproutEmail_DeleteElementAction extends DeleteElementAction
 	{
 		$ids = $criteria->ids();
 
-		if(!empty($ids))
+		if (!empty($ids))
 		{
-			foreach($ids as $id)
+			foreach ($ids as $id)
 			{
-				if($campaign = sproutEmail()->campaigns->getCampaignByEntryId($id))
+				if ($campaign = sproutEmail()->campaigns->getCampaignByEntryId($id))
 				{
 					if ($campaign->type == 'notification')
 					{

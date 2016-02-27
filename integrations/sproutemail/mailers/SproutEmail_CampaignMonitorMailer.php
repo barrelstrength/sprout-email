@@ -69,8 +69,8 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	 */
 	public function getRecipientListsHtml(array $values = null)
 	{
-		$lists    = $this->getRecipientLists();
-		$options  = array();
+		$lists = $this->getRecipientLists();
+		$options = array();
 		$selected = array();
 
 		if (!count($lists))
@@ -122,7 +122,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$ids   = craft()->request->getPost('recipient.recipientLists');
+		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
 
 		if ($ids)
@@ -162,10 +162,10 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 			throw $e;
 		}
 
-		$response             = new SproutEmail_ResponseModel();
+		$response = new SproutEmail_ResponseModel();
 		$response->emailModel = $result['emailModel'];
-		$response->success    = true;
-		$response->content    = craft()->templates->render(
+		$response->success = true;
+		$response->content = craft()->templates->render(
 			'sproutemail/settings/_mailers/campaignmonitor/export',
 			array(
 				'entry'             => $entry,
@@ -185,7 +185,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		$urls = $this->getService()->getEntryUrls($entry->id, $campaign->template);
 
 		// Create an array of all recipient list titles
-		$lists          = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
 		$recipientLists = array();
 
 		if (is_array($lists) && count($lists))

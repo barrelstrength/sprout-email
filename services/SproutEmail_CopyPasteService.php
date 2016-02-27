@@ -27,9 +27,9 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 				'email'     => 'john@doe.com'
 			)
 		);
-		$html   = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
-		$text   = sproutEmail()->renderSiteTemplateIfExists($campaign->template.'.txt', $params);
-		$vars   = array(
+		$html = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
+		$text = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params);
+		$vars = array(
 			'html' => $html,
 			'text' => $text,
 		);
@@ -44,10 +44,10 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 
 	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$type   = craft()->request->getPost('contentType', 'html');
-		$ext    = strtolower($type) == 'text' ? '.txt' : null;
+		$type = craft()->request->getPost('contentType', 'html');
+		$ext = strtolower($type) == 'text' ? '.txt' : null;
 		$params = array('entry' => $entry, 'campaign' => $campaign);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template.$ext, $params);
+		$body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}

@@ -58,7 +58,7 @@ class SproutEmail_MailerController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$model  = null;
+		$model = null;
 		$mailer = sproutEmail()->mailers->getMailerByName(craft()->request->getRequiredPost('mailerId'));
 
 		if ($mailer)
@@ -98,8 +98,8 @@ class SproutEmail_MailerController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$mailer     = craft()->request->getRequiredPost('mailer');
-		$entryId    = craft()->request->getRequiredPost('entryId');
+		$mailer = craft()->request->getRequiredPost('mailer');
+		$entryId = craft()->request->getRequiredPost('entryId');
 		$campaignId = craft()->request->getRequiredPost('campaignId');
 
 		$modal = sproutEmail()->mailers->getPrepareModal($mailer, $entryId, $campaignId);
@@ -117,8 +117,8 @@ class SproutEmail_MailerController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$mailer     = craft()->request->getRequiredPost('mailer');
-		$entryId    = craft()->request->getRequiredPost('entryId');
+		$mailer = craft()->request->getRequiredPost('mailer');
+		$entryId = craft()->request->getRequiredPost('entryId');
 		$campaignId = craft()->request->getRequiredPost('campaignId');
 
 		$modal = sproutEmail()->mailers->getPreviewModal($mailer, $entryId, $campaignId);

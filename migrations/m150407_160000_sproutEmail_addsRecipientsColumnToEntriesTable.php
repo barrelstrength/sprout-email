@@ -14,7 +14,7 @@ class m150407_160000_sproutEmail_addsRecipientsColumnToEntriesTable extends Base
 			{
 				$definition = array(
 					AttributeType::Mixed,
-					'column' => ColumnType::Text,
+					'column'   => ColumnType::Text,
 					'required' => false
 				);
 
