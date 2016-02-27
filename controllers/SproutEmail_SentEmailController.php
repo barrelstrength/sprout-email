@@ -3,7 +3,11 @@ namespace Craft;
 
 class SproutEmail_SentEmailController extends BaseController
 {
-
+	/**
+	 * Get the Sent Email View Content Modal
+	 *
+	 * @throws HttpException
+	 */
 	public function actionGetViewContentModal()
 	{
 		$this->requirePostRequest();
@@ -12,7 +16,7 @@ class SproutEmail_SentEmailController extends BaseController
 		$variables = array();
 		$entryId = craft()->request->getRequiredPost('entryId');
 
-		$entry = SproutEmail_SentEmailRecord::model()->findById($entryId);
+		$entry = sproutEmail()->sentemails->getSentEmailById($entryId);
 		$variables['entry'] = $entry;
 
 		if (!empty($entry->htmlBody))
