@@ -2,7 +2,8 @@
 	label: "Client ID"|t,
 	name: 'campaignmonitor[clientId]',
 	instructions: "Enter the Client ID provided by Campaign Monitor on your Client Settings page."|t,
-	value: (settings.clientId is defined ? settings.clientId : null)
+	value: (settings.clientId is defined ? settings.clientId : null),
+	first: true
 }) }}
 
 {{ forms.textField({

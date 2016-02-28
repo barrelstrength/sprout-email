@@ -30,6 +30,7 @@
 		errors: settings is defined and settings.hasErrors('replyTo') ? settings.getErrors('replyTo') : null
 	}) }}
 
+	{% if craft.config.sproutEmail['enableDynamicLists'] is defined and craft.config.sproutEmail['enableDynamicLists'] %}
 	<hr>
 	<div class="field">
 		{{ forms.lightswitchField({
@@ -39,5 +40,7 @@
 			on:   settings.enableDynamicLists
 		}) }}
 	</div>
+	{% endif %}
+
 </div>
 

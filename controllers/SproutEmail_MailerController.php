@@ -41,12 +41,10 @@ class SproutEmail_MailerController extends BaseController
 			throw new HttpException(404, Craft::t('No settings found for this mailer'));
 		}
 
-		$context = array(
+		$this->renderTemplate('sproutemail/settings/_mailers/edit', array(
 			'mailer'   => $mailer,
 			'settings' => $mailer->getSettings()
-		);
-
-		$this->renderTemplate('sproutemail/settings/_mailer', $context);
+		));
 	}
 
 	/**

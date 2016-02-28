@@ -57,7 +57,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 			$context['settings'] = $this->getSettings();
 		}
 
-		$html = craft()->templates->render('sproutemail/settings/_defaultmailer', $context);
+		$html = craft()->templates->render('sproutemail/settings/_mailers/sproutemail/settings', $context);
 
 		return TemplateHelper::getRaw($html);
 	}
@@ -155,7 +155,7 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 
 		if (!count($lists))
 		{
-			return craft()->templates->render('sproutemail/settings/_defaultmailer-norecipients');
+			return craft()->templates->render('sproutemail/settings/_mailers/sproutemail/norecipients');
 		}
 
 		foreach ($lists as $list)
