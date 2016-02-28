@@ -237,6 +237,6 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 	public function includeModalResources()
 	{
-		craft()->templates->includeJsResource('sproutemail/js/campaignmonitor.js');
+		craft()->templates->includeJsResource('sproutemail/js/mailers/campaignmonitor.js');
 	}
 }

@@ -65,7 +65,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 
 	public function includeModalResources()
 	{
-		craft()->templates->includeJsResource('sproutemail/js/copypaste.js');
+		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 	}
 
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
