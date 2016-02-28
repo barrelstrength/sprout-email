@@ -18,7 +18,7 @@ class SproutEmailService extends BaseApplicationComponent
 	public $campaigns;
 	public $notifications;
 	public $defaultmailer;
-	public $sentemails;
+	public $sentEmails;
 
 	private $error = '';
 
@@ -31,7 +31,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$this->entries = Craft::app()->getComponent('sproutEmail_entries');
 		$this->campaigns = Craft::app()->getComponent('sproutEmail_campaigns');
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
-		$this->sentemails = Craft::app()->getComponent('sproutEmail_sentEmails');
+		$this->sentEmails = Craft::app()->getComponent('sproutEmail_sentEmails');
 	}
 
 	/**

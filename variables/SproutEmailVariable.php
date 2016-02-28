@@ -261,6 +261,6 @@ class SproutEmailVariable
 
 	public function getMailerBySentEmailId($id)
 	{
-		return SproutEmail()->sentemails->getMailerBySentEmailId($id);
+		return SproutEmail()->sentEmails->getMailerBySentEmailId($id);
 	}
 }

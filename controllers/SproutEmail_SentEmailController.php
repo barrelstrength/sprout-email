@@ -14,7 +14,7 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->requireAjaxRequest();
 
 		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry = sproutEmail()->sentemails->getSentEmailById($entryId);
+		$entry = sproutEmail()->sentEmails->getSentEmailById($entryId);
 
 		$htmlBody = '';
 		$body = (!empty($entry->body)) ? $entry->body : null;
