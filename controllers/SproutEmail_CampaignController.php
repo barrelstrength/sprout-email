@@ -21,6 +21,7 @@ class SproutEmail_CampaignController extends BaseController
 		{
 			$campaign->saveAsNew = true;
 			$campaign->id = null;
+			$_POST['redirect'] = 'sproutemail/settings/campaigns/edit/{id}';
 		}
 
 		if (craft()->request->getPost('fieldLayout'))
@@ -32,33 +33,42 @@ class SproutEmail_CampaignController extends BaseController
 			$campaign->setFieldLayout($fieldLayout);
 		}
 
-		if (($campaign = sproutEmail()->campaigns->saveCampaign($campaign)) && !$campaign->hasErrors())
+		if ($campaign = sproutEmail()->campaigns->saveCampaign($campaign))
 		{
-			craft()->userSession->setNotice(Craft::t('Campaign successfully saved.'));
+			craft()->userSession->setNotice(Craft::t('Campaign saved.'));
 
-			if (sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id) == false)
+			// Create the related Email Entry if we have a notification
+			if ($campaign->type == 'notification')
 			{
-				$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
-			}
-			else
-			{
-				$entry = sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id);
+				if (sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id) == false)
+				{
+					$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
+				}
+				else
+				{
+					$entry = sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id);
+				}
+
+				// Pass entryId for save and edit notification button
+				$campaign->entryId = $entry->id;
+
+				$this->redirectToPostedUrl($campaign);
+				craft()->end();
 			}
 
-			// Pass entryId for save and edit notification button
-			$campaign->entryId = $entry->id;
+			$_POST['redirect'] = str_replace('{id}', $campaign->id, $_POST['redirect']);
 
-			$this->redirectToPostedUrl($campaign);
-			craft()->end();
+			$this->redirectToPostedUrl();
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t('Unable to save campaign.'));
+
+			craft()->urlManager->setRouteVariables(array(
+				'campaign' => $campaign
+			));
 		}
 
-		craft()->userSession->setError(Craft::t('Unable to save campaign.'));
-
-		craft()->urlManager->setRouteVariables(
-			array(
-				'campaign' => $campaign
-			)
-		);
 	}
 
 	/**

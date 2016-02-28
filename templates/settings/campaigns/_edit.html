@@ -12,7 +12,7 @@
 {% endif %}
 
 {% set fullPageForm = true %}
-{% set saveShortcutRedirect = 'sproutemail/settings/campaigns/edit/' ~ campaignId %}
+{% set saveShortcutRedirect = campaignId != 'new' ? 'sproutemail/settings/campaigns/edit/' ~ campaignId : 'sproutemail/settings/campaigns/edit/{id}' %}
 
 {% block saveButton %}
 	<div class="btngroup submit first">
