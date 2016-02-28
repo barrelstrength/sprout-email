@@ -27,8 +27,8 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 				'email'     => 'john@doe.com'
 			)
 		);
-		$html = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
-		$text = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params);
+		$html = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste, $params);
+		$text = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste . '.txt', $params);
 		$vars = array(
 			'html' => $html,
 			'text' => $text,

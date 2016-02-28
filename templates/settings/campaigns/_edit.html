@@ -82,6 +82,16 @@
 			errors: (campaign is defined ? campaign.getErrors('template') : null)
 		}) }}
 
+		{{ forms.textField({
+			label: "Entry Copy/Paste Template"|t,
+			id: 'templateCopyPaste',
+			name: 'sproutEmail[templateCopyPaste]',
+			instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
+			placeholder: 'email/copypaste-template',
+			value: (campaign is defined ? campaign.templateCopyPaste : null),
+			errors: (campaign is defined ? campaign.getErrors('templateCopyPaste') : null)
+		}) }}
+
 		<hr>
 
 		{{ forms.checkboxField({
@@ -117,7 +127,7 @@
 
 		<div id="advancedtitle-settings" class="nested-fields{% if not campaign.hasAdvancedTitles %} hidden{% endif %}">
 
-				{{ forms.textField({
+			{{ forms.textField({
 				label: "Title Format"|t,
 				instructions: "What the auto-generated Entry titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
 				id: 'titleFormat',
@@ -149,9 +159,36 @@
 {% includeJsResource "sproutemail/js/sproutemail.js" %}
 
 {% set js %}
-	{% if campaign is not defined or not campaign.handle %}
-		new Craft.HandleGenerator('#name', '#handle');
-	{% endif %}
+
+	(function() {
+
+		function toggleCopyPasteField(selectedOption)
+		{
+			if (selectedOption == 'copypaste')
+			{
+				$('#templateCopyPaste-field').show();
+			}
+			else
+			{
+				$('#templateCopyPaste-field input').val('');
+				$('#templateCopyPaste-field').hide();
+			}
+		}
+
+		// Setup listener for copy/paste field
+		$('#mailer').change(function() {
+			toggleCopyPasteField($('#mailer').val());
+		});
+
+		// Show/hide copy/paste field on page load
+		toggleCopyPasteField($('#mailer').val());
+
+		{% if campaign is not defined or not campaign.handle %}
+			new Craft.HandleGenerator('#name', '#handle');
+		{% endif %}
+
+	})();
+
 {% endset %}
 
 {% includeJs js %}
