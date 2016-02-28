@@ -70,7 +70,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 							{
 								// Prioritize built in mailers
 								$mailers = $this->mailers;
-								if ($this->isMailerExists($mailer->getId(), $mailers))
+
+								if ($this->mailerExists($mailer->getId(), $mailers))
 								{
 									continue;
 								}
@@ -550,18 +551,19 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/*
-	 * Check mailers by key if it exists
-	 * @param $id key
+	 * Check if a Mailer exists
+	 *
+	 * @param $mailerId key
 	 * @param $mailers
 	 * @return bool
 	 */
-	protected function isMailerExists($id, $mailers)
+	protected function mailerExists($mailerId, $mailers)
 	{
 		if ($mailers != null)
 		{
 			$mailerKeys = array_keys($mailers);
 
-			if (in_array($id, $mailerKeys))
+			if (in_array($mailerId, $mailerKeys))
 			{
 				return true;
 			}
