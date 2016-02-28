@@ -63,8 +63,7 @@
 
 		{{ forms.selectField({
 			label: "How would you like to send this email"|t,
-			instructions: 'Select the platform you will use to send your Entries. Add support for more services via your <a
-			 href="' ~ url('sproutemail/settings/mailers') ~ '">Mailer settings</a>'|t,
+			instructions: 'Select the Mailer you will use to send Email Campaigns. <a href="' ~ url('sproutemail/settings/mailers') ~ '">Edit Mailer settings</a>.'|t,
 			id: 'mailer',
 			name: 'sproutEmail[mailer]',
 			required: true,

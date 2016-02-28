@@ -22,7 +22,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 
 	public function getTitle()
 	{
-		return 'Copy/Paste Service';
+		return 'Copy/Paste';
 	}
 
 	public function getName()
@@ -39,13 +39,10 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 	{
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 
-		return craft()->templates->render(
-			'sproutemail/_modal',
-			array(
-				'entry'    => $entry,
-				'campaign' => $campaign
-			)
-		);
+		return craft()->templates->render('sproutemail/_modal', array(
+			'entry'    => $entry,
+			'campaign' => $campaign
+		));
 	}
 
 	public function getActionForPrepareModal()
