@@ -187,86 +187,16 @@ class SproutEmailPlugin extends BasePlugin
 			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
 		}
 
-		// Logs sent element types for notifications
-		craft()->on('sproutEmail.onSendNotification', function (Event $event)
-		{
-
-			$params = $event->params;
-
-			$emailModel = $params['emailModel'];
-
-			// To make sure you run the sprout notification email events only
-			$sproutEmailEntry = isset($params['sproutEmailEntry']) ? $params['sproutEmailEntry'] : null;
-			$mocked = $params['mocked'];
-
-			if ($sproutEmailEntry != null)
-			{
-
-				$entryId = $sproutEmailEntry->id;
-				$notificationRecord = SproutEmail_NotificationRecord::model()->findByAttributes(array('campaignId' => $sproutEmailEntry->campaignId));
-
-				$notificationId = isset($notificationRecord) ? $notificationRecord->id : null;
-
-				$type = ($mocked == true) ? 'Test Notification' : 'Notification';
-				$info = array();
-				$info['Sender'] = $sproutEmailEntry->fromEmail;
-				$info['Type'] = $type;
-
-				sproutEmail()->sentEmails->saveSentEmail($emailModel, $info);
-			}
-		});
-
 		// This will trigger campaign emails
 		craft()->on('sproutEmail.onSendCampaign', function (Event $event)
 		{
-
-			$entryModel = $event->params['entryModel'];
-			$emailModel = $event->params['emailModel'];
-			$campaign = $event->params['campaign'];
-
-			$entryId = $entryModel->id;
-
-			$info = array();
-			$info['Sender'] = $entryModel->fromEmail;
-			$mailer = $campaign->mailer;
-			$info['Mailer'] = ucwords($mailer);
-			$info['Type'] = "Campaign";
-
-			sproutEmail()->sentEmails->saveSentEmail($emailModel, $info);
+			sproutEmail()->sentEmails->logSentEmailCampaign($event);
 		});
 
 		craft()->on('email.onSendEmail', function (Event $event)
 		{
-
-			$params = $event->params;
-			$emailModel = $params['emailModel'];
-			$variables = $params['variables'];
-
-			$sproutEmailEntry = isset($variables['sproutEmailEntry']) ? $variables['sproutEmailEntry'] : null;
-
-			if ($sproutEmailEntry == null)
-			{
-				$info = array();
-
-				$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
-
-				if ($emailKey == 'test_email')
-				{
-					$emailModel->toEmail = $variables['settings']['emailAddress'];
-				}
-
-				if ($emailKey != null)
-				{
-					$type = ucwords(str_replace('_', ' ', $emailKey));
-					$info['Type'] = $type;
-				}
-
-				$info['Sender'] = $emailModel->fromEmail;
-
-				sproutEmail()->sentEmails->saveSentEmail($emailModel, $info);
-			}
+			sproutEmail()->sentEmails->logSentEmail($event);
 		});
-
 
 
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')

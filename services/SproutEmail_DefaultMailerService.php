@@ -447,11 +447,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
 	 * @param mixed|null                $element
-	 * @param bool                      $mocked
+	 * @param bool                      $useMockData
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null, $mocked = false)
+	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null, $useMockData = false)
 	{
 		if (count($campaign->entries))
 		{
@@ -466,7 +466,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					continue;
 				}
 
-				if (!$mocked)
+				if (!$useMockData)
 				{
 					$listIds = array();
 					$recipientLists = $this->getRecipientListsByEntryId($entry->id);
@@ -523,12 +523,19 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					{
 						$processedRecipients = array();
 
+						$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+
 						$vars = array(
 							'sproutEmailEntry' => $entry,
 							'elementEntry'     => $element,
 							'campaign'         => $campaign,
-							'mocked'           => $mocked,
-							'recipientEmails'  => array()
+							'recipientEmails'  => array(),
+							'sproutEmailSentEmailVariables' => array(
+								'Source' => 'Sprout Email',
+								'Source Version' => 'Sprout Email ' . $pluginVersion,
+								'Email Type' => 'Notification',
+								'Test Email' => $useMockData
+							)
 						);
 
 						foreach ($recipients as $recipient)
@@ -557,10 +564,18 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 						{
 							$email->toEmail = implode(', ', $processedRecipients);
 
+							$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+
 							// Trigger on send notification event
 							$event = new Event($this, array(
 								'recipientEmails' => $processedRecipients,
-							  'emailModel' => $email
+								'emailModel' => $email,
+								'sproutEmailSentEmailVariables' => array(
+									'Source' => 'Sprout Email',
+									'Source Version' => 'Sprout Email ' . $pluginVersion,
+									'Email Type' => 'Notification',
+									'Test Email' => $useMockData
+								)
 							));
 
 							sproutEmail()->onSendNotification($event);

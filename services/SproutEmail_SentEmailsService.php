@@ -65,7 +65,9 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 				$transaction->rollback();
 			}
 
-			throw $e;
+			sproutEmail()->error($e);
+
+			return false;
 		}
 	}
 
@@ -104,5 +106,101 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		}
 
 		return TemplateHelper::getRaw($string);
+	}
+
+	/**
+	 * @param Event $event
+	 */
+	public function logSentEmail(Event &$event)
+	{
+		$emailSettings = $event->sender->getSettings();
+
+		$emailModel = $event->params['emailModel'];
+		$variables = $event->params['variables'];
+		$infoTableVariables = $variables['sproutEmailSentEmailVariables'];
+
+		$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
+
+		$craftVersion = 'Craft '.craft()->getEditionName().' '.craft()->getVersion().'.'.craft()->getBuild();
+
+		$infoTable = array();
+
+		$infoTable['Source'] = isset($infoTableVariables['Source']) ? $infoTableVariables['Source'] : '–';
+		$infoTable['Source Version'] = isset($infoTableVariables['Version']) ? $infoTableVariables['Version'] : '–';
+		$infoTable['Craft Version'] = $craftVersion;
+
+		$infoTable['Email Type'] = isset($infoTableVariables['Email Type']) ? $infoTableVariables['Email Type'] : '–';
+		$infoTable['Test Email'] = isset($infoTableVariables['Test Email']) ? 'Yes' : null;
+		$infoTable['Sender Name'] = $emailModel->fromName;
+		$infoTable['Sender Email'] = $emailModel->fromEmail;
+
+		$infoTable['Protocol'] = isset($emailSettings['protocol']) ? $emailSettings['protocol'] : '–';
+		$infoTable['Host Name'] = isset($emailSettings['host']) ? $emailSettings['host'] : '–';
+		$infoTable['Port'] = isset($emailSettings['port']) ? $emailSettings['port'] : '–';
+		$infoTable['SMTP Secure Transport Type'] = isset($emailSettings['smtpSecureTransportType']) ? $emailSettings['smtpSecureTransportType'] : '–';
+		$infoTable['Timeout'] = isset($emailSettings['timeout']) ? $emailSettings['timeout'] : '–';
+
+		$infoTable['IP Address'] = craft()->request->getUserHostAddress();
+		$infoTable['User Agent'] = craft()->request->getUserAgent();
+
+		// Override some settings if this is a Craft email
+		if ($emailKey != null)
+		{
+			$infoTable['Source'] = Craft::t('Craft CMS');
+			$infoTable['Version'] = $craftVersion;
+			$infoTable['Type'] = Craft::t('Notification');
+			$infoTable['Test'] = Craft::t('Test Email');
+
+			$this->renderEmailContentLikeCraft($emailModel, $variables);
+		}
+
+		if ($emailKey == 'test_email')
+		{
+			$emailModel->toEmail = $emailSettings['emailAddress'];
+		}
+
+		$this->saveSentEmail($emailModel, $infoTable);
+	}
+
+	/**
+	 * Render our HTML and Text email templates like Craft does
+	 *
+	 * Craft provides us the original email model, so we need to process the
+	 * HTML and Text body fields again in order to store the email content as
+	 * it was sent. Behavior copied from craft()->emails->sendEmail()
+	 */
+	protected function renderEmailContentLikeCraft(&$emailModel, $variables)
+	{
+		if ($emailModel->htmlBody)
+		{
+			$renderedHtmlBody = craft()->templates->renderString($emailModel->htmlBody, $variables);
+			$renderedTextBody = craft()->templates->renderString($emailModel->body, $variables);
+		}
+		else
+		{
+			$renderedHtmlBody = craft()->templates->renderString(StringHelper::parseMarkdown($emailModel->body), $variables);
+			$renderedTextBody = craft()->templates->renderString($emailModel->body, $variables);
+		}
+
+		$emailModel->htmlBody = $renderedHtmlBody;
+		$emailModel->body = $renderedTextBody;
+	}
+
+	/**
+	 * @param Event $event
+	 */
+	public function logSentEmailCampaign(Event $event)
+	{
+		$emailModel = $event->params['emailModel'];
+		$entryModel = $event->params['entryModel'];
+		$campaign = $event->params['campaign'];
+
+		$infoTable = array();
+		$infoTable['Mailer'] = ucwords($campaign->mailer);
+		$infoTable['Email Type'] = "Campaign";
+		$infoTable['Sender Name'] = $entryModel->fromName;
+		$infoTable['Sender Email'] = $entryModel->fromEmail;
+
+		sproutEmail()->sentEmails->saveSentEmail($emailModel, $infoTable);
 	}
 }
