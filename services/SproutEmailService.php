@@ -10,6 +10,8 @@ namespace Craft;
  * @property SproutEmail_EntriesService       $entries
  * @property SproutEmail_CampaignsService     $campaigns
  * @property SproutEmail_NotificationsService $notifications
+ * @property SproutEmail_DefaultMailerService $defaultmailer
+ * @property SproutEmail_SentEmailsService    $sentEmails
  */
 class SproutEmailService extends BaseApplicationComponent
 {
