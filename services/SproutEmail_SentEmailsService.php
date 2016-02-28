@@ -117,7 +117,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 
 		$emailModel = $event->params['emailModel'];
 		$variables = $event->params['variables'];
-		$infoTableVariables = $variables['sproutEmailSentEmailVariables'];
+		$infoTableVariables = isset($variables['sproutEmailSentEmailVariables']) ? $variables['sproutEmailSentEmailVariables'] : null;
 
 		$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
 
