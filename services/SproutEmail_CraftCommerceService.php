@@ -1,77 +1,38 @@
 <?php
-
 namespace Craft;
 
 class SproutEmail_CraftCommerceService extends BaseApplicationComponent
 {
-
 	/**
-	 * Get the first order of craft comerce being made.
+	 * Get a recent Craft Commerce Order
 	 *
-	 * @return array|BaseElementModel|null
-	 * @throws Exception
+	 * @return Commerce_OrderModel
 	 */
-	public function getFirstOrder()
+	public function getRecentOrder()
 	{
-		$criteria = craft()->elements->getCriteria("Commerce_Order");
+		$order = null;
+		$orderIds = $this->getCraftCommerceOrderIds();
 
-		$criteria->order = 'id asc';
-		$criteria->orderStatusId = 'not NULL';
-		$criteria->limit = 1;
+		if (!empty($orderIds))
+		{
+			$randomIndex = array_rand($orderIds);
+			$randomOrderId = $orderIds[$randomIndex];
 
-		// Return the oldest order
-		if ($order = $criteria->first())
-		{
-			return $order;
+			$order = craft()->commerce_orders->getOrderById($randomOrderId);
 		}
-		else
-		{
-			return array();
-		}
+
+		return $order;
 	}
 
-	/**
-	 * Get one order from the latest 15 orders.
-	 *
-	 * @return null
-	 */
-	public function getLatestRandomOrder()
-	{
-		$randomOrder = null;
-
-		$ids = $this->getOrderIds();
-
-		if (!empty($ids))
-		{
-			$randomId = $ids[array_rand($ids)];
-
-			$randomOrder = craft()->commerce_orders->getOrderById($randomId);
-		}
-
-		return $randomOrder;
-	}
-
-	public function getOrderIds($limit = 15)
+	public function getCraftCommerceOrderIds($limit = 15)
 	{
 		$criteria = craft()->elements->getCriteria("Commerce_Order");
-
 		$criteria->order = 'id desc';
 		$criteria->orderStatusId = 'not NULL';
 		$criteria->limit = $limit;
 
-		$ids = array();
+		$orderIds = $criteria->ids();
 
-		$orders = $criteria->find();
-
-		if (!empty($orders))
-		{
-			foreach ($orders as $order)
-			{
-				$ids[] = $order->id;
-			}
-		}
-
-		return $ids;
+		return $orderIds;
 	}
-
 }

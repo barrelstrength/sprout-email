@@ -78,6 +78,6 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 */
 	public function getMockedParams()
 	{
-		return craft()->sproutEmail_craftCommerce->getLatestRandomOrder();
+		return craft()->sproutEmail_craftCommerce->getRecentOrder();
 	}
 }

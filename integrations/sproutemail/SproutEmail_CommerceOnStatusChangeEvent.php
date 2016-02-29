@@ -85,7 +85,6 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, $order, array $params = array())
 	{
-
 		// This ensures that we will only trigger orders being updated
 		$prevStatusId = $order['orderHistory']->prevStatusId;
 
@@ -123,7 +122,6 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 
 	private function isOldAndNewMatch($oldId, $newId, $options)
 	{
-
 		if (($this->isSettingsMatch($oldId, 'old', $options) OR $options['commerceOrderStatuses']['old'] == "*")
 			AND
 			($this->isSettingsMatch($newId, 'new', $options) OR $options['commerceOrderStatuses']['new'] == "*")
@@ -161,7 +159,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	{
 		$values = array();
 
-		if ($order = craft()->sproutEmail_craftCommerce->getLatestRandomOrder())
+		if ($order = craft()->sproutEmail_craftCommerce->getRecentOrder())
 		{
 			$values['order'] = $order;
 			$orderId = $order->id;

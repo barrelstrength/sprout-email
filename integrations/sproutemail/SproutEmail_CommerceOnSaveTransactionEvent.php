@@ -146,8 +146,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	 */
 	public function getMockedParams()
 	{
-
-		$order = craft()->sproutEmail_craftCommerce->getLatestRandomOrder();
+		$order = craft()->sproutEmail_craftCommerce->getRecentOrder();
 		// Return the oldest order
 		if (!empty($order))
 		{
