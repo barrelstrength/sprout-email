@@ -446,152 +446,92 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param mixed|null                $element
+	 * @param mixed|null                $object
 	 * @param bool                      $useMockData
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null, $useMockData = false)
+	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null, $useMockData = false)
 	{
-		if (count($campaign->entries))
+		$email = new EmailModel();
+		$entry = $campaign->getNotificationEntry();
+
+		// Allow disabled emails to be tested
+		if (!$entry->isReady() AND !$useMockData)
 		{
-			$email = new EmailModel();
+			return false;
+		}
 
-			foreach ($campaign->entries as $entry)
+		$recipients = $this->prepareRecipients($entry, $object, $useMockData);
+
+		if (empty($recipients))
+		{
+			sproutEmail()->error(Craft::t('No recipients found.'));
+
+			return false;
+		}
+
+		$email = $this->renderEmailTemplates($email, $campaign, $entry, $object);
+
+		if (empty($email->body) OR empty($email->htmlBody))
+		{
+			return false;
+		}
+
+		$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+
+		$variables = array(
+			'email'                         => $entry,
+			'renderedEmail'                 => $email,
+			'campaign'                      => $campaign,
+			'object'                        => $object,
+			'recipients'                    => $recipients,
+			'processedRecipients'           => null,
+			'sproutEmailSentEmailVariables' => array(
+				'Source'         => 'Sprout Email',
+				'Source Version' => 'Sprout Email ' . $pluginVersion,
+				'Email Type'     => 'Notification',
+				'Test Email'     => $useMockData
+			)
+		);
+
+		$processedRecipients = array();
+
+		foreach ($recipients as $recipient)
+		{
+			$email->toEmail = sproutEmail()->renderObjectTemplateSafely($recipient->email, $object);
+			$email->toFirstName = $recipient->firstName;
+			$email->toLastName = $recipient->lastName;
+
+			if (array_key_exists($email->toEmail, $processedRecipients))
 			{
-				$entry = SproutEmail_EntryModel::populateModel($entry);
+				continue;
+			}
 
-				if (!$entry->isReady())
+			try
+			{
+				if (craft()->email->sendEmail($email, $variables))
 				{
-					continue;
+					$processedRecipients[] = $email->toEmail;
 				}
-
-				if (!$useMockData)
-				{
-					$listIds = array();
-					$recipientLists = $this->getRecipientListsByEntryId($entry->id);
-					$entryRecipients = $this->getRecipientsFromEntryModel($entry, $element);
-					$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($element);
-
-					if ($recipientLists && count($recipientLists))
-					{
-						foreach ($recipientLists as $list)
-						{
-							$listIds[] = $list->id;
-						}
-					}
-
-					$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
-					$recipients = array_merge(
-						$listRecipients,
-						$entryRecipients,
-						$dynamicRecipients
-					);
-				}
-				else
-				{
-					$recipient = craft()->config->get('testToEmailAddress');
-
-					if (empty($recipient) || !filter_var($recipient, FILTER_VALIDATE_EMAIL))
-					{
-						$recipient = craft()->userSession->getUser()->email;
-					}
-
-					$recipient = SproutEmail_SimpleRecipientModel::create(array('email' => $recipient));
-					$recipients = array($recipient);
-				}
-
-				if ($recipients && count($recipients))
-				{
-					$email->subject = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $element);
-					$email->fromName = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $element);
-					$email->fromEmail = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $element);
-					$email->replyTo = sproutEmail()->renderObjectTemplateSafely($entry->replyTo, $element);
-
-					if (strpos($email->replyTo, '{') === 0)
-					{
-						$email->replyTo = $email->fromEmail;
-					}
-
-					sproutEmail()->renderObjectContentSafely($entry, $element);
-
-					$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($entry, $element);
-					$email->body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $vars);
-					$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);
-
-					if (!empty($email->htmlBody))
-					{
-						$processedRecipients = array();
-
-						$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
-
-						$vars = array(
-							'sproutEmailEntry' => $entry,
-							'elementEntry'     => $element,
-							'campaign'         => $campaign,
-							'recipientEmails'  => array(),
-							'sproutEmailSentEmailVariables' => array(
-								'Source' => 'Sprout Email',
-								'Source Version' => 'Sprout Email ' . $pluginVersion,
-								'Email Type' => 'Notification',
-								'Test Email' => $useMockData
-							)
-						);
-
-						foreach ($recipients as $recipient)
-						{
-							$email->toEmail = sproutEmail()->renderObjectTemplateSafely($recipient->email, $element);
-							$email->toFirstName = $recipient->firstName;
-							$email->toLastName = $recipient->lastName;
-
-							if (!array_key_exists($email->toEmail, $processedRecipients))
-							{
-								try
-								{
-									if (craft()->email->sendEmail($email, $vars))
-									{
-										$processedRecipients[] = $email->toEmail;
-									}
-								}
-								catch (\Exception $e)
-								{
-									sproutEmail()->error($e->getMessage());
-								}
-							}
-						}
-
-						if (!empty($processedRecipients))
-						{
-							$email->toEmail = implode(', ', $processedRecipients);
-
-							$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
-
-							// Trigger on send notification event
-							$event = new Event($this, array(
-								'recipientEmails' => $processedRecipients,
-								'emailModel' => $email,
-								'sproutEmailSentEmailVariables' => array(
-									'Source' => 'Sprout Email',
-									'Source Version' => 'Sprout Email ' . $pluginVersion,
-									'Email Type' => 'Notification',
-									'Test Email' => $useMockData
-								)
-							));
-
-							sproutEmail()->onSendNotification($event);
-						}
-
-						return true;
-					}
-				}
-				else
-				{
-					sproutEmail()->error(Craft::t('No recipients found.'));
-				}
+			}
+			catch (\Exception $e)
+			{
+				sproutEmail()->error($e->getMessage());
 			}
 		}
 
-		return false;
+		// Trigger on send notification event
+		if (!empty($processedRecipients))
+		{
+			$variables['processedRecipients'] = $processedRecipients;
+		}
+
+		$event = new Event($this, $variables);
+
+		sproutEmail()->onSendNotification($event);
+
+		return true;
 	}
 
 	/**
@@ -804,5 +744,103 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 
 		return $options;
+	}
+
+	/**
+	 * @param $entry
+	 * @param $object
+	 * @param $useMockData
+	 *
+	 * @return array
+	 */
+	protected function prepareRecipients($entry, $object, $useMockData)
+	{
+		// Get recipients for test notifications
+		if ($useMockData)
+		{
+			return $this->getTestRecipients();
+		}
+
+		// Get recipients for live emails
+		$entryRecipients = $this->getRecipientsFromEntryModel($entry, $object);
+		$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($object);
+		$listRecipients = $this->getListRecipients($entry);
+
+		$recipients = array_merge(
+			$listRecipients,
+			$entryRecipients,
+			$dynamicRecipients
+		);
+
+		return $recipients;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getTestRecipients()
+	{
+		// Send a test to the logged in user
+		$recipient = craft()->userSession->getUser()->email;
+
+		$recipient = SproutEmail_SimpleRecipientModel::create(array(
+			'email' => $recipient
+		));
+
+		return array($recipient);
+	}
+
+	/**
+	 * @param $entry
+	 *
+	 * @return array|SproutEmail_DefaultMailerRecipientModel[]
+	 */
+	protected function getListRecipients($entry)
+	{
+		$listIds = array();
+		$recipientLists = $this->getRecipientListsByEntryId($entry->id);
+
+		if ($recipientLists && count($recipientLists))
+		{
+			foreach ($recipientLists as $list)
+			{
+				$listIds[] = $list->id;
+			}
+		}
+
+		$listRecipients = $this->getRecipientsByRecipientListIds($listIds);
+
+		return $listRecipients;
+	}
+
+	/**
+	 * @param SproutEmail_CampaignModel $campaign
+	 * @param                           $email
+	 * @param SproutEmail_EntryModel    $entry
+	 * @param                           $object
+	 */
+	protected function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
+	{
+		// Render Email Entry fields that have dynamic values
+		$email->subject = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $object);
+		$email->fromName = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $object);
+		$email->fromEmail = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $object);
+		$email->replyTo = sproutEmail()->renderObjectTemplateSafely($entry->replyTo, $object);
+
+		// Render the email templates
+		$email->body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', array(
+			'entry'  => $entry,
+			'object' => $object
+		));
+		$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, array(
+			'entry'  => $entry,
+			'object' => $object
+		));
+
+		// Process the results of the templates once more, to render any dynamic objects used in fields
+		$email->body = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
+		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($email->htmlBody, $object);
+
+		return $email;
 	}
 }

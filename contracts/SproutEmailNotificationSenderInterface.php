@@ -10,17 +10,19 @@ interface SproutEmailNotificationSenderInterface
 {
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param mixed|null                $element The element/object involved when triggering the event
+	 * @param null                      $object
+	 *
+	 * @return mixed
+	 * @internal param mixed|null $element The element/object involved when triggering the event
 	 *
 	 * @example
-	 * 1. entries.saveEntry > $element = EntryModel
-	 * 2. users.saveUser    > $element = UserModel
-	 * 3. userSession.login > $element = 'username'
+	 * 1. entries.saveEntry > $object = EntryModel
+	 * 2. users.saveUser    > $object = UserModel
+	 * 3. userSession.login > $object = 'username'
 	 *
 	 * @note
 	 * In case 3 above, we actually get a string (username) back but we fetch a user model based on that
 	 *
-	 * @return mixed
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null);
+	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null);
 }

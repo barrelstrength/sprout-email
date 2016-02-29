@@ -22,9 +22,9 @@ namespace Craft;
  */
 class SproutEmail_CampaignModel extends BaseModel
 {
-	protected $fields;
-
 	public $saveAsNew;
+
+	protected $fields;
 
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
@@ -60,8 +60,8 @@ class SproutEmail_CampaignModel extends BaseModel
 			// @defaults
 			'dateCreated'       => AttributeType::DateTime,
 			'dateUpdated'       => AttributeType::DateTime,
+
 			// @related
-			'entries'           => AttributeType::Mixed,
 			'fieldLayoutId'     => AttributeType::Number,
 			'entryId'           => AttributeType::Number
 		);
@@ -117,18 +117,14 @@ class SproutEmail_CampaignModel extends BaseModel
 	}
 
 	/**
-	 * Sets the entries attribute to enabled/live entries
-	 *
-	 * @throws Exception
+	 * Set the Entry Related to this Campaign if we have a notification
 	 */
-	public function setLiveEntries()
+	public function getNotificationEntry()
 	{
-		$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
-
-		$criteria->limit = null;
-		$criteria->status = SproutEmail_EntryModel::READY;
-		$criteria->campaignId = $this->id;
-		$this->entries = $criteria->find();
+		if ($this->isNotification())
+		{
+			return sproutEmail()->notifications->getNotificationEntryByCampaignId($this->id);
+		}
 	}
 
 	/**
