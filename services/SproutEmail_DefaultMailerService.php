@@ -453,96 +453,85 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null, $useMockData = false)
 	{
-		if (empty($campaign->entries))
+		$email = new EmailModel();
+		$entry = $campaign->getNotificationEntry();
+
+		// Allow disabled emails to be tested
+		if (!$entry->isReady() AND !$useMockData)
 		{
 			return false;
 		}
 
-		$email = new EmailModel();
+		$recipients = $this->prepareRecipients($entry, $object, $useMockData);
 
-		foreach ($campaign->entries as $entry)
+		if (empty($recipients))
 		{
-			$entry = SproutEmail_EntryModel::populateModel($entry);
+			sproutEmail()->error(Craft::t('No recipients found.'));
 
-			if (!$entry->isReady())
-			{
-				return false;
-			}
-
-			$recipients = $this->prepareRecipients($entry, $object, $useMockData);
-
-			if (empty($recipients))
-			{
-				sproutEmail()->error(Craft::t('No recipients found.'));
-
-				return false;
-			}
-
-			$email = $this->renderEmailTemplates($email, $campaign, $entry, $object);
-
-			if (empty($email->body) OR empty($email->htmlBody))
-			{
-				return false;
-			}
-
-			$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
-
-			$variables = array(
-				'email'                         => $entry,
-				'renderedEmail'                 => $email,
-				'campaign'                      => $campaign,
-				'object'                        => $object,
-				'recipients'                    => $recipients,
-				'processedRecipients'           => null,
-				'sproutEmailSentEmailVariables' => array(
-					'Source'         => 'Sprout Email',
-					'Source Version' => 'Sprout Email ' . $pluginVersion,
-					'Email Type'     => 'Notification',
-					'Test Email'     => $useMockData
-				)
-			);
-
-			$processedRecipients = array();
-
-			// Send notification to each recipient
-			foreach ($recipients as $recipient)
-			{
-				$email->toEmail = sproutEmail()->renderObjectTemplateSafely($recipient->email, $object);
-				$email->toFirstName = $recipient->firstName;
-				$email->toLastName = $recipient->lastName;
-
-				if (array_key_exists($email->toEmail, $processedRecipients))
-				{
-					continue;
-				}
-
-				try
-				{
-					if (craft()->email->sendEmail($email, $variables))
-					{
-						$processedRecipients[] = $email->toEmail;
-					}
-				}
-				catch (\Exception $e)
-				{
-					sproutEmail()->error($e->getMessage());
-				}
-			}
-
-			// Trigger on send notification event
-			if (!empty($processedRecipients))
-			{
-				$variables['processedRecipients'] = $processedRecipients;
-			}
-
-			$event = new Event($this, $variables);
-
-			sproutEmail()->onSendNotification($event);
-
-			return true;
+			return false;
 		}
 
-		return false;
+		$email = $this->renderEmailTemplates($email, $campaign, $entry, $object);
+
+		if (empty($email->body) OR empty($email->htmlBody))
+		{
+			return false;
+		}
+
+		$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+
+		$variables = array(
+			'email'                         => $entry,
+			'renderedEmail'                 => $email,
+			'campaign'                      => $campaign,
+			'object'                        => $object,
+			'recipients'                    => $recipients,
+			'processedRecipients'           => null,
+			'sproutEmailSentEmailVariables' => array(
+				'Source'         => 'Sprout Email',
+				'Source Version' => 'Sprout Email ' . $pluginVersion,
+				'Email Type'     => 'Notification',
+				'Test Email'     => $useMockData
+			)
+		);
+
+		$processedRecipients = array();
+
+		foreach ($recipients as $recipient)
+		{
+			$email->toEmail = sproutEmail()->renderObjectTemplateSafely($recipient->email, $object);
+			$email->toFirstName = $recipient->firstName;
+			$email->toLastName = $recipient->lastName;
+
+			if (array_key_exists($email->toEmail, $processedRecipients))
+			{
+				continue;
+			}
+
+			try
+			{
+				if (craft()->email->sendEmail($email, $variables))
+				{
+					$processedRecipients[] = $email->toEmail;
+				}
+			}
+			catch (\Exception $e)
+			{
+				sproutEmail()->error($e->getMessage());
+			}
+		}
+
+		// Trigger on send notification event
+		if (!empty($processedRecipients))
+		{
+			$variables['processedRecipients'] = $processedRecipients;
+		}
+
+		$event = new Event($this, $variables);
+
+		sproutEmail()->onSendNotification($event);
+
+		return true;
 	}
 
 	/**
