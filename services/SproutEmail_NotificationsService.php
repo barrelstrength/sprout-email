@@ -412,13 +412,13 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param mixed                     $element Will be an element model most of the time
+	 * @param mixed                     $object Will be an element model most of the time
 	 *
+	 * @return mixed
 	 * @throws Exception
 	 * @throws \Exception
-	 * @return mixed
 	 */
-	protected function relayNotificationThroughAssignedMailer(SproutEmail_CampaignModel $campaign, $element)
+	protected function relayNotificationThroughAssignedMailer(SproutEmail_CampaignModel $campaign, $object)
 	{
 		if (!isset($campaign->mailer))
 		{
@@ -437,12 +437,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			throw new Exception(Craft::t('The {mailer} does not have a sendNotification() method.', array('mailer' => get_class($mailer))));
 		}
 
-		// Forces campaign.entries to be populated with live entries only
-		$campaign->setLiveEntries();
-
 		try
 		{
-			return $mailer->sendNotification($campaign, $element);
+			return $mailer->sendNotification($campaign, $object);
 		}
 		catch (\Exception $e)
 		{

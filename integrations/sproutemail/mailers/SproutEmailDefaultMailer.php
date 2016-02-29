@@ -190,13 +190,13 @@ class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEm
 
 	/**
 	 * @param SproutEmail_CampaignModel             $campaign
-	 * @param BaseModel|BaseElementModel|array|null $element
+	 * @param BaseModel|BaseElementModel|array|null $object
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $element = null)
+	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null)
 	{
-		return $this->getService()->sendNotification($campaign, $element);
+		return $this->getService()->sendNotification($campaign, $object);
 	}
 
 	/**
