@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class m150629_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMigration
+class m160305_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMigration
 {
 	/**
 	 * @return bool
