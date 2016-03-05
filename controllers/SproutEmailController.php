@@ -45,38 +45,9 @@ class SproutEmailController extends BaseController
 		{
 			craft()->userSession->setError(Craft::t('Could not save settings.'));
 
-			craft()->urlManager->setRouteVariables(
-				array(
-					'settings' => $settings
-				)
-			);
+			craft()->urlManager->setRouteVariables(array(
+				'settings' => $settings
+			));
 		}
-	}
-
-	public function actionSandbox()
-	{
-		$record = SproutEmail_CoreMailerRecipientListRecord::model()->findById(1);
-
-		if ($record)
-		{
-			Craft::dump($record->getAttributes());
-
-			$recipients = $record->recipients();
-
-			echo '<hr>';
-			Craft::dump(count($recipients));
-			if ($recipients)
-			{
-				foreach ($recipients as $recipient)
-				{
-					echo '<hr>';
-					Craft::dump($recipient->getAttributes());
-					echo '<hr>';
-					Craft::dump($recipient->groups());
-				}
-			}
-		}
-
-		exit;
 	}
 }
