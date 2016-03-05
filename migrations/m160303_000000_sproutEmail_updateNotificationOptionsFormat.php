@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class m160305_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMigration
+class m160303_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMigration
 {
 	/**
 	 * @return bool
@@ -71,39 +71,66 @@ class m160305_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMig
 	{
 		$oldOptions = JsonHelper::decode($options);
 
-		$whenNew = isset($oldOptions['entriesSaveEntryOnlyWhenNew']) ? $oldOptions['entriesSaveEntryOnlyWhenNew'] : '';
-		$sectionIds = isset($oldOptions['entriesSaveEntrySectionIds']) ? $oldOptions['entriesSaveEntrySectionIds'] : '';
+		// Check for new settings format
+		if (isset($options['craft']['saveEntry']))
+		{
+			return $options;
+		}
 
-		$newOptions = array(
-			'craft' => array(
-				'saveEntry' => array(
-					'whenNew'     => $whenNew,
-					'whenUpdated' => '',
-					'sectionIds'  => $sectionIds
+		// Check for old settings format
+		if (isset($oldOptions['entriesSaveEntryOnlyWhenNew']) OR isset($oldOptions['entriesSaveEntrySectionIds']))
+		{
+			// Otherwise, update older format
+			$whenNew    = isset($oldOptions['entriesSaveEntryOnlyWhenNew']) ? $oldOptions['entriesSaveEntryOnlyWhenNew'] : '';
+			$sectionIds = isset($oldOptions['entriesSaveEntrySectionIds']) ? $oldOptions['entriesSaveEntrySectionIds'] : '';
+
+			$newOptions = array(
+				'craft' => array(
+					'saveEntry' => array(
+						'whenNew'     => $whenNew,
+						'whenUpdated' => '',
+						'sectionIds'  => $sectionIds
+					)
 				)
-			)
-		);
+			);
 
-		return JsonHelper::encode($newOptions);
+			return JsonHelper::encode($newOptions);
+		}
+
+		// If we get this far, use what we have
+		return $options;
 	}
 
 	private function _updateSaveUserOptions($options)
 	{
 		$oldOptions = JsonHelper::decode($options);
 
-		$whenNew = isset($oldOptions['usersSaveUserOnlyWhenNew']) ? $oldOptions['usersSaveUserOnlyWhenNew'] : '';
-		$userGroupIds = isset($oldOptions['usersSaveUserGroupIds']) ? $oldOptions['usersSaveUserGroupIds'] : '';
+		// Check for new settings format
+		if (isset($options['craft']['saveUser']))
+		{
+			return $options;
+		}
 
-		$newOptions = array(
-			'craft' => array(
-				'saveUser' => array(
-					'whenNew'      => $whenNew,
-					'whenUpdated'  => '',
-					'userGroupIds' => $userGroupIds
+		// Check for old settings format
+		if (isset($oldOptions['usersSaveUserOnlyWhenNew']) OR isset($oldOptions['usersSaveUserGroupIds']))
+		{
+			$whenNew      = isset($oldOptions['usersSaveUserOnlyWhenNew']) ? $oldOptions['usersSaveUserOnlyWhenNew'] : '';
+			$userGroupIds = isset($oldOptions['usersSaveUserGroupIds']) ? $oldOptions['usersSaveUserGroupIds'] : '';
+
+			$newOptions = array(
+				'craft' => array(
+					'saveUser' => array(
+						'whenNew'      => $whenNew,
+						'whenUpdated'  => '',
+						'userGroupIds' => $userGroupIds
+					)
 				)
-			)
-		);
+			);
 
-		return JsonHelper::encode($newOptions);
+			return JsonHelper::encode($newOptions);
+		}
+
+		// If we get this far, use what we have
+		return $options;
 	}
 }
