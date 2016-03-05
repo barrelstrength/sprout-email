@@ -32,20 +32,20 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	 */
 	public function saveEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$isNewEntry = true;
+		$isNewEntry  = true;
 		$entryRecord = new SproutEmail_EntryRecord();
 
 		if ($entry->id && !$entry->saveAsNew)
 		{
 			$entryRecord = SproutEmail_EntryRecord::model()->findById($entry->id);
-			$isNewEntry = false;
+			$isNewEntry  = false;
 			if (!$entryRecord)
 			{
 				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $entry->id)));
 			}
 		}
 
-		$entryRecord->campaignId = $entry->campaignId;
+		$entryRecord->campaignId  = $entry->campaignId;
 		$entryRecord->subjectLine = $entry->subjectLine;
 
 		$entryRecord->setAttributes($entry->getAttributes());
@@ -196,10 +196,10 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 	 */
 	public function getFieldValue($field, $value)
 	{
-		$criteria = new \CDbCriteria();
+		$criteria            = new \CDbCriteria();
 		$criteria->condition = "{$field} =:value";
-		$criteria->params = array(':value' => $value);
-		$criteria->limit = 1;
+		$criteria->params    = array(':value' => $value);
+		$criteria->limit     = 1;
 
 		$result = SproutEmail_EntryRecord::model()->find($criteria);
 
@@ -208,18 +208,20 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 	public function saveRelatedEntry(SproutEmail_CampaignModel $campaign)
 	{
+		$defaultMailer         = sproutEmail()->mailers->getMailerByName('defaultmailer');
+		$defaultMailerSettings = $defaultMailer->getSettings();
+
 		$entry = new SproutEmail_EntryModel();
 
-		$entry->subjectLine = $campaign->getAttribute('name');
-		$entry->campaignId = $campaign->getAttribute('id');
-
-		$entry->recipients = craft()->userSession->getUser()->email;
-		$entry->fromName = craft()->userSession->getUser()->email;
-		$entry->fromEmail = craft()->userSession->getUser()->email;
-		$entry->replyTo = craft()->userSession->getUser()->email;
+		$entry->campaignId  = $campaign->getAttribute('id');
 		$entry->dateCreated = date('Y-m-d H:i:s');
-		$entry->enabled = true;
-		$entry->saveAsNew = true;
+		$entry->enabled     = true;
+		$entry->saveAsNew   = true;
+		$entry->fromName    = $defaultMailerSettings->fromName;
+		$entry->fromEmail   = $defaultMailerSettings->fromEmail;
+		$entry->replyTo     = $defaultMailerSettings->replyTo;
+		$entry->recipients  = null;
+		$entry->subjectLine = $campaign->getAttribute('name');
 
 		return sproutEmail()->entries->saveEntry($entry, $campaign);
 	}

@@ -8,7 +8,7 @@
 		required: true,
 		instructions: 'The sender name shown in the email metadata.'|t,
 		value: settings is defined ? settings.fromName : null,
-		errors: settings is defined and settings.hasErrors('fromName') ? settings.getErrors('fromName') : null
+		errors: settings.getErrors('fromName') is defined ? settings.getErrors('fromName') : null
 	}) }}
 
 	{{ forms.textField({
@@ -18,7 +18,7 @@
 		required: true,
 		instructions: 'The sender email shown in the email metadata.'|t,
 		value: settings is defined ? settings.fromEmail : null,
-		errors: settings is defined and settings.hasErrors('fromEmail') ? settings.getErrors('fromEmail') : null
+		errors: settings.getErrors('fromEmail') is defined ? settings.getErrors('fromEmail') : null
 	}) }}
 
 	{{ forms.textField({
@@ -27,7 +27,7 @@
 		label: 'Reply To'|t,
 		instructions: 'The From Email will be used if left blank.'|t,
 		value: settings is defined ? settings.replyTo : null,
-		errors: settings is defined and settings.hasErrors('replyTo') ? settings.getErrors('replyTo') : null
+		errors: settings.getErrors('replyTo') is defined ? settings.getErrors('replyTo') : null
 	}) }}
 
 	{% if craft.config.sproutEmail['enableDynamicLists'] is defined and craft.config.sproutEmail['enableDynamicLists'] %}

@@ -41,9 +41,14 @@ class SproutEmail_MailerController extends BaseController
 			throw new HttpException(404, Craft::t('No settings found for this mailer'));
 		}
 
+		if (empty($variables['settings']))
+		{
+			$variables['settings'] = $mailer->getSettings();
+		}
+
 		$this->renderTemplate('sproutemail/settings/_mailers/edit', array(
 			'mailer'   => $mailer,
-			'settings' => $mailer->getSettings()
+			'settings' => $variables['settings']
 		));
 	}
 
@@ -57,7 +62,9 @@ class SproutEmail_MailerController extends BaseController
 		$this->requirePostRequest();
 
 		$model = null;
-		$mailer = sproutEmail()->mailers->getMailerByName(craft()->request->getRequiredPost('mailerId'));
+
+		$mailerId = craft()->request->getRequiredPost('mailerId');
+		$mailer = sproutEmail()->mailers->getMailerByName($mailerId);
 
 		if ($mailer)
 		{
@@ -76,14 +83,18 @@ class SproutEmail_MailerController extends BaseController
 					if ($record->save(false))
 					{
 						craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
+
 						$this->redirectToPostedUrl($model);
 					}
 				}
 			}
 		}
 
-		craft()->userSession->setError(Craft::t('Settings could not be saved.'));
-		craft()->urlManager->setRouteVariables(array('settings' => $model));
+		craft()->userSession->setError(Craft::t('Unable to save settings.'));
+
+		craft()->urlManager->setRouteVariables(array(
+			'settings' => $model
+		));
 	}
 
 	/**
