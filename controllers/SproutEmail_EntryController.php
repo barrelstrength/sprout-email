@@ -312,7 +312,7 @@ class SproutEmail_EntryController extends BaseController
 			$variables['showPreviewBtn'] = true;
 
 			// Should we show the Share button too?
-			if ($variables['entry']->id)
+			if ($variables['entry']->id && $variables['entry']->getUrl())
 			{
 				if ($variables['entry']->enabled)
 				{
