@@ -2,7 +2,6 @@
 
 namespace Craft;
 
-
 class m160304_000000_sproutEmail_updateUserEntryCheckboxOption extends BaseMigration
 {
 	/**
@@ -10,8 +9,7 @@ class m160304_000000_sproutEmail_updateUserEntryCheckboxOption extends BaseMigra
 	 */
 	public function safeUp()
 	{
-
-		if($table = craft()->db->schema->getTable('{{sproutemail_campaigns_notifications}}'))
+		if ($table = craft()->db->schema->getTable('{{sproutemail_campaigns_notifications}}'))
 		{
 			if ($table->getColumn('options') != null)
 			{
@@ -22,10 +20,9 @@ class m160304_000000_sproutEmail_updateUserEntryCheckboxOption extends BaseMigra
 
 				if ($count = count($notifications))
 				{
-					foreach($notifications as $notification)
+					foreach ($notifications as $notification)
 					{
 						$options = JsonHelper::decode($notification['options']);
-
 
 						// Update to select all if empty values
 						if (empty($options['craft']['saveUser']['userGroupIds']))
@@ -37,9 +34,13 @@ class m160304_000000_sproutEmail_updateUserEntryCheckboxOption extends BaseMigra
 						{
 							$options['craft']['saveEntry']['sectionIds'] = "*";
 						}
-						craft()->db->createCommand()->update('sproutemail_campaigns_notifications',
-							array( 'options' => JsonHelper::encode($options) ),
-							'id= :id', array(':id' => $notification['id'])
+
+						craft()->db->createCommand()->update('sproutemail_campaigns_notifications', array(
+							'options' => JsonHelper::encode($options)),
+							'id= :id',
+							array(
+								':id' => $notification['id']
+							)
 						);
 					}
 				}
