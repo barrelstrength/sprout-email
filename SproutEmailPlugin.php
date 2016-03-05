@@ -272,7 +272,7 @@ class SproutEmailPlugin extends BasePlugin
 		$mailers = array();
 
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
-		$mailers['defaultmailer'] = new SproutEmailDefaultMailer();
+		$mailers['defaultmailer'] = new SproutEmail_DefaultMailer();
 
 		$pluginMailers = array(
 			'mailchimp'       => 'SproutEmail_MailchimpMailer',

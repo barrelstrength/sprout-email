@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmailDefaultMailer extends SproutEmailBaseMailer implements SproutEmailNotificationSenderInterface
+class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutEmailNotificationSenderInterface
 {
 	/**
 	 * @var SproutEmail_DefaultMailerService
