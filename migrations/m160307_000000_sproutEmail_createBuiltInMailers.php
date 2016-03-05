@@ -2,7 +2,6 @@
 
 namespace Craft;
 
-
 class m160307_000000_sproutEmail_createBuiltInMailers extends BaseMigration
 {
 	/**
@@ -11,7 +10,7 @@ class m160307_000000_sproutEmail_createBuiltInMailers extends BaseMigration
 	public function safeUp()
 	{
 
-		if($table = craft()->db->schema->getTable('{{sproutemail_mailers}}'))
+		if ($table = craft()->db->schema->getTable('{{sproutemail_mailers}}'))
 		{
 			$names = craft()->db->createCommand()
 				->select('name')
@@ -40,9 +39,9 @@ class m160307_000000_sproutEmail_createBuiltInMailers extends BaseMigration
 			$settings['campaignmonitor']['apiKey']   = null;
 			$settings['campaignmonitor']['model']    = "Craft\\Model";
 
-			foreach($settings as $id => $setting)
+			foreach ($settings as $id => $setting)
 			{
-				if(!in_array($id, $existingMailers))
+				if (!in_array($id, $existingMailers))
 				{
 					craft()->db->createCommand()->insert('sproutemail_mailers',
 						array(
