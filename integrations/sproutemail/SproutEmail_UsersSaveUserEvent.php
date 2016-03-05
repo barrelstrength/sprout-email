@@ -22,7 +22,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	{
 		if (!isset($context['groups']))
 		{
-			$context['groups'] = craft()->sproutEmail_defaultMailer->getAllGroupsOptions();
+			$context['groups'] = $this->getAllGroups();
 		}
 
 		$options = $context['options']['craft']['saveUser']['userGroupIds'];
@@ -155,5 +155,39 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 		}
 
 		return $criteria->first();
+	}
+
+	/**
+	 * Returns an array of groups suitable for use in checkbox field
+	 *
+	 * @return array
+	 */
+	public function getAllGroups()
+	{
+		try
+		{
+			$groups = craft()->userGroups->getAllGroups();
+		}
+		catch (\Exception $e)
+		{
+			$groups = array();
+		}
+
+		$options = array();
+
+		if (count($groups))
+		{
+			foreach ($groups as $key => $group)
+			{
+				array_push(
+					$options, array(
+						'label' => $group->name,
+						'value' => $group->id
+					)
+				);
+			}
+		}
+
+		return $options;
 	}
 }
