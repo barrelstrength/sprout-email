@@ -1,22 +1,22 @@
 {% spaceless %}
 
 {% if loop.first %}
-	<div class="tableview">
+<div class="tableview">
 	<table id="entries" class="data fullwidth">
 		<thead>
-			<th></th>
-			<th>Subject Line</th>
-			<th>Date Created</th>
-			<th>Type</th>
-			<th>Preview</th>
-			<th>&nbsp;</th>
+		<th></th>
+		<th>Subject Line</th>
+		<th>Date Created</th>
+		<th>Type</th>
+		<th>Preview</th>
+		<th>&nbsp;</th>
 		</thead>
 		<tbody>
 
-{% endif %}
+		{% endif %}
 
-	{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
-	<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
+		{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
+		<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
 			<td class="thin" data-checkboxcell="">
 				<div class="checkbox" title="Select"></div>
 			</td>
@@ -31,32 +31,39 @@
 				{{ campaign.type|ucfirst }}
 			</td>
 			<td>
-			{% if
-				mailer
-				and mailer.isInstalled()
-				and not campaign.isNotification()
-				and entry.isReady() %}
+
+				{% if entry.getUrl() and not campaign.isNotification() %}
+
 				<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
 				&nbsp;/&nbsp;
 				<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
-			{% endif %}
+
+				{% endif %}
+
+
+				{% if not entry.getUrl() and not campaign.isNotification() %}
+
+				<a href="{{ cpUrl('sproutemail/settings/campaigns/edit/' ~ entry.campaignId) }}">Enable URLs</a>
+
+				{% endif %}
+
 			</td>
 			<td class="nowrap">
 				{% if mailer and mailer.isInstalled() %}
-					{% if entry.isReady() %}
-						<a href="#"
-							data-action="{{ mailer.getActionForPrepareModal() }}"
-							data-mailer="{{ mailer.getId() }}"
-							data-entry-id="{{ entry.id }}"
-							data-campaign-id="{{ campaign.id }}"
-							class="prepare">{{ mailer.getPrepareModalLinkTitle() }}</a>
-					{% endif %}
+				{% if entry.isReady() %}
+				<a href="#"
+					data-action="{{ mailer.getActionForPrepareModal() }}"
+					data-mailer="{{ mailer.getId() }}"
+					data-entry-id="{{ entry.id }}"
+					data-campaign-id="{{ campaign.id }}"
+					class="prepare">{{ mailer.getPrepareModalLinkTitle() }}</a>
+				{% endif %}
 				{% endif %}
 			</td>
-	</tr>
+		</tr>
 
-{% if loop.last %}
-	 </tbody>
+		{% if loop.last %}
+		</tbody>
 	</table>
 
 	{# Placeholder Sprout Modal #}
@@ -83,19 +90,19 @@
 		<div class="spinner"></div>
 	</div>
 
-{% set statusSnippet %}
+	{% set statusSnippet %}
 	.status.ready {
-		background-position: 0 0; // @green
+	background-position: 0 0; // @green
 	}
 	.status.pending {
-		background-position: 0 -10px; // @orange
+	background-position: 0 -10px; // @orange
 	}
 	.status.disabled {
-		background-position: 0 -20px; // @red
+	background-position: 0 -20px; // @red
 	}
-{% endset %}
+	{% endset %}
 
-{% includeCss(statusSnippet) %}
+	{% includeCss(statusSnippet) %}
 
 </div><!-- tableview  -->
 
