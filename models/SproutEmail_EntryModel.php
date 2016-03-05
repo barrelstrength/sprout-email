@@ -159,26 +159,6 @@ class SproutEmail_EntryModel extends BaseElementModel
 	}
 
 	/**
-	 * @param null $template
-	 *
-	 * @return null|string
-	 */
-	public function getUrlFormat($template = null)
-	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
-
-		if ($campaign && $campaign->hasUrls)
-		{
-			return $campaign->urlFormat;
-		}
-	}
-
-	public function getCpUrl()
-	{
-		return UrlHelper::getCpUrl('sproutemail/entries/edit/' . $this->id);
-	}
-
-	/**
 	 * Pending -  has all required attributes and is disabled or
 	 *              does not have all required attributes
 	 * Ready -    has all required attributes, and is enabled
@@ -277,13 +257,19 @@ class SproutEmail_EntryModel extends BaseElementModel
 		return $campaign->type;
 	}
 
-	public function getUrl()
+	/**
+	 * @param null $template
+	 *
+	 * @return null|string
+	 */
+	public function getUrlFormat($template = null)
 	{
-		$cpTrigger = craft()->config->get('cpTrigger');
+		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
-		$url = UrlHelper::getCpUrl($this->uri);
-
-		return str_replace('/' . $cpTrigger, '', $url);
+		if ($campaign && $campaign->hasUrls)
+		{
+			return $campaign->urlFormat;
+		}
 	}
 
 	/**
@@ -296,6 +282,16 @@ class SproutEmail_EntryModel extends BaseElementModel
 		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $this->id);
 
 		return $url;
+	}
+
+	public function getUrl()
+	{
+		if ($this->uri !== null)
+		{
+			$url = UrlHelper::getSiteUrl($this->uri, null, null, $this->locale);
+
+			return $url;
+		}
 	}
 
 	public function isReady()
