@@ -23,7 +23,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 	 */
 	public function init()
 	{
-		require_once dirname(__FILE__) . '/../integrations/sproutemail/vendor/autoload.php';
+		require_once dirname(__FILE__) . '/../vendor/autoload.php';
 	}
 
 	/**

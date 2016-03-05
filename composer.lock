@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c8c5db89cbaa8a16aaead3fb63e4439e",
-    "content-hash": "2f4c3954786d1fda504d11e99b996004",
+    "hash": "c316381f9f802fad17c706e19a2af073",
     "packages": [
         {
             "name": "campaignmonitor/createsend-php",
