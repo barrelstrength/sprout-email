@@ -119,7 +119,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 */
 	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$ids = craft()->request->getPost('recipient.recipientLists');
+		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
 
 		if ($ids)
@@ -149,8 +149,8 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 */
 	public function getRecipientListsHtml(array $values = null)
 	{
-		$lists = $this->getRecipientLists();
-		$options = array();
+		$lists    = $this->getRecipientLists();
+		$options  = array();
 		$selected = array();
 
 		if (!count($lists))
@@ -209,7 +209,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 */
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists          = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
 		$recipientLists = array();
 
 		if (count($lists))
@@ -296,12 +296,17 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 */
 	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
+		// Display the testToEmailAddress if it exists
 		$email = craft()->config->get('testToEmailAddress');
 
-		if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL))
+		if (empty($email))
 		{
 			$email = craft()->userSession->getUser()->email;
 		}
+
+		$errors = array();
+
+		$errors = $this->getErrors($entry, $campaign, $errors);
 
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',
@@ -309,7 +314,61 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				'entry'     => $entry,
 				'campaign'  => $campaign,
 				'recipient' => $email,
+				'errors'    => $errors
 			)
 		);
+	}
+
+	/**
+	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignModel $campaign
+	 * @param                           $errors
+	 *
+	 * @return array
+	 */
+	public function getErrors(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign, $errors)
+	{
+		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $entry->id);
+		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
+
+		if (empty($campaign->template))
+		{
+			$errors[] = Craft::t('Email Template setting is blank. <a href="{url}">Edit Settings</a>.', array(
+				'url' => $notificationEditSettingsUrl
+			));
+		}
+
+		// @todo - refactor
+		// All additional errors are specific to notifications.
+		if ($campaign->isNotification())
+		{
+			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+
+			if ($event)
+			{
+				$object = $event->getMockedParams();
+
+				$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($entry, $object);
+
+				// @todo - check for text template too
+				$template = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);
+
+				if (empty($template))
+				{
+					$errors[] = Craft::t('{message} <a href="{url}">Edit Settings</a>', array(
+						'message' => sproutEmail()->getError(),
+						'url' => $notificationEditSettingsUrl
+					));
+				}
+			}
+			else
+			{
+				$errors[] = Craft::t('No Event is selected. <a href="{url}">Edit Notification</a>.', array(
+					'url' => $notificationEditUrl
+				));
+			}
+		}
+
+		return $errors;
 	}
 }
