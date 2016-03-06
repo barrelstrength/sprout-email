@@ -21,20 +21,21 @@
 	<h2>Loading...</h2>
 	<div class="spinner"></div>
 </div>
-{% set css %}
-#sproutmodal #content {
-	padding: 1em;
-}
 
-.status.ready {
-background-position: 0 0; // @green
-}
-.status.pending {
-background-position: 0 -10px; // @orange
-}
-.status.disabled {
-background-position: 0 -20px; // @red
-}
+{% set css %}
+	#sproutmodal #content {
+		padding: 1em;
+	}
+
+	.status.ready {
+		background-position: 0 0; // @green
+	}
+	.status.pending {
+		background-position: 0 -10px; // @orange
+	}
+	.status.disabled {
+		background-position: 0 -20px; // @red
+	}
 {% endset %}
 
 {% includeCss(css) %}
