@@ -396,14 +396,6 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
-	 * On Send Notification Event
-	 */
-	public function onSendNotification(Event $event)
-	{
-		$this->raiseEvent('onSendNotification', $event);
-	}
-
-	/**
 	 * On Send Campaign Event
 	 */
 	public function onSendCampaign(Event $event)

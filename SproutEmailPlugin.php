@@ -187,7 +187,6 @@ class SproutEmailPlugin extends BasePlugin
 			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
 		}
 
-		// This will trigger campaign emails
 		craft()->on('sproutEmail.onSendCampaign', function (Event $event)
 		{
 			sproutEmail()->sentEmails->logSentEmailCampaign($event);

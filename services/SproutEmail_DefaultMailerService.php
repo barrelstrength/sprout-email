@@ -527,10 +527,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			$variables['processedRecipients'] = $processedRecipients;
 		}
 
-		$event = new Event($this, $variables);
-
-		sproutEmail()->onSendNotification($event);
-
 		return true;
 	}
 
