@@ -9,7 +9,7 @@
 
 	{% if htmlBody is not empty %}
 
-		<iframe width='100%' height="auto" style="width: 100%; height: auto; min-height: 300px" id="htmlLoaderFrame"></iframe>
+	<iframe width='100%' src="data:text/html;charset=utf-8,{{ htmlBody|raw|url_encode }}"></iframe>
 
 	{% endif %}
 
@@ -25,30 +25,30 @@
 
 <script type="text/javascript">
 
-	// This will disable current file global css styles
-	if(jQuery('#htmlLoaderFrame').length)
-	{
-		jQuery('#htmlLoaderFrame')[0].contentDocument.body.innerHTML = '{{ htmlBody|raw }}';
-	}
+	$(".sentemail-btn").click(function() {
 
-	jQuery(".sentemail-btn").click(function() {
+		$(".sentemail-btn").removeClass('active');
+		$(this).addClass('active');
 
-		jQuery(".sentemail-btn").removeClass('active');
-		jQuery(this).addClass('active');
-
-		var box = jQuery(this).data('box');
+		var box = $(this).data('box');
 		var boxClass = ".sentemail-" + box;
 
-		jQuery('.sentemail-pane').removeClass('active');
-		jQuery(boxClass).addClass('active');
+		$('.sentemail-pane').removeClass('active');
+		$(boxClass).addClass('active');
 
 	})
 </script>
 
 <style type="text/css">
 
+	#sproutmodal #content {
+		padding-left: 0;
+		padding-right: 0;
+		padding-bottom: 0;
+	}
+
 	.sproutemail-sentemail-header {
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid #eeeeee;
 		position: absolute;
 		left: 0;
 		right: 0;

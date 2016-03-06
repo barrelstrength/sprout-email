@@ -16,20 +16,8 @@ class SproutEmail_SentEmailController extends BaseController
 		$entryId = craft()->request->getRequiredPost('entryId');
 		$entry = sproutEmail()->sentEmails->getSentEmailById($entryId);
 
-		$htmlBody = '';
 		$body = (!empty($entry->body)) ? $entry->body : null;
-
-		if (!empty($entry->htmlBody))
-		{
-			// Get only the body content
-			preg_match("/<body[^>]*>(.*?)<\/body>/is", $entry->htmlBody, $matches);
-
-			if (!empty($matches))
-			{
-				$string = trim(preg_replace('/\s+/', ' ', $matches[1]));
-				$htmlBody = $string;
-			}
-		}
+		$htmlBody = (!empty($entry->htmlBody)) ? $entry->htmlBody : null;
 
 		$content = craft()->templates->render('sproutemail/sentemails/_view', array(
 			'entry'    => $entry,
