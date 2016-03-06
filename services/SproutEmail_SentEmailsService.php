@@ -32,7 +32,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$infoTable->sourceVersion = isset($info['sourceVersion']) ? $info['sourceVersion'] : '–';
 		$infoTable->craftVersion  = $craftVersion;
 		$infoTable->emailType     = isset($info['emailType']) ? $info['emailType'] : '–';
-		$infoTable->testEmail     = isset($info['testEmail']) ? 'Yes' : null;
+		$infoTable->testEmail     = (isset($info['testEmail']) && $info['testEmail'] == true) ? 'Yes' : '–';
 		$infoTable->senderName    = $emailModel->fromName;
 		$infoTable->senderEmail   = $emailModel->fromEmail;
 		$infoTable->protocol      = isset($emailSettings['protocol']) ? $emailSettings['protocol'] : '–';
@@ -74,12 +74,22 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$entryModel = $event->params['entryModel'];
 		$campaign   = $event->params['campaign'];
 
+		$info         = isset($variables['sproutemail']['info']) ? $variables['sproutemail']['info'] : null;
+		$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . craft()->getVersion() . '.' . craft()->getBuild();
+		$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+
 		$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
-		$infoTable->mailer      = ucwords($campaign->mailer);
-		$infoTable->emailType   = "Campaign";
-		$infoTable->senderName  = $entryModel->fromName;
-		$infoTable->senderEmail = $entryModel->fromEmail;
+		$infoTable->source        = 'Sprout Email';
+		$infoTable->sourceVersion = 'Sprout Email ' . $pluginVersion;
+		$infoTable->craftVersion  = $craftVersion;
+		$infoTable->mailer        = ucwords($campaign->mailer);
+		$infoTable->emailType     = "Campaign";
+		$infoTable->testEmail     = null;
+		$infoTable->senderName    = $emailModel->fromName;
+		$infoTable->senderEmail   = $emailModel->fromEmail;
+		$infoTable->ipAddress     = craft()->request->getUserHostAddress();
+		$infoTable->userAgent     = craft()->request->getUserAgent();
 
 		$this->saveSentEmail($emailModel, $infoTable);
 	}
@@ -186,7 +196,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 
 		foreach ($tableInfo as $infoKey => $info)
 		{
-			if (isset($infoMap[$infoKey]))
+			if (isset($infoMap[$infoKey]) && $info != '')
 			{
 				$attribute = str_replace(' ', '', strtolower($infoKey));
 
