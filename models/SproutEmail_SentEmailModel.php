@@ -49,8 +49,6 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 
 	public function getInfoRow()
 	{
-		$id = $this->id;
-
-		return SproutEmail()->sentEmails->getInfoRow($id);
+		return sproutEmail()->sentEmails->getInfoRow($this->info);
 	}
 }

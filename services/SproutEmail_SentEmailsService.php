@@ -17,44 +17,42 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	{
 		$emailSettings = $event->sender->getSettings();
 
-		$user = $event->params['user'];
+		$user       = $event->params['user'];
 		$emailModel = $event->params['emailModel'];
-		$variables = $event->params['variables'];
-		$infoTableVariables = isset($variables['sproutEmailSentEmailVariables']) ? $variables['sproutEmailSentEmailVariables'] : null;
+		$variables  = $event->params['variables'];
+		$infoTable  = isset($variables['sproutEmailSentEmailVariables']) ? $variables['sproutEmailSentEmailVariables'] : null;
 
 		$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
 
-		$craftVersion = 'Craft '.craft()->getEditionName().' '.craft()->getVersion().'.'.craft()->getBuild();
+		$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . craft()->getVersion() . '.' . craft()->getBuild();
 
-		$infoTable = array();
+		$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
-		$infoTable['Source'] = isset($infoTableVariables['Source']) ? $infoTableVariables['Source'] : '–';
-		$infoTable['Source Version'] = isset($infoTableVariables['Version']) ? $infoTableVariables['Version'] : '–';
-		$infoTable['Craft Version'] = $craftVersion;
+		$infoTable->source        = isset($infoTable['source']) ? $infoTable['source'] : '–';
+		$infoTable->sourceVersion = isset($infoTable['version']) ? $infoTable['version'] : '–';
+		$infoTable->craftVersion  = $craftVersion;
+		$infoTable->emailType     = isset($infoTable['emailType']) ? $infoTable['emailType'] : '–';
+		$infoTable->testEmail     = isset($infoTable['testEmail']) ? 'Yes' : null;
+		$infoTable->senderName    = $emailModel->fromName;
+		$infoTable->senderEmail   = $emailModel->fromEmail;
+		$infoTable->protocol      = isset($emailSettings['protocol']) ? $emailSettings['protocol'] : '–';
+		$infoTable->hostName      = isset($emailSettings['host']) ? $emailSettings['host'] : '–';
+		$infoTable->port          = isset($emailSettings['port']) ? $emailSettings['port'] : '–';
 
-		$infoTable['Email Type'] = isset($infoTableVariables['Email Type']) ? $infoTableVariables['Email Type'] : '–';
-		$infoTable['Test Email'] = isset($infoTableVariables['Test Email']) ? 'Yes' : null;
-		$infoTable['Sender Name'] = $emailModel->fromName;
-		$infoTable['Sender Email'] = $emailModel->fromEmail;
-
-		$infoTable['Protocol'] = isset($emailSettings['protocol']) ? $emailSettings['protocol'] : '–';
-		$infoTable['Host Name'] = isset($emailSettings['host']) ? $emailSettings['host'] : '–';
-		$infoTable['Port'] = isset($emailSettings['port']) ? $emailSettings['port'] : '–';
-		$infoTable['SMTP Secure Transport Type'] = isset($emailSettings['smtpSecureTransportType']) ? $emailSettings['smtpSecureTransportType'] : '–';
-		$infoTable['Timeout'] = isset($emailSettings['timeout']) ? $emailSettings['timeout'] : '–';
-
-		$infoTable['IP Address'] = craft()->request->getUserHostAddress();
-		$infoTable['User Agent'] = craft()->request->getUserAgent();
+		$infoTable->smtpSecureTransportType = isset($emailSettings['smtpSecureTransportType']) ? $emailSettings['smtpSecureTransportType'] : '–';
+		$infoTable->timeout                 = isset($emailSettings['timeout']) ? $emailSettings['timeout'] : '–';
+		$infoTable->ipAddress               = craft()->request->getUserHostAddress();
+		$infoTable->userAgent               = craft()->request->getUserAgent();
 
 		// Override some settings if this is a Craft email
 		if ($emailKey != null)
 		{
 			$emailModel->toEmail = $user->email;
 
-			$infoTable['Source'] = Craft::t('Craft CMS');
-			$infoTable['Source Version'] = $craftVersion;
-			$infoTable['Email Type'] = Craft::t('Notification');
-			$infoTable['Test Email'] = Craft::t('Test Email');
+			$infoTable->source        = 'Craft CMS';
+			$infoTable->sourceVersion = $craftVersion;
+			$infoTable->emailType     = Craft::t('Notification');
+			$infoTable->testEmail     = Craft::t('Test Email');
 
 			$this->renderEmailContentLikeCraft($emailModel, $variables);
 		}
@@ -74,15 +72,16 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	{
 		$emailModel = $event->params['emailModel'];
 		$entryModel = $event->params['entryModel'];
-		$campaign = $event->params['campaign'];
+		$campaign   = $event->params['campaign'];
 
-		$infoTable = array();
-		$infoTable['Mailer'] = ucwords($campaign->mailer);
-		$infoTable['Email Type'] = "Campaign";
-		$infoTable['Sender Name'] = $entryModel->fromName;
-		$infoTable['Sender Email'] = $entryModel->fromEmail;
+		$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
-		sproutEmail()->sentEmails->saveSentEmail($emailModel, $infoTable);
+		$infoTable->mailer      = ucwords($campaign->mailer);
+		$infoTable->emailType   = "Campaign";
+		$infoTable->senderName  = $entryModel->fromName;
+		$infoTable->senderEmail = $entryModel->fromEmail;
+
+		$this->saveSentEmail($emailModel, $infoTable);
 	}
 
 	/**
@@ -97,17 +96,17 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	{
 		$sentEmail = new SproutEmail_SentEmailModel();
 
-		$sentEmail->title = $emailModel->subject;
+		$sentEmail->title        = $emailModel->subject;
 		$sentEmail->emailSubject = $emailModel->subject;
-		$sentEmail->fromEmail = $emailModel->fromEmail;
-		$sentEmail->fromName = $emailModel->fromName;
-		$sentEmail->toEmail = $emailModel->toEmail;
-		$sentEmail->body = $emailModel->body;
-		$sentEmail->htmlBody = $emailModel->htmlBody;
+		$sentEmail->fromEmail    = $emailModel->fromEmail;
+		$sentEmail->fromName     = $emailModel->fromName;
+		$sentEmail->toEmail      = $emailModel->toEmail;
+		$sentEmail->body         = $emailModel->body;
+		$sentEmail->htmlBody     = $emailModel->htmlBody;
 
 		$sentEmail->getContent()->setAttribute('title', $sentEmail->title);
 
-		$sentEmail->info = $info;
+		$sentEmail->info = JsonHelper::encode($info);
 
 		// @todo - why do we need to set this to blank?
 		// Where are Global Sets and other Element Types handling this? They do not
@@ -158,27 +157,47 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		return craft()->elements->getElementById($sentEmailId, 'SproutEmail_SentEmail');
 	}
 
-	public function getInfoRow($sentEmailId)
+	public function getInfoRow($tableInfo)
 	{
-		$string = '';
-		$sentEmail = $this->getSentEmailById($sentEmailId);
-
-		$infos = $sentEmail->info;
-
-		if (!empty($infos))
+		if (empty($tableInfo))
 		{
-			$row = array();
-			$dataRow = array();
-			foreach ($infos as $infoKey => $info)
+			return null;
+		}
+
+		$infoMap = array(
+			'source'                  => 'Source',
+			'sourceVersion'           => 'Source Version',
+			'craftVersion'            => 'Craft Version',
+			'emailType'               => 'Email Type',
+			'testEmail'               => 'Test Email',
+			'senderName'              => 'Sender Name',
+			'senderEmail'             => 'Sender Email',
+			'protocol'                => 'Protocol',
+			'hostName'                => 'Host Name',
+			'port'                    => 'Port',
+			'smtpSecureTransportType' => 'SMTP Secure Transport Type',
+			'timeout'                 => 'Timeout',
+			'ipAddress'               => 'IP Address',
+			'userAgent'               => 'User Agent'
+		);
+
+		$row     = array();
+		$dataRow = array();
+
+		foreach ($tableInfo as $infoKey => $info)
+		{
+			if (isset($infoMap[$infoKey]))
 			{
 				$attribute = str_replace(' ', '', strtolower($infoKey));
-				$row[] = '{"label":"' . $infoKey . '","attribute":"' . $attribute . '"}';
+
+				$row[]     = '{ "label":"' . $infoMap[$infoKey] . '","attribute":"' . $attribute . '" }';
 				$dataRow[] = "data-" . $attribute . "='" . $info . "'";
 			}
-			$infoString = "data-inforow='[" . implode(",", $row) . "]'";
-			$dataString = implode(' ', $dataRow);
-			$string = $infoString . ' ' . $dataString;
 		}
+
+		$infoString = "data-inforow='[" . implode(",", $row) . "]'";
+		$dataString = implode(' ', $dataRow);
+		$string     = $infoString . ' ' . $dataString;
 
 		return TemplateHelper::getRaw($string);
 	}
@@ -204,6 +223,6 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		}
 
 		$emailModel->htmlBody = $renderedHtmlBody;
-		$emailModel->body = $renderedTextBody;
+		$emailModel->body     = $renderedTextBody;
 	}
 }

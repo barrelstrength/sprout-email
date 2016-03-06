@@ -488,10 +488,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			'recipients'                    => $recipients,
 			'processedRecipients'           => null,
 			'sproutEmailSentEmailVariables' => array(
-				'Source'         => 'Sprout Email',
-				'Source Version' => 'Sprout Email ' . $pluginVersion,
-				'Email Type'     => 'Notification',
-				'Test Email'     => $useMockData
+				'source'         => 'Sprout Email',
+				'sourceVersion' => 'Sprout Email ' . $pluginVersion,
+				'emailType'     => 'Notification',
+				'testEmail'     => $useMockData
 			)
 		);
 
