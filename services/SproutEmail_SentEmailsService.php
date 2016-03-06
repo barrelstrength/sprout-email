@@ -20,19 +20,19 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$user       = $event->params['user'];
 		$emailModel = $event->params['emailModel'];
 		$variables  = $event->params['variables'];
-		$infoTable  = isset($variables['sproutEmailSentEmailVariables']) ? $variables['sproutEmailSentEmailVariables'] : null;
 
+		$info     = isset($variables['sproutemail']['info']) ? $variables['sproutemail']['info'] : null;
 		$emailKey = isset($variables['emailKey']) ? $variables['emailKey'] : null;
 
 		$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . craft()->getVersion() . '.' . craft()->getBuild();
 
 		$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
-		$infoTable->source        = isset($infoTable['source']) ? $infoTable['source'] : '–';
-		$infoTable->sourceVersion = isset($infoTable['version']) ? $infoTable['version'] : '–';
+		$infoTable->source        = isset($info['source']) ? $info['source'] : '–';
+		$infoTable->sourceVersion = isset($info['sourceVersion']) ? $info['sourceVersion'] : '–';
 		$infoTable->craftVersion  = $craftVersion;
-		$infoTable->emailType     = isset($infoTable['emailType']) ? $infoTable['emailType'] : '–';
-		$infoTable->testEmail     = isset($infoTable['testEmail']) ? 'Yes' : null;
+		$infoTable->emailType     = isset($info['emailType']) ? $info['emailType'] : '–';
+		$infoTable->testEmail     = isset($info['testEmail']) ? 'Yes' : null;
 		$infoTable->senderName    = $emailModel->fromName;
 		$infoTable->senderEmail   = $emailModel->fromEmail;
 		$infoTable->protocol      = isset($emailSettings['protocol']) ? $emailSettings['protocol'] : '–';

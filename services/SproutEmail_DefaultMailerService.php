@@ -478,23 +478,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			return false;
 		}
 
-		$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
-
-		$variables = array(
-			'email'                         => $entry,
-			'renderedEmail'                 => $email,
-			'campaign'                      => $campaign,
-			'object'                        => $object,
-			'recipients'                    => $recipients,
-			'processedRecipients'           => null,
-			'sproutEmailSentEmailVariables' => array(
-				'source'         => 'Sprout Email',
-				'sourceVersion' => 'Sprout Email ' . $pluginVersion,
-				'emailType'     => 'Notification',
-				'testEmail'     => $useMockData
-			)
-		);
-
 		$processedRecipients = array();
 
 		foreach ($recipients as $recipient)
@@ -510,6 +493,25 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			try
 			{
+				$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+
+				$variables = array(
+					'email'               => $entry,
+					'renderedEmail'       => $email,
+					'campaign'            => $campaign,
+					'object'              => $object,
+					'recipients'          => $recipients,
+					'processedRecipients' => null,
+					'sproutemail'         => array(
+						'info' => array(
+							'source'        => 'Sprout Email',
+							'sourceVersion' => 'Sprout Email ' . $pluginVersion,
+							'emailType'     => 'Notification',
+							'testEmail'     => $useMockData
+						)
+					)
+				);
+
 				if (craft()->email->sendEmail($email, $variables))
 				{
 					$processedRecipients[] = $email->toEmail;
