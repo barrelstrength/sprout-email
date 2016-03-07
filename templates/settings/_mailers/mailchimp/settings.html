@@ -10,6 +10,6 @@ queries)"|t,
 {{ forms.textField({
 	label: "API Key"|t,
 	name: "mailchimp[apiKey]",
-	instructions: "API Keys can be found in your MailChimp Account under: Account->Extras->API Keys"|t,
+	instructions: "Your <a href='http://kb.mailchimp.com/accounts/management/about-api-keys' target='_blank'>API Key</a> can be found in your MailChimp Account under: Account->Extras->API Keys"|t,
 	value: (settings.apiKey is defined ? settings.apiKey : null)
 }) }}

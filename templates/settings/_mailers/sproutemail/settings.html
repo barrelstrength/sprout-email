@@ -6,7 +6,7 @@
 		label: 'From Name'|t,
 		autofocus: true,
 		required: true,
-		instructions: 'The sender name shown in the email metadata.'|t,
+		instructions: 'The default “From” name Sprout Email will use when creating a notification.'|t,
 		value: settings is defined ? settings.fromName : null,
 		errors: settings.getErrors('fromName') is defined ? settings.getErrors('fromName') : null
 	}) }}
@@ -16,7 +16,7 @@
 		name: 'defaultmailer[fromEmail]',
 		label: 'From Email'|t,
 		required: true,
-		instructions: 'The sender email shown in the email metadata.'|t,
+		instructions: 'The default email address Sprout Email will use when creating a notification.'|t,
 		value: settings is defined ? settings.fromEmail : null,
 		errors: settings.getErrors('fromEmail') is defined ? settings.getErrors('fromEmail') : null
 	}) }}
@@ -25,7 +25,7 @@
 		id: 'replyToEmail',
 		name: 'defaultmailer[replyToEmail]',
 		label: 'Reply To'|t,
-		instructions: 'The From Email will be used if left blank.'|t,
+		instructions: 'The default “Reply To” email address Sprout Email will use when creating a notification.'|t,
 		value: settings is defined ? settings.replyToEmail : null,
 		errors: settings.getErrors('replyToEmail') is defined ? settings.getErrors('replyToEmail') : null
 	}) }}

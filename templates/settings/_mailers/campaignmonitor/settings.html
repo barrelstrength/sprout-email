@@ -1,7 +1,7 @@
 {{ forms.textField({
 	label: "Client ID"|t,
 	name: 'campaignmonitor[clientId]',
-	instructions: "Enter the Client ID provided by Campaign Monitor on your Client Settings page."|t,
+	instructions: "Enter the Client ID from your <a href='https://www.campaignmonitor.com/api/getting-started/?&_ga=1.195741929.458523390.1446569721#clientid' target='_blank'>Client Settings</a>."|t,
 	value: (settings.clientId is defined ? settings.clientId : null),
 	first: true
 }) }}
@@ -9,6 +9,6 @@
 {{ forms.textField({
 	label: "API Key"|t,
 	name: 'campaignmonitor[apiKey]',
-	instructions: "Enter the API key provided by Campaign Monitor on your Account Settings page."|t,
+	instructions: "Enter the API Key from your <a href='https://www.campaignmonitor.com/api/getting-started/?&_ga=1.195741929.458523390.1446569721#clientid' target='_blank'>Client Settings</a>."|t,
 	value: (settings.apiKey is defined ? settings.apiKey : null)
 }) }}
