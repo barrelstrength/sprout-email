@@ -196,9 +196,9 @@ class SproutEmail_ExamplesController extends BaseController
 					'uri'           => null,
 					'campaignId'    => null,
 					'sproutEmail'   => array(
-						'fromName'  => craft()->getSiteName(),
-						'fromEmail' => $currentUser->email,
-						'replyTo'   => $currentUser->email,
+						'fromName'     => craft()->getSiteName(),
+						'fromEmail'    => $currentUser->email,
+						'replyToEmail' => $currentUser->email,
 					),
 					'recipient'     => array(
 						'onTheFlyRecipients' => '{email}',
@@ -234,9 +234,9 @@ Email: {email}',
 					'uri'           => null,
 					'campaignId'    => null,
 					'sproutEmail'   => array(
-						'fromName'  => craft()->getSiteName(),
-						'fromEmail' => $currentUser->email,
-						'replyTo'   => $currentUser->email,
+						'fromName'     => craft()->getSiteName(),
+						'fromEmail'    => $currentUser->email,
+						'replyToEmail' => $currentUser->email,
 					),
 					'recipient'     => array(
 						'onTheFlyRecipients' => $currentUser->email,
@@ -272,9 +272,9 @@ Email: {email}',
 					'uri'           => 'sproutemail/best-practices-for-your-email-subject-line',
 					'campaignId'    => null,
 					'sproutEmail'   => array(
-						'fromName'  => craft()->getSiteName(),
-						'fromEmail' => $currentUser->email,
-						'replyTo'   => $currentUser->email,
+						'fromName'     => craft()->getSiteName(),
+						'fromEmail'    => $currentUser->email,
+						'replyToEmail' => $currentUser->email,
 					),
 					'recipient'     => array(),
 					'rules'         => array(),
@@ -400,7 +400,7 @@ Email: {email}',
 				$entry->campaignId = $campaign->id;
 				$entry->fromName = craft()->request->getPost('sproutEmail.fromName');
 				$entry->fromEmail = craft()->request->getPost('sproutEmail.fromEmail');
-				$entry->replyTo = craft()->request->getPost('sproutEmail.replyTo');
+				$entry->replyToEmail = craft()->request->getPost('sproutEmail.replyToEmail');
 
 				$entry->getContent()->title = $entryData['title'];
 				$entry->getContent()->exampleHtmlEmailBody = $entryData['htmlBody'];

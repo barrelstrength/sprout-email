@@ -22,12 +22,12 @@
 	}) }}
 
 	{{ forms.textField({
-		id: 'replyTo',
-		name: 'defaultmailer[replyTo]',
+		id: 'replyToEmail',
+		name: 'defaultmailer[replyToEmail]',
 		label: 'Reply To'|t,
 		instructions: 'The From Email will be used if left blank.'|t,
-		value: settings is defined ? settings.replyTo : null,
-		errors: settings.getErrors('replyTo') is defined ? settings.getErrors('replyTo') : null
+		value: settings is defined ? settings.replyToEmail : null,
+		errors: settings.getErrors('replyToEmail') is defined ? settings.getErrors('replyToEmail') : null
 	}) }}
 
 	{% if craft.config.sproutEmail['enableDynamicLists'] is defined and craft.config.sproutEmail['enableDynamicLists'] %}

@@ -116,7 +116,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 				'Name'      => $campaign->name . ': ' . $entry->subjectLine,
 				'FromName'  => $entry->fromName,
 				'FromEmail' => $entry->fromEmail,
-				'ReplyTo'   => $entry->replyTo,
+				'ReplyTo'   => $entry->replyToEmail,
 				'HtmlUrl'   => $entry->getUrl(),
 				'TextUrl'   => $entry->getUrl() . '?type=text',
 				'ListIDs'   => $recipientLists
@@ -176,7 +176,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		{
 			$response = $campaignToSend->send(
 				array(
-					'ConfirmationEmail' => $entry->replyTo,
+					'ConfirmationEmail' => $entry->replyToEmail,
 					'SendDate'          => 'immediately'
 				)
 			);

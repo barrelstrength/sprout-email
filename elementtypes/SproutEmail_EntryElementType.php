@@ -284,7 +284,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 				, entries.recipients as recipients
 				, entries.fromName as fromName
 				, entries.fromEmail as fromEmail
-				, entries.replyTo as replyTo
+				, entries.replyToEmail as replyToEmail
 				, entries.sent as sent
 				, entries.enableFileAttachments as enableFileAttachments
 				, campaigns.type as type'

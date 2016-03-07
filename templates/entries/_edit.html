@@ -125,7 +125,7 @@
 						{% if mailer.getId() == 'defaultmailer' %}
 							{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
 							{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
-							{% set defaultReplyTo   = mailer.settings.replyTo is defined ? mailer.settings.replyTo : "" %}
+							{% set defaultReplyTo   = mailer.settings.replyToEmail is defined ? mailer.settings.replyToEmail : "" %}
 						{% endif %}
 
 						{{ forms.textField({
@@ -145,10 +145,10 @@
 						}) }}
 
 						{{ forms.textField({
-							name: 'sproutEmail[replyTo]',
-							value: (entry.replyTo is not empty ? entry.replyTo : defaultReplyTo),
+							name: 'sproutEmail[replyToEmail]',
+							value: (entry.replyToEmail is not empty ? entry.replyToEmail : defaultReplyTo),
 							label: "Reply To <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
-							errors: (entry is defined ? entry.getErrors('replyTo') : null),
+							errors: (entry is defined ? entry.getErrors('replyToEmail') : null),
 							required: true
 						}) }}
 

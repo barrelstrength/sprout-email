@@ -213,15 +213,15 @@ class SproutEmail_EntriesService extends BaseApplicationComponent
 
 		$entry = new SproutEmail_EntryModel();
 
-		$entry->campaignId  = $campaign->getAttribute('id');
-		$entry->dateCreated = date('Y-m-d H:i:s');
-		$entry->enabled     = true;
-		$entry->saveAsNew   = true;
-		$entry->fromName    = $defaultMailerSettings->fromName;
-		$entry->fromEmail   = $defaultMailerSettings->fromEmail;
-		$entry->replyTo     = $defaultMailerSettings->replyTo;
-		$entry->recipients  = null;
-		$entry->subjectLine = $campaign->getAttribute('name');
+		$entry->campaignId   = $campaign->getAttribute('id');
+		$entry->dateCreated  = date('Y-m-d H:i:s');
+		$entry->enabled      = true;
+		$entry->saveAsNew    = true;
+		$entry->fromName     = $defaultMailerSettings->fromName;
+		$entry->fromEmail    = $defaultMailerSettings->fromEmail;
+		$entry->replyToEmail = $defaultMailerSettings->replyToEmail;
+		$entry->recipients   = null;
+		$entry->subjectLine  = $campaign->getAttribute('name');
 
 		return sproutEmail()->entries->saveEntry($entry, $campaign);
 	}

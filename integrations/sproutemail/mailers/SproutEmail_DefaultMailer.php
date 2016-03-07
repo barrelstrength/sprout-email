@@ -98,7 +98,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		return array(
 			'fromName'           => array(AttributeType::String, 'required' => true),
 			'fromEmail'          => array(AttributeType::Email, 'required' => true),
-			'replyTo'            => array(AttributeType::Email, 'required' => false),
+			'replyToEmail'       => array(AttributeType::Email, 'required' => false),
 			'enableDynamicLists' => array(AttributeType::Bool, 'default' => false),
 		);
 	}

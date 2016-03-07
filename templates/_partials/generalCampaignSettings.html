@@ -20,8 +20,8 @@
 {{ forms.field({
     label: "Reply To Email <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
     required: true,  
-		errors: (entry is defined ? entry.getErrors('replyTo') : null),
+		errors: (entry is defined ? entry.getErrors('replyToEmail') : null),
 	}, forms.textField({
-		name: 'sproutEmail[replyTo]',
-		value: (entry is defined ? entry.replyTo : ''),
+		name: 'sproutEmail[replyToEmail]',
+		value: (entry is defined ? entry.replyToEmail : ''),
 })) }}

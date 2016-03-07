@@ -11,7 +11,7 @@ namespace Craft;
  * @property int         $campaignId
  * @property string      $fromName
  * @property string      $fromEmail
- * @property string      $replyTo
+ * @property string      $replyToEmail
  * @property bool        $sent
  * --
  * @property string|null $uri
@@ -103,7 +103,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 			'recipients'            => array(AttributeType::String, 'required' => false),
 			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),
-			'replyTo'               => array(AttributeType::String, 'required' => false),
+			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			// @related
@@ -120,7 +120,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	{
 		$rules = parent::rules();
 
-		$rules[] = array('replyTo', 'validateEmailWithOptionalPlaceholder');
+		$rules[] = array('replyToEmail', 'validateEmailWithOptionalPlaceholder');
 		$rules[] = array('fromEmail', 'validateEmailWithOptionalPlaceholder');
 
 		return $rules;
@@ -140,7 +140,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 			if (!filter_var($value, FILTER_VALIDATE_EMAIL))
 			{
 				$params = array(
-					'attribute' => ($attribute == 'replyTo') ? 'Reply To' : 'From Email',
+					'attribute' => ($attribute == 'replyToEmail') ? 'Reply To' : 'From Email',
 				);
 
 				$this->addError($attribute, Craft::t('{attribute} is not a valid email address.', $params));

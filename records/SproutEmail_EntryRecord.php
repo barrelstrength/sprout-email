@@ -12,7 +12,7 @@ namespace Craft;
  * @property string $subjectLine
  * @property string $fromName
  * @property string $fromEmail
- * @property string $replyTo
+ * @property string $replyToEmail
  * @property bool   $sent
  */
 class SproutEmail_EntryRecord extends BaseRecord
@@ -38,7 +38,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 			'recipients'            => array(AttributeType::String, 'required' => false),
 			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
 			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
-			'replyTo'               => array(AttributeType::String, 'required' => false),
+			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 		);
@@ -51,7 +51,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 	{
 		$rules = parent::rules();
 
-		$rules[] = array('replyTo', 'validateEmailWithOptionalPlaceholder');
+		$rules[] = array('replyToEmail', 'validateEmailWithOptionalPlaceholder');
 		$rules[] = array('fromEmail', 'validateEmailWithOptionalPlaceholder');
 		$rules[] = array('recipients', 'validateOnTheFlyRecipients');
 
@@ -73,7 +73,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 			if (!filter_var($value, FILTER_VALIDATE_EMAIL))
 			{
 				$params = array(
-					'attribute' => ($attribute == 'replyTo') ? Craft::t('Reply To') : Craft::t('From Email'),
+					'attribute' => ($attribute == 'replyToEmail') ? Craft::t('Reply To') : Craft::t('From Email'),
 				);
 
 				$this->addError($attribute, Craft::t('{attribute} is not a valid email address.', $params));

@@ -86,9 +86,9 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	 */
 	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		if (strpos($entry->replyTo, '{') !== false)
+		if (strpos($entry->replyToEmail, '{') !== false)
 		{
-			$entry->replyTo = $entry->fromEmail;
+			$entry->replyToEmail = $entry->fromEmail;
 		}
 
 		// Create an array of all recipient list titles
