@@ -786,10 +786,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	protected function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
 	{
 		// Render Email Entry fields that have dynamic values
-		$email->subject      = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $object);
-		$email->fromName     = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $object);
-		$email->fromEmail    = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $object);
-		$email->replyToEmail = sproutEmail()->renderObjectTemplateSafely($entry->replyToEmail, $object);
+		$email->subject   = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $object);
+		$email->fromName  = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $object);
+		$email->fromEmail = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $object);
+		$email->replyTo   = sproutEmail()->renderObjectTemplateSafely($entry->replyToEmail, $object);
 
 		// Render the email templates
 		$email->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', array(
