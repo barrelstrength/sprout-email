@@ -304,14 +304,6 @@ Email: {email}',
 				$campaign->template = $settings['template'];
 				$campaign->templateCopyPaste = $settings['templateCopyPaste'];
 
-				// Only install our campaign example if CopyPaste Mailer is installed
-				if ($campaign->mailer == 'copypaste' &&
-					!craft()->plugins->getPlugin('SproutEmailCopyPaste')
-				)
-				{
-					break;
-				}
-
 				// Create the Email
 				if (!$campaign = sproutEmail()->campaigns->saveCampaign($campaign))
 				{
