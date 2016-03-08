@@ -1,4 +1,4 @@
-{{ entry.subjectLine|upper }}
+{{ entry.subjectLine }}
 
 {%- if object['firstName'] is defined -%}
 	<p>Good Day {{ object['firstName'] }},</p>
