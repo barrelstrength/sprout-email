@@ -550,7 +550,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			{
 				try
 				{
-					return $this->sendNotification($campaign, $event->getMockedParams(), true);
+					$sent = $this->sendNotification($campaign, $event->getMockedParams(), true);
+
+					if (!$sent)
+					{
+						throw new Exception(Craft::t('Unable to send notification.'));
+					}
 				}
 				catch (\Exception $e)
 				{
