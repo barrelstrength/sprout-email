@@ -9,3 +9,5 @@
 .sentemails span.tableRowInfo:hover {
 	cursor: pointer;
 }
+
+.sentemail-btngroup .btn { outline: none; }
