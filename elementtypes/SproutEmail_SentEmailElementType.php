@@ -79,7 +79,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	{
 		return array(
 			'emailSubject' => Craft::t('Subject'),
-			'dateCreated'  => Craft::t('Date Created')
+			'dateCreated'  => Craft::t('Date Sent')
 		);
 	}
 
