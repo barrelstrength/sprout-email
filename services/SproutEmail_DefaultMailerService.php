@@ -806,9 +806,22 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			'object' => $object
 		));
 
+		$temporaryStyle = '<!-- %style% -->';
+
+		// Get the style tag
+		preg_match("/<style\\b[^>]*>(.*?)<\\/style>/s", $email->htmlBody, $matches);
+
+		$styleTag = $matches[0];
+
+		// Temporary replace with a random string
+		$htmlBody = str_replace($styleTag, $temporaryStyle, $email->htmlBody);
+
 		// Process the results of the templates once more, to render any dynamic objects used in fields
 		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
-		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($email->htmlBody, $object);
+		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
+
+		// Put back the style tag after object is rendered
+		$email->htmlBody = str_replace($temporaryStyle, $styleTag, $email->htmlBody);
 
 		return $email;
 	}
