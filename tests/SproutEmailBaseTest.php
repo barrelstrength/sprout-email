@@ -59,11 +59,13 @@ class SproutEmailBaseTest extends BaseTest
 		$campaignEntryService = new SproutEmail_EntriesService();
 		$notificationsService = new SproutEmail_NotificationsService();
 		$mailersService = new SproutEmail_MailerService();
+		$defaultMailersService = new SproutEmail_DefaultMailerService();
 
 		$this->setComponent(craft(), 'sproutEmail_campaign', $campaignService);
 		$this->setComponent(craft(), 'sproutEmail_campaignEntry', $campaignEntryService);
 		$this->setComponent(craft(), 'sproutEmail_notifications', $notificationsService);
 		$this->setComponent(craft(), 'sproutEmail_mailer', $mailersService);
+		$this->setComponent(craft(), 'sproutEmail_defaultMailer', $defaultMailersService);
 
 		$mainService->init();
 		$this->setComponent(craft(), 'sproutEmail', $mainService);
@@ -94,6 +96,7 @@ class SproutEmailBaseTest extends BaseTest
 			'\\Craft\\SproutEmail_EntriesService'       => '../services/SproutEmail_EntriesService.php',
 			'\\Craft\\SproutEmail_NotificationsService' => '../services/SproutEmail_NotificationsService.php',
 			'\\Craft\\SproutEmail_MailerService'        => '../services/SproutEmail_MailerService.php',
+			'\\Craft\\SproutEmail_DefaultMailerService'        => '../services/SproutEmail_DefaultMailerService.php',
 			'\\Craft\\SproutEmail_SentEmailsService'    => '../services/SproutEmail_SentEmailsService.php',
 			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
