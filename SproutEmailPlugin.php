@@ -74,6 +74,18 @@ class SproutEmailPlugin extends BasePlugin
 		return 'https://sprout.barrelstrengthdesign.com/craft-plugins/email/releases.json';
 	}
 
+	public function registerSproutSeoSitemap()
+	{
+		return array(
+			'sproutemail_entry' => array(
+				'elementType'    => 'SproutEmail_Entry',
+				'service'        => 'sproutEmail_campaigns',
+				'method'         => 'getCampaigns',
+				'elementGroupId' => "campaignId"
+			),
+		);
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -197,7 +209,6 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->sentEmails->logSentEmail($event);
 		});
 
-
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
 		{
 			// @todo Craft 3 - update to use info from config.json
@@ -238,12 +249,12 @@ class SproutEmailPlugin extends BasePlugin
 		if ($this->isEnabled && $this->isInstalled)
 		{
 			$events = array(
-				'entries.saveEntry'                     => new SproutEmail_EntriesSaveEntryEvent(),
-				'entries.deleteEntry'                   => new SproutEmail_EntriesDeleteEntryEvent(),
-				'userSession.login'                     => new SproutEmail_UserSessionLoginEvent(),
-				'users.saveUser'                        => new SproutEmail_UsersSaveUserEvent(),
-				'users.deleteUser'                      => new SproutEmail_UsersDeleteUserEvent(),
-				'users.activateUser'                    => new SproutEmail_UsersActivateUserEvent()
+				'entries.saveEntry'   => new SproutEmail_EntriesSaveEntryEvent(),
+				'entries.deleteEntry' => new SproutEmail_EntriesDeleteEntryEvent(),
+				'userSession.login'   => new SproutEmail_UserSessionLoginEvent(),
+				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
+				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
+				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent()
 			);
 		}
 
@@ -253,9 +264,9 @@ class SproutEmailPlugin extends BasePlugin
 		// Commerce events goes here
 		if (isset($commercePlugin->isEnabled) && $commercePlugin->isEnabled)
 		{
-			$events['commerce_orders.onOrderComplete'] = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
 			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
-			$events['commerce_orderHistories.onStatusChange'] = new SproutEmail_CommerceOnStatusChangeEvent();
+			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
 		}
 
 		return $events;
@@ -281,7 +292,7 @@ class SproutEmailPlugin extends BasePlugin
 
 		foreach ($pluginMailers as $handle => $class)
 		{
-			$namespace = "Craft\\" . $class;
+			$namespace   = "Craft\\" . $class;
 			$mailerClass = new $namespace();
 
 			$mailers[$handle] = $mailerClass;
