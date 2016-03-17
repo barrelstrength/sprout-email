@@ -809,14 +809,17 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$styleTags = $this->getStyleTags($email->htmlBody);
 
 		// Temporary replace with a random string
-		$htmlBody = $styleTags['body'];
+		$htmlBody = (!empty($styleTags)) ? $styleTags['body'] : $email->htmlBody;
 
 		// Process the results of the template s once more, to render any dynamic objects used in fields
 		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
 		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
 
-		// Put back the style tag after object is rendered
-		$email->htmlBody = $this->replaceActualStyles($htmlBody, $styleTags['tags']);
+		// Put back the style tag after object is rendered if style tag is found
+		if(!empty($styleTags))
+		{
+			$email->htmlBody = $this->replaceActualStyles($htmlBody, $styleTags['tags']);
+		}
 
 		return $email;
 	}
@@ -833,19 +836,21 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			$tags = $matches[0];
 
-			$i = 0;
-			foreach ($tags as $tag)
+			if(!empty($tags))
 			{
-				$key = "<!-- %style$i% -->";
+				$i = 0;
+				foreach ($tags as $tag)
+				{
+					$key = "<!-- %style$i% -->";
 
-				$results['tags'][$key] = $tag;
+					$results['tags'][$key] = $tag;
 
-				$body = str_replace($tag, $key, $body);
+					$body = str_replace($tag, $key, $body);
 
-				$i++;
+					$i++;
+				}
+				$results['body'] = $body;
 			}
-
-			$results['body'] = $body;
 		}
 
 		return $results;
