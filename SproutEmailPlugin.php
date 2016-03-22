@@ -74,19 +74,6 @@ class SproutEmailPlugin extends BasePlugin
 		return 'https://sprout.barrelstrengthdesign.com/craft-plugins/email/releases.json';
 	}
 
-	public function registerSproutSeoSitemap()
-	{
-		return array(
-			'sproutemail_entry' => array(
-				'name'           => 'Sprout Email',
-				'elementType'    => 'SproutEmail_Entry',
-				'elementGroupId' => "campaignId",
-				'service'        => 'sproutEmail_campaigns',
-				'method'         => 'getCampaigns',
-			),
-		);
-	}
-
 	/**
 	 * @return bool
 	 */
@@ -331,6 +318,22 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			sproutEmail()->error($e->getMessage());
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function registerSproutSeoSitemap()
+	{
+		return array(
+			'sproutemail_entry'         => array(
+				'name'           => 'Email Campaigns',
+				'elementType'    => 'SproutEmail_Entry',
+				'service'        => 'sproutEmail_campaigns',
+				'method'         => 'getCampaigns',
+				'elementGroupId' => "campaignId"
+			)
+		);
 	}
 
 	/**
