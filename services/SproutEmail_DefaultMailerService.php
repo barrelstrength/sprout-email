@@ -798,12 +798,20 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		// Render the email templates
 		$email->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', array(
+			'email'  => $entry,
+			'object' => $object,
+
+			// @deprecate in v3 in favor of the `email` variable
 			'entry'  => $entry,
-			'object' => $object
+			'notification'  => $entry
 		));
 		$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, array(
+			'email'  => $entry,
+			'object' => $object,
+
+			// @deprecate in v3 in favor of the `email` variable
 			'entry'  => $entry,
-			'object' => $object
+			'notification'  => $entry
 		));
 
 		$temporaryStyle = '<!-- %style% -->';
