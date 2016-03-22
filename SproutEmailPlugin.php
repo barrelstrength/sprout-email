@@ -78,10 +78,11 @@ class SproutEmailPlugin extends BasePlugin
 	{
 		return array(
 			'sproutemail_entry' => array(
+				'name'           => 'Sprout Email',
 				'elementType'    => 'SproutEmail_Entry',
+				'elementGroupId' => "campaignId",
 				'service'        => 'sproutEmail_campaigns',
 				'method'         => 'getCampaigns',
-				'elementGroupId' => "campaignId"
 			),
 		);
 	}
