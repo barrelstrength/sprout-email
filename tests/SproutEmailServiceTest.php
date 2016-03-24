@@ -53,7 +53,48 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$result = sproutEmail()->mailers->isArraySettingsMatch($array, $options);
 
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result);
+	}
+
+	public function testGetStyleTags()
+	{
+
+		$body = '
+						<html>
+							<head>
+								<style> .red { color: red }</style>
+								<style> .green { color: green }</style>
+							</head>
+							<body>
+								<h1>testbody</h1>
+							</body>
+						</html>';
+
+		$stylesResult = sproutEmail()->defaultmailer->getStyleTags($body);
+
+		$expected = array(
+			'tags' => array(
+				'<!-- %style0% -->' => "<style> .red { color: red }</style>",
+				'<!-- %style1% -->' => "<style> .green { color: green }</style>"
+			),
+		  'body' => '
+						<html>
+							<head>
+								<!-- %style0% -->
+								<!-- %style1% -->
+							</head>
+							<body>
+								<h1>testbody</h1>
+							</body>
+						</html>'
+		);
+		$this->assertEquals($expected, $stylesResult);
+
+		$replacedBody = sproutEmail()->defaultmailer->replaceActualStyles($expected['body'], $stylesResult['tags']);
+
+		$this->assertEquals($body, $replacedBody);
+
+
 	}
 
 	/**

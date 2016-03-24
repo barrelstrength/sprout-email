@@ -784,8 +784,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param                           $email
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_EntryModel    $email
 	 * @param                           $object
 	 */
 	protected function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
@@ -814,23 +813,61 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			'notification'  => $entry
 		));
 
-		$temporaryStyle = '<!-- %style% -->';
+		$styleTags = array();
 
-		// Get the style tag
-		preg_match("/<style\\b[^>]*>(.*?)<\\/style>/s", $email->htmlBody, $matches);
+		$htmlBody = $this->addPlaceholderStyleTags($email->htmlBody, $styleTags);
 
-		$styleTag = $matches[0];
-
-		// Temporary replace with a random string
-		$htmlBody = str_replace($styleTag, $temporaryStyle, $email->htmlBody);
-
-		// Process the results of the templates once more, to render any dynamic objects used in fields
+		// Process the results of the template s once more, to render any dynamic objects used in fields
 		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
 		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
 
-		// Put back the style tag after object is rendered
-		$email->htmlBody = str_replace($temporaryStyle, $styleTag, $email->htmlBody);
+		$email->htmlBody = $this->removePlaceholderStyleTags($htmlBody, $styleTags);
 
 		return $email;
+	}
+
+	public function addPlaceholderStyleTags($htmlBody, &$styleTags)
+	{
+		// Get the style tag
+		preg_match_all("/<style\\b[^>]*>(.*?)<\\/style>/s", $htmlBody, $matches);
+
+		$results = array();
+
+		if (!empty($matches))
+		{
+			$tags = $matches[0];
+
+			// Temporarily replace with style tags with a random string
+			if (!empty($tags))
+			{
+				$i = 0;
+				foreach ($tags as $tag)
+				{
+					$key = "<!-- %style$i% -->";
+
+					$styleTags[$key] = $tag;
+
+					$htmlBody = str_replace($tag, $key, $htmlBody);
+
+					$i++;
+				}
+			}
+		}
+
+		return $htmlBody;
+	}
+
+	// Put back the style tag after object is rendered if style tag is found
+	public function removePlaceholderStyleTags($htmlBody, $styleTags)
+	{
+		if (!empty($styleTags))
+		{
+			foreach ($styleTags as $key => $tag)
+			{
+				$htmlBody = str_replace($key, $tag, $htmlBody);
+			}
+		}
+
+		return $htmlBody;
 	}
 }
