@@ -797,20 +797,20 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		// Render the email templates
 		$email->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', array(
-			'email'  => $entry,
-			'object' => $object,
+			'email'        => $entry,
+			'object'       => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'  => $entry,
-			'notification'  => $entry
+			'entry'        => $entry,
+			'notification' => $entry
 		));
 		$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, array(
-			'email'  => $entry,
-			'object' => $object,
+			'email'        => $entry,
+			'object'       => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'  => $entry,
-			'notification'  => $entry
+			'entry'        => $entry,
+			'notification' => $entry
 		));
 
 		$styleTags = array();
@@ -821,7 +821,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
 		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
 
-		$email->htmlBody = $this->removePlaceholderStyleTags($htmlBody, $styleTags);
+		$email->htmlBody = $this->removePlaceholderStyleTags($email->htmlBody, $styleTags);
 
 		return $email;
 	}

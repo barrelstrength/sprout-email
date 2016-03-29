@@ -401,9 +401,12 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		$vars = array_merge(
 			$attributes,
 			array(
+				'email'        => $entry,
+				'object'       => $element,
+
+				// @deprecate - in v3 in favor of `email`
 				'entry'        => $entry,
 				'notification' => $entry,
-				'object'       => $element,
 			)
 		);
 
