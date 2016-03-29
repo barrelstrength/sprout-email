@@ -1,4 +1,4 @@
-{{ entry.subjectLine }}
+{{ email.subjectLine }}
 
 {%- if object['firstName'] is defined -%}
 	<p>Good Day {{ object['firstName'] }},</p>
@@ -6,17 +6,17 @@
 	<p>Good day!</p>
 {%- endif -%}
 
-{{ entry.exampleTextEmailBody }}
+{{ email.exampleTextEmailBody }}
 
 {# ---------------------------------------------------------
-   Access Email Fields and Custom Fields using the `entry` variable
+   Access Email Fields and Custom Fields using the `email` variable
 
-   {{ entry.subjectLine }}
-   {{ entry.slug }}
-   {{ entry.status }}
-   {{ entry.fromName }}
-   {{ entry.fromEmail }}
-   {{ entry.replyToEmail }}
+   {{ email.subjectLine }}
+   {{ email.slug }}
+   {{ email.status }}
+   {{ email.fromName }}
+   {{ email.fromEmail }}
+   {{ email.replyToEmail }}
 
    Access Event-specific dynamic variables using the `object` variable.
 

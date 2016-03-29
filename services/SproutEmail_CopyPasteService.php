@@ -19,19 +19,24 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$params = array(
-			'entry'     => $entry,
+			'email'     => $entry,
 			'campaign'  => $campaign,
 			'recipient' => array(
 				'firstName' => 'John',
 				'lastName'  => 'Doe',
 				'email'     => 'john@doe.com'
-			)
+			),
+
+			// @deprecate - in favor of `email` in v3
+			'entry'     => $entry
 		);
+
 		$html = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste, $params);
 		$text = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste . '.txt', $params);
+
 		$vars = array(
-			'html' => $html,
-			'text' => $text,
+			'html' => trim($html),
+			'text' => trim($text),
 		);
 
 		$response = new SproutEmail_ResponseModel();

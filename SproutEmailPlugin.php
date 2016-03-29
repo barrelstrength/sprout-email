@@ -31,7 +31,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.2.1';
+		return '2.2.2';
 	}
 
 	/**
@@ -329,9 +329,9 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail_entry'         => array(
 				'name'           => 'Email Campaigns',
 				'elementType'    => 'SproutEmail_Entry',
+				'elementGroupId' => 'campaignId',
 				'service'        => 'sproutEmail_campaigns',
-				'method'         => 'getCampaigns',
-				'elementGroupId' => "campaignId"
+				'method'         => 'getCampaigns'
 			)
 		);
 	}

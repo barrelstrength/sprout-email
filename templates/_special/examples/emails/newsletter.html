@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{{ entry.subjectLine }} - {{ siteName }}</title>
+	<title>{{ email.subjectLine }} - {{ siteName }}</title>
 </head>
 <body>
 
-	{{ entry.exampleHtmlEmailBody }}
+	{{ email.exampleHtmlEmailBody }}
 
 {# ---------------------------------------------------------
-   Access Email Fields and Custom Fields using the `entry` variable
+   Access Email Fields and Custom Fields using the `email` variable
 
-   {{ entry.subjectLine }}
-   {{ entry.slug }}
-   {{ entry.status }}
-   {{ entry.fromName }}
-   {{ entry.fromEmail }}
-   {{ entry.replyToEmail }}
+   {{ email.subjectLine }}
+   {{ email.slug }}
+   {{ email.status }}
+   {{ email.fromName }}
+   {{ email.fromEmail }}
+   {{ email.replyToEmail }}
 
    Use the full power of Twig to do anything you'd like in your
    email templates. Just remember, code emails like it's 1999.

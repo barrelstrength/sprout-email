@@ -591,8 +591,15 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			}
 		}
 
-		$params = array('entry' => $entry, 'campaign' => $campaign);
-		$email  = array(
+		$params = array(
+			'email'    => $entry,
+			'campaign' => $campaign,
+
+			// @deprecate - in favor of `email` in v3
+			'entry'    => $entry
+		);
+
+		$email = array(
 			'fromEmail' => $entry->fromEmail,
 			'fromName'  => $entry->fromName,
 			'subject'   => $entry->subjectLine,

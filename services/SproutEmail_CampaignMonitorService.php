@@ -94,13 +94,16 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		}
 
 		$params = array(
-			'entry'     => $entry,
+			'email'     => $entry,
 			'campaign'  => $campaign,
 			'recipient' => array(
 				'firstName' => 'First',
 				'lastName'  => 'Last',
 				'email'     => 'user@domain.com'
-			)
+			),
+
+			// @deprecate - in favor of `email` in v3
+			'entry'     => $entry
 		);
 
 		$content = array(
