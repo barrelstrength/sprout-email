@@ -95,6 +95,33 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 
 			return $campaign;
 		}
+		else
+		{
+			// Updates element i18n slug and uri
+			$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
+			$criteria->campaignId = $campaign->id;
+
+			$entryIds = $criteria->ids();
+
+			if ($entryIds != null)
+			{
+				foreach ($entryIds as $entryId)
+				{
+					craft()->config->maxPowerCaptain();
+
+					$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
+					$criteria->id     = $entryId;
+					$criteria->locale = "en_us";
+					$criteria->status = null;
+					$updateEntry = $criteria->first();
+
+					// @todo replace the getContent()->id check with 'strictLocale' param once it's added
+					if ($updateEntry && $updateEntry->getContent()->id) {
+						craft()->elements->updateElementSlugAndUri($updateEntry, false, false);
+					}
+				}
+			}
+		}
 
 		if ($transaction)
 		{
