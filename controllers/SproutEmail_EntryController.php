@@ -403,7 +403,10 @@ class SproutEmail_EntryController extends BaseController
 		}
 		else
 		{
+			$campaignId = craft()->request->getPost('campaignId');
+
 			$entry = new SproutEmail_EntryModel();
+			$entry->campaignId = $campaignId;
 		}
 
 		$entry->subjectLine = craft()->request->getPost('subjectLine', $entry->subjectLine);
