@@ -104,10 +104,22 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 */
 	public function saveSentEmail($emailModel, $info = array())
 	{
+		// decode subject if it is encoded
+		$isEncoded = preg_match("/=\?UTF-8\?B\?(.*)\?=/", $emailModel->subject, $matches);
+		if ($isEncoded)
+		{
+			$encodedString = $matches[1];
+			$subject = base64_decode($encodedString);
+		}
+		else
+		{
+			$subject = $emailModel->subject;
+		}
+
 		$sentEmail = new SproutEmail_SentEmailModel();
 
-		$sentEmail->title        = $emailModel->subject;
-		$sentEmail->emailSubject = $emailModel->subject;
+		$sentEmail->title        = $subject;
+		$sentEmail->emailSubject = $subject;
 		$sentEmail->fromEmail    = $emailModel->fromEmail;
 		$sentEmail->fromName     = $emailModel->fromName;
 		$sentEmail->toEmail      = $emailModel->toEmail;
