@@ -50,8 +50,7 @@ class SproutEmail_EntryElementType extends BaseElementType
 		return array(
 			SproutEmail_EntryModel::ENABLED  => Craft::t('Enabled'),
 			SproutEmail_EntryModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled'),
-			SproutEmail_EntryModel::ARCHIVED => Craft::t('Archived'),
+			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled')
 		);
 	}
 
@@ -378,9 +377,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 			)
 		);
 
-		// $setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
 
-		return array($deleteAction);
+		return array($deleteAction, $setStatusAction);
 	}
 
 	/**
