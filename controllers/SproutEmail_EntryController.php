@@ -311,20 +311,20 @@ class SproutEmail_EntryController extends BaseController
 
 			$variables['showPreviewBtn'] = true;
 
+			$shareParams = array(
+				'entryId'    => $variables['entry']->id,
+				'campaignId' => $variables['campaign']->id
+			);
+
 			// Should we show the Share button too?
 			if ($variables['entry']->id && $variables['entry']->getUrl())
 			{
 				if ($variables['entry']->enabled)
 				{
-					$variables['shareUrl'] = $variables['entry']->getUrl();
+					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 				}
 				else
 				{
-					$shareParams = array(
-						'entryId'    => $variables['entry']->id,
-						'campaignId' => $variables['campaign']->id
-					);
-
 					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 				}
 			}
@@ -403,7 +403,10 @@ class SproutEmail_EntryController extends BaseController
 		}
 		else
 		{
+			$campaignId = craft()->request->getPost('campaignId');
+
 			$entry = new SproutEmail_EntryModel();
+			$entry->campaignId = $campaignId;
 		}
 
 		$entry->subjectLine = craft()->request->getPost('subjectLine', $entry->subjectLine);
@@ -444,17 +447,24 @@ class SproutEmail_EntryController extends BaseController
 			throw new HttpException(404);
 		}
 
-		// Create the token and redirect to the entry URL with the token in place
-		$token = craft()->tokens->createToken(
-			array(
-				'action' => 'sproutEmail/entry/viewSharedEntry',
-				'params' => $params
-			)
-		);
+		if ($entry->enabled)
+		{
+			$this->showEntry($entry);
+		}
+		else
+		{
+			// Create the token and redirect to the entry URL with the token in place
+			$token = craft()->tokens->createToken(
+				array(
+					'action' => 'sproutEmail/entry/viewSharedEntry',
+					'params' => $params
+				)
+			);
 
-		$url = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
+			$url = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
 
-		craft()->request->redirect($url);
+			craft()->request->redirect($url);
+		}
 	}
 
 	/**
@@ -510,10 +520,10 @@ class SproutEmail_EntryController extends BaseController
 			$this->renderTemplate(
 				$campaign->template . $ext, array(
 					'entry'     => $entry,
+					'email'     => $entry,
 					'campaign'  => $campaign,
 					'firstName' => '{firstName}',
-					'lastName'  => '{lastName}',
-					'email'     => '{email}',
+					'lastName'  => '{lastName}'
 				)
 			);
 		}
