@@ -31,7 +31,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.2.2';
+		return '2.2.3';
 	}
 
 	/**
