@@ -90,6 +90,24 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 		}
 	}
 
+	public function getListStatsById($id)
+	{
+		$params = array('list_id' => $id);
+
+		try
+		{
+			$lists = $this->client->lists->getList($params);
+
+			$stats = $lists['data'][0]['stats'];
+
+			return $stats;
+		}
+		catch (\Exception $e)
+		{
+			throw $e;
+		}
+	}
+
 	/**
 	 * @param $id
 	 *
