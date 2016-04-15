@@ -166,7 +166,7 @@ class Mailchimp {
         curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $opts['timeout']);
 
-	      // Disable SSL certificate verification.
+	      // Disable SSL certificate verification to avoid error.
 	      curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
 
 
