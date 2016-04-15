@@ -166,6 +166,9 @@ class Mailchimp {
         curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $opts['timeout']);
 
+	      // Remove ssl certificate problem
+	      curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
+
 
         $this->folders = new Mailchimp_Folders($this);
         $this->templates = new Mailchimp_Templates($this);
