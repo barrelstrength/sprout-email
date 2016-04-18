@@ -197,6 +197,16 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->sentEmails->logSentEmail($event);
 		});
 
+		craft()->on('email.onSendEmailError', function (Event $event)
+		{
+			$error = (isset($event->params['error'])) ? $event->params['error']: "";
+
+			$event->params['variables']['sproutemail']['info']['emailType'] = "Sent Error";
+			$event->params['variables']['sproutemail']['info']['source']    = $error;
+
+			sproutEmail()->sentEmails->logSentEmail($event);
+		});
+
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
 		{
 			// @todo Craft 3 - update to use info from config.json
