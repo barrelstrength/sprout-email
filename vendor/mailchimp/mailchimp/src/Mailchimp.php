@@ -17,7 +17,7 @@ require_once 'Mailchimp/Goal.php';
 require_once 'Mailchimp/Exceptions.php';
 
 class Mailchimp {
-    
+
     public $apikey;
     public $ch;
     public $root  = 'https://api.mailchimp.com/2.0';
@@ -156,7 +156,7 @@ class Mailchimp {
         $this->ch = curl_init();
 
         if (isset($opts['CURLOPT_FOLLOWLOCATION']) && $opts['CURLOPT_FOLLOWLOCATION'] === true) {
-            curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);    
+            curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
         }
 
         curl_setopt($this->ch, CURLOPT_USERAGENT, 'MailChimp-PHP/2.0.6');
@@ -165,10 +165,6 @@ class Mailchimp {
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $opts['timeout']);
-
-	      // Disable SSL certificate verification to avoid error.
-	      curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
-
 
         $this->folders = new Mailchimp_Folders($this);
         $this->templates = new Mailchimp_Templates($this);
@@ -194,7 +190,7 @@ class Mailchimp {
 
     public function call($url, $params) {
         $params['apikey'] = $this->apikey;
-        
+
         $params = json_encode($params);
         $ch     = $this->ch;
 
@@ -226,7 +222,7 @@ class Mailchimp {
             throw new Mailchimp_HttpError("API call to $url failed: " . curl_error($ch));
         }
         $result = json_decode($response_body, true);
-        
+
         if(floor($info['http_code'] / 100) >= 4) {
             throw $this->castError($result);
         }
