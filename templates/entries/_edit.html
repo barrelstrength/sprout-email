@@ -184,6 +184,7 @@
 					<div id="tab-sproutemail-rules" class="pane meta">
 
 						{% set events = craft.sproutemail.getAvailableEvents() %}
+						{% set selectEvents = craft.sproutemail.getAvailableEventsSelectOptions() %}
 
 						{% if events|length %}
 
@@ -191,14 +192,14 @@
 								id: "notificationEvent",
 								name: "notificationEvent",
 								label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
-								options: [{label: "Select event..."|t, value: null}]|merge(events),
+								options: [{label: "Select event..."|t, value: null}]|merge(selectEvents),
 								value: notificationEvent is defined ? notificationEvent : null,
 							}) }}
 
 							{% for id, event in events %}
 								{% if event.getId is defined and event.getOptionsHtml is defined %}
 
-								<div class="field event-options {{ event.getId() }}">
+								<div class="field event-options {{ event.getSelectId() }}">
 									<div class="heading">
 										Settings
 									</div>

@@ -55,7 +55,11 @@ var SproutEmail = {
 	selectNotificationEvent: function()
 	{
 		$('.event-options').hide();
-		$('.' + $('#notificationEvent').val()).show();
+		//alert($('#notificationEvent').val());
+		if($('#notificationEvent').val() != "")
+		{
+			$('.' + $('#notificationEvent').val()).show();
+		}
 	},
 
 	/**

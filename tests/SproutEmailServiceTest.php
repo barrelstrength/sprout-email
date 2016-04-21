@@ -70,7 +70,8 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 							</body>
 						</html>';
 
-		$stylesResult = sproutEmail()->defaultmailer->getStyleTags($body);
+		$styleTags = array();
+		$stylesResult = sproutEmail()->defaultmailer->addPlaceholderStyleTags($body, $styleTags);
 
 		$expected = array(
 			'tags' => array(
@@ -88,11 +89,31 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 							</body>
 						</html>'
 		);
-		$this->assertEquals($expected, $stylesResult);
+		$this->assertEquals($expected['body'], $stylesResult);
 
-		$replacedBody = sproutEmail()->defaultmailer->replaceActualStyles($expected['body'], $stylesResult['tags']);
+		$replacedBody = sproutEmail()->defaultmailer->removePlaceholderStyleTags($expected['body'], $styleTags);
 
 		$this->assertEquals($body, $replacedBody);
+
+
+	}
+
+	public function testEventIds()
+	{
+		$importer = new SproutEmail_EntriesSaveEntryEvent;
+		$importer->setPluginName('SproutEmail');
+
+		$selectId = $importer->getUniqueId();
+
+		$expected = "SproutEmail:entries-saveEntry";
+
+		$this->assertEquals($expected, $selectId);
+
+		$expected = "SproutEmailxx-xxentries-saveEntry";
+		$this->assertEquals($expected, $importer->getSelectId());
+
+		$expected = "entries-saveEntry";
+		$this->assertEquals($expected, $importer->getNameBySelectId());
 
 
 	}

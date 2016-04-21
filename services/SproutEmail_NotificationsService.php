@@ -74,7 +74,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 					{
 						foreach ($pluginEvents as $event)
 						{
-							$this->availableEvents[$event->getId()] = $event; // entries-saveEntry
+							$event->setPluginName($plugin);
+
+							$this->availableEvents[$event->getSelectId()] = $event; // entries-saveEntry
 						}
 					}
 				}
@@ -90,6 +92,29 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		}
 
 		return $this->availableEvents;
+	}
+
+	public function getAvailableEventsSelectOptions()
+	{
+		$availableEvents = $this->getAvailableEvents();
+
+		if (!empty($availableEvents))
+		{
+			$options = array();
+			$counter = 0;
+
+			foreach ($availableEvents as $event)
+			{
+				$options[$counter]['label'] = $event;
+				$options[$counter]['value'] = $event->getSelectId();
+
+				$counter++;
+			}
+
+			return $options;
+		}
+
+		return $availableEvents;
 	}
 
 	/**
@@ -244,7 +269,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	{
 		$self = $this;
 		$events = sproutEmail()->notifications->getAvailableEvents();
-
+	//	Craft::dd($events);
 		if (count($events))
 		{
 			foreach ($events as $eventId => $listener)
@@ -460,5 +485,22 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		}
 
 		return false;
+	}
+
+	public function isNameSelectId($name)
+	{
+		$separator = "xx-xx";
+		if (strpos($name, $separator))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public function getNameBySelectId($name)
+	{
+		$nameArray = explode("xx-xx", $name);
+		return $nameArray[1];
 	}
 }

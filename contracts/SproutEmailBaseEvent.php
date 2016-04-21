@@ -14,7 +14,15 @@ class SproutEmailBaseEvent
 	 * @var array|null
 	 */
 	protected $options;
+	protected $pluginName;
 
+	/**
+	 * @param $pluginClass
+	 */
+	public function setPluginName($pluginName)
+	{
+		$this->pluginName = $pluginName;
+	}
 	/**
 	 * Returns the event title when used in string context
 	 *
@@ -35,6 +43,25 @@ class SproutEmailBaseEvent
 	final public function getId()
 	{
 		return str_replace('.', '-', $this->getName());
+	}
+
+	public function getUniqueId($seperator = ":")
+	{
+		$pluginName = (isset($this->pluginName)) ? $this->pluginName . $seperator : '';
+
+		return $pluginName . $this->getId();
+	}
+
+	public function getSelectId()
+	{
+		// unique separtor for show hide settings
+		return $this->getUniqueId("xx-xx");
+	}
+
+	public function getNameBySelectId()
+	{
+		$selectId = $this->getSelectId();
+		return sproutEmail()->notifications->getNameBySelectId($selectId);
 	}
 
 	/**

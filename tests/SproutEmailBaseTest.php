@@ -96,12 +96,16 @@ class SproutEmailBaseTest extends BaseTest
 			'\\Craft\\SproutEmail_EntriesService'       => '../services/SproutEmail_EntriesService.php',
 			'\\Craft\\SproutEmail_NotificationsService' => '../services/SproutEmail_NotificationsService.php',
 			'\\Craft\\SproutEmail_MailerService'        => '../services/SproutEmail_MailerService.php',
-			'\\Craft\\SproutEmail_DefaultMailerService'        => '../services/SproutEmail_DefaultMailerService.php',
+			'\\Craft\\SproutEmail_DefaultMailerService' => '../services/SproutEmail_DefaultMailerService.php',
 			'\\Craft\\SproutEmail_SentEmailsService'    => '../services/SproutEmail_SentEmailsService.php',
 			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
 			'\\Craft\\SproutEmail_EntryRecord'          => '../records/SproutEmail_EntryRecord.php',
+			'\\Craft\\SproutEmailBaseEvent'             => '../contracts/SproutEmailBaseEvent.php'
 		);
+		$integrationPath = '../integrations/sproutemail/';
+
+		$map['\\Craft\\SproutEmail_EntriesSaveEntryEvent'] = $integrationPath . 'SproutEmail_EntriesSaveEntryEvent.php';
 
 		foreach ($map as $classPath => $filePath)
 		{
