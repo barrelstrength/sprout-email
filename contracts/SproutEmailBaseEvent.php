@@ -52,18 +52,6 @@ class SproutEmailBaseEvent
 		return $pluginName . $this->getId();
 	}
 
-	public function getSelectId()
-	{
-		// unique separtor for show hide settings
-		return $this->getUniqueId("xx-xx");
-	}
-
-	public function getNameBySelectId()
-	{
-		$selectId = $this->getSelectId();
-		return sproutEmail()->notifications->getNameBySelectId($selectId);
-	}
-
 	/**
 	 * @param $options
 	 */

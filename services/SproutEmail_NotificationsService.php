@@ -76,7 +76,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 						{
 							$event->setPluginName($plugin);
 
-							$this->availableEvents[$event->getSelectId()] = $event; // entries-saveEntry
+							$this->availableEvents[$event->getUniqueId()] = $event; // entries-saveEntry
 						}
 					}
 				}
@@ -92,29 +92,6 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		}
 
 		return $this->availableEvents;
-	}
-
-	public function getAvailableEventsSelectOptions()
-	{
-		$availableEvents = $this->getAvailableEvents();
-
-		if (!empty($availableEvents))
-		{
-			$options = array();
-			$counter = 0;
-
-			foreach ($availableEvents as $event)
-			{
-				$options[$counter]['label'] = $event;
-				$options[$counter]['value'] = $event->getSelectId();
-
-				$counter++;
-			}
-
-			return $options;
-		}
-
-		return $availableEvents;
 	}
 
 	/**
@@ -165,7 +142,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			throw new Exception(Craft::t('The event with id ({id}) does not exist.', array('id' => $eventId)));
 		}
 
-		$attributes = array('eventId' => $event->getId(), 'campaignId' => $campaignId);
+		$attributes = array('campaignId' => $campaignId);
 		$notification = SproutEmail_NotificationRecord::model()->findByAttributes($attributes);
 
 		if (!$notification)
@@ -173,7 +150,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			$notification = new SproutEmail_NotificationRecord;
 		}
 
-		$notification->setAttribute('eventId', $event->getId());
+		$notification->setAttribute('eventId', $event->getUniqueId());
 		$notification->setAttribute('campaignId', $campaignId);
 
 		if ($event)
@@ -181,19 +158,6 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			$options = $event->prepareOptions();
 
 			$notification->setAttribute('options', $options);
-		}
-
-		// Remove all events for a given notification to ensure only one is allowed
-		$params = array('campaignId' => $campaignId, 'eventId' => $eventId);
-		$condition = 'campaignId = :campaignId and eventId != :eventId';
-
-		try
-		{
-			SproutEmail_NotificationRecord::model()->deleteAll($condition, $params);
-		}
-		catch (\Exception $e)
-		{
-			sproutEmail($e->getMessage());
 		}
 
 		return $notification->save(false);
@@ -487,9 +451,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		return false;
 	}
 
-	public function isNameSelectId($name)
+	public function isNameUniqueId($name)
 	{
-		$separator = "xx-xx";
+		$separator = ":";
 		if (strpos($name, $separator))
 		{
 			return true;
@@ -498,9 +462,9 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		return false;
 	}
 
-	public function getNameBySelectId($name)
+	public function getNameByUniqueId($name)
 	{
-		$nameArray = explode("xx-xx", $name);
+		$nameArray = explode(":", $name);
 		return $nameArray[1];
 	}
 }

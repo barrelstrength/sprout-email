@@ -108,14 +108,6 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$expected = "SproutEmail:entries-saveEntry";
 
 		$this->assertEquals($expected, $selectId);
-
-		$expected = "SproutEmailxx-xxentries-saveEntry";
-		$this->assertEquals($expected, $importer->getSelectId());
-
-		$expected = "entries-saveEntry";
-		$this->assertEquals($expected, $importer->getNameBySelectId());
-
-
 	}
 
 	/**

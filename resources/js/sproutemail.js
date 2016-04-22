@@ -58,7 +58,10 @@ var SproutEmail = {
 		//alert($('#notificationEvent').val());
 		if($('#notificationEvent').val() != "")
 		{
-			$('.' + $('#notificationEvent').val()).show();
+			var eventVal = $('#notificationEvent').val();
+					eventVal = eventVal.replace(":", "x-x");
+
+			$('.' + eventVal).show();
 		}
 	},
 

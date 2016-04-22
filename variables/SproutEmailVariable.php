@@ -77,11 +77,6 @@ class SproutEmailVariable
 		return sproutEmail()->notifications->getAvailableEvents();
 	}
 
-	public function getAvailableEventsSelectOptions()
-	{
-		return sproutEmail()->notifications->getAvailableEventsSelectOptions();
-	}
-
 	public function getSelectedOptions($event, $campaignId)
 	{
 		if (craft()->request->getRequestType() == 'POST')
@@ -91,7 +86,7 @@ class SproutEmailVariable
 
 		$notification = sproutEmail()->notifications->getNotification(
 			array(
-				'eventId'    => $event->getId(),
+				'eventId'    => $event->getUniqueId(),
 				'campaignId' => $campaignId
 			)
 		);
