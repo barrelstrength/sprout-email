@@ -233,7 +233,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 	{
 		$self = $this;
 		$events = sproutEmail()->notifications->getAvailableEvents();
-	//	Craft::dd($events);
+
 		if (count($events))
 		{
 			foreach ($events as $eventId => $listener)
@@ -246,7 +246,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 					{
 						continue;
 					}
-
+					
 					craft()->on($listener->getName(), function (Event $event) use ($self, $eventId, $listener)
 					{
 						return call_user_func_array(
