@@ -23,6 +23,7 @@ class SproutEmailBaseEvent
 	{
 		$this->pluginName = $pluginName;
 	}
+
 	/**
 	 * Returns the event title when used in string context
 	 *
@@ -45,22 +46,23 @@ class SproutEmailBaseEvent
 		return str_replace('.', '-', $this->getName());
 	}
 
-	public function getUniqueId($seperator = ":")
+	public function getUniqueId($separator = ":")
 	{
-		$pluginName = (isset($this->pluginName)) ? $this->pluginName . $seperator : '';
+		$pluginName = (isset($this->pluginName)) ? $this->pluginName . $separator : '';
 
 		return $pluginName . $this->getId();
 	}
 
 	public function getSelectId()
 	{
-		// unique separtor for show hide settings
+		// unique separator for show hide settings
 		return $this->getUniqueId("xx-xx");
 	}
 
 	public function getNameBySelectId()
 	{
 		$selectId = $this->getSelectId();
+
 		return sproutEmail()->notifications->getNameBySelectId($selectId);
 	}
 
