@@ -39,7 +39,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getSchemaVersion()
 	{
-		return '2.2.0';
+		return '2.2.1';
 	}
 
 	/**
@@ -197,14 +197,14 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->sentEmails->logSentEmail($event);
 		});
 
+		craft()->on('sproutEmail.onSendEmailError', function (Event $event)
+		{
+			sproutEmail()->runOnSendEmailError($event);
+		});
+
 		craft()->on('email.onSendEmailError', function (Event $event)
 		{
-			$error = (isset($event->params['error'])) ? $event->params['error']: "";
-
-			$event->params['variables']['sproutemail']['info']['emailType'] = "Sent Error";
-			$event->params['variables']['sproutemail']['info']['source']    = $error;
-
-			sproutEmail()->sentEmails->logSentEmail($event);
+			sproutEmail()->runOnSendEmailError($event);
 		});
 
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')

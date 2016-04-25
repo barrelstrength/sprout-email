@@ -512,7 +512,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					)
 				);
 
-				if (craft()->email->sendEmail($email, $variables))
+				if (sproutEmail()->sendEmail($email, $variables))
 				{
 					$processedRecipients[] = $email->toEmail;
 				}
@@ -637,7 +637,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				$email->setAttribute('toFirstName', $recipient->firstName);
 				$email->setAttribute('toLastName', $recipient->lastName);
 
-				craft()->email->sendEmail($email);
+				sproutEmail()->sendEmail($email);
 			}
 			catch (\Exception $e)
 			{
