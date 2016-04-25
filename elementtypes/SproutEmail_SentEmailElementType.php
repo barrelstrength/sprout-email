@@ -42,7 +42,44 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	 */
 	public function hasStatuses()
 	{
-		return false;
+		return true;
+	}
+
+	public function getStatuses()
+	{
+		return array(
+			SproutEmail_SentEmailModel::SENT   => Craft::t('Sent'),
+			SproutEmail_SentEmailModel::FAILED => Craft::t('Failed')
+		);
+	}
+
+	/**
+	 * @inheritDoc IElementType::getElementQueryStatusCondition()
+	 *
+	 * @param DbCommand $query
+	 * @param string    $status
+	 *
+	 * @return array|false|string|void
+	 */
+	public function getElementQueryStatusCondition(DbCommand $query, $status)
+	{
+		switch ($status)
+		{
+			case SproutEmail_SentEmailModel::SENT:
+			{
+				$query->andWhere("sentemail.status IS NULL OR sentemail.status != 'failed'");
+
+				break;
+			}
+			case SproutEmail_SentEmailModel::FAILED:
+			{
+				//$query->andWhere('elements.enabled = 1');
+				//$query->andWhere('campaigns.template IS NULL OR campaigns.mailer IS NULL');
+				$query->andWhere("sentemail.status = 'failed'");
+
+				break;
+			}
+		}
 	}
 
 	public function getSources($context = null)

@@ -395,6 +395,59 @@ class SproutEmailService extends BaseApplicationComponent
 		return '=?UTF-8?B?' . base64_encode($subject) . '?=';
 	}
 
+	public function sendEmail(EmailModel $emailModel, $variables = array())
+	{
+		try
+		{
+			return craft()->email->sendEmail($emailModel, $variables);
+		}
+		catch (\Exception $e)
+		{
+			$message = $e->getMessage();
+
+			$user = craft()->users->getUserByEmail($emailModel->toEmail);
+
+			if (!$user)
+			{
+				$user = new UserModel();
+				$user->email = $emailModel->toEmail;
+				$user->firstName = $emailModel->toFirstName;
+				$user->lastName = $emailModel->toLastName;
+			}
+
+			$emailModel->subject = Craft::t('Sent Error');
+
+			// Call Email service class instead of $this to get sender settings
+			$emailService = new EmailService;
+
+			$event = new Event($emailService, array(
+				'user'       => $user,
+				'emailModel' => $emailModel,
+				'variables'	 => $variables,
+				'error'      => $message
+			));
+
+			$this->onSendEmailError($event);
+
+			return false;
+		}
+	}
+
+	public function runOnSendEmailError(Event $event)
+	{
+		$error = (isset($event->params['error'])) ? $event->params['error']: "";
+
+		$event->params['variables']['sproutemail']['info']['emailType'] = "Sent Error";
+		$event->params['variables']['sproutemail']['info']['source']    = $error;
+
+		sproutEmail()->sentEmails->logSentEmail($event);
+	}
+
+	public function onSendEmailError(Event $event)
+	{
+		$this->raiseEvent('onSendEmailError', $event);
+	}
+
 	/**
 	 * On Send Campaign Event
 	 */
