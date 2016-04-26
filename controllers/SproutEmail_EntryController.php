@@ -319,14 +319,7 @@ class SproutEmail_EntryController extends BaseController
 			// Should we show the Share button too?
 			if ($variables['entry']->id && $variables['entry']->getUrl())
 			{
-				if ($variables['entry']->enabled)
-				{
-					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
-				}
-				else
-				{
-					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
-				}
+				$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 			}
 		}
 		else
