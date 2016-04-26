@@ -10,4 +10,13 @@
 	cursor: pointer;
 }
 
-.sentemail-btngroup .btn { outline: none; }
+.sentemail-btngroup .btn {
+	outline: none;
+}
+
+.status.sent {
+	background-color: #27AE60;
+}
+.status.failed {
+	background-color: #D0021B;
+}

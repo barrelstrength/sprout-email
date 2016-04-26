@@ -7,8 +7,8 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	protected $fields;
 	const ELEMENT_TYPE = 'SproutEmail_SentEmail';
 
-	const SENT   = "on";
-	const FAILED = "off";
+	const SENT   = "sent";
+	const FAILED = "failed";
 
 	/**
 	 * The element type this model is associated with
