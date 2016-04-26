@@ -10,7 +10,6 @@
 
 			<th></th>
 			<th></th>
-
 		</thead>
 		<tbody>
 
@@ -22,7 +21,7 @@
 					{{ entry.getInfoRow() }}
 					>
 				<td>
-					{{ entry.dateCreated|date('M j, Y g:ia') }}
+					<span class="status {{ entry.status }}"></span> {{ entry.dateCreated|date('M j, Y g:ia') }}
 				</td>
 
 				<td>
