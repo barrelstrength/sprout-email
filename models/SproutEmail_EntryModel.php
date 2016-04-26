@@ -266,7 +266,12 @@ class SproutEmail_EntryModel extends BaseElementModel
 	{
 		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
 
-		if ($campaign && $campaign->hasUrls)
+		if ($campaign && $campaign->type == 'notification')
+		{
+			return "sproutemail/notificaton/{slug}";
+		}
+
+		if (($campaign && $campaign->hasUrls))
 		{
 			return $campaign->urlFormat;
 		}

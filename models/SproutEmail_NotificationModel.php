@@ -25,6 +25,7 @@ class SproutEmail_NotificationModel extends BaseModel
 			'options'    => AttributeType::Mixed,
 			'campaign'   => AttributeType::Mixed,
 			'recipients' => AttributeType::Mixed,
+			'urlFormat'  => AttributeType::String
 		);
 	}
 }
