@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m160425_110312_sproutemail_addSentEmailStatusColumn extends BaseMigration
+class m160425_110313_sproutemail_addSentEmailStatusColumn extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -24,6 +24,12 @@ class m160425_110312_sproutemail_addSentEmailStatusColumn extends BaseMigration
 				);
 
 				$this->addColumnAfter('sproutemail_sentemail', 'status', $definition, 'info');
+
+				// Previous status will be set to sent.
+				craft()->db->createCommand()->update('sproutemail_sentemail', array(
+					'status' => SproutEmail_SentEmailModel::SENT
+					)
+				);
 			}
 			else
 			{
