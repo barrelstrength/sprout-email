@@ -67,7 +67,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error($e->getMessage());
+			$this->error($e->getMessage(), 'template');
 		}
 	}
 
@@ -118,7 +118,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error($e->getMessage());
+			$this->error($e->getMessage(), 'template');
 		}
 
 		craft()->path->setTemplatesPath($oldPath);
@@ -188,7 +188,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 * @param mixed $msg
 	 * @param array $vars
 	 */
-	public function error($msg, array $vars = array())
+	public function error($msg, $key = '', array $vars = array())
 	{
 		if (is_string($msg))
 		{
@@ -199,7 +199,14 @@ class SproutEmailService extends BaseApplicationComponent
 			$msg = print_r($msg, true);
 		}
 
-		$this->error = $msg;
+		if (!empty($key))
+		{
+			$this->error[$key] = $msg;
+		}
+		else
+		{
+			$this->error = $msg;
+		}
 
 		SproutEmailPlugin::log($msg, LogLevel::Error);
 	}
@@ -207,9 +214,16 @@ class SproutEmailService extends BaseApplicationComponent
 	/**
 	 * @return mixed error
 	 */
-	public function getError()
+	public function getError($key = '')
 	{
-		return $this->error;
+		if (!empty($key) && isset($this->error[$key]))
+		{
+			return $this->error[$key];
+		}
+		else
+		{
+			return $this->error;
+		}
 	}
 
 	/**
@@ -405,32 +419,39 @@ class SproutEmailService extends BaseApplicationComponent
 		{
 			$message = $e->getMessage();
 
-			$user = craft()->users->getUserByEmail($emailModel->toEmail);
+			sproutEmail()->error($message);
 
-			if (!$user)
-			{
-				$user = new UserModel();
-				$user->email = $emailModel->toEmail;
-				$user->firstName = $emailModel->toFirstName;
-				$user->lastName = $emailModel->toLastName;
-			}
-
-			$emailModel->subject = Craft::t('Sent Error');
-
-			// Call Email service class instead of $this to get sender settings
-			$emailService = new EmailService;
-
-			$event = new Event($emailService, array(
-				'user'       => $user,
-				'emailModel' => $emailModel,
-				'variables'	 => $variables,
-				'error'      => $message
-			));
-
-			$this->onSendEmailError($event);
+			$this->createErrorEmailEvent($message, $emailModel, $variables);
 
 			return false;
 		}
+	}
+
+	public function createErrorEmailEvent($message, EmailModel $emailModel, $variables = array())
+	{
+		$user = craft()->users->getUserByEmail($emailModel->toEmail);
+
+		if (!$user)
+		{
+			$user = new UserModel();
+			$user->email = $emailModel->toEmail;
+			$user->firstName = $emailModel->toFirstName;
+			$user->lastName = $emailModel->toLastName;
+		}
+
+		$emailModel->subject = Craft::t('Sent Error');
+
+		// Call Email service class instead of $this to get sender settings
+		$emailService = new EmailService;
+
+		$event = new Event($emailService, array(
+			'user'       => $user,
+			'emailModel' => $emailModel,
+			'variables'	 => $variables,
+			'error'      => $message
+		));
+
+		$this->onSendEmailError($event);
 	}
 
 	public function runOnSendEmailError(Event $event)

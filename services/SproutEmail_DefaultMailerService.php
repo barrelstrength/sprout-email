@@ -471,7 +471,17 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			return false;
 		}
 
+		// Pass this variable for logging sent error
+		$emailModel = $email;
+
 		$email = $this->renderEmailTemplates($email, $campaign, $entry, $object);
+
+		if (!$email)
+		{
+			// Template error
+			$message = sproutEmail()->getError('template');
+			sproutEmail()->createErrorEmailEvent($message, $emailModel);
+		}
 
 		if (empty($email->body) OR empty($email->htmlBody))
 		{
@@ -516,6 +526,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				{
 					$processedRecipients[] = $email->toEmail;
 				}
+				else
+				{
+					return false;
+				}
 			}
 			catch (\Exception $e)
 			{
@@ -554,7 +568,15 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 					if (!$sent)
 					{
-						throw new Exception(Craft::t('Unable to send notification.'));
+						if (!empty(sproutEmail()->getError()))
+						{
+							$message = sproutEmail()->getError();
+						}
+						else
+						{
+							$message = Craft::t('Unable to send mock notification. Check email settings');
+						}
+						throw new Exception($message);
 					}
 				}
 				catch (\Exception $e)
@@ -829,6 +851,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
 
 		$email->htmlBody = $this->removePlaceholderStyleTags($email->htmlBody, $styleTags);
+
+		if (!empty(sproutEmail()->getError('template')))
+		{
+			return false;
+		}
 
 		return $email;
 	}

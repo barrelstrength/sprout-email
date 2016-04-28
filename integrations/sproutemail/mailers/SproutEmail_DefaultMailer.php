@@ -356,7 +356,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				if (empty($template))
 				{
 					$errors[] = Craft::t('{message} <a href="{url}">Edit Settings</a>', array(
-						'message' => sproutEmail()->getError(),
+						'message' => sproutEmail()->getError('template'),
 						'url' => $notificationEditSettingsUrl
 					));
 				}
