@@ -6,6 +6,10 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	public $saveAsNew;
 	protected $fields;
 	const ELEMENT_TYPE = 'SproutEmail_SentEmail';
+
+	const SENT   = "sent";
+	const FAILED = "failed";
+
 	/**
 	 * The element type this model is associated with
 	 *
@@ -29,7 +33,8 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 			'toEmail'      => array(AttributeType::Mixed, 'required' => false),
 			'body'         => array(AttributeType::Mixed, 'required' => false),
 			'htmlBody'     => array(AttributeType::Mixed, 'required' => false),
-		  'info'         => array(AttributeType::Mixed, 'required' => false)
+		  'info'         => array(AttributeType::Mixed, 'required' => false),
+			'status'       => array(AttributeType::Mixed, 'required' => false, 'default' => 'sent')
 		);
 
 		return array_merge($defaults, $attributes);

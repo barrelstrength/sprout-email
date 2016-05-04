@@ -102,7 +102,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 *
 	 * @throws \Exception
 	 */
-	public function saveSentEmail($emailModel, $info = array())
+	public function saveSentEmail($emailModel, SproutEmail_SentEmailInfoTableModel $info)
 	{
 		// decode subject if it is encoded
 		$isEncoded = preg_match("/=\?UTF-8\?B\?(.*)\?=/", $emailModel->subject, $matches);
@@ -129,6 +129,11 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$sentEmail->getContent()->setAttribute('title', $sentEmail->title);
 
 		$sentEmail->info = JsonHelper::encode($info);
+
+		if ($info->emailType == "Sent Error")
+		{
+			$sentEmail->status = 'failed';
+		}
 
 		// @todo - why do we need to set this to blank?
 		// Where are Global Sets and other Element Types handling this? They do not
