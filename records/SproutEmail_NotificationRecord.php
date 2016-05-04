@@ -29,6 +29,7 @@ class SproutEmail_NotificationRecord extends BaseRecord
 			'eventId'    => array(AttributeType::String, 'require' => true),
 			'campaignId' => array(AttributeType::Number, 'require' => true),
 			'options'    => AttributeType::Mixed,
+			'urlFormat'  => AttributeType::String
 		);
 	}
 }

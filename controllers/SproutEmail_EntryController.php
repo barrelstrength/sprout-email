@@ -319,14 +319,7 @@ class SproutEmail_EntryController extends BaseController
 			// Should we show the Share button too?
 			if ($variables['entry']->id && $variables['entry']->getUrl())
 			{
-				if ($variables['entry']->enabled)
-				{
-					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
-				}
-				else
-				{
-					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
-				}
+				$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
 			}
 		}
 		else
@@ -447,24 +440,18 @@ class SproutEmail_EntryController extends BaseController
 			throw new HttpException(404);
 		}
 
-		if ($entry->enabled)
-		{
-			$this->showEntry($entry);
-		}
-		else
-		{
-			// Create the token and redirect to the entry URL with the token in place
-			$token = craft()->tokens->createToken(
-				array(
-					'action' => 'sproutEmail/entry/viewSharedEntry',
-					'params' => $params
-				)
-			);
+		// Create the token and redirect to the entry URL with the token in place
+		$token = craft()->tokens->createToken(
+			array(
+				'action' => 'sproutEmail/entry/viewSharedEntry',
+				'params' => $params
+			)
+		);
 
-			$url = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
+		$url = UrlHelper::getUrlWithToken($entry->getUrl(), $token);
 
-			craft()->request->redirect($url);
-		}
+		craft()->request->redirect($url);
+
 	}
 
 	/**
