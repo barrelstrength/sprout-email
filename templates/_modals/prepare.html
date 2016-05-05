@@ -1,3 +1,4 @@
+{% import "_includes/forms" as forms %}
 <h1>{{ "Test Notification"|t }}</h1>
 
 <table class="data fullwidth">
@@ -10,7 +11,13 @@
 		<tr>
 			<td><strong>{{ "Sending To"|t }}</strong></td>
 			<td>
-				{{ recipient }}
+				{{ forms.text({
+					id:   "testRecipient",
+					name: "testRecipient",
+					class: "code",
+					value: recipient
+				}) }}
+				<p>{{ "A comma separated list of email addresses."|t }}</p>
 			</td>
 		</tr>
 

@@ -463,7 +463,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 
 		$recipients = $this->prepareRecipients($entry, $object, $useMockData);
-
+		
 		if (empty($recipients))
 		{
 			sproutEmail()->error(Craft::t('No recipients found.'));
@@ -734,7 +734,41 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		// Get recipients for test notifications
 		if ($useMockData)
 		{
-			return $this->getTestRecipients();
+			$recipientInput = craft()->request->getPost('recipient');
+
+			$recipients = explode(",", $recipientInput);
+
+			$invalid = array();
+			$valid   = array();
+
+			if (!empty($recipients))
+			{
+				foreach ($recipients as $recipient)
+				{
+					$email = trim($recipient);
+
+					if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+					{
+						$invalid[] = $email;
+					}
+					else
+					{
+						$recipientEmail = SproutEmail_SimpleRecipientModel::create(array(
+							'email' => $email
+						));
+
+						$valid[] = $recipientEmail;
+					}
+				}
+			}
+
+			if (!empty($invalid))
+			{
+				$invalidEmails = implode("<br />", $invalid);
+				throw new Exception(Craft::t("Invalid email(s) <br /> $invalidEmails." ));
+			}
+
+			return $valid;
 		}
 
 		// Get recipients for live emails
