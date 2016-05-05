@@ -45,9 +45,9 @@ class SproutEmailBaseEvent
 		return str_replace('.', '-', $this->getName());
 	}
 
-	public function getUniqueId($seperator = ":")
+	public function getUniqueId()
 	{
-		$pluginName = (isset($this->pluginName)) ? $this->pluginName . $seperator : '';
+		$pluginName = (isset($this->pluginName)) ? $this->pluginName . ':' : '';
 
 		return $pluginName . $this->getId();
 	}
@@ -182,5 +182,12 @@ class SproutEmailBaseEvent
 	public function getMockedParams()
 	{
 		return array();
+	}
+
+	public function getCssClass()
+	{
+		$pluginName = (isset($this->pluginName)) ? lcfirst($this->pluginName) . '-' : '';
+
+		return $pluginName . $this->getId();
 	}
 }

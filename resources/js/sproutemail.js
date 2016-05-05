@@ -59,7 +59,15 @@ var SproutEmail = {
 		if($('#notificationEvent').val() != "")
 		{
 			var eventVal = $('#notificationEvent').val();
-					eventVal = eventVal.replace(":", "x-x");
+					eventVal = eventVal.replace(":", "-");
+
+			if (eventVal.length <= 1)
+			{
+				eventVal = eventVal.toLowerCase();
+			} else
+			{
+				eventVal = eventVal.substring(0, 1).toLowerCase() + eventVal.substring(1);
+			}
 
 			$('.' + eventVal).show();
 		}

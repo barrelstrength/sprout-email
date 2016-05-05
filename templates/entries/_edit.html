@@ -199,7 +199,7 @@
 								{% if event.getId is defined and event.getOptionsHtml is defined %}
 
 								{# Avoid jquery get object error. #}
-								<div class="field event-options {{ event.getUniqueId('x-x') }}">
+								<div class="field event-options {{ event.getCssClass() }}">
 									<div class="heading">
 										Settings
 									</div>

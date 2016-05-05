@@ -76,7 +76,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 						{
 							$event->setPluginName($plugin);
 
-							$this->availableEvents[$event->getUniqueId()] = $event; // entries-saveEntry
+							$this->availableEvents[$event->getUniqueId()] = $event;
 						}
 					}
 				}
