@@ -824,6 +824,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$htmlBody = $this->addPlaceholderStyleTags($email->htmlBody, $styleTags);
 
+		// Convert html entity special charcters to avoid error on rendering field
+		$email->body = htmlspecialchars_decode($email->body);
+		$htmlBody    = htmlspecialchars_decode($email->htmlBody);
+
 		// Process the results of the template s once more, to render any dynamic objects used in fields
 		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
 		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
