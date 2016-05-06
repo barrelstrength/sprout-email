@@ -463,7 +463,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 
 		$recipients = $this->prepareRecipients($entry, $object, $useMockData);
-		
+
 		if (empty($recipients))
 		{
 			sproutEmail()->error(Craft::t('No recipients found.'));
@@ -867,10 +867,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$htmlBody = $this->addPlaceholderStyleTags($email->htmlBody, $styleTags);
 
-		// Some Twig code in our email fields may need us to decode entities
-		// so the text version of our email doesn't throw errors when we try
-		// to render the field objects. Example: {variable|date("Y/m/d")}
+		// Some Twig code in our email fields may need us to decode
+		// entities so our email doesn't throw errors when we try to
+		// render the field objects. Example: {variable|date("Y/m/d")}
 		$email->body = HtmlHelper::decode($email->body);
+		$htmlBody    = HtmlHelper::decode($htmlBody);
 
 		// Process the results of the template s once more, to render any dynamic objects used in fields
 		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
