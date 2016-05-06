@@ -738,8 +738,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			$recipients = explode(",", $recipientInput);
 
-			$invalid = array();
-			$valid   = array();
+			$invalidRecipients = array();
+			$validRecipients   = array();
 
 			if (!empty($recipients))
 			{
@@ -749,7 +749,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 					if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
 					{
-						$invalid[] = $email;
+						$invalidRecipients[] = $email;
 					}
 					else
 					{
@@ -757,18 +757,21 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 							'email' => $email
 						));
 
-						$valid[] = $recipientEmail;
+						$validRecipients[] = $recipientEmail;
 					}
 				}
 			}
 
-			if (!empty($invalid))
+			if (!empty($invalidRecipients))
 			{
-				$invalidEmails = implode("<br />", $invalid);
-				throw new Exception(Craft::t("Invalid email(s) <br /> $invalidEmails." ));
+				$invalidEmails = implode("<br />", $invalidRecipients);
+
+				throw new Exception(Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+					'invalidEmails' => $invalidEmails
+				)));
 			}
 
-			return $valid;
+			return $validRecipients;
 		}
 
 		// Get recipients for live emails

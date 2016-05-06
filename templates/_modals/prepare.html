@@ -26,21 +26,18 @@
 				}) }}
 			</td>
 		</tr>
-
-		{% if errors is defined and errors is not empty %}
-			<tr>
-				<td colspan="2">
-					<ul class="error bullets">
-						{% for error in errors %}
-							<li>{{ error | raw }}</li>
-						{% endfor %}
-					</ul>
-				</td>
-				<td>&nbsp;</td>
-			</tr>
-		{% endif %}
 		</tbody>
 	</table>
+
+	{% if errors is defined and errors is not empty %}
+		<div>
+			<ul class="error bullets">
+				{% for error in errors %}
+					<li>{{ error | raw }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
 
 	<div class="buttons right">
 		<button id="close" class="btn">{{ "Cancel"|t }}</button>
