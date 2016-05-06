@@ -143,12 +143,14 @@ SproutModal.prototype.create = function (content)
 		}
 
 		$spinner.removeClass("hidden");
-		var data = $self.data();
-		if ($("#testRecipient").val() != "")
-		{
-			var recipient = { recipient : $("#testRecipient").val() };
 
-			data = $.extend(data,recipient);
+		var data = $self.data();
+
+		if ($("#recipients").val() != "")
+		{
+			var recipients = { recipients : $("#recipients").val() };
+
+			data = $.extend(data,recipients);
 		}
 
 		self.postToControllerAction(data, function handleResponse(error, response)
