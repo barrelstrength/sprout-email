@@ -1,36 +1,46 @@
+{% import "_includes/forms" as forms %}
+
 <h1>{{ "Test Notification"|t }}</h1>
 
-<table class="data fullwidth">
-	<tbody>
+<div class="sproutemail-preparemodalbody">
+	<table class="data fullwidth">
+		<tbody>
 		<tr>
-			<td><strong>{{ "Subject Line"|t }}</strong></td>
-			<td>{{ entry.title }}</td>
+			<td><strong>{{ "Subject"|t }}</strong></td>
+			<td class="title">{{ entry.title }}</td>
 		</tr>
 
 		<tr>
-			<td><strong>{{ "Sending To"|t }}</strong></td>
+			<td><strong>{{ "Recipients"|t }}</strong></td>
 			<td>
-				{{ recipient }}
+
+				{% set baseUrl = craft.request.getServerName() %}
+				{% set placeholderEmails = 'email@' ~ baseUrl ~ ', email2@' ~ baseUrl %}
+
+				{{ forms.textarea({
+					id:   "recipients",
+					name: "recipients",
+					class: "code",
+					placeholder: placeholderEmails,
+					value: recipient
+				}) }}
 			</td>
 		</tr>
+		</tbody>
+	</table>
 
-		{% if errors is defined and errors is not empty %}
-			<tr>
-				<td colspan="2">
-					<ul class="error bullets">
-					{% for error in errors %}
-						<li>{{ error | raw }}</li>
-					{% endfor %}
-					</ul>
-				</td>
-				<td>&nbsp;</td>
-			</tr>
-		{% endif %}
-	</tbody>
-</table>
+	{% if errors is defined and errors is not empty %}
+		<div>
+			<ul class="error bullets">
+				{% for error in errors %}
+					<li>{{ error | raw }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
 
-<div class="buttons right">
-	<button id="close" class="btn">{{ "Cancel"|t }}</button>
+	<div class="buttons right">
+		<button id="close" class="btn">{{ "Cancel"|t }}</button>
 
 		<button
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
@@ -45,11 +55,17 @@
 				{{- "Send Campaign"|t -}}
 			{% endif %}
 		</button>
-
+	</div>
 </div>
 
 <style>
-	.error a {
+	.sproutemail-preparemodalbody table.data tbody tr:first-child td.title {
+		padding-left: 22px;
+	}
+	.sproutemail-preparemodalbody .buttons {
+		margin-bottom: 0;
+	}
+	.sproutemail-preparemodalbody .error a {
 		color: inherit;
 		text-decoration: underline;
 	}
