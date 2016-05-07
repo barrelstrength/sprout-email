@@ -76,7 +76,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 						{
 							$event->setPluginName($plugin);
 
-							$this->availableEvents[$event->getUniqueId()] = $event;
+							$this->availableEvents[$event->getEventId()] = $event;
 						}
 					}
 				}
@@ -150,7 +150,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			$notification = new SproutEmail_NotificationRecord;
 		}
 
-		$notification->setAttribute('eventId', $event->getUniqueId());
+		$notification->setAttribute('eventId', $event->getEventId());
 		$notification->setAttribute('campaignId', $campaignId);
 
 		if ($event)

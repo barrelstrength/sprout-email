@@ -33,19 +33,25 @@ class SproutEmailBaseEvent
 		return $this->getTitle();
 	}
 
+	// @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
+	public function getId()
+	{
+		return $this->getEventAction();
+	}
+
 	/**
-	 * Returns the event id to use as the formal identifier
+	 * Returns the event name or ation to use as the formal identifier
 	 *
 	 * @example entries-saveEntry
 	 *
 	 * @return string
 	 */
-	final public function getId()
+	public function getEventAction()
 	{
 		return str_replace('.', '-', $this->getName());
 	}
 
-	public function getUniqueId()
+	public function getEventId()
 	{
 		$pluginName = (isset($this->pluginName)) ? $this->pluginName . ':' : '';
 

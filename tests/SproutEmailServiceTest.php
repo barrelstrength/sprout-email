@@ -103,7 +103,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$importer = new SproutEmail_EntriesSaveEntryEvent;
 		$importer->setPluginName('SproutEmail');
 
-		$selectId = $importer->getUniqueId();
+		$selectId = $importer->getEventId();
 
 		$expected = "SproutEmail:entries-saveEntry";
 

@@ -86,7 +86,7 @@ class SproutEmailVariable
 
 		$notification = sproutEmail()->notifications->getNotification(
 			array(
-				'eventId'    => $event->getUniqueId(),
+				'eventId'    => $event->getEventId(),
 				'campaignId' => $campaignId
 			)
 		);
