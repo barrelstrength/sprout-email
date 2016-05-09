@@ -27,7 +27,7 @@ class SproutEmail_SentEmailRecord extends BaseRecord
 			'body'         => array(AttributeType::Mixed, 'required' => false),
 			'htmlBody'     => array(AttributeType::Mixed, 'required' => false),
 			'info'         => array(AttributeType::Mixed, 'required' => false),
-			'status'       => array(AttributeType::Mixed, 'required' => false, 'default' => 'sent')
+			'status'       => array(AttributeType::String, 'required' => false, 'default' => 'sent')
 		);
 	}
 
