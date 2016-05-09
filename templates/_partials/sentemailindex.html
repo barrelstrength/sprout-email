@@ -10,6 +10,7 @@
 
 			<th></th>
 			<th></th>
+			<th></th>
 		</thead>
 		<tbody>
 
@@ -34,6 +35,11 @@
 
 				<td>
 					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-entry-id="{{ entry.id }}" href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
+				</td>
+				<td>
+					{% if entry.status == 'failed' %}
+			<a class="prepare" data-action="sproutEmail/sentEmail/getResendModal" data-entry-id="{{ entry.id }}" href="{{	url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "Resend"|t }}</a>
+						{% endif %}
 				</td>
 
 				<td>

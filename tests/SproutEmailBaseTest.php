@@ -101,6 +101,7 @@ class SproutEmailBaseTest extends BaseTest
 			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
 			'\\Craft\\SproutEmail_EntryRecord'          => '../records/SproutEmail_EntryRecord.php',
+			'\\Craft\\SproutEmail_SimpleRecipientModel' => '../models/SproutEmail_SimpleRecipientModel.php',
 		);
 
 		foreach ($map as $classPath => $filePath)
