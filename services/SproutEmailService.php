@@ -476,8 +476,6 @@ class SproutEmailService extends BaseApplicationComponent
 			$user->lastName = $emailModel->toLastName;
 		}
 
-		$emailModel->subject = Craft::t('Sent Error');
-
 		// Call Email service class instead of $this to get sender settings
 		$emailService = new EmailService;
 
