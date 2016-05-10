@@ -73,9 +73,9 @@ class SproutEmail_SentEmailController extends BaseController
 
 			if (!empty($invalidRecipients))
 			{
-				$invalidEmails = implode("<br />", $invalidRecipients);
+				$invalidEmails = implode(", ", $invalidRecipients);
 
-				$message = Craft::t("Recipient email addresses do not validate: <br /> $invalidEmails");
+				$message = Craft::t("Recipient email addresses do not validate: $invalidEmails");
 
 				$response = SproutEmail_ResponseModel::createErrorModalResponse(
 					'sproutemail/_modals/export',
@@ -146,18 +146,18 @@ class SproutEmail_SentEmailController extends BaseController
 
 				if (!empty($failedRecipients))
 				{
-					$failedRecipientsText = implode("<br />", $failedRecipients);
+					$failedRecipientsText = implode(", ", $failedRecipients);
 
-					$message = Craft::t("Failed to resend emails: <br /> $failedRecipientsText");
+					$message = Craft::t("Failed to resend emails: $failedRecipientsText");
 
 					throw new Exception($message);
 				}
 
 				if (!empty($processedRecipients))
 				{
-					$processedRecipients = implode("<br />", $processedRecipients);
+					$processedRecipients = implode(", ", $processedRecipients);
 
-					$message = Craft::t("Emails resent: \n $processedRecipients");
+					$message = "Emails resent: $processedRecipients";
 
 					$response = SproutEmail_ResponseModel::createModalResponse(
 						'sproutemail/_modals/export',
