@@ -11,6 +11,8 @@
 
 	<iframe width='100%' src="data:text/html;charset=utf-8,{{ htmlBody|raw|url_encode }}"></iframe>
 
+	{% else %}
+		<h3>{{ "No HTML content"|t }}</h3>
 	{% endif %}
 
 </div>
@@ -19,6 +21,8 @@
 
 	{% if body is not empty %}
 		<pre>{{ body }}</pre>
+	{% else %}
+		<h3>{{ "No Text content"|t }}</h3>
 	{% endif %}
 
 </div>

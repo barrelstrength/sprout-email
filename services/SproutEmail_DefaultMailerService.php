@@ -756,32 +756,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		// Get recipients for test notifications
 		if ($useMockData)
 		{
+			if (empty(craft()->request->getPost('recipients'))) return array();
+
 			$recipients = craft()->request->getPost('recipients');
-			$recipients = explode(",", $recipients);
 
-			$invalidRecipients = array();
-			$validRecipients   = array();
+			$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
 
-			if (!empty($recipients))
-			{
-				foreach ($recipients as $recipient)
-				{
-					$email = trim($recipient);
-
-					if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
-					{
-						$invalidRecipients[] = $email;
-					}
-					else
-					{
-						$recipientEmail = SproutEmail_SimpleRecipientModel::create(array(
-							'email' => $email
-						));
-
-						$validRecipients[] = $recipientEmail;
-					}
-				}
-			}
+			$invalidRecipients = $result['invalid'];
+			$validRecipients   = $result['valid'];
 
 			if (!empty($invalidRecipients))
 			{

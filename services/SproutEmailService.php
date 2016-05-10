@@ -427,6 +427,43 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 	}
 
+	public function getValidAndInvalidRecipients($recipients)
+	{
+		$invalidRecipients = array();
+		$validRecipients   = array();
+		$emails = array();
+
+		if (!empty($recipients))
+		{
+			$recipients = explode(",", $recipients);
+
+			foreach ($recipients as $recipient)
+			{
+				$email = trim($recipient);
+				$emails[] = $email;
+
+				if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+				{
+					$invalidRecipients[] = $email;
+				}
+				else
+				{
+					$recipientEmail = SproutEmail_SimpleRecipientModel::create(array(
+						'email' => $email
+					));
+
+					$validRecipients[] = $recipientEmail;
+				}
+			}
+		}
+
+		return array(
+			'valid'   => $validRecipients,
+			'invalid' => $invalidRecipients,
+			'emails'  => $emails
+		);
+	}
+
 	public function createErrorEmailEvent($message, EmailModel $emailModel, $variables = array())
 	{
 		$user = craft()->users->getUserByEmail($emailModel->toEmail);

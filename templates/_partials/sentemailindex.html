@@ -10,6 +10,7 @@
 
 			<th></th>
 			<th></th>
+			<th></th>
 		</thead>
 		<tbody>
 
@@ -34,6 +35,9 @@
 
 				<td>
 					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-entry-id="{{ entry.id }}" href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
+				</td>
+				<td>
+			<a class="prepare" data-action="sproutEmail/sentEmail/getResendModal" data-entry-id="{{ entry.id }}" href="{{	url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "Resend"|t }}</a>
 				</td>
 
 				<td>

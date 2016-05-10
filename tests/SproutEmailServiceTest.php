@@ -71,6 +71,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 						</html>';
 
 		$styleTags = array();
+
 		$stylesResult = sproutEmail()->defaultmailer->addPlaceholderStyleTags($body, $styleTags);
 
 		$expected = array(
@@ -89,13 +90,39 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 							</body>
 						</html>'
 		);
+
 		$this->assertEquals($expected['body'], $stylesResult);
 
 		$replacedBody = sproutEmail()->defaultmailer->removePlaceholderStyleTags($expected['body'], $styleTags);
 
+		$this->assertEquals($expected['tags'], $styleTags);
+		$this->assertEquals($expected['body'], $stylesResult);
+
+		$replacedBody = sproutEmail()->defaultmailer->removePlaceholderStyleTags($stylesResult, $styleTags);
+
 		$this->assertEquals($body, $replacedBody);
+	}
 
+	public function testCommaEmailInput()
+	{
+		$invalidInput = "email@valid.com, 1email@.com, emailinvalid.com";
 
+		$result = sproutEmail()->getValidAndInvalidRecipients($invalidInput);
+
+		$expected = array("email@valid.com", "1email@.com", "emailinvalid.com");
+
+		$this->assertEquals($expected, $result['emails']);
+
+		$expected = array("1email@.com", "emailinvalid.com");
+
+		$this->assertEquals($expected, $result['invalid']);
+
+		$object = new SproutEmail_SimpleRecipientModel;
+		$object->email = "email@valid.com";
+
+		$expected = array($object);
+
+		$this->assertEquals($expected, $result['valid']);
 	}
 
 	public function testEventIds()

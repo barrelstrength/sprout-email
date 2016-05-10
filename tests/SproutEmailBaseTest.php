@@ -102,6 +102,7 @@ class SproutEmailBaseTest extends BaseTest
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
 			'\\Craft\\SproutEmail_EntryRecord'          => '../records/SproutEmail_EntryRecord.php',
 			'\\Craft\\SproutEmailBaseEvent'             => '../contracts/SproutEmailBaseEvent.php'
+			'\\Craft\\SproutEmail_SimpleRecipientModel' => '../models/SproutEmail_SimpleRecipientModel.php',
 		);
 		$integrationPath = '../integrations/sproutemail/';
 
