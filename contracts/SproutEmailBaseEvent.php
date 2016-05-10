@@ -36,14 +36,25 @@ class SproutEmailBaseEvent
 	// @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
 	public function getId()
 	{
-		craft()->deprecator->log('SproutEmailBaseEvent->getId()', 'SproutEmailBaseEvent getId() method has been
-		deprecated in favor of getEventAction.');
+		craft()->deprecator->log('SproutEmailBaseEvent->getId()', 'The SproutEmailBaseEvent getId() method has been deprecated in favor of getEventAction().');
 
 		return $this->getEventAction();
 	}
 
 	/**
-	 * Returns the event name or ation to use as the formal identifier
+	 * Returns the string we use as the unique ID for the trigger event
+	 *
+	 * @return string
+	 */
+	public function getEventId()
+	{
+		$pluginName = (isset($this->pluginName)) ? $this->pluginName . '-' : '';
+
+		return $pluginName . $this->getEventAction();
+	}
+
+	/**
+	 * Returns the event name or action to use as the formal identifier
 	 *
 	 * @example entries-saveEntry
 	 *
@@ -52,13 +63,6 @@ class SproutEmailBaseEvent
 	public function getEventAction()
 	{
 		return str_replace('.', '-', $this->getName());
-	}
-
-	public function getEventId()
-	{
-		$pluginName = (isset($this->pluginName)) ? $this->pluginName . '-' : '';
-
-		return $pluginName . $this->getEventAction();
 	}
 
 	/**
