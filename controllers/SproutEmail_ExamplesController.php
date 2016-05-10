@@ -402,7 +402,7 @@ Email: {email}',
 
 				if ($campaign->type == 'notification')
 				{
-					sproutEmail()->notifications->save('users-saveUser', $campaign->id);
+					sproutEmail()->notifications->save('SproutEmail-users-saveUser', $campaign->id);
 				}
 			}
 		}
