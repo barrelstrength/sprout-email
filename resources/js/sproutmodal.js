@@ -144,7 +144,16 @@ SproutModal.prototype.create = function (content)
 
 		$spinner.removeClass("hidden");
 
-		self.postToControllerAction($self.data(), function handleResponse(error, response)
+		var data = $self.data();
+
+		if ($("#recipients").val() != "")
+		{
+			var recipients = { recipients : $("#recipients").val() };
+
+			data = $.extend(data,recipients);
+		}
+
+		self.postToControllerAction(data, function handleResponse(error, response)
 		{
 			// Close previous modal
 			modal.hide();

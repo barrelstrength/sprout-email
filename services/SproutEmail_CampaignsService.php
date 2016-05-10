@@ -168,13 +168,18 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		$campaignRecord->template = $campaign->template;
 		$campaignRecord->templateCopyPaste = $campaign->templateCopyPaste;
 
+		if ($campaign->saveAsNew)
+		{
+			$campaignRecord->handle = $campaign->handle . "-1";
+		}
+
 		$campaignRecord->validate();
 		$campaign->addErrors($campaignRecord->getErrors());
 
+		// Get the title back from model because record validate append it with 1
 		if ($campaign->saveAsNew)
 		{
-			$campaign->name = $campaignRecord->name;
-			$campaign->handle = $campaignRecord->handle;
+			$campaignRecord->name = $campaign->name;
 		}
 
 		if (!$campaignRecord->hasErrors())
