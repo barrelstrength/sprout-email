@@ -196,10 +196,10 @@
 							}) }}
 
 							{% for id, event in events %}
-								{% if event.getId is defined and event.getOptionsHtml is defined %}
+								{% if event.getEventAction is defined and event.getOptionsHtml is defined %}
 
 								{# Avoid jquery get object error. #}
-								<div class="field event-options {{ event.getCssClass() }}">
+								<div class="field event-options {{ event.getEventId() }}">
 									<div class="heading">
 										Settings
 									</div>

@@ -86,7 +86,7 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 			{
 				uasort($this->availableEvents, function ($a, $b)
 				{
-					return strlen($a->getId()) > strlen($b->getId());
+					return strlen($a->getEventAction()) > strlen($b->getEventAction());
 				});
 			}
 		}
@@ -449,22 +449,5 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 		}
 
 		return false;
-	}
-
-	public function isNameUniqueId($name)
-	{
-		$separator = ":";
-		if (strpos($name, $separator))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	public function getNameByUniqueId($name)
-	{
-		$nameArray = explode(":", $name);
-		return $nameArray[1];
 	}
 }

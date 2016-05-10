@@ -36,6 +36,9 @@ class SproutEmailBaseEvent
 	// @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
 	public function getId()
 	{
+		craft()->deprecator->log('SproutEmailBaseEvent->getId()', 'SproutEmailBaseEvent getId() method has been
+		deprecated in favor of getEventAction.');
+
 		return $this->getEventAction();
 	}
 
@@ -53,9 +56,9 @@ class SproutEmailBaseEvent
 
 	public function getEventId()
 	{
-		$pluginName = (isset($this->pluginName)) ? $this->pluginName . ':' : '';
+		$pluginName = (isset($this->pluginName)) ? $this->pluginName . '-' : '';
 
-		return $pluginName . $this->getId();
+		return $pluginName . $this->getEventAction();
 	}
 
 	/**
@@ -188,12 +191,5 @@ class SproutEmailBaseEvent
 	public function getMockedParams()
 	{
 		return array();
-	}
-
-	public function getCssClass()
-	{
-		$pluginName = (isset($this->pluginName)) ? lcfirst($this->pluginName) . '-' : '';
-
-		return $pluginName . $this->getId();
 	}
 }
