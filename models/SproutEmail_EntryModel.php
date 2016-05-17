@@ -268,10 +268,10 @@ class SproutEmail_EntryModel extends BaseElementModel
 
 		if ($campaign && $campaign->type == 'notification')
 		{
-			return "sproutemail/notificaton/{slug}";
+			return "sproutemail/preview/{slug}";
 		}
 
-		if (($campaign && $campaign->hasUrls))
+		if ($campaign && $campaign->hasUrls)
 		{
 			return $campaign->urlFormat;
 		}
