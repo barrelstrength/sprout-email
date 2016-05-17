@@ -30,13 +30,13 @@
 	</table>
 
 	{% if errors is defined and errors is not empty %}
-		<div>
+		<p>
 			<ul class="error bullets">
 				{% for error in errors %}
 					<li>{{ error | raw }}</li>
 				{% endfor %}
 			</ul>
-		</div>
+		</p>
 	{% endif %}
 
 	<div class="buttons right">
