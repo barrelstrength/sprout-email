@@ -28,12 +28,12 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		parent::init();
 
-		$this->mailers = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->mailers       = Craft::app()->getComponent('sproutEmail_mailer');
 		$this->defaultmailer = Craft::app()->getComponent('sproutEmail_defaultMailer');
-		$this->entries = Craft::app()->getComponent('sproutEmail_entries');
-		$this->campaigns = Craft::app()->getComponent('sproutEmail_campaigns');
+		$this->entries       = Craft::app()->getComponent('sproutEmail_entries');
+		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
 		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
-		$this->sentEmails = Craft::app()->getComponent('sproutEmail_sentEmails');
+		$this->sentEmails    = Craft::app()->getComponent('sproutEmail_sentEmails');
 	}
 
 	/**
@@ -233,7 +233,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function createHandle($text)
 	{
-		$text = ElementHelper::createSlug($text);
+		$text  = ElementHelper::createSlug($text);
 		$words = explode('-', $text);
 		$start = array_shift($words);
 
@@ -264,7 +264,7 @@ class SproutEmailService extends BaseApplicationComponent
 			return true;
 		}
 
-		$entry = $variables['sproutEmailEntry'];
+		$entry                 = $variables['sproutEmailEntry'];
 		$enableFileAttachments = $entry->enableFileAttachments;
 
 		if (isset($variables['elementEntry']) && $enableFileAttachments)
@@ -279,7 +279,7 @@ class SproutEmailService extends BaseApplicationComponent
 				foreach ($entry->getFieldLayout()->getFields() as $fieldLayoutField)
 				{
 					$field = $fieldLayoutField->getField();
-					$type = $field->getFieldType();
+					$type  = $field->getFieldType();
 
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
@@ -431,7 +431,7 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$invalidRecipients = array();
 		$validRecipients   = array();
-		$emails = array();
+		$emails            = array();
 
 		if (!empty($recipients))
 		{
@@ -439,7 +439,7 @@ class SproutEmailService extends BaseApplicationComponent
 
 			foreach ($recipients as $recipient)
 			{
-				$email = trim($recipient);
+				$email    = trim($recipient);
 				$emails[] = $email;
 
 				if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
@@ -470,10 +470,10 @@ class SproutEmailService extends BaseApplicationComponent
 
 		if (!$user)
 		{
-			$user = new UserModel();
-			$user->email = $emailModel->toEmail;
+			$user            = new UserModel();
+			$user->email     = $emailModel->toEmail;
 			$user->firstName = $emailModel->toFirstName;
-			$user->lastName = $emailModel->toLastName;
+			$user->lastName  = $emailModel->toLastName;
 		}
 
 		// Call Email service class instead of $this to get sender settings
@@ -482,16 +482,21 @@ class SproutEmailService extends BaseApplicationComponent
 		$event = new Event($emailService, array(
 			'user'       => $user,
 			'emailModel' => $emailModel,
-			'variables'	 => $variables,
+			'variables'  => $variables,
 			'error'      => $message
 		));
 
 		$this->onSendEmailError($event);
 	}
 
-	public function runOnSendEmailError(Event $event)
+	/**
+	 * Prepare error data and log sent email
+	 *
+	 * @param Event $event
+	 */
+	public function handleOnSendEmailError(Event $event)
 	{
-		$error = (isset($event->params['error'])) ? $event->params['error']: "";
+		$error = (isset($event->params['error'])) ? $event->params['error'] : "";
 
 		$event->params['variables']['sproutemail']['info']['emailType'] = "Sent Error";
 		$event->params['variables']['sproutemail']['info']['source']    = $error;
@@ -499,6 +504,13 @@ class SproutEmailService extends BaseApplicationComponent
 		sproutEmail()->sentEmails->logSentEmail($event);
 	}
 
+	/**
+	 * On Send Email Error Event
+	 *
+	 * @param Event $event
+	 *
+	 * @throws \CException
+	 */
 	public function onSendEmailError(Event $event)
 	{
 		$this->raiseEvent('onSendEmailError', $event);
@@ -506,6 +518,10 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * On Send Campaign Event
+	 *
+	 * @param Event $event
+	 *
+	 * @throws \CException
 	 */
 	public function onSendCampaign(Event $event)
 	{
@@ -514,6 +530,10 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * On Set Status Event
+	 * 
+	 * @param Event $event
+	 *
+	 * @throws \CException
 	 */
 	public function onSetStatus(Event $event)
 	{

@@ -155,9 +155,7 @@ class SproutEmail_SentEmailController extends BaseController
 
 				if (!empty($processedRecipients))
 				{
-					$processedRecipients = implode(", ", $processedRecipients);
-
-					$message = "Emails resent: $processedRecipients";
+					$message = "Email sent successfully.";
 
 					$response = SproutEmail_ResponseModel::createModalResponse(
 						'sproutemail/_modals/export',

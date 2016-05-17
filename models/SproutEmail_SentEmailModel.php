@@ -4,7 +4,9 @@ namespace Craft;
 class SproutEmail_SentEmailModel extends BaseElementModel
 {
 	public $saveAsNew;
+
 	protected $fields;
+
 	const ELEMENT_TYPE = 'SproutEmail_SentEmail';
 
 	const SENT   = "sent";
@@ -24,7 +26,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	 */
 	public function defineAttributes()
 	{
-		$defaults = parent::defineAttributes();
+		$defaults   = parent::defineAttributes();
 		$attributes = array(
 			'title'        => array(AttributeType::Mixed, 'required' => false),
 			'emailSubject' => array(AttributeType::Mixed, 'required' => false),
@@ -33,7 +35,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 			'toEmail'      => array(AttributeType::Mixed, 'required' => false),
 			'body'         => array(AttributeType::Mixed, 'required' => false),
 			'htmlBody'     => array(AttributeType::Mixed, 'required' => false),
-		  'info'         => array(AttributeType::Mixed, 'required' => false),
+			'info'         => array(AttributeType::Mixed, 'required' => false),
 			'status'       => array(AttributeType::String, 'required' => false, 'default' => 'sent')
 		);
 
