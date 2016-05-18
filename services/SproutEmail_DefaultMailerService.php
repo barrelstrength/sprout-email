@@ -480,7 +480,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		{
 			// Template error
 			$message = sproutEmail()->getError('template');
-			sproutEmail()->createErrorEmailEvent($message, $emailModel);
+
+			sproutEmail()->handleOnSendEmailErrorEvent($message, $emailModel);
 		}
 
 		if (empty($email->body) OR empty($email->htmlBody))
@@ -514,10 +515,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					'processedRecipients' => null,
 					'sproutemail'         => array(
 						'info' => array(
+							'emailType'     => 'Notification',
+							'deliveryType'  => ($useMockData ? 'Test' : 'Live'),
 							'source'        => 'Sprout Email',
 							'sourceVersion' => 'Sprout Email ' . $pluginVersion,
-							'emailType'     => 'Notification',
-							'testEmail'     => $useMockData
 						)
 					)
 				);

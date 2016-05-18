@@ -19,8 +19,8 @@
 			<tr class="infoRow"
 				data-id="{{ entry.id }}"
 				data-name="{{ entry.emailSubject|t }}"
-					{{ entry.getInfoRow() }}
-					>
+				{{ entry.getInfoRow() }}
+				>
 				<td>
 					<span class="status {{ entry.status }}"></span> {{ entry.dateCreated|date('M j, Y g:ia') }}
 				</td>
@@ -62,7 +62,7 @@
 
 {% set js %}
 
-	$.each($('.tableRowInfo'), function () {
+	$('.tableRowInfo').each(function() {
 		new Craft.SproutEmail.TableRowAdditionalInfoIcon(this);
 	});
 

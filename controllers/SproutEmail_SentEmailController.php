@@ -14,9 +14,9 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->requireAjaxRequest();
 
 		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry = sproutEmail()->sentEmails->getSentEmailById($entryId);
+		$entry   = sproutEmail()->sentEmails->getSentEmailById($entryId);
 
-		$body = (!empty($entry->body)) ? $entry->body : null;
+		$body     = (!empty($entry->body)) ? $entry->body : null;
 		$htmlBody = (!empty($entry->htmlBody)) ? $entry->htmlBody : null;
 
 		$content = craft()->templates->render('sproutemail/sentemails/_view', array(
@@ -25,7 +25,7 @@ class SproutEmail_SentEmailController extends BaseController
 			'htmlBody' => $htmlBody
 		));
 
-		$response = new SproutEmail_ResponseModel();
+		$response          = new SproutEmail_ResponseModel();
 		$response->content = $content;
 		$response->success = true;
 
@@ -38,13 +38,13 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->requireAjaxRequest();
 
 		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry = sproutEmail()->sentEmails->getSentEmailById($entryId);
+		$entry   = sproutEmail()->sentEmails->getSentEmailById($entryId);
 
 		$content = craft()->templates->render('sproutemail/_modals/resend', array(
-			'entry'    => $entry
+			'entry' => $entry
 		));
 
-		$response = new SproutEmail_ResponseModel();
+		$response          = new SproutEmail_ResponseModel();
 		$response->content = $content;
 		$response->success = true;
 
@@ -56,13 +56,12 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-
 		$entryId = craft()->request->getRequiredPost('entryId');
-		$entry = sproutEmail()->sentEmails->getSentEmailById($entryId);
+		$entry   = sproutEmail()->sentEmails->getSentEmailById($entryId);
 
 		$recipients = array();
 
-		if(craft()->request->getPost('recipients') !== null)
+		if (craft()->request->getPost('recipients') !== null)
 		{
 			$recipients = craft()->request->getPost('recipients');
 
@@ -80,8 +79,8 @@ class SproutEmail_SentEmailController extends BaseController
 				$response = SproutEmail_ResponseModel::createErrorModalResponse(
 					'sproutemail/_modals/export',
 					array(
-						'entry'    => $entry,
-						'message'  => Craft::t($message),
+						'entry'   => $entry,
+						'message' => Craft::t($message),
 					)
 				);
 
@@ -94,8 +93,6 @@ class SproutEmail_SentEmailController extends BaseController
 		}
 
 		$recipients = $validRecipients;
-
-
 
 		try
 		{
@@ -110,7 +107,7 @@ class SproutEmail_SentEmailController extends BaseController
 				{
 					$recipientEmail = $validRecipient->email;
 
-					$email = new EmailModel();
+					$email            = new EmailModel();
 					$email->toEmail   = $recipientEmail;
 					$email->fromEmail = $entry->fromEmail;
 					$email->subject   = $entry->title;
@@ -125,13 +122,12 @@ class SproutEmail_SentEmailController extends BaseController
 						'processedRecipients' => null,
 						'sproutemail'         => array(
 							'info' => array(
+								'emailType'     => 'Resent Email',
+								'deliveryType'  => 'Live',
 								'source'        => 'Sprout Email',
 								'sourceVersion' => 'Sprout Email ' . $pluginVersion,
-								'emailType'     => 'Resend Failed Email',
-								'testEmail'     => false
 							)
 						)
-
 					);
 
 					if (sproutEmail()->sendEmail($email, $variables))
@@ -160,8 +156,8 @@ class SproutEmail_SentEmailController extends BaseController
 					$response = SproutEmail_ResponseModel::createModalResponse(
 						'sproutemail/_modals/export',
 						array(
-							'entry'         => $entry,
-							'message'       => Craft::t($message)
+							'entry'   => $entry,
+							'message' => Craft::t($message)
 						)
 					);
 
@@ -174,13 +170,12 @@ class SproutEmail_SentEmailController extends BaseController
 			$response = SproutEmail_ResponseModel::createErrorModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'    => $entry,
-					'message'  => Craft::t($e->getMessage()),
+					'entry'   => $entry,
+					'message' => Craft::t($e->getMessage()),
 				)
 			);
 
 			$this->returnJson($response);
 		}
-
 	}
 }
