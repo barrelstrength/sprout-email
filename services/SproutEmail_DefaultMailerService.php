@@ -756,7 +756,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		// Get recipients for test notifications
 		if ($useMockData)
 		{
-			if (empty(craft()->request->getPost('recipients'))) return array();
+			if (empty(craft()->request->getPost('recipients')))
+			{
+				return array();
+			}
 
 			$recipients = craft()->request->getPost('recipients');
 
@@ -819,7 +822,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 * @param SproutEmail_EntryModel    $email
 	 * @param                           $object
 	 */
-	protected function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
+	public function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
 	{
 		// Render Email Entry fields that have dynamic values
 		$email->subject   = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $object);
