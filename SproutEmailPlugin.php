@@ -199,12 +199,12 @@ class SproutEmailPlugin extends BasePlugin
 
 		craft()->on('sproutEmail.onSendEmailError', function (Event $event)
 		{
-			sproutEmail()->handleOnSendEmailError($event);
+			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
 		craft()->on('email.onSendEmailError', function (Event $event)
 		{
-			sproutEmail()->handleOnSendEmailError($event);
+			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
