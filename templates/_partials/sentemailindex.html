@@ -8,8 +8,8 @@
 			<th>{{ "Recipient"|t }}</th>
 			<th>{{ "Subject"|t }}</th>
 
-			<th></th>
-			<th></th>
+			<th>{{ "Preview"|t }}</th>
+			<th>{{ "Resend"|t }}</th>
 			<th></th>
 		</thead>
 		<tbody>
@@ -37,7 +37,7 @@
 					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-entry-id="{{ entry.id }}" href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
 				</td>
 				<td>
-			<a class="prepare" data-action="sproutEmail/sentEmail/getResendModal" data-entry-id="{{ entry.id }}" href="{{	url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "Resend"|t }}</a>
+			<a class="prepare" data-action="sproutEmail/sentEmail/getResendModal" data-entry-id="{{ entry.id }}" href="{{	url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "Review"|t }}</a>
 				</td>
 
 				<td>
