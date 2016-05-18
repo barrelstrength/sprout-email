@@ -328,26 +328,18 @@ class SproutEmail_EntryElementType extends BaseElementType
 		if (!craft()->templates->doesTemplateExist($campaign->template . $extension))
 		{
 			$templateName = $campaign->template . $extension;
-			sproutEmail()->error(
-				Craft::t(
-					"The template '{templateName}' could not be found", array(
-						'templateName' => $templateName
-					)
-				)
-			);
+
+			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
+				'templateName' => $templateName
+			)));
 		}
 
 		$vars = array(
-			'entry'     => $element,
+			'email'     => $element,
 			'campaign'  => $campaign,
-			'recipient' => array(
-				'firstName' => '{firstName}',
-				'lastName'  => '{lastName}',
-				'email'     => '{email}'
-			),
-			'firstName' => '{firstName}',
-			'lastName'  => '{lastName}',
-			'email'     => '{email}'
+		  
+		  // @deprecate in v3 in favor of the `email` variable
+		  'entry'     => $element,
 		);
 
 		return array(
