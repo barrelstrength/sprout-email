@@ -249,14 +249,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getPrepareModalLinkTitle()
-	{
-		return 'Review';
-	}
-
-	/**
 	 * Gives a mailer the ability to register an action to post to when a [preview] modal is launched
 	 *
 	 * @deprecated Deprecated since version 0.8.3 in favor of using ElementTypeModel::routeRequestForMatchedElement()

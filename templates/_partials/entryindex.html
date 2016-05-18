@@ -56,7 +56,9 @@
 					data-mailer="{{ mailer.getId() }}"
 					data-entry-id="{{ entry.id }}"
 					data-campaign-id="{{ campaign.id }}"
-					class="prepare">{{ mailer.getPrepareModalLinkTitle() }}</a>
+					class="prepare">{{ "Prepare"|t }}</a>
+				{% else %}
+					<span class="light">Prepare</span>
 				{% endif %}
 				{% endif %}
 			</td>
