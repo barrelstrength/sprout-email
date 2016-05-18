@@ -3,10 +3,6 @@
 
 {% set title = 'Notifications'|t %}
 
-{% set crumbs = [
-	{ label: "Settings"|t, url: url('sproutemail/settings') }
-] %}
-
 {% set content %}
 
 	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
