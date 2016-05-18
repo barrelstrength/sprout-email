@@ -34,11 +34,11 @@ class SproutEmail_ChartsController extends ElementIndexController
 			->select('COUNT(elements.id) as value');
 
 		// Get the chart data table
-		$dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'sentemail.dateCreated', [
+		$dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'sentemail.dateCreated', array(
 			'intervalUnit' => $intervalUnit,
 			'valueLabel' => Craft::t('Submissions'),
 			'valueType' => 'number',
-		]);
+		));
 
 		// Get the total submissions
 		$total = 0;
@@ -56,7 +56,7 @@ class SproutEmail_ChartsController extends ElementIndexController
 			'formats' => ChartHelper::getFormats(),
 			'orientation' => craft()->locale->getOrientation(),
 			'scale' => $intervalUnit,
-			'localeDefinition' => [],
+			'localeDefinition' => array(),
 		));
 	}
 }
