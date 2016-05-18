@@ -568,9 +568,11 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 					if (!$sent)
 					{
-						if (!empty(sproutEmail()->getError()))
+						$customErrorMessage = sproutEmail()->getError();
+
+						if (!empty($customErrorMessage))
 						{
-							$message = sproutEmail()->getError();
+							$message = $customErrorMessage;
 						}
 						else
 						{
@@ -756,7 +758,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		// Get recipients for test notifications
 		if ($useMockData)
 		{
-			if (empty(craft()->request->getPost('recipients')))
+			$recipients = craft()->request->getPost('recipients');
+
+			if (empty($recipients))
 			{
 				return array();
 			}
@@ -864,7 +868,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$email->htmlBody = $this->removePlaceholderStyleTags($email->htmlBody, $styleTags);
 
-		if (!empty(sproutEmail()->getError('template')))
+		$templateError = sproutEmail()->getError('template');
+
+		if (!empty($templateError))
 		{
 			return false;
 		}
