@@ -101,8 +101,6 @@ class SproutEmail_SentEmailController extends BaseController
 
 			if (!empty($validRecipients))
 			{
-				$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
-
 				foreach ($validRecipients as $validRecipient)
 				{
 					$recipientEmail = $validRecipient->email;
@@ -115,19 +113,17 @@ class SproutEmail_SentEmailController extends BaseController
 					$email->body      = $entry->body;
 					$email->htmlBody  = $entry->htmlBody;
 
+					$infoTable = sproutEmail()->sentEmails->createInfoTableModel('sproutemail', array(
+						'emailType'    => 'Resent Email',
+						'deliveryType' => 'Live'
+					));
+
 					$variables = array(
 						'email'               => $entry,
 						'renderedEmail'       => $email,
 						'recipients'          => $recipients,
 						'processedRecipients' => null,
-						'sproutemail'         => array(
-							'info' => array(
-								'emailType'     => 'Resent Email',
-								'deliveryType'  => 'Live',
-								'source'        => 'Sprout Email',
-								'sourceVersion' => 'Sprout Email ' . $pluginVersion,
-							)
-						)
+						'info'                => $infoTable
 					);
 
 					if (sproutEmail()->sendEmail($email, $variables))
@@ -136,7 +132,7 @@ class SproutEmail_SentEmailController extends BaseController
 					}
 					else
 					{
-						$failedRecipients[] = $email;
+						$failedRecipients[] = $email->toEmail;
 					}
 				}
 

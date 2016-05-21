@@ -500,10 +500,11 @@ class SproutEmailService extends BaseApplicationComponent
 	public function handleLogSentEmailOnSendEmailError(Event $event)
 	{
 		$deliveryStatus = (isset($event->params['deliveryStatus'])) ? $event->params['deliveryStatus'] : null;
-		$message = (isset($event->params['message'])) ? $event->params['message'] : Craft::t("Unknown error");
+		$message        = (isset($event->params['message'])) ? $event->params['message'] : Craft::t("Unknown error");
 
-		$event->params['variables']['sproutemail']['info']['deliveryStatus'] = $deliveryStatus;
-		$event->params['variables']['sproutemail']['info']['message'] = $message;
+		// Add a few additional variables to our info table
+		$event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+		$event->params['variables']['info']->message        = $message;
 
 		sproutEmail()->sentEmails->logSentEmail($event);
 	}

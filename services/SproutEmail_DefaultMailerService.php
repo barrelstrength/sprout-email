@@ -504,7 +504,10 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 			try
 			{
-				$pluginVersion = craft()->plugins->getPlugin('sproutemail')->getVersion();
+				$infoTable = sproutEmail()->sentEmails->createInfoTableModel('sproutemail', array(
+					'emailType'    => 'Notification',
+					'deliveryType' => ($useMockData ? 'Test' : 'Live')
+				));
 
 				$variables = array(
 					'email'               => $entry,
@@ -513,14 +516,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 					'object'              => $object,
 					'recipients'          => $recipients,
 					'processedRecipients' => null,
-					'sproutemail'         => array(
-						'info' => array(
-							'emailType'     => 'Notification',
-							'deliveryType'  => ($useMockData ? 'Test' : 'Live'),
-							'source'        => 'Sprout Email',
-							'sourceVersion' => 'Sprout Email ' . $pluginVersion,
-						)
-					)
+					'info'                => $infoTable
 				);
 
 				if (sproutEmail()->sendEmail($email, $variables))
