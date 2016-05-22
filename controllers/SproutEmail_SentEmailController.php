@@ -174,4 +174,29 @@ class SproutEmail_SentEmailController extends BaseController
 			$this->returnJson($response);
 		}
 	}
+
+	/**
+	 * Get HTML for Info Table HUD
+	 *
+	 * @throws HttpException
+	 */
+	public function actionGetInfoHtml()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$sentEmailId = craft()->request->getRequiredPost('sentEmailId');
+
+		$sentEmail = sproutEmail()->sentEmails->getSentEmailById($sentEmailId);
+
+		$html = craft()->templates->render('sproutemail/sentemails/_hud', array(
+			'sentEmail' => $sentEmail
+		));
+
+		$response = array(
+			'html' => $html
+		);
+
+		$this->returnJson(JsonHelper::encode($response));
+	}
 }

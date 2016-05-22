@@ -2,7 +2,7 @@
 
 {% if loop.first and craft.request.getPost("elementAction") == null %}
 	<div class="tableview">
-	<table id="entries" class="data fullwidth">
+	<table id="sproutemail-sentemails" class="data fullwidth">
 		<thead>
 			<th>{{ "Date Sent"|t }}</th>
 			<th>{{ "Recipient"|t }}</th>
@@ -41,7 +41,7 @@
 				</td>
 
 				<td>
-					<span class="tableRowInfo" data-icon="info" href="#"></span>
+					<span class="tableRowInfo" data-icon="info"></span>
 				</td>
 		</tr>
 
@@ -56,16 +56,3 @@
 </div><!-- tableview  -->
 
 {% endspaceless -%}
-
-{% includeCssResource 'sproutemail/css/sproutemail.css' %}
-{% includeJsResource 'sproutemail/js/TableRowAdditionalInfoIcon.js' %}
-
-{% set js %}
-
-	$('.tableRowInfo').each(function() {
-		new Craft.SproutEmail.TableRowAdditionalInfoIcon(this);
-	});
-
-{% endset %}
-
-{% includeJs js %}

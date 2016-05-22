@@ -1,0 +1,87 @@
+{% set info = sentEmail.info %}
+
+<div style="max-width:600px;">
+	<table class='data fullwidth'>
+		<tbody>
+			<tr>
+				<th colspan="2">
+					<h6>{{ "General Info"|t }}</h6>
+				</th>
+			</tr>
+			<tr>
+				<th>{{ 'Email Type'|t }}</th>
+				<td>{{ info.emailType ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Delivery Type'|t }}</th>
+				<td>{{ info.deliveryType ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Delivery Status'|t }}</th>
+				<td>{{ info.deliveryStatus ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Message'|t }}</th>
+				<td>{{ info.message ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th colspan="2">
+					<h6>{{ "Sender Info"|t }}</h6>
+				</th>
+			</tr>
+			<tr>
+				<th>{{ 'Sender Name'|t }}</th>
+				<td>{{ info.senderName ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Sender Email'|t }}</th>
+				<td>{{ info.senderEmail ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Source'|t }}</th>
+				<td>{{ info.source ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Source Version'|t }}</th>
+				<td>{{ info.sourceVersion ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Craft Version'|t }}</th>
+				<td>{{ info.craftVersion ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'IP Address'|t }}</th>
+				<td>{{ info.ipAddress ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'User Agent'|t }}</th>
+				<td>{{ info.userAgent ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th colspan="2">
+					<h6>{{ "Email Settings"|t }}</h6>
+				</th>
+			</tr>
+			<tr>
+				<th>{{ 'Protocol'|t }}</th>
+				<td>{{ info.protocol ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Host Name'|t }}</th>
+				<td>{{ info.hostName ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Port'|t }}</th>
+				<td>{{ info.port ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'SMTP Secure Transport Type'|t }}</th>
+				<td>{{ info.smtpSecureTransportType ?? '–' }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'Timeout'|t }}</th>
+				<td>{{ info.timeout ?? '–' }}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

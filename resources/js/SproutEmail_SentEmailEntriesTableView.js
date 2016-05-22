@@ -22,6 +22,9 @@ Craft.SproutEmail.SentEmailEntriesTableView = Craft.TableElementIndexView.extend
 	$startDate: null,
 	$endDate: null,
 
+	sentEmailId: null,
+	$icon: null,
+
 	afterInit: function()
 	{
 		this.$explorerContainer = $('<div class="chart-explorer-container"></div>').prependTo(this.$container);
@@ -29,6 +32,8 @@ Craft.SproutEmail.SentEmailEntriesTableView = Craft.TableElementIndexView.extend
 		this.createChartExplorer();
 
 		this.base();
+
+		this.initializeInfoIcons();
 	},
 
 	getStorage: function(key)
@@ -197,7 +202,51 @@ Craft.SproutEmail.SentEmailEntriesTableView = Craft.TableElementIndexView.extend
 				this.$chart.addClass('error');
 			}
 		}, this));
+	},
+
+	initializeInfoIcons: function()
+	{
+		var $infoIcons = $('#sproutemail-sentemails');
+
+		this.addListener($infoIcons, 'click', '.tableRowInfo', 'showHud');
+	},
+
+	showHud: function(event)
+	{
+		this.$icon = $(event.target);
+		this.sentEmailId = this.$icon.closest('.infoRow').data('id');
+
+		var $hudbody = $("<div/>");
+
+		if (this.sentEmailId)
+		{
+			var data = {
+				sentEmailId: this.sentEmailId
+			};
+
+			Craft.postActionRequest('sproutEmail/sentEmail/getInfoHtml', data, $.proxy(function(response, textStatus)
+			{
+				var response = JSON.parse(response);
+
+				console.log(response);
+
+				if (textStatus == 'success')
+				{
+					$(response.html).appendTo($hudbody);
+				}
+				else
+				{
+					console.log('fail');
+				}
+
+			}, this));
+
+			this.hud = new Garnish.HUD(this.$icon, $hudbody, {
+				hudClass: 'hud',
+			});
+		}
 	}
+
 },
 {
 	storage: {},
