@@ -189,69 +189,6 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		return craft()->elements->getElementById($sentEmailId, 'SproutEmail_SentEmail');
 	}
 
-	public function getInfoRow(SproutEmail_SentEmailModel $sentEmail)
-	{
-		$tableInfo = $sentEmail->info;
-
-		if (empty($tableInfo))
-		{
-			return null;
-		}
-
-		$infoMap = array(
-
-			// General Info
-			'emailType'               => 'Email Type',
-			'deliveryType'            => 'Delivery Type',
-			'deliveryStatus'          => 'Delivery Status',
-			'message'                 => 'Message',
-
-			// Sender Info
-			'senderName'              => 'Sender Name',
-			'senderEmail'             => 'Sender Email',
-			'source'                  => 'Source',
-			'sourceVersion'           => 'Source Version',
-			'craftVersion'            => 'Craft Version',
-			'ipAddress'               => 'IP Address',
-			'userAgent'               => 'User Agent',
-
-			// Email Settings
-			'protocol'                => 'Protocol',
-			'hostName'                => 'Host Name',
-			'port'                    => 'Port',
-			'smtpSecureTransportType' => 'SMTP Secure Transport Type',
-			'timeout'                 => 'Timeout',
-		);
-
-		$row     = array();
-		$dataRow = array();
-
-		// @todo - refactor
-		// Update all this info table stuff to be smarter
-		foreach ($infoMap as $infoKey => $infoLabel)
-		{
-			$attribute = str_replace(' ', '', strtolower($infoKey));
-
-			if (isset($tableInfo[$infoKey]) && $tableInfo[$infoKey] != '')
-			{
-				$dataRow[] = "data-" . $attribute . "='" . $tableInfo[$infoKey] . "'";
-				$row[]     = '{ "label":"' . $infoLabel . '","attribute":"' . $attribute . '" }';
-			}
-
-			if ($attribute == 'deliverystatus')
-			{
-				$dataRow[] = "data-" . $attribute . "='" . $sentEmail->status . "'";
-				$row[]     = '{ "label":"' . $infoLabel . '","attribute":"' . $attribute . '" }';
-			}
-		}
-
-		$infoString = "data-inforow='[" . implode(",", $row) . "]'";
-		$dataString = implode(' ', $dataRow);
-		$string     = $infoString . ' ' . $dataString;
-
-		return TemplateHelper::getRaw($string);
-	}
-
 	/**
 	 * Create a SproutEmail_SentEmailInfoTableModel with the Craft and plugin info values
 	 *

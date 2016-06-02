@@ -16,11 +16,7 @@
 
 {% endif %}
 
-			<tr class="infoRow"
-				data-id="{{ entry.id }}"
-				data-name="{{ entry.emailSubject|t }}"
-				{{ entry.getInfoRow() }}
-				>
+			<tr class="infoRow" data-id="{{ entry.id }}">
 				<td>
 					<span class="status {{ entry.status }}"></span> {{ entry.dateCreated|date('M j, Y g:ia') }}
 				</td>
