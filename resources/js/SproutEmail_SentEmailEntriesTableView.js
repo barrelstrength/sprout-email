@@ -228,22 +228,20 @@ Craft.SproutEmail.SentEmailEntriesTableView = Craft.TableElementIndexView.extend
 			{
 				var response = JSON.parse(response);
 
-				console.log(response);
-
 				if (textStatus == 'success')
 				{
 					$(response.html).appendTo($hudbody);
+
+					this.hud = new Garnish.HUD(this.$icon, $hudbody, {
+						hudClass: 'hud',
+					});
 				}
 				else
 				{
-					console.log('fail');
+					console.log('No email info found.');
 				}
 
 			}, this));
-
-			this.hud = new Garnish.HUD(this.$icon, $hudbody, {
-				hudClass: 'hud',
-			});
 		}
 	}
 
