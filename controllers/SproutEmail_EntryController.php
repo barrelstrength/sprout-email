@@ -54,7 +54,7 @@ class SproutEmail_EntryController extends BaseController
 		{
 			$entry->getContent()->title = craft()->templates->renderObjectTemplate($this->campaign->titleFormat, $entry);
 		}
-
+		//Craft::dd($entry->getAttributes());
 		if (sproutEmail()->entries->saveEntry($entry, $this->campaign))
 		{
 			craft()->userSession->setNotice(Craft::t('Entry saved.'));
