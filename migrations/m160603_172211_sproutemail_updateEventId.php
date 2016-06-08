@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m160603_172211_sproutemail_updateEventIdColon extends BaseMigration
+class m160603_172211_sproutemail_updateEventId extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -39,9 +39,13 @@ class m160603_172211_sproutemail_updateEventIdColon extends BaseMigration
 				foreach ($notifications as $notification)
 				{
 					$oldEventId = $notification['eventId'];
-					$newEventId = str_replace(':', '-', $oldEventId);
+					$newEventId = $oldEventId;
 
-					if (in_array($newEventId, $supportedEvents))
+					if (strpos($oldEventId, ':') !== false)
+					{
+						$newEventId = str_replace(':', '-', $oldEventId);
+					}
+					else if (in_array($newEventId, $supportedEvents))
 					{
 						$newEventId = 'SproutEmail-'.$newEventId;
 					}
