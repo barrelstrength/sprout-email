@@ -311,6 +311,12 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
+		// Only expose notification emails that have tokens
+		if ($element->getType() == 'notification' && !craft()->request->getQuery(craft()->config->get('tokenParam')))
+		{
+			throw new HttpException(404);
+		}
+
 		$campaign = sproutEmail()->campaigns->getCampaignById($element->campaignId);
 
 		if (!$campaign)

@@ -1,7 +1,7 @@
 {% set info = sentEmail.info %}
 
 <div style="max-width:600px;">
-	<table class='data fullwidth'>
+	<table class='data fullwidth sproutemail-sentemailinfo'>
 		<tbody>
 			<tr>
 				<th colspan="2">
@@ -62,6 +62,12 @@
 					<h6>{{ "Email Settings"|t }}</h6>
 				</th>
 			</tr>
+			{% if info.mailer %}
+			<tr>
+				<th>{{ 'Mailer'|t }}</th>
+				<td>{{ info.mailer ?? '–' }}</td>
+			</tr>
+			{% else %}
 			<tr>
 				<th>{{ 'Protocol'|t }}</th>
 				<td>{{ info.protocol ?? '–' }}</td>
@@ -82,6 +88,13 @@
 				<th>{{ 'Timeout'|t }}</th>
 				<td>{{ info.timeout ?? '–' }}</td>
 			</tr>
+			{% endif %}
 		</tbody>
 	</table>
 </div>
+
+<style>
+	.sproutemail-sentemailinfo tr th {
+		min-width: 100px;
+	}
+</style>

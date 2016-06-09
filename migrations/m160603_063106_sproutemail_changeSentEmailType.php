@@ -13,33 +13,43 @@ class m160603_063106_sproutemail_changeSentEmailType extends BaseMigration
 	 */
 	public function safeUp()
 	{
-		$tableName = "sproutemail_sentemail";
+		$tableName  = "sproutemail_sentemail";
+		$columnName = "info";
 
-		if ($table = $this->dbConnection->schema->getTable('{{' . $tableName . '}}'))
+		if (craft()->db->tableExists($tableName))
 		{
-			if ($table->getColumn('info') != null)
+			if (craft()->db->columnExists($tableName, $columnName))
 			{
 				$sentEmails = craft()->db->createCommand()
 					->select('id, info')
 					->from($tableName)
 					->queryAll();
 
-				if ($count = count($sentEmails))
+				foreach ($sentEmails as $sentEmail)
 				{
-					foreach ($sentEmails as $sentEmail)
-					{
-						$oldInfo = $sentEmail['info'];
-						$newInfo = str_replace("testEmail", "deliveryType", $oldInfo);
+					$oldInfo = $sentEmail['info'];
+					$newInfo = str_replace("testEmail", "deliveryType", $oldInfo);
+					$data    = json_decode($newInfo, true);
 
-						craft()->db->createCommand()->update($tableName, array(
-							'info' => $newInfo ),
-							'id= :id',
-							array(
-								':id' => $sentEmail['id']
-							)
-						);
+					if (isset($data['deliveryType']) && ($data['deliveryType'] === 'Yes' || $data['deliveryType'] === 'Test Email'))
+					{
+						$data['deliveryType'] = "Test";
 					}
+
+					$newInfo = json_encode($data);
+
+					craft()->db->createCommand()->update($tableName, array(
+						'info' => $newInfo ),
+						'id= :id',
+						array(
+							':id' => $sentEmail['id']
+						)
+					);
 				}
+			}
+			else
+			{
+				SproutEmailPlugin::log("Column `$columnName` does not exists in the `$tableName` table.", LogLevel::Info, true);
 			}
 		}
 
