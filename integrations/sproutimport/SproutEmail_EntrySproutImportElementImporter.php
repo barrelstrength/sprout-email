@@ -6,52 +6,56 @@ class SproutEmail_EntrySproutImportElementImporter extends BaseSproutImportEleme
 	/**
 	 * @return mixed
 	 */
-	public function getModel()
+	public function defineModel()
 	{
-		$model = 'Craft\\SproutEmail_EntryModel';
-
-		return new $model;
+		return 'SproutEmail_EntryModel';
 	}
 
 	public function populateModel($model, $settings)
 	{
-		if ($settings['type'] == "notification")
-		{
-			$campaign = new SproutEmail_CampaignModel();
+		$model = parent::populateModel($model, $settings);
 
-			$campaign->mailer = "defaultmailer";
-		}
-		elseif (isset($settings['campaignId']))
+		if (isset($settings['campaignId']))
 		{
-			$campaign = sproutEmail()->campaigns->getCampaignById($settings['campaignId']);
+			$this->campaignModel = sproutEmail()->campaigns->getCampaignById($settings['campaignId']);
 		}
 		else
 		{
-			throw new \Exception("Specify a campaign id.");
-		}
+			$campaign = new SproutEmail_CampaignModel();
 
-		$campaign->setAttributes($settings);
-
-		if (isset($settings['fieldLayout']) && !empty($settings['fieldLayout']))
-		{
-			foreach ($settings['fieldLayout'] as $name => $fields)
+			if (isset($settings['type']) && $settings['type'] == "notification")
 			{
-				$entryFields = sproutImport()->getFieldIdsByHandle($name, $fields);
-
-				if (!empty($entryFields))
-				{
-					$fieldLayout = craft()->fields->assembleLayout($entryFields);
-					$fieldLayout->type = 'SproutEmail_Campaign';
-					$campaign->setFieldLayout($fieldLayout);
-				}
+				$campaign->mailer = "defaultmailer";
 			}
-		}
 
-		$this->campaignModel  = sproutEmail()->campaigns->saveCampaign($campaign);
+			$campaign->setAttributes($settings);
+
+			if (isset($settings['fieldLayout']) && !empty($settings['fieldLayout']))
+			{
+				$fieldLayouts = array();
+				foreach ($settings['fieldLayout'] as $name => $fields)
+				{
+					$entryFields = sproutImport()->getFieldIdsByHandle($name, $fields);
+
+					if (!empty($entryFields))
+					{
+						$fieldLayouts = array_merge($fieldLayouts, $entryFields);
+					}
+				}
+
+				$fieldLayout = craft()->fields->assembleLayout($fieldLayouts);
+				$fieldLayout->type = 'SproutEmail_Campaign';
+				$campaign->setFieldLayout($fieldLayout);
+			}
+
+			$this->campaignModel  = sproutEmail()->campaigns->saveCampaign($campaign);
+		}
 
 		$model->campaignId = $this->campaignModel->id;
 
 		$this->model = $model;
+
+		return $this->model;
 	}
 
 	/**
@@ -75,6 +79,6 @@ class SproutEmail_EntrySproutImportElementImporter extends BaseSproutImportEleme
 
 		$attributeKeys = array_keys($attributes);
 
-		return array_merge(array("fieldLayout"), $attributeKeys);
+		return array_merge(array("fieldLayout", "campaignId"), $attributeKeys);
 	}
 }
