@@ -154,6 +154,13 @@ class SproutEmailPlugin extends BasePlugin
 					'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
+			'sproutemail/notifications/new' => array(
+				'action' => 'sproutEmail/notification/editNotification'
+			),
+			'sproutemail/notifications/setting/(?P<notificationId>\d+)' => array(
+				'action' => 'sproutEmail/notification/editNotification'
+			),
+
 			'sproutemail/events/new' =>
 			'sproutemail/events/_edit',
 

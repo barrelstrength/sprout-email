@@ -1,0 +1,10 @@
+{% extends "sproutemail/_layouts/elementindex" %}
+
+{% set title = "Notification Emails"|t %}
+{% set elementType = 'SproutEmail_NotificationEmail' %}
+
+{% set extraPageHeaderHtml %}
+<div class="buttons">
+	<a class="btn submit add icon" href="{{ url('sproutemail/notifications/new') }}">{{ "New Notification"|t }}</a>
+</div>
+{% endset %}
