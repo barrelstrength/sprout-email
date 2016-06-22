@@ -26,13 +26,10 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'name'        => AttributeType::String,
-			'handle'      => AttributeType::String,
-			'eventId'     => array(AttributeType::String, 'require' => true),
-			'campaignId'  => array(AttributeType::Number, 'require' => true),
+			'name'        => array('type' => AttributeType::String, 'required' => true, 'minLength' => 2),
+			'template'    => array('type' => AttributeType::String, 'required' => true, 'minLength' => 2),
+			'eventId'     => AttributeType::String,
 			'options'     => AttributeType::Mixed,
-			'urlFormat'   => AttributeType::String,
-			'template'    => AttributeType::String,
 			'sent'        => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			'dateCreated' => AttributeType::DateTime,

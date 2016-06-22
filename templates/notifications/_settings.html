@@ -1,8 +1,69 @@
 {% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
+
 {% set title = "Edit Notification"|t %}
+
+{% set crumbs = [
+{ label: "Settings"|t, url: url('sproutemail/settings') },
+{ label: "Notifications", url: url('sproutemail/settings/notifications') },
+] %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = url("sproutemail/notifications/edit/" ~ redirectEnd) %}
+
+{% block saveButton %}
+
+	<div class="buttons">
+		<div class="btngroup">
+			<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
+
+		</div>
+
+		<div class="secondary-buttons" style="float:left;">
+			{% if notificationId is not null %}
+				<a class="btn icon add submit" href="{{ cpUrl('sproutemail/notification/edit/' ~ notificationId) }}" title="{{ "Edit
+				Notification Email"|t }}" style="float:none;margin:0;">{{ "Edit Notification Email"|t }}</a>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
 
 {% set content %}
 
 
+	<input type="hidden" name="action" value="sproutEmail/notification/saveNotificationSetting">
+	<input type="hidden" name="sproutEmail[id]" value="{{ notificationId }}">
+
+
+	<input type="hidden" name="redirect" value="sproutemail/notifications/edit/{{ redirectEnd }}">
+
+	{{ forms.textField({
+		label: "Notification Name"|t,
+		id: 'name',
+		name: 'sproutEmail[name]',
+		instructions: "Human readable notification name"|t,
+		value: (notification is defined ? notification.name : null),
+		autofocus: true,
+		required: true,
+		first: true,
+		errors: (notification is defined ? notification.getErrors('name') : null)
+	}) }}
+
+	{{ forms.textField({
+		label: "Entry Template"|t,
+		id: 'template',
+		name: 'sproutEmail[template]',
+		instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+		placeholder: 'email/_emailtemplate',
+		value: (notification is defined ? notification.template : null),
+		errors: (notification is defined ? notification.getErrors('template') : null)
+	}) }}
+
+	<hr>
+
+	{% include "_includes/fieldlayoutdesigner" with {fieldLayout: notification.getFieldLayout() } only %}
+
 {% endset %}
+
+{% includeJsResource "sproutemail/js/sproutemail.js" %}

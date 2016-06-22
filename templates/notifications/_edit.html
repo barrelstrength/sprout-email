@@ -1,0 +1,26 @@
+{% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set crumbs = [
+	{ label: "Email"|t, url: url('sproutemail/notifications') },
+] %}
+
+{% set title  = notification is defined and notification.title is not empty ? notification.name : 'Create a new
+Notification Email' %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = url('sproutemail/notification/edit/{id}') %}
+
+{% block saveButton %}
+	<section class="buttons">
+		<div class="btngroup submit">
+			<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+		</div>
+	</section>
+{% endblock %}
+
+{% block main %}
+
+
+{% endblock %}
+
