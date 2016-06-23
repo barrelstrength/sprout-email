@@ -1,11 +1,10 @@
 {% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Edit Notification"|t %}
+{% set title = "Edit Notification Setting"|t %}
 
 {% set crumbs = [
-{ label: "Settings"|t, url: url('sproutemail/settings') },
-{ label: "Notifications", url: url('sproutemail/settings/notifications') },
+{ label: "Notifications", url: url('sproutemail/notifications') }
 ] %}
 
 {% set fullPageForm = true %}
@@ -20,8 +19,9 @@
 		</div>
 
 		<div class="secondary-buttons" style="float:left;">
-			{% if notificationId is not null %}
-				<a class="btn icon add submit" href="{{ cpUrl('sproutemail/notification/edit/' ~ notificationId) }}" title="{{ "Edit
+			{% if (notification.id is not null or newNotification is not null) %}
+				<a class="btn icon edit submit" href="{{ cpUrl('sproutemail/notifications/edit/' ~ redirectEnd) }}" title="{{
+				"Edit
 				Notification Email"|t }}" style="float:none;margin:0;">{{ "Edit Notification Email"|t }}</a>
 			{% endif %}
 		</div>
@@ -33,8 +33,10 @@
 
 
 	<input type="hidden" name="action" value="sproutEmail/notification/saveNotificationSetting">
-	<input type="hidden" name="sproutEmail[id]" value="{{ notificationId }}">
 
+	{% if notification.id is not null %}
+		<input type="hidden" name="sproutEmail[id]" value="{{ notification.id }}">
+	{% endif %}
 
 	<input type="hidden" name="redirect" value="sproutemail/notifications/edit/{{ redirectEnd }}">
 
