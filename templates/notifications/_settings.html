@@ -1,14 +1,22 @@
 {% extends "sproutemail/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Edit Notification Setting"|t %}
+{% if notification.id is null %}
+	{% set redirectEnd = 'new'  %}
+{% else %}
+	{% set redirectEnd = notification.id  %}
+{% endif %}
+
+{% set title  = notification.id is defined and notification.name is not empty ? notification.name ~ ' setting'|t :
+'Create a new
+Notification'|t %}
 
 {% set crumbs = [
 { label: "Notifications", url: url('sproutemail/notifications') }
 ] %}
 
 {% set fullPageForm = true %}
-{% set saveShortcutRedirect = url("sproutemail/notifications/edit/" ~ redirectEnd) %}
+{% set saveShortcutRedirect = url("sproutemail/notifications/setting/" ~ redirectEnd) %}
 
 {% block saveButton %}
 
@@ -38,7 +46,7 @@
 		<input type="hidden" name="sproutEmail[id]" value="{{ notification.id }}">
 	{% endif %}
 
-	<input type="hidden" name="redirect" value="sproutemail/notifications/edit/{{ redirectEnd }}">
+	<input type="hidden" name="redirect" value="sproutemail/notifications/setting/{{ redirectEnd }}">
 
 	{{ forms.textField({
 		label: "Notification Name"|t,

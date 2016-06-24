@@ -80,6 +80,7 @@ class SproutEmailBaseTest extends BaseTest
 		$this->setComponent(craft(), 'sproutEmail_campaign', new SproutEmail_CampaignsService());
 		$this->setComponent(craft(), 'sproutEmail_campaignEntry', new SproutEmail_EntriesService());
 		$this->setComponent(craft(), 'sproutEmail_notifications', new SproutEmail_NotificationsService());
+		$this->setComponent(craft(), 'sproutEmail_notificationEmail', new SproutEmail_NotificationEmailService());
 	}
 
 	public function tearDown()
@@ -98,11 +99,13 @@ class SproutEmailBaseTest extends BaseTest
 			'\\Craft\\SproutEmail_MailerService'        => '../services/SproutEmail_MailerService.php',
 			'\\Craft\\SproutEmail_DefaultMailerService' => '../services/SproutEmail_DefaultMailerService.php',
 			'\\Craft\\SproutEmail_SentEmailsService'    => '../services/SproutEmail_SentEmailsService.php',
+			'\\Craft\\SproutEmail_NotificationEmailService'    => '../services/SproutEmail_NotificationEmailService.php',
 			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
 			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
 			'\\Craft\\SproutEmail_EntryRecord'          => '../records/SproutEmail_EntryRecord.php',
-			'\\Craft\\SproutEmailBaseEvent'             => '../contracts/SproutEmailBaseEvent.php'
+			'\\Craft\\SproutEmailBaseEvent'             => '../contracts/SproutEmailBaseEvent.php',
 			'\\Craft\\SproutEmail_SimpleRecipientModel' => '../models/SproutEmail_SimpleRecipientModel.php',
+			'\\Craft\\SproutEmail_NotificationEmailModel' => '../models/SproutEmail_NotificationEmailModel.php',
 		);
 		$integrationPath = '../integrations/sproutemail/';
 

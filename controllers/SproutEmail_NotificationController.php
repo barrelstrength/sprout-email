@@ -12,34 +12,14 @@ class SproutEmail_NotificationController extends BaseController
 	public function actionEditNotificationSetting(array $variables = array())
 	{
 		$notificationId = null;
-		// Set redirect ending url after saving setting
-		$redirectEnd    = "new";
 
-		if (isset($variables['notificationId']))
-		{
-			$notificationId = $variables['notificationId'];
-			$redirectEnd    = $notificationId;
-		}
+		$session = craft()->httpSession->get('newNotification');
 
-		$newNotification = craft()->httpSession->get('newNotification');
-
-		if (isset($variables['notification']))
-		{
-			$notification = $variables['notification'];
-		}
-		elseif ($newNotification != null)
-		{
-			$notification = unserialize($newNotification);
-		}
-		else
-		{
-			$notification = new SproutEmail_NotificationEmailModel();
-		}
+		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, $session);
 
 		$this->renderTemplate('sproutemail/notifications/_settings', array(
 			'notification'    => $notification,
-			'newNotification' => $newNotification,
-			'redirectEnd'     => $redirectEnd
+			'newNotification' => $session
 		));
 	}
 
@@ -47,17 +27,18 @@ class SproutEmail_NotificationController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$notificationId = craft()->request->getRequiredPost('sproutEmail.id');
+		$inputs = craft()->request->getPost('sproutEmail');
 
-		if ($notificationId != null)
+		if (isset($inputs['id']))
 		{
+			$notificationId = $inputs['id'];
+
 			$notification = craft()->elements->getElementById($notificationId);
 		}
 		else
 		{
 			$notification = new SproutEmail_NotificationEmailModel();
 
-			$inputs = craft()->request->getPost('sproutEmail');
 			$inputs['subjectLine']	= $inputs['name'];
 			$inputs['slug']         = ElementHelper::createSlug($inputs['name']);
 		}
@@ -83,7 +64,7 @@ class SproutEmail_NotificationController extends BaseController
 		}
 		else
 		{
-			craft()->userSession->setError(Craft::t('Unable to save campaign.'));
+			craft()->userSession->setError(Craft::t('Unable to save setting.'));
 
 			craft()->urlManager->setRouteVariables(array(
 				'notification' => $notification
@@ -94,26 +75,16 @@ class SproutEmail_NotificationController extends BaseController
 	public function actionEditNotification(array $variables = array())
 	{
 		$notificationId = null;
-		$redirectEnd    = "new";
 
-		if (isset($variables['notificationId']))
+		$session = craft()->httpSession->get('newNotification');
+
+		if ($session == null && !isset($variables['notificationId']))
 		{
-			$notificationId = $variables['notificationId'];
-			$redirectEnd    = $notificationId;
-		}
-
-		$newNotification = craft()->httpSession->get('newNotification');
-
-		if ($newNotification == null && !isset($variables['notificationId']))
-		{
-			$url = UrlHelper::getCpUrl() . '/sproutemail/notifications/new';
+			$url = UrlHelper::getCpUrl() . '/sproutemail/notifications/setting/new';
 			$this->redirect($url);
 		}
 
-		if ($newNotification != null)
-		{
-			$notification = unserialize($newNotification);
-		}
+		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, $session);
 
 		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
 		$recipientLists = sproutEmail()->entries->getRecipientListsByEntryId($notificationId);
@@ -123,7 +94,6 @@ class SproutEmail_NotificationController extends BaseController
 		$this->renderTemplate('sproutemail/notifications/_edit',  array(
 			'notification'      => $notification,
 			'notificationEvent' => $notificationEvent,
-			'redirectEnd'       => $redirectEnd,
 			'recipientLists'    => $recipientLists,
 			'mailer'            => $mailer,
 			'showPreviewBtn'    => false
@@ -134,9 +104,47 @@ class SproutEmail_NotificationController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$notificationId = craft()->request->getRequiredPost('sproutEmail.id');
+		$inputs = craft()->request->getPost('sproutEmail');
 
-		$newNotification = craft()->httpSession->get('newNotification');
+		$session = craft()->httpSession->get('newNotification');
 
+		if (isset($inputs['id']))
+		{
+			$notificationId = $inputs['id'];
+
+			$notification = craft()->elements->getElementById($notificationId);
+		}
+
+		if ($session != null)
+		{
+			$session = unserialize($session);
+			$notification = $session;
+		}
+
+		$notification->setAttributes($inputs);
+
+		if (empty($inputs['fromName']))
+		{
+			$notification->addError('fromName', Craft::t("From Name cannot be blank."));
+		}
+
+		if($notification->validate(null, false) && $notification->hasErrors() == false)
+		{
+			Craft::dd('valid');
+			$this->redirectToPostedUrl();
+		}
+		else
+		{
+			$this->returnErrors($notification);
+		}
+	}
+
+	private function returnErrors($notification)
+	{
+		craft()->userSession->setError(Craft::t('Unable to save notification email.'));
+
+		craft()->urlManager->setRouteVariables(array(
+			'notification' => $notification
+		));
 	}
 }

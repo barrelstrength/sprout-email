@@ -32,7 +32,7 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 			'options'     => AttributeType::Mixed,
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
-			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
+			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
 			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'        => AttributeType::Bool,
