@@ -188,6 +188,6 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function populateElementModel($row)
 	{
-		return SproutEmail_NotificaitonEmailModel::populateModel($row);
+		return SproutEmail_NotificationEmailModel::populateModel($row);
 	}
 }

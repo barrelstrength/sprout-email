@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_NotificationRecord
+ * Class SproutEmail_NotificationEmailRecord
  *
  * @package Craft
  * --
@@ -33,7 +33,7 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
 			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
-			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
+			'fromEmail'             => array(AttributeType::String, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'        => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),

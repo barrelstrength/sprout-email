@@ -38,10 +38,10 @@ Notification Email'|t %}
 
 {% block main %}
 	<input type="hidden" name="action" value="sproutEmail/notification/saveNotification">
-	<input type="hidden" name="redirect" value="sproutemail/notifications/edit/{{ redirectEnd }}">
+	<input type="hidden" name="redirect" value="sproutemail/notifications/">
 
 	{% if notification.id is not null %}
-		<input type="hidden" name="soroutEmail[id]" value="{{ notification.id }}">
+		<input type="hidden" name="sproutEmail[id]" value="{{ notification.id }}">
 	{% endif %}
 
 	{% if namespace is not defined %}{% set namespace = 'fields' %}{% endif %}
@@ -128,7 +128,7 @@ Notification Email'|t %}
 				{{ forms.textField({
 					label: "Recipients <span class='info'>A comma separated list of email addresses.</span>"|t,
 					placeholder: "user@domain.com, other@domain.com"|t,
-					name: "recipient[onTheFlyRecipients]",
+					name: "sproutEmail[recipients]",
 					class: "code",
 					value: notification is defined ? notification.recipients : "",
 					errors: notification is defined ? notification.getErrors('recipients')
@@ -151,10 +151,10 @@ Notification Email'|t %}
 
 						{{ forms.selectField({
 							id: "notificationEvent",
-							name: "notificationEvent",
+							name: "sproutEmail[eventId]",
 							label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
 							options: [{label: "Select event..."|t, value: null}]|merge(events),
-							value: notificationEvent is defined ? notificationEvent : null,
+							value: notificaion.eventId is defined ? notificaion.eventId : null,
 						}) }}
 
 						{% for id, event in events %}
