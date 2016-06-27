@@ -154,7 +154,7 @@ Notification Email'|t %}
 							name: "sproutEmail[eventId]",
 							label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
 							options: [{label: "Select event..."|t, value: null}]|merge(events),
-							value: notificaion.eventId is defined ? notificaion.eventId : null,
+							value: notification.eventId is defined ? notification.eventId : null,
 						}) }}
 
 						{% for id, event in events %}

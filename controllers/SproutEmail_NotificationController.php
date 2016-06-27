@@ -46,7 +46,6 @@ class SproutEmail_NotificationController extends BaseController
 
 		if($notification->validate())
 		{
-
 			if (craft()->request->getPost('fieldLayout'))
 			{
 				// Set the field layout
@@ -55,9 +54,21 @@ class SproutEmail_NotificationController extends BaseController
 				$fieldLayout->type = 'SproutEmail_Notification';
 
 				$notification->setFieldLayout($fieldLayout);
+
+				// Remove previous field layout
+				craft()->fields->deleteLayoutById($notification->fieldLayoutId);
+
+				craft()->fields->saveLayout($fieldLayout);
 			}
 
-			craft()->httpSession->add('newNotification', serialize($notification));
+			if (isset($inputs['id']))
+			{
+				sproutEmail()->notificationemail->saveNotification($notification);
+			}
+			else
+			{
+				craft()->httpSession->add('newNotification', serialize($notification));
+			}
 
 			$this->redirectToPostedUrl();
 		}
@@ -88,11 +99,8 @@ class SproutEmail_NotificationController extends BaseController
 		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
 		$recipientLists = sproutEmail()->entries->getRecipientListsByEntryId($notificationId);
 
-		$notificationEvent = null;
-
 		$this->renderTemplate('sproutemail/notifications/_edit',  array(
 			'notification'      => $notification,
-			'notificationEvent' => $notificationEvent,
 			'recipientLists'    => $recipientLists,
 			'mailer'            => $mailer,
 			'showPreviewBtn'    => false
@@ -132,6 +140,13 @@ class SproutEmail_NotificationController extends BaseController
 		if($notification->validate(null, false) && $notification->hasErrors() == false)
 		{
 			$notification->clearErrors();
+
+			$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
+			$notification->setContentFromPost($fieldsLocation);
+			$notification->setContentPostLocation($fieldsLocation);
+
+			$notification->getContent()->title = $notification->subjectLine;
 
 			sproutEmail()->notificationemail->saveNotification($notification);
 

@@ -10,7 +10,6 @@ namespace Craft;
  */
 class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 {
-
 	public function getNotificationByVariables($variables, $session = null, $elementService = null)
 	{
 		$notification = null;
@@ -59,8 +58,6 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 		else
 		{
 			$record->subjectLine = $notification->subjectLine;
-
-			$notification->getContent()->title = $notification->subjectLine;
 		}
 
 		if (!empty($notification->getAttributes()))
@@ -74,6 +71,15 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 		if ($record->validate())
 		{
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+			$fieldLayout = $notification->getFieldLayout();
+
+
+
+			// Assign our new layout id info to our
+			// form model and records
+			$notification->fieldLayoutId = $fieldLayout->id;
+			$record->fieldLayoutId       = $fieldLayout->id;
 
 			try
 			{
