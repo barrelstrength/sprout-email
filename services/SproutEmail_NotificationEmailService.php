@@ -42,6 +42,8 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 
 	public function saveNotification(SproutEmail_NotificationEmailModel $notification)
 	{
+		$result = false;
+
 		$isNewEntry  = true;
 		$record = new SproutEmail_NotificationEmailRecord();
 
@@ -74,8 +76,6 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 
 			$fieldLayout = $notification->getFieldLayout();
 
-
-
 			// Assign our new layout id info to our
 			// form model and records
 			$notification->fieldLayoutId = $fieldLayout->id;
@@ -97,16 +97,12 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 							$transaction->commit();
 						}
 
-						return $record;
+						$result = true;
 					}
 					else
 					{
-						Craft::dd('errors');
+						$notification->addErrors($record->getErrors());
 					}
-				}
-				else
-				{
-					Craft::dd($notification->getErrors());
 				}
 			}
 			catch (\Exception $e)
@@ -121,8 +117,9 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 		}
 		else
 		{
-			Craft::dd($record->getErrors());
+			$notification->addErrors($record->getErrors());
 		}
 
+		return $result;
 	}
 }

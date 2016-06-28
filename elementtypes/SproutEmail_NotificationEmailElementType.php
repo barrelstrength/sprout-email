@@ -149,8 +149,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			// Let's make sure mysql knows what we want to sort by
 			if (stripos($criteria->order, 'elements.') === false)
 			{
-				$criteria->order = str_replace('dateCreated', 'sentemail.dateCreated', $criteria->order);
-				$criteria->order = str_replace('dateUpdated', 'sentemail.dateUpdated', $criteria->order);
+				$criteria->order = str_replace('dateCreated', 'notificationemail.dateCreated', $criteria->order);
+				$criteria->order = str_replace('dateUpdated', 'notificationemail.dateUpdated', $criteria->order);
 			}
 		}
 	}

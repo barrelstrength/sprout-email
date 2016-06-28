@@ -61,7 +61,7 @@ class SproutEmail_NotificationController extends BaseController
 				craft()->fields->saveLayout($fieldLayout);
 			}
 
-			if (isset($inputs['id']))
+			if (!empty($notification->id))
 			{
 				sproutEmail()->notificationemail->saveNotification($notification);
 			}
@@ -136,7 +136,7 @@ class SproutEmail_NotificationController extends BaseController
 
 		$notification = $this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail'], $notification);
 
-		// Clear errors to additional errors
+		// Do not clear errors to add additional validation
 		if($notification->validate(null, false) && $notification->hasErrors() == false)
 		{
 			$notification->clearErrors();
@@ -148,12 +148,27 @@ class SproutEmail_NotificationController extends BaseController
 
 			$notification->getContent()->title = $notification->subjectLine;
 
-			sproutEmail()->notificationemail->saveNotification($notification);
+			$result = sproutEmail()->notificationemail->saveNotification($notification);
+
+			if ($result !== false)
+			{
+				craft()->userSession->setNotice(Craft::t('Notification saved.'));
+
+				$_POST['redirect'] = str_replace('new', $notification->id, $_POST['redirect']);
+			}
+			else
+			{
+				craft()->userSession->setError(Craft::t('Unable to save notification.'));
+
+				sproutEmail()->log($notification->getErrors());
+			}
 
 			if (craft()->httpSession->get('newNotification') != null)
 			{
 				craft()->httpSession->remove('newNotification');
 			}
+
+
 
 			$this->redirectToPostedUrl();
 		}

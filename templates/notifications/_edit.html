@@ -16,14 +16,23 @@
 Notification Email'|t %}
 
 {% set fullPageForm = true %}
-{% set saveShortcutRedirect = url('sproutemail/notification/edit/' ~ redirectEnd) %}
+{% set saveShortcutRedirect = url('sproutemail/notifications/edit/' ~ redirectEnd) %}
 
 {% block saveButton %}
 
 	<div class="buttons">
 		<div class="btngroup">
 			<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
-
+			<div class="btn submit menubtn"></div>
+			<div class="menu">
+				<ul>
+					<li><a class="formsubmit" data-redirect="sproutemail/notifications/edit/{{ redirectEnd  }}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+					<li><a class="formsubmit" data-redirect="sproutemail/notifications/setting/new">{{ "Save and add another"|t
+							}}</a></li>
+					<li><a class="formsubmit" data-redirect="sproutemail/notifications/setting/{{ redirectEnd }}">{{ "Save
+					and edit notification settings"|t }}</a></li>
+				</ul>
+			</div>
 		</div>
 
 		<div class="secondary-buttons" style="float:left;">
