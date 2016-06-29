@@ -97,6 +97,11 @@ class SproutEmailVariable
 		}
 	}
 
+	public function getEventSelectedOptions($event, $notification)
+	{
+		return sproutEmail()->notificationemail->getEventSelectedOptions($event, $notification);
+	}
+
 	/**
 	 * Returns a notification entry model if found by campaing id
 	 *

@@ -50,7 +50,14 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'fieldLayout'   => array(
+			'element' => array(
+				static::BELONGS_TO,
+				'ElementRecord',
+				'id',
+				'required' => true,
+				'onDelete' => static::CASCADE
+			),
+			'fieldLayout' => array(
 				static::BELONGS_TO,
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL

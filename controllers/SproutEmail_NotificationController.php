@@ -8,6 +8,9 @@ namespace Craft;
  */
 class SproutEmail_NotificationController extends BaseController
 {
+
+	private $notification;
+
 	public function actionEditNotificationSetting(array $variables = array())
 	{
 		$notificationId = null;
@@ -128,19 +131,23 @@ class SproutEmail_NotificationController extends BaseController
 			$notification = $session;
 		}
 
+		// Make sure to clear previous errors
+		$notification->clearErrors();
+
 		$notification->setAttributes($inputs);
 
-		$notification = $this->validateAttribute('fromName', 'From Name', $inputs['fromName'], $notification, false);
+		$this->notification = $notification;
 
-		$notification = $this->validateAttribute('fromEmail', 'From Email', $inputs['fromEmail'], $notification);
+		$this->validateAttribute('fromName', 'From Name', $inputs['fromName'], false);
 
-		$notification = $this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail'], $notification);
+		$this->validateAttribute('fromEmail', 'From Email', $inputs['fromEmail']);
 
+		$this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail']);
+
+		$notification = $this->notification;
 		// Do not clear errors to add additional validation
 		if($notification->validate(null, false) && $notification->hasErrors() == false)
 		{
-			$notification->clearErrors();
-
 			$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
 
 			$notification->setContentFromPost($fieldsLocation);
@@ -168,8 +175,6 @@ class SproutEmail_NotificationController extends BaseController
 				craft()->httpSession->remove('newNotification');
 			}
 
-
-
 			$this->redirectToPostedUrl();
 		}
 		else
@@ -178,19 +183,20 @@ class SproutEmail_NotificationController extends BaseController
 		}
 	}
 
-	private function validateAttribute($attribute, $label, $value, $notification, $email = true)
+	private function validateAttribute($attribute, $label, $value, $email = true)
 	{
+		// Fix the &#8203 bug to test try the @asdf emails
+		$value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+
 		if (empty($value))
 		{
-			$notification->addError($attribute, Craft::t("$label cannot be blank."));
+			$this->notification->addError($attribute, Craft::t("$label cannot be blank."));
 		}
 
-		if ($email == true && !filter_var($value, FILTER_VALIDATE_EMAIL))
+		if ($email == true && filter_var($value, FILTER_VALIDATE_EMAIL) === false)
 		{
-			$notification->addError($attribute, Craft::t("$label is not a valid email address."));
+		  $this->notification->addError($attribute, Craft::t("$label is not a valid email address."));
 		}
-
-		return $notification;
 	}
 
 	private function returnErrors($notification)

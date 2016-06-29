@@ -164,7 +164,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutEmail_Delete');
+		$deleteAction = craft()->elements->getAction('SproutEmail_NotificationDelete');
 
 		$deleteAction->setParams(
 			array(
@@ -176,7 +176,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
 
 		//return array($deleteAction, $setStatusAction);
-		return array();
+		return array($deleteAction);
 	}
 
 	/**

@@ -175,7 +175,7 @@ Notification Email'|t %}
 										Settings
 									</div>
 									<div class="input">
-										{% set options = null %}
+										{% set options = craft.sproutemail.getEventSelectedOptions(event, notification) %}
 
 										{{ event.getOptionsHtml({
 											forms: forms,
