@@ -106,7 +106,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return array
 	 */
-	public function getRecipientsFromEntryModel(SproutEmail_EntryModel $entry, $element)
+	public function getRecipientsFromEntryModel($entry, $element)
 	{
 		$recipients         = array();
 		$onTheFlyRecipients = $entry->getRecipients($element);
@@ -451,7 +451,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null, $useMockData = false)
+	public function sendNotification($campaign, $object = null, $useMockData = false)
 	{
 		$email = new EmailModel();
 		$entry = $campaign->getNotificationEntry();
@@ -481,7 +481,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			// Template error
 			$message = sproutEmail()->getError('template');
 
-			sproutEmail()->handleOnSendEmailErrorEvent($message, $emailModel);
+		// Double check this may be a bug
+		//	sproutEmail()->handleOnSendEmailErrorEvent($message, $emailModel);
 		}
 
 		if (empty($email->body) OR empty($email->htmlBody))
@@ -823,7 +824,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 * @param SproutEmail_EntryModel    $email
 	 * @param                           $object
 	 */
-	public function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
+	public function renderEmailTemplates(EmailModel $email, $campaign, $entry, $object)
 	{
 		// Render Email Entry fields that have dynamic values
 		$email->subject   = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $object);

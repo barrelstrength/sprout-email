@@ -194,6 +194,8 @@ class SproutEmailPlugin extends BasePlugin
 
 		sproutEmail()->notifications->registerDynamicEventHandler();
 
+		sproutEmail()->notificationemail->registerDynamicEventHandler();
+
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
 
 		if (sproutEmail()->defaultmailer->enableDynamicLists())

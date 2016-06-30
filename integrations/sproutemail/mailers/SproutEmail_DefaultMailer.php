@@ -194,7 +194,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null)
+	public function sendNotification($campaign, $object = null)
 	{
 		return $this->getService()->sendNotification($campaign, $object);
 	}

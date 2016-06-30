@@ -545,4 +545,59 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$this->raiseEvent('onSetStatus', $event);
 	}
+
+	/**
+	 * @param mixed|null $element
+	 *
+	 * @throws \Exception
+	 * @return array|string
+	 */
+	public function getRecipients($element = null, $model)
+		{
+		$recipientsString = $model->getAttribute('recipients');
+
+		// Possibly called from entry edit screen
+		if (is_null($element))
+		{
+			return $recipientsString;
+		}
+
+		// Previously converted to array somehow?
+		if (is_array($recipientsString))
+		{
+			return $recipientsString;
+		}
+
+		// Previously stored as JSON string?
+		if (stripos($recipientsString, '[') === 0)
+		{
+			return JsonHelper::decode($recipientsString);
+		}
+
+		// Still a string with possible twig generator code?
+		if (stripos($recipientsString, '{') !== false)
+		{
+			try
+			{
+				$recipients = craft()->templates->renderObjectTemplate(
+					$recipientsString,
+					$element
+				);
+
+				return array_unique(ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipients)));
+			}
+			catch (\Exception $e)
+			{
+				throw $e;
+			}
+		}
+
+		// Just a regular CSV list
+		if (!empty($recipientsString))
+		{
+			return ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipientsString));
+		}
+
+		return array();
+	}
 }

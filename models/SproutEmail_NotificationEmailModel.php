@@ -11,6 +11,11 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	protected $fields;
 	protected $elementType = 'SproutEmail_NotificationEmail';
 
+	const READY    = 'ready';
+	const PENDING  = 'pending';
+	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
+	const ARCHIVED = 'archived';
+
 	public function defineAttributes()
 	{
 		$defaults = parent::defineAttributes();
@@ -104,5 +109,70 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 		{
 			return '';
 		}
+	}
+
+	// Just return the model for the notification element type feature
+	public function getNotificationEntry()
+	{
+		return $this;
+	}
+
+	/**
+	 * Returns the entry status based on actual values and dynamic checking
+	 *
+	 * Disabled - Entry is disabled
+	 * Archived - Entry has been manually set to archived
+	 * Pending  - Entry is enabled but some requirements are not yet met
+	 * Ready    - Entry is enabled and all requirements are met
+	 *
+	 * @return string
+	 */
+	public function getStatus()
+	{
+		$status = parent::getStatus();
+
+
+		switch ($status)
+		{
+			case BaseElementModel::DISABLED:
+			{
+				return static::DISABLED;
+
+				break;
+			}
+			case BaseElementModel::ENABLED:
+			{
+				if (empty($this->template))
+				{
+					return static::PENDING;
+				}
+
+				return static::READY;
+
+				break;
+			}
+			case BaseElementModel::ARCHIVED:
+			{
+				return static::ARCHIVED;
+
+				break;
+			}
+		}
+	}
+
+	public function isReady()
+	{
+		return (bool) ($this->getStatus() == static::READY);
+	}
+
+	/**
+	 * @param mixed|null $element
+	 *
+	 * @throws \Exception
+	 * @return array|string
+	 */
+	public function getRecipients($element = null)
+	{
+		return sproutEmail()->getRecipients($element, $this);
 	}
 }
