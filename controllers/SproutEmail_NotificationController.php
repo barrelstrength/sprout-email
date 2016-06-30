@@ -207,4 +207,28 @@ class SproutEmail_NotificationController extends BaseController
 			'notification' => $notification
 		));
 	}
+
+	public function actionDeleteNotification()
+	{
+		$this->requirePostRequest();
+
+		$inputs = craft()->request->getPost('sproutEmail');
+
+		if (isset($inputs['id']))
+		{
+			$notificationId = $inputs['id'];
+
+			$notification = craft()->elements->getElementById($notificationId);
+
+			if (sproutEmail()->notificationemail->deleteNotificationById($notificationId))
+			{
+				$this->redirectToPostedUrl($notification);
+			}
+			else
+			{
+				// @TODO - return errors
+				SproutEmailPlugin::log(json_encode($notification->getErrors()));
+			}
+		}
+	}
 }

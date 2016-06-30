@@ -258,29 +258,11 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 
 	public function deleteNotificationById($id)
 	{
-		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-		try
-		{
-			craft()->db->createCommand()->delete('sproutemail_notification_email', array(
-				'id' => $id
-			));
+		$result = false;
 
-			if ($transaction !== null)
-			{
-				$transaction->commit();
-			}
+		$result = craft()->elements->deleteElementById($id);
 
-			return true;
-		}
-		catch (\Exception $e)
-		{
-			if ($transaction !== null)
-			{
-				$transaction->rollback();
-			}
-
-			throw $e;
-		}
+		return $result;
 	}
 
 	public function saveRecipientLists(SproutEmail_NotificationEmailModel $notification)
