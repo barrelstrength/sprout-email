@@ -100,7 +100,7 @@ class SproutEmail_NotificationController extends BaseController
 		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, $session);
 
 		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
-		$recipientLists = sproutEmail()->entries->getRecipientListsByEntryId($notificationId);
+		$recipientLists = sproutEmail()->notificationemail->getRecipientListsByNotificationId($notification->id);
 
 		$this->renderTemplate('sproutemail/notifications/_edit',  array(
 			'notification'      => $notification,

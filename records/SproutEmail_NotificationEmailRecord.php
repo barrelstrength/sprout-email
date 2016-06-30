@@ -61,6 +61,11 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 				static::BELONGS_TO,
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL
+			),
+			'recipientLists' => array(
+				static::HAS_MANY,
+				'SproutEmail_NotificationRecipientListRecord',
+				'notificationId'
 			)
 		);
 	}

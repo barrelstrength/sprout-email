@@ -214,6 +214,9 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 
 					if($record->save(false))
 					{
+						// Save recipient after record is saved to avoid Integrity constraint violation.
+						sproutEmail()->notificationemail->saveRecipientLists($notification);
+
 						if ($transaction && $transaction->active)
 						{
 							$transaction->commit();
@@ -277,6 +280,83 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 			}
 
 			throw $e;
+		}
+	}
+
+	public function saveRecipientLists(SproutEmail_NotificationEmailModel $notification)
+	{
+		$this->deleteRecipientListsById($notification->id);
+
+		$lists = $this->prepareRecipientLists($notification);
+
+		if ($lists && is_array($lists) && count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$record = SproutEmail_NotificationRecipientListRecord::model()->findByAttributes(
+					array(
+						'notificationId' => $notification->id,
+						'list'    => $list->list
+					)
+				);
+
+				$record = $record ? $record : new SproutEmail_NotificationRecipientListRecord();
+
+				$record->notificationId = $list->notificationId;
+				$record->list           = $list->list;
+
+				try
+				{
+					$record->save();
+				}
+				catch (\Exception $e)
+				{
+					throw $e;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public function deleteRecipientListsById($id)
+	{
+		if (($lists = SproutEmail_NotificationRecipientListRecord::model()->findAllByAttributes(array('notificationId' =>
+			                                                                                              $id))))
+		{
+			foreach ($lists as $list)
+			{
+				$list->delete();
+			}
+		}
+	}
+
+	public function prepareRecipientLists(SproutEmail_NotificationEmailModel $notification)
+	{
+		$ids   = craft()->request->getPost('recipient.recipientLists');
+		$lists = array();
+
+		if ($ids)
+		{
+			foreach ($ids as $id)
+			{
+				$model = new SproutEmail_NotificationRecipientListModel();
+
+				$model->setAttribute('notificationId', $notification->id);
+				$model->setAttribute('list', $id);
+
+				$lists[] = $model;
+			}
+		}
+
+		return $lists;
+	}
+
+	public function getRecipientListsByNotificationId($id)
+	{
+		if (($lists = SproutEmail_NotificationRecipientListRecord::model()->findAllByAttributes(array('notificationId' =>
+			                                                                                              $id))))		{
+			return SproutEmail_NotificationRecipientListModel::populateModels($lists);
 		}
 	}
 }
