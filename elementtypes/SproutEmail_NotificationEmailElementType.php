@@ -84,7 +84,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'title'       => array('label' => Craft::t('Title')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'send'        => array('label' => Craft::t('Prepare'))
+			'send'        => array('label' => Craft::t('Send'))
 		);
 
 		return $attributes;
@@ -119,7 +119,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		if ($attribute == 'send')
 		{
-			return 'test';
+			return craft()->templates->render('sproutemail/notifications/_modals/modalLink', array(
+				'notification' => $element
+			));
 		}
 
 		return parent::getTableAttributeHtml($element, $attribute);
@@ -135,6 +137,11 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$showCheckboxes
 	)
 	{
+		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
+		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
+
+		sproutEmail()->mailers->includeMailerModalResources();
+
 		craft()->templates->includeCssResource('sproutemail/css/sproutemail.css');
 
 		return parent::getIndexHtml(

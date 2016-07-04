@@ -231,4 +231,16 @@ class SproutEmail_NotificationController extends BaseController
 			}
 		}
 	}
+
+	public function actionGetPrepareModal()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$notificationId = craft()->request->getRequiredPost('notificationId');
+
+		$response = sproutEmail()->notificationemail->getPrepareModal($notificationId);
+
+		$this->returnJson($response->getAttributes());
+	}
 }

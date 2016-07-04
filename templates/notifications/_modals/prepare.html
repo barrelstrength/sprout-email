@@ -1,0 +1,67 @@
+{% import "_includes/forms" as forms %}
+
+<h1>{{ "Test Notification"|t }}</h1>
+
+<div class="sproutemail-preparemodalbody">
+	<table class="data fullwidth">
+		<tbody>
+		<tr>
+			<td><strong>{{ "Subject"|t }}</strong></td>
+			<td class="title">{{ notification.title }}</td>
+		</tr>
+
+		<tr>
+			<td><strong>{{ "Recipients"|t }}</strong></td>
+			<td>
+
+				{% set baseUrl = craft.request.getServerName() %}
+				{% set placeholderEmails = 'email@' ~ baseUrl ~ ', email2@' ~ baseUrl %}
+
+				{{ forms.textarea({
+					id:   "recipients",
+					name: "recipients",
+					class: "code",
+					placeholder: placeholderEmails,
+					value: recipient
+				}) }}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+	{% if errors is defined and errors is not empty %}
+		<p>
+			<ul class="error bullets">
+				{% for error in errors %}
+		<li>{{ error | raw }}</li>
+	{% endfor %}
+			</ul>
+		</p>
+	{% endif %}
+
+	<div class="buttons right">
+		<button id="close" class="btn">{{ "Cancel"|t }}</button>
+
+		<button
+			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
+			data-mailer="defaultmailer"
+			data-action="sproutEmail/notification/export"
+			data-notification-id="{{ notification.id }}"
+			class="btn submit actions">
+				{{- "Send Test"|t -}}
+		</button>
+	</div>
+</div>
+
+<style>
+	.sproutemail-preparemodalbody table.data tbody tr:first-child td.title {
+		padding-left: 22px;
+	}
+	.sproutemail-preparemodalbody .buttons {
+		margin-bottom: 0;
+	}
+	.sproutemail-preparemodalbody .error a {
+		color: inherit;
+		text-decoration: underline;
+	}
+</style>

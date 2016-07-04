@@ -568,4 +568,65 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 			return SproutEmail_NotificationEmailModel::populateModels($notifications);
 		}
 	}
+
+	public function getPrepareModal($notificationId)
+	{
+		$notification = craft()->elements->getElementById($notificationId);
+
+		$response = new SproutEmail_ResponseModel();
+
+		if ($notification)
+		{
+			try
+			{
+				$response->success = true;
+				$response->content = $this->getPrepareModalHtml($notification);
+
+				return $response;
+			}
+			catch (\Exception $e)
+			{
+				$response->success = false;
+				$response->message = $e->getMessage();
+
+				return $response;
+			}
+		}
+		else
+		{
+			$response->success = false;
+			$response->message = "<p>" . Craft::t('No actions available for this notification.') . "</p>";
+		}
+
+		return $response;
+	}
+
+	public function getPrepareModalHtml(SproutEmail_NotificationEmailModel $notification)
+	{
+		// Display the testToEmailAddress if it exists
+		$email = craft()->config->get('testToEmailAddress');
+
+		if (empty($email))
+		{
+			$email = craft()->userSession->getUser()->email;
+		}
+
+		$errors = array();
+
+		$errors = $this->getErrors($notification, $errors);
+
+		return craft()->templates->render(
+			'sproutemail/notifications/_modals/prepare',
+			array(
+				'notification' => $notification,
+				'recipient'    => $email,
+				'errors'       => $errors
+			)
+		);
+	}
+
+	public function getErrors($notification, $errors)
+	{
+
+	}
 }

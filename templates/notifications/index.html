@@ -9,3 +9,9 @@
 		}}</a>
 </div>
 {% endset %}
+
+{% block content %}
+	{{ parent() }}
+
+	{% include "sproutemail/_modals/box" %}
+{% endblock %}
