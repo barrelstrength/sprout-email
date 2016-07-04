@@ -84,7 +84,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'title'       => array('label' => Craft::t('Title')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-
+			'send'        => array('label' => Craft::t('Prepare'))
 		);
 
 		return $attributes;
@@ -102,8 +102,50 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'title';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
+		$attributes[] = 'send';
 
 		return $attributes;
+	}
+
+	/**
+	 * @inheritDoc IElementType::getTableAttributeHtml()
+	 *
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return string
+	 */
+	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
+	{
+		if ($attribute == 'send')
+		{
+			return 'test';
+		}
+
+		return parent::getTableAttributeHtml($element, $attribute);
+	}
+
+	public function getIndexHtml(
+		$criteria,
+		$disabledElementIds,
+		$viewState,
+		$sourceKey,
+		$context,
+		$includeContainer,
+		$showCheckboxes
+	)
+	{
+		craft()->templates->includeCssResource('sproutemail/css/sproutemail.css');
+
+		return parent::getIndexHtml(
+			$criteria,
+			$disabledElementIds,
+			$viewState,
+			$sourceKey,
+			$context,
+			$includeContainer,
+			$showCheckboxes
+		);
 	}
 
 	/**
