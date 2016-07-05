@@ -1,0 +1,8 @@
+{% if notification.isReady() %}
+	<a href="#"
+		data-action="sproutEmail/notification/getPrepareModal"
+		data-notification-id="{{ notification.id }}"
+		class="prepare">{{ "Prepare"|t }}</a>
+{% else %}
+	<span class="light">Prepare</span>
+{% endif %}

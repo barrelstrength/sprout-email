@@ -243,4 +243,85 @@ class SproutEmail_NotificationController extends BaseController
 
 		$this->returnJson($response->getAttributes());
 	}
+
+	/**
+	 * @throws HttpException
+	 */
+	public function actionExport()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$notification = craft()->elements->getElementById(craft()->request->getPost('notificationId'));
+
+		if ($notification)
+		{
+			try
+			{
+				$response = sproutEmail()->notificationemail->exportEntry($notification);
+
+				if ($response instanceof SproutEmail_ResponseModel)
+				{
+					if ($response->success == true)
+					{
+						if ($response->emailModel != null)
+						{
+							$emailModel = $response->emailModel;
+
+							$event = new Event($this, array(
+								'notificationModel' => $notification,
+								'emailModel' => $emailModel
+							));
+
+							sproutEmail()->onSendCampaign($event);
+						}
+					}
+
+					$this->returnJson($response);
+				}
+
+				$errorMessage = Craft::t('Mailer did not return a valid response model after entry export.');
+
+				if (!$response)
+				{
+					$errorMessage = Craft::t('Unable to send email.');
+				}
+
+				$this->returnJson(
+					SproutEmail_ResponseModel::createErrorModalResponse(
+						'sproutemail/_modals/export',
+						array(
+							'entry'    => $entry,
+							'campaign' => $campaign,
+							'message'  => Craft::t($errorMessage),
+						)
+					)
+				);
+			}
+			catch (\Exception $e)
+			{
+				$this->returnJson(
+					SproutEmail_ResponseModel::createErrorModalResponse(
+						'sproutemail/_modals/export',
+						array(
+							'entry'    => $entry,
+							'campaign' => $campaign,
+							'message'  => Craft::t($e->getMessage()),
+						)
+					)
+				);
+			}
+		}
+
+		$this->returnJson(
+			SproutEmail_ResponseModel::createErrorModalResponse(
+				'sproutemail/_modals/export',
+				array(
+					'entry'    => $entry,
+					'campaign' => !empty($campaign) ? $campaign : null,
+					'message'  => Craft::t('The campaign email you are trying to send is missing.'),
+				)
+			)
+		);
+	}
 }

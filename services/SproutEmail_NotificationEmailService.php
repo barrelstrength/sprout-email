@@ -77,6 +77,7 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 		return isset($this->availableEvents[$id]) ? $this->availableEvents[$id] : $default;
 	}
 
+
 	public function getEventSelectedOptions($event, $notification)
 	{
 		if (craft()->request->getRequestType() == 'POST')
@@ -627,6 +628,124 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 
 	public function getErrors($notification, $errors)
 	{
+		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/notifications/edit/' . $notification->id);
+		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/notifications/setting/' . $notification->id);
 
+		if (empty($notification->template))
+		{
+			$errors[] = Craft::t('Email Template setting is blank. <a href="{url}">Edit Settings</a>.', array(
+				'url' => $notificationEditSettingsUrl
+			));
+		}
+
+		$event = $this->getEventById($notification->eventId);
+
+		if ($event)
+		{
+			$object = $event->getMockedParams();
+
+			$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($notification, $object);
+
+			// @todo - check for text template too
+			$template = sproutEmail()->renderSiteTemplateIfExists($notification->template, $vars);
+
+			if (empty($template))
+			{
+				$errors[] = Craft::t('{message} <a href="{url}">Edit Settings</a>', array(
+					'message' => sproutEmail()->getError('template'),
+					'url' => $notificationEditSettingsUrl
+				));
+			}
+		}
+		else
+		{
+			$errors[] = Craft::t('No Event is selected. <a href="{url}">Edit Notification</a>.', array(
+				'url' => $notificationEditUrl
+			));
+		}
+
+		return $errors;
+	}
+
+	public function exportEntry(SproutEmail_NotificationEmailModel $notification)
+	{
+		$lists          = $this->getRecipientListsByNotificationId($notification->id);
+		$recipientLists = array();
+
+		if (count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$recipientList = sproutEmailDefaultMailer()->getRecipientListById($list->list);
+
+				if ($recipientList)
+				{
+					$recipientLists[] = $recipientList;
+				}
+			}
+		}
+
+		try
+		{
+			$response = $this->sendMockNotification($notification);
+
+			return SproutEmail_ResponseModel::createModalResponse(
+				'sproutemail/notifications/_modals/export',
+				array(
+					'notification' => $notification,
+					'emailModel'   => $response['emailModel'],
+					'recipentLists' => $recipientLists,
+					'message'       => Craft::t('Notification sent successfully.')
+				)
+			);
+		}
+		catch (\Exception $e)
+		{
+			sproutEmail()->error($e->getMessage());
+
+			return SproutEmail_ResponseModel::createErrorModalResponse(
+				'sproutemail/notifications/_modals/export',
+				array(
+					'notification' => $notification,
+					'message'  => Craft::t($e->getMessage()),
+				)
+			);
+		}
+	}
+
+	public function sendMockNotification(SproutEmail_NotificationEmailModel $notification)
+	{
+		$event = $this->getEventById($notification->eventId);
+
+		if ($event)
+		{
+			try
+			{
+				$mailer = sproutEmail()->mailers->getMailerByName("defaultmailer");
+
+				$sent = $mailer->sendNotification($notification, $event->getMockedParams(), true);
+
+				if (!$sent)
+				{
+					$customErrorMessage = sproutEmail()->getError();
+
+					if (!empty($customErrorMessage))
+					{
+						$message = $customErrorMessage;
+					}
+					else
+					{
+						$message = Craft::t('Unable to send mock notification. Check email settings');
+					}
+					throw new Exception($message);
+				}
+			}
+			catch (\Exception $e)
+			{
+				throw $e;
+			}
+		}
+
+		return false;
 	}
 }
