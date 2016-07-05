@@ -12,6 +12,7 @@ class SproutEmail_ExamplesController extends BaseController
 	{
 		$this->_installExampleTemplates();
 		$this->_installExampleData();
+		$this->_installExampleNotificationData();
 
 		craft()->userSession->setNotice(
 			Craft::t('Examples successfully installed.')
@@ -404,6 +405,195 @@ Email: {email}',
 				{
 					sproutEmail()->notifications->save('SproutEmail-users-saveUser', $campaign->id);
 				}
+			}
+		}
+		catch (\Exception $e)
+		{
+			$this->_handleError($e);
+		}
+	}
+
+	private function _installExampleNotificationData()
+	{
+		$currentUser = craft()->userSession->getUser();
+
+		try
+		{
+			$notificaionEmails = array(
+				'welcomeEmail'  =>  array(
+					'name'              => 'Welcome Email - User Notification',
+					'handle'            => 'welcomeEmail',
+					'type'              => 'notification',
+					'mailer'            => 'defaultmailer',
+					'hasUrls'           => false,
+					'urlFormat'         => null,
+					'hasAdvancedTitles' => false,
+					'template'          => 'sproutemail/notification',
+					'templateCopyPaste' => null,
+					'eventId'           => 'SproutEmail-users-saveUser',
+					//'options'           => array(
+					//												'craft' => array(
+					//													'saveUser' => array(
+					//														'whenNew' => 1,
+					//						                'whenUpdated' => '',
+					//						                'userGroupIds' => '*'
+					//						                ),
+					//						              'saveEntry' => array(
+					//														'whenNew' => '',
+					//														'whenUpdated' => '',
+					//						                'sectionIds' => '*'
+					//						               )
+					//							          )
+					//											),
+					'options'           => stripslashes('{"craft":{"saveUser":{"whenNew":1,"whenUpdated":"","userGroupIds":"*"},
+					"saveEntry":{"whenNew":"","whenUpdated":"","sectionIds":"*"}}}'),
+					'title'         => 'Welcome!',
+					'subjectLine'   => 'Welcome!',
+					'recipients'    => $currentUser->email,
+					'fromName'      => craft()->getSiteName(),
+					'fromEmail'      => $currentUser->email,
+					'replyToEmail'  => $currentUser->email
+				)
+				//,
+				//array(
+				//	'name'              => 'New User - Admin Notification',
+				//	'handle'            => 'newUserEmail',
+				//	'type'              => 'notification',
+				//	'mailer'            => 'defaultmailer',
+				//	'hasUrls'           => false,
+				//	'urlFormat'         => null,
+				//	'hasAdvancedTitles' => false,
+				//	'template'          => 'sproutemail/notification',
+				//	'templateCopyPaste' => null,
+				//	'eventId'           => 'SproutEmail-users-saveUser'
+				//)
+			);
+
+			$fieldSettings = array(
+				'welcomeEmail'      => array(
+					'Content' => array(
+						array(
+							'name'         => 'HTML Email Body',
+							'handle'       => 'exampleHtmlEmailBody',
+							'instructions' => '',
+							'type'         => 'RichText',
+							'required'     => 1,
+							'settings'     => array(
+								'configFile'  => '',
+								'cleanupHtml' => '1',
+								'purifyHtml'  => '',
+								'columnType'  => 'text'
+							)
+						),
+						array(
+							'name'     => 'Text Email Body',
+							'handle'   => 'exampleTextEmailBody',
+							'type'     => 'PlainText',
+							'required' => 1,
+							'settings' => array(
+								'placeholder' => '',
+								'maxLength'   => '',
+								'multiline'   => 1,
+								'initialRows' => 4,
+							)
+						)
+					)
+				)
+				//,
+				//'newUserEmail'      => array(
+				//	'Content' => array(
+				//		array(
+				//			'name'         => 'HTML Email Body',
+				//			'handle'       => 'exampleHtmlEmailBody',
+				//			'instructions' => '',
+				//			'type'         => 'RichText',
+				//			'required'     => 1,
+				//			'settings'     => array(
+				//				'configFile'  => '',
+				//				'cleanupHtml' => '1',
+				//				'purifyHtml'  => '',
+				//				'columnType'  => 'text'
+				//			)
+				//		),
+				//		array(
+				//			'name'     => 'Text Email Body',
+				//			'handle'   => 'exampleTextEmailBody',
+				//			'type'     => 'PlainText',
+				//			'required' => 1,
+				//			'settings' => array(
+				//				'placeholder' => '',
+				//				'maxLength'   => '',
+				//				'multiline'   => 1,
+				//				'initialRows' => 4,
+				//			)
+				//		)
+				//	)
+				//),
+			);
+
+			foreach ($notificaionEmails as $handle => $notificaionEmail)
+			{
+				$fieldLayout = array();
+				$requiredFields = array();
+
+				$tabs = $fieldSettings[$handle];
+
+				// Ensure we have a Field Group to save our Fields
+				if (!$sproutEmailFieldGroup = $this->_createFieldGroup())
+				{
+					SproutEmailPlugin::log('Could not save the Sprout Email Examples field group.', LogLevel::Warning);
+
+					craft()->userSession->setError(Craft::t('Unable to create examples. Field group not saved.'));
+
+					return false;
+				}
+
+				foreach ($tabs as $tabName => $newFields)
+				{
+					foreach ($newFields as $newField)
+					{
+						if (!$field = craft()->fields->getFieldByHandle($newField['handle']))
+						{
+							$field = new FieldModel();
+							$field->groupId = $sproutEmailFieldGroup->id;
+							$field->name = $newField['name'];
+							$field->handle = $newField['handle'];
+							$field->type = $newField['type'];
+							$field->required = $newField['required'];
+							$field->settings = $newField['settings'];
+
+							// Save our field
+							craft()->fields->saveField($field);
+						}
+
+						$fieldLayout[$tabName][] = $field->id;
+
+						if ($field->required)
+						{
+							$requiredFields[] = $field->id;
+						}
+					}
+				}
+
+				// Set the field layout
+				$fieldLayout = craft()->fields->assembleLayout($fieldLayout, $requiredFields);
+
+				$fieldLayout->type = 'SproutEmail_Notification';
+
+				$notification = new SproutEmail_NotificationEmailModel();
+
+				$notification->setAttributes($notificaionEmail);
+
+				$notification->setFieldLayout($fieldLayout);
+
+				// Remove previous field layout
+				craft()->fields->deleteLayoutById($notification->fieldLayoutId);
+
+				craft()->fields->saveLayout($fieldLayout);
+
+				$notification->getContent()->title = $notificaionEmail['title'];
+
+				sproutEmail()->notificationemail->saveNotification($notification);
 			}
 		}
 		catch (\Exception $e)
