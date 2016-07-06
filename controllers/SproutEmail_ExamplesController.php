@@ -419,54 +419,88 @@ Email: {email}',
 
 		try
 		{
-			$notificaionEmails = array(
+			$notificationEmails = array(
 				'welcomeEmail'  =>  array(
 					'name'              => 'Welcome Email - User Notification',
 					'handle'            => 'welcomeEmail',
 					'type'              => 'notification',
-					'mailer'            => 'defaultmailer',
 					'hasUrls'           => false,
 					'urlFormat'         => null,
 					'hasAdvancedTitles' => false,
 					'template'          => 'sproutemail/notification',
 					'templateCopyPaste' => null,
 					'eventId'           => 'SproutEmail-users-saveUser',
-					//'options'           => array(
-					//												'craft' => array(
-					//													'saveUser' => array(
-					//														'whenNew' => 1,
-					//						                'whenUpdated' => '',
-					//						                'userGroupIds' => '*'
-					//						                ),
-					//						              'saveEntry' => array(
-					//														'whenNew' => '',
-					//														'whenUpdated' => '',
-					//						                'sectionIds' => '*'
-					//						               )
-					//							          )
-					//											),
-					'options'           => stripslashes('{"craft":{"saveUser":{"whenNew":1,"whenUpdated":"","userGroupIds":"*"},
-					"saveEntry":{"whenNew":"","whenUpdated":"","sectionIds":"*"}}}'),
+					'options'           => array(
+																	'craft' => array(
+																		'saveUser' => array(
+																			'whenNew' => 1,
+											                'whenUpdated' => '',
+											                'userGroupIds' => '*'
+											                ),
+											              'saveEntry' => array(
+																			'whenNew' => '',
+																			'whenUpdated' => '',
+											                'sectionIds' => '*'
+											               )
+												          )
+																),
 					'title'         => 'Welcome!',
 					'subjectLine'   => 'Welcome!',
 					'recipients'    => $currentUser->email,
 					'fromName'      => craft()->getSiteName(),
-					'fromEmail'      => $currentUser->email,
-					'replyToEmail'  => $currentUser->email
-				)
-				//,
-				//array(
-				//	'name'              => 'New User - Admin Notification',
-				//	'handle'            => 'newUserEmail',
-				//	'type'              => 'notification',
-				//	'mailer'            => 'defaultmailer',
-				//	'hasUrls'           => false,
-				//	'urlFormat'         => null,
-				//	'hasAdvancedTitles' => false,
-				//	'template'          => 'sproutemail/notification',
-				//	'templateCopyPaste' => null,
-				//	'eventId'           => 'SproutEmail-users-saveUser'
-				//)
+					'fromEmail'     => $currentUser->email,
+					'replyToEmail'  => $currentUser->email,
+					'locale'        => $currentUser->locale,
+					'htmlBody'      => '<p>Thanks for becoming a member.</p>
+															<ul>
+																<li>Username: <strong>{username}</strong></li>
+																<li>Email: <strong>{email}</strong></li>
+															</ul>',
+					'textBody'      => 'Thanks for becoming a member.
+Username: {username}
+Email: {email}'
+				),
+				'newUserEmail'  =>  array(
+					'name'              => 'New User - Admin Notification',
+					'handle'            => 'welcomeEmail',
+					'type'              => 'notification',
+					'hasUrls'           => false,
+					'urlFormat'         => null,
+					'hasAdvancedTitles' => false,
+					'template'          => 'sproutemail/notification',
+					'templateCopyPaste' => null,
+					'eventId'           => 'SproutEmail-users-saveUser',
+					'options'           => array(
+						'craft' => array(
+							'saveUser' => array(
+								'whenNew' => 1,
+								'whenUpdated' => '',
+								'userGroupIds' => '*'
+							),
+							'saveEntry' => array(
+								'whenNew' => '',
+								'whenUpdated' => '',
+								'sectionIds' => '*'
+							)
+						)
+					),
+					'title'         => 'New User - Admin Notification',
+					'subjectLine'   => 'New User - Admin Notification',
+					'recipients'    => $currentUser->email,
+					'fromName'      => craft()->getSiteName(),
+					'fromEmail'     => $currentUser->email,
+					'replyToEmail'  => $currentUser->email,
+					'locale'        => $currentUser->locale,
+					'htmlBody'      => '<p>A new user has been created:</p>
+<ul>
+	<li>Username: <strong>{username}</strong></li>
+	<li>Email: <strong>{email}</strong></li>
+</ul>',
+					'textBody'      => 'A new user has been created:
+
+Username: {username}
+Email: {email}',
+				),
 			);
 
 			$fieldSettings = array(
@@ -498,40 +532,39 @@ Email: {email}',
 							)
 						)
 					)
-				)
-				//,
-				//'newUserEmail'      => array(
-				//	'Content' => array(
-				//		array(
-				//			'name'         => 'HTML Email Body',
-				//			'handle'       => 'exampleHtmlEmailBody',
-				//			'instructions' => '',
-				//			'type'         => 'RichText',
-				//			'required'     => 1,
-				//			'settings'     => array(
-				//				'configFile'  => '',
-				//				'cleanupHtml' => '1',
-				//				'purifyHtml'  => '',
-				//				'columnType'  => 'text'
-				//			)
-				//		),
-				//		array(
-				//			'name'     => 'Text Email Body',
-				//			'handle'   => 'exampleTextEmailBody',
-				//			'type'     => 'PlainText',
-				//			'required' => 1,
-				//			'settings' => array(
-				//				'placeholder' => '',
-				//				'maxLength'   => '',
-				//				'multiline'   => 1,
-				//				'initialRows' => 4,
-				//			)
-				//		)
-				//	)
-				//),
+				),
+				'newUserEmail'      => array(
+					'Content' => array(
+						array(
+							'name'         => 'HTML Email Body',
+							'handle'       => 'exampleHtmlEmailBody',
+							'instructions' => '',
+							'type'         => 'RichText',
+							'required'     => 1,
+							'settings'     => array(
+								'configFile'  => '',
+								'cleanupHtml' => '1',
+								'purifyHtml'  => '',
+								'columnType'  => 'text'
+							)
+						),
+						array(
+							'name'     => 'Text Email Body',
+							'handle'   => 'exampleTextEmailBody',
+							'type'     => 'PlainText',
+							'required' => 1,
+							'settings' => array(
+								'placeholder' => '',
+								'maxLength'   => '',
+								'multiline'   => 1,
+								'initialRows' => 4,
+							)
+						)
+					)
+				),
 			);
 
-			foreach ($notificaionEmails as $handle => $notificaionEmail)
+			foreach ($notificationEmails as $handle => $notificationEmail)
 			{
 				$fieldLayout = array();
 				$requiredFields = array();
@@ -582,7 +615,7 @@ Email: {email}',
 
 				$notification = new SproutEmail_NotificationEmailModel();
 
-				$notification->setAttributes($notificaionEmail);
+				$notification->setAttributes($notificationEmail);
 
 				$notification->setFieldLayout($fieldLayout);
 
@@ -591,7 +624,15 @@ Email: {email}',
 
 				craft()->fields->saveLayout($fieldLayout);
 
-				$notification->getContent()->title = $notificaionEmail['title'];
+				$notification->getContent()->title = $notificationEmail['title'];
+
+				$notification->getContent()->exampleHtmlEmailBody = $notificationEmail['htmlBody'];
+
+				$notification->getContent()->exampleTextEmailBody = $notificationEmail['textBody'];
+
+
+				// need to pass post request for $event->prepareOptions() in saveNotification
+				$_POST['rules'] = $notificationEmail['options'];
 
 				sproutEmail()->notificationemail->saveNotification($notification);
 			}
