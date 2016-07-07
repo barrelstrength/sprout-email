@@ -36,9 +36,9 @@ class SproutEmail_EntryRecord extends BaseRecord
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignId'            => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
-			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
-			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
-			'replyToEmail'          => array(AttributeType::String, 'required' => false),
+			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => true),
+			'fromEmail'             => array(AttributeType::Email, 'required' => true),
+			'replyToEmail'          => array(AttributeType::Email, 'required' => true),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 		);
