@@ -311,12 +311,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		// Only expose notification emails that have tokens
-		if ($element->getType() == 'notification' && !craft()->request->getQuery(craft()->config->get('tokenParam')))
-		{
-			throw new HttpException(404);
-		}
-
 		$campaign = sproutEmail()->campaigns->getCampaignById($element->campaignId);
 
 		if (!$campaign)
@@ -338,6 +332,24 @@ class SproutEmail_EntryElementType extends BaseElementType
 			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
 				'templateName' => $templateName
 			)));
+		}
+
+		// Use buffer script on showEntry for notification to render mock object
+		if ($element->getType() == 'notification')
+		{
+			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+
+			if ($event)
+			{
+				$object = $event->getMockedParams();
+			}
+
+			// Create an Email so we can render our template
+			$email = new EmailModel();
+
+			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $element, $object);
+
+			sproutEmail()->notifications->showBufferEntry($email);
 		}
 
 		$vars = array(

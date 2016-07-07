@@ -450,4 +450,23 @@ class SproutEmail_NotificationsService extends BaseApplicationComponent
 
 		return false;
 	}
+
+	public function showBufferEntry(EmailModel $email, $template = 'html')
+	{
+		if ($template == 'txt')
+		{
+			$output = $email->body;
+		}
+		else
+		{
+			$output = $email->htmlBody;
+		}
+
+		// Output it into a buffer, in case TasksService wants to close the connection prematurely
+		ob_start();
+		echo $output;
+
+		// End the request
+		craft()->end();
+	}
 }

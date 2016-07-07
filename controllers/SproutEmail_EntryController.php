@@ -316,10 +316,19 @@ class SproutEmail_EntryController extends BaseController
 				'campaignId' => $variables['campaign']->id
 			);
 
+			$status = $variables['entry']->getStatus();
+
 			// Should we show the Share button too?
 			if ($variables['entry']->id && $variables['entry']->getUrl())
 			{
-				$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
+				if ($status != 'ready')
+				{
+					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/entry/shareEntry', $shareParams);
+				}
+				else
+				{
+					$variables['shareUrl'] = $variables['entry']->getUrl();
+				}
 			}
 		}
 		else
@@ -431,7 +440,7 @@ class SproutEmail_EntryController extends BaseController
 
 		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $entry, $object);
 
-		$this->showEntry($email);
+		sproutEmail()->notifications->showBufferEntry($email);
 	}
 
 	/**
@@ -506,35 +515,12 @@ class SproutEmail_EntryController extends BaseController
 
 			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $entry, $object);
 
-			$this->showEntry($email);
+			sproutEmail()->notifications->showBufferEntry($email);
 		}
 		else
 		{
 			throw new HttpException(404);
 		}
-	}
-
-	// @todo - we are overriding the renderTemplate behavior here because we've already
-	// processed the HTML we want to output via the renderEmailTemplates method and
-	// now we just need to output the template we already have on the EmailModel. Consider
-	// if this is the best implementation.
-	public function showEntry(EmailModel $email, $template = 'html')
-	{
-		if ($template == 'txt')
-		{
-			$output = $email->body;
-		}
-		else
-		{
-			$output = $email->htmlBody;
-		}
-
-		// Output it into a buffer, in case TasksService wants to close the connection prematurely
-		ob_start();
-		echo $output;
-
-		// End the request
-		craft()->end();
 	}
 
 	/**
