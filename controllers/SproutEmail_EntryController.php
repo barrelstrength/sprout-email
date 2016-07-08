@@ -33,6 +33,8 @@ class SproutEmail_EntryController extends BaseController
 	{
 		$this->requirePostRequest();
 
+		$inputs = craft()->request->getPost('sproutEmail');
+
 		$campaignId     = craft()->request->getRequiredPost('campaignId');
 		$this->campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
 
@@ -55,7 +57,13 @@ class SproutEmail_EntryController extends BaseController
 			$entry->getContent()->title = craft()->templates->renderObjectTemplate($this->campaign->titleFormat, $entry);
 		}
 
-		if (sproutEmail()->entries->saveEntry($entry, $this->campaign))
+		$entry = $this->validateAttribute('fromName', 'From Name', $inputs['fromName'], $entry, false);
+
+		$entry = $this->validateAttribute('fromEmail', 'From Email', $inputs['fromEmail'], $entry);
+
+		$entry = $this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail'], $entry);
+
+		if (sproutEmail()->entries->saveEntry($entry, $this->campaign) && $entry->hasErrors() == false)
 		{
 			craft()->userSession->setNotice(Craft::t('Entry saved.'));
 
@@ -596,6 +604,24 @@ class SproutEmail_EntryController extends BaseController
 
 		$entry->setContentFromPost($fieldsLocation);
 		$entry->setContentPostLocation($fieldsLocation);
+
+		return $entry;
+	}
+
+	private function validateAttribute($attribute, $label, $value, $entry, $email = true)
+	{
+		// Fix the &#8203 bug to test try the @asdf emails
+		$value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+
+		if (empty($value))
+		{
+			$entry->addError($attribute, Craft::t("$label cannot be blank."));
+		}
+
+		if ($email == true && filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+		{
+			$entry->addError($attribute, Craft::t("$label is not a valid email address."));
+		}
 
 		return $entry;
 	}
