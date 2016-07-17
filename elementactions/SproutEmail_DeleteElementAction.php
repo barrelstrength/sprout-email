@@ -32,8 +32,8 @@ class SproutEmail_DeleteElementAction extends DeleteElementAction
 
 					if ($campaign->type == 'email')
 					{
-						$entry = sproutEmail()->entries->getEntryById($id);
-						sproutEmail()->entries->deleteEntry($entry);
+						$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($id);
+						sproutEmail()->campaignEmails->deleteCampaignEmail($campaignEmail);
 					}
 				}
 			}

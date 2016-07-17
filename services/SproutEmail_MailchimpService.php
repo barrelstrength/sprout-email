@@ -131,7 +131,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function previewEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$type = craft()->request->getPost('contentType', 'html');
 		$ext = strtolower($type) == 'text' ? '.txt' : null;
@@ -142,7 +142,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 * @param bool                      $sendOnExport
 	 *
@@ -151,7 +151,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 	 */
 	public function export($entry, $campaign, $sendOnExport = true)
 	{
-		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists = sproutEmail()->campaignEmails->getRecipientListsByEntryId($entry->id);
 		$campaignIds = array();
 
 		if ($lists && count($lists))

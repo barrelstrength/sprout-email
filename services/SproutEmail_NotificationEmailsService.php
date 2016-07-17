@@ -2,13 +2,13 @@
 namespace Craft;
 
 /**
- * The NotificationEmail API service layer
+ * The Notification Email API service layer
  *
- * Class SproutEmail_NotificationsService
+ * Class SproutEmail_NotificationEmailsService
  *
  * @package Craft
  */
-class SproutEmail_NotificationEmailService extends BaseApplicationComponent
+class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 {
 	/**
 	 * @var SproutEmailBaseEvent[]
@@ -186,7 +186,7 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 					if($record->save(false))
 					{
 						// Save recipient after record is saved to avoid Integrity constraint violation.
-						sproutEmail()->notificationemail->saveRecipientLists($notification);
+						sproutEmail()->notificationEmails->saveRecipientLists($notification);
 
 						if ($transaction && $transaction->active)
 						{
@@ -644,7 +644,7 @@ class SproutEmail_NotificationEmailService extends BaseApplicationComponent
 		{
 			$object = $event->getMockedParams();
 
-			$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($notification, $object);
+			$vars = sproutEmail()->notificationEmails->prepareNotificationTemplateVariables($notification, $object);
 
 			// @todo - check for text template too
 			$template = sproutEmail()->renderSiteTemplateIfExists($notification->template, $vars);

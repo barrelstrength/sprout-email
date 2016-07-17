@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryModel
+ * Class SproutEmail_CampaignEmailModel
  *
  * @package Craft
  * --
@@ -18,11 +18,11 @@ namespace Craft;
  * @property string      $slug
  * @property bool        $enabled
  */
-class SproutEmail_EntryModel extends BaseElementModel
+class SproutEmail_CampaignEmailModel extends BaseElementModel
 {
 	public $saveAsNew;
 	protected $fields;
-	protected $elementType = 'SproutEmail_Entry';
+	protected $elementType = 'SproutEmail_CampaignEmail';
 
 	/**
 	 * @todo Clean up this status mess before 0.9.0
@@ -240,7 +240,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $this->id);
+		$url = UrlHelper::getCpUrl('sproutemail/campaigns/edit/' . $this->id);
 
 		return $url;
 	}

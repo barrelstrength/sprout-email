@@ -6,35 +6,34 @@ namespace Craft;
  *
  * @package Craft
  *
- * @property SproutEmail_MailerService        $mailers
- * @property SproutEmail_EntriesService       $entries
- * @property SproutEmail_CampaignsService     $campaigns
- * @property SproutEmail_NotificationsService $notifications
- * @property SproutEmail_DefaultMailerService $defaultmailer
- * @property SproutEmail_SentEmailsService    $sentEmails
+ * @property SproutEmail_MailerService             $mailers
+ * @property SproutEmail_CampaignsService          $campaigns
+ * @property SproutEmail_CampaignEmailsService     $campaignEmails
+ * @property SproutEmail_NotificationEmailsService $notificationEmails
+ * @property SproutEmail_DefaultMailerService      $defaultmailer
+ * @property SproutEmail_SentEmailsService         $sentEmails
  */
 class SproutEmailService extends BaseApplicationComponent
 {
 	public $mailers;
-	public $entries;
 	public $campaigns;
-	public $notifications;
+	public $campaignEmails;
+	public $notificationEmails;
 	public $defaultmailer;
 	public $sentEmails;
-	public $notificationemail;
+
 	private $error = '';
 
 	public function init()
 	{
 		parent::init();
 
-		$this->mailers       = Craft::app()->getComponent('sproutEmail_mailer');
-		$this->defaultmailer = Craft::app()->getComponent('sproutEmail_defaultMailer');
-		$this->entries       = Craft::app()->getComponent('sproutEmail_entries');
-		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
-		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
-		$this->sentEmails    = Craft::app()->getComponent('sproutEmail_sentEmails');
-		$this->notificationemail = Craft::app()->getComponent('sproutEmail_notificationEmail');
+		$this->mailers            = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->defaultmailer      = Craft::app()->getComponent('sproutEmail_defaultMailer');
+		$this->campaignEmails     = Craft::app()->getComponent('sproutEmail_campaignEmails');
+		$this->campaigns          = Craft::app()->getComponent('sproutEmail_campaigns');
+		$this->notificationEmails = Craft::app()->getComponent('sproutEmail_notificationEmails');
+		$this->sentEmails         = Craft::app()->getComponent('sproutEmail_sentEmails');
 	}
 
 	/**

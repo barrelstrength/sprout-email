@@ -155,7 +155,7 @@ Notification Email'|t %}
 
 				<div id="tab-sproutemail-rules" class="pane meta">
 
-					{% set events = craft.sproutemail.getAvailableEvents() %}
+					{% set events = craft.sproutEmail.getAvailableEvents() %}
 
 					{% if events|length %}
 
@@ -176,7 +176,7 @@ Notification Email'|t %}
 										Settings
 									</div>
 									<div class="input">
-										{% set options = craft.sproutemail.getEventSelectedOptions(event, notification) %}
+										{% set options = craft.sproutEmail.getEventSelectedOptions(event, notification) %}
 
 										{{ event.getOptionsHtml({
 											forms: forms,

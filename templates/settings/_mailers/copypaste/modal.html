@@ -1,15 +1,15 @@
 
 <h1>Copy/Paste Mailer</h1>
-<h2>{{ entry.title }}</h2>
+<h2>{{ email.title }}</h2>
 <hr>
-<p>Your entry is ready to export</p>
+<p>Your email is ready to export</p>
 
 <div class="buttons right">
 	<button
 		id="render"
 		data-mailer="copypaste"
-		data-action="sproutEmail/entry/export"
-		data-entry-id="{{ entry.id }}"
+		data-action="sproutEmail/campaignEmails/export"
+		data-email-id="{{ email.id }}"
 		data-campaign-id="{{ campaign.id }}"
 		class="btn submit action">{{ "Render"|t }}</button>
 </div>

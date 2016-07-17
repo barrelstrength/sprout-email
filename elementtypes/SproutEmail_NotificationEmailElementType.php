@@ -48,9 +48,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_EntryModel::ENABLED  => Craft::t('Enabled'),
-			SproutEmail_EntryModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled')
+			SproutEmail_CampaignEmailModel::ENABLED  => Craft::t('Enabled'),
+			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
 		);
 	}
 
@@ -65,7 +65,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		$sources = array(
 			'*' => array(
-				'label' => Craft::t('All Notification Emails'),
+				'label' => Craft::t('All Notifications'),
 			),
 		);
 
@@ -190,7 +190,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		// join with the table
 		$query->addSelect('notificationemail.*')
-			->join('sproutemail_notification_email notificationemail', 'notificationemail.id = elements.id');
+			->join('sproutemail_notifications notificationemail', 'notificationemail.id = elements.id');
 
 		if ($criteria->order)
 		{

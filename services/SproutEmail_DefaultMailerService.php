@@ -81,13 +81,13 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param int $entryId
+	 * @param int $emailId
 	 *
 	 * @return SproutEmail_DefaultMailerRecipientListModel[]|null
 	 */
-	public function getRecipientListsByEntryId($entryId)
+	public function getRecipientListsByEntryId($emailId)
 	{
-		if (($record = SproutEmail_EntryRecipientListRecord::model()->with('entry')->findAll('entryId=:entryId', array(':entryId' => $entryId))))
+		if (($record = SproutEmail_EntryRecipientListRecord::model()->with('entry')->findAll('entryId=:entryId', array(':entryId' => $emailId))))
 		{
 			$recipientLists = array();
 
@@ -101,7 +101,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel $entry
+	 * @param SproutEmail_CampaignEmailModel $entry
 	 * @param mixed                  $element
 	 *
 	 * @return array
@@ -454,7 +454,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	public function sendNotification($campaign, $object = null, $useMockData = false)
 	{
 		$email = new EmailModel();
-		$entry = $campaign->getNotificationEntry();
+		$entry = $campaign->getNotificationEmail();
 
 		// Allow disabled emails to be tested
 		if (!$entry->isReady() AND !$useMockData)
@@ -545,18 +545,18 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @throws \Exception
 	 *
 	 * @return bool
 	 */
-	public function sendMockNotification(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function sendMockNotification(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		if ($campaign->isNotification())
 		{
-			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+			$event = sproutEmail()->notificationEmails->getEventByCampaignId($campaign->id);
 
 			if ($event)
 			{
@@ -590,14 +590,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @throws \Exception
 	 *
 	 * @return bool
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$response = array();
 
@@ -784,7 +784,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		// Get recipients for live emails
 		$entryRecipients   = $this->getRecipientsFromEntryModel($entry, $object);
-		$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($object);
+		$dynamicRecipients = sproutEmail()->notificationEmails->getDynamicRecipientsFromElement($object);
 		$listRecipients    = $this->getListRecipients($entry);
 
 		$recipients = array_merge(
@@ -821,7 +821,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignModel $campaign
-	 * @param SproutEmail_EntryModel    $email
+	 * @param SproutEmail_CampaignEmailModel    $email
 	 * @param                           $object
 	 */
 	public function renderEmailTemplates(EmailModel $email, $campaign, $entry, $object)

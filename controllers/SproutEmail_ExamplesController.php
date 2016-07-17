@@ -369,15 +369,15 @@ Email: {email}',
 				// Save our email again with a layout
 				sproutEmail()->campaigns->saveCampaign($campaign);
 
-				$entryRecord = SproutEmail_EntryRecord::model()->findByAttributes(array('campaignId' => $campaign->id));
+				$entryRecord = SproutEmail_CampaignEmailRecord::model()->findByAttributes(array('campaignId' => $campaign->id));
 
 				if (!$entryRecord)
 				{
-					$entry = new SproutEmail_EntryModel();
+					$entry = new SproutEmail_CampaignEmailModel();
 				}
 				else
 				{
-					$entry = SproutEmail_EntryModel::populateModel($entryRecord->getAttributes());
+					$entry = SproutEmail_CampaignEmailModel::populateModel($entryRecord->getAttributes());
 				}
 
 				$entryData = $emailExamples[$campaign->handle];
@@ -399,11 +399,11 @@ Email: {email}',
 				$entry->getContent()->exampleHtmlEmailBody = $entryData['htmlBody'];
 				$entry->getContent()->exampleTextEmailBody = $entryData['textBody'];
 
-				sproutEmail()->entries->saveEntry($entry, $campaign);
+				sproutEmail()->campaignEmails->saveCampaignEmail($entry, $campaign);
 
 				if ($campaign->type == 'notification')
 				{
-					sproutEmail()->notifications->save('SproutEmail-users-saveUser', $campaign->id);
+					sproutEmail()->notificationEmails->save('SproutEmail-users-saveUser', $campaign->id);
 				}
 			}
 		}
@@ -437,7 +437,7 @@ Email: {email}',
 											                'whenUpdated' => '',
 											                'userGroupIds' => '*'
 											                ),
-											              'saveEntry' => array(
+											              'saveCampaignEmail' => array(
 																			'whenNew' => '',
 																			'whenUpdated' => '',
 											                'sectionIds' => '*'
@@ -634,7 +634,7 @@ Email: {email}',
 				// need to pass post request for $event->prepareOptions() in saveNotification
 				$_POST['rules'] = $notificationEmail['options'];
 
-				sproutEmail()->notificationemail->saveNotification($notification);
+				sproutEmail()->notificationEmails->saveNotification($notification);
 			}
 		}
 		catch (\Exception $e)
@@ -683,6 +683,6 @@ Email: {email}',
 	private function _handleError($exception)
 	{
 		craft()->userSession->setError(Craft::t('Unable to install the examples.'));
-		$this->redirect('sproutemail/examples');
+		$this->redirect('sproutemail/settings/examples');
 	}
 }

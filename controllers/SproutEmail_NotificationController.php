@@ -17,7 +17,7 @@ class SproutEmail_NotificationController extends BaseController
 
 		$session = craft()->httpSession->get('newNotification');
 
-		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, $session);
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
 
 		$this->renderTemplate('sproutemail/notifications/_settings', array(
 			'notification'    => $notification,
@@ -66,7 +66,7 @@ class SproutEmail_NotificationController extends BaseController
 
 			if (!empty($notification->id))
 			{
-				sproutEmail()->notificationemail->saveNotification($notification);
+				sproutEmail()->notificationEmails->saveNotification($notification);
 			}
 			else
 			{
@@ -97,10 +97,10 @@ class SproutEmail_NotificationController extends BaseController
 			$this->redirect($url);
 		}
 
-		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, $session);
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
 
 		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
-		$recipientLists = sproutEmail()->notificationemail->getRecipientListsByNotificationId($notification->id);
+		$recipientLists = sproutEmail()->notificationEmails->getRecipientListsByNotificationId($notification->id);
 
 		$this->renderTemplate('sproutemail/notifications/_edit',  array(
 			'notification'      => $notification,
@@ -155,7 +155,7 @@ class SproutEmail_NotificationController extends BaseController
 
 			$notification->getContent()->title = $notification->subjectLine;
 
-			$result = sproutEmail()->notificationemail->saveNotification($notification);
+			$result = sproutEmail()->notificationEmails->saveNotification($notification);
 
 			if ($result !== false)
 			{
@@ -220,7 +220,7 @@ class SproutEmail_NotificationController extends BaseController
 
 			$notification = craft()->elements->getElementById($notificationId);
 
-			if (sproutEmail()->notificationemail->deleteNotificationById($notificationId))
+			if (sproutEmail()->notificationEmails->deleteNotificationById($notificationId))
 			{
 				$this->redirectToPostedUrl($notification);
 			}
@@ -239,7 +239,7 @@ class SproutEmail_NotificationController extends BaseController
 
 		$notificationId = craft()->request->getRequiredPost('notificationId');
 
-		$response = sproutEmail()->notificationemail->getPrepareModal($notificationId);
+		$response = sproutEmail()->notificationEmails->getPrepareModal($notificationId);
 
 		$this->returnJson($response->getAttributes());
 	}
@@ -258,7 +258,7 @@ class SproutEmail_NotificationController extends BaseController
 		{
 			try
 			{
-				$response = sproutEmail()->notificationemail->exportEntry($notification);
+				$response = sproutEmail()->notificationEmails->exportEntry($notification);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{
@@ -291,7 +291,7 @@ class SproutEmail_NotificationController extends BaseController
 					SproutEmail_ResponseModel::createErrorModalResponse(
 						'sproutemail/_modals/export',
 						array(
-							'entry'    => $entry,
+							'email'    => $entry,
 							'campaign' => $campaign,
 							'message'  => Craft::t($errorMessage),
 						)
@@ -304,7 +304,7 @@ class SproutEmail_NotificationController extends BaseController
 					SproutEmail_ResponseModel::createErrorModalResponse(
 						'sproutemail/_modals/export',
 						array(
-							'entry'    => $entry,
+							'email'    => $entry,
 							'campaign' => $campaign,
 							'message'  => Craft::t($e->getMessage()),
 						)
@@ -317,7 +317,7 @@ class SproutEmail_NotificationController extends BaseController
 			SproutEmail_ResponseModel::createErrorModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'    => $entry,
+					'email'    => $entry,
 					'campaign' => !empty($campaign) ? $campaign : null,
 					'message'  => Craft::t('The campaign email you are trying to send is missing.'),
 				)

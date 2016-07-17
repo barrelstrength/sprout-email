@@ -138,14 +138,14 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
 				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
 			),
-			'sproutemail/entries/new' => array(
-				'action' => 'sproutEmail/entry/editEntryTemplate'
+			'sproutemail/campaigns/new' => array(
+				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
-			'sproutemail/entries/edit/(?P<entryId>\d+)' => array(
-				'action' => 'sproutEmail/entry/editEntryTemplate'
+			'sproutemail/campaigns/edit/(?P<entryId>\d+)' => array(
+				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
-			'sproutemail/entries/(?P<campaignId>\d+)/new' => array(
-				'action' => 'sproutEmail/entry/editEntryTemplate'
+			'sproutemail/campaigns/(?P<campaignId>\d+)/new' => array(
+				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
 			'sproutemail/settings' => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
@@ -192,9 +192,7 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
 
-		sproutEmail()->notifications->registerDynamicEventHandler();
-
-		sproutEmail()->notificationemail->registerDynamicEventHandler();
+		sproutEmail()->notificationEmails->registerDynamicEventHandler();
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
 
@@ -353,7 +351,7 @@ class SproutEmailPlugin extends BasePlugin
 		return array(
 			'sproutemail_entry'         => array(
 				'name'           => 'Email Campaigns',
-				'elementType'    => 'SproutEmail_Entry',
+				'elementType'    => 'SproutEmail_CampaignEmail',
 				'elementGroupId' => 'campaignId',
 				'service'        => 'sproutEmail_campaigns',
 				'method'         => 'getCampaigns'
@@ -367,10 +365,10 @@ class SproutEmailPlugin extends BasePlugin
 	public function sproutMigrateRegisterElements()
 	{
 		return array(
-			'sproutemail_entry' => array(
-				'model'   => 'Craft\\SproutEmail_Entry',
-				'method'  => 'saveEntry',
-				'service' => 'sproutEmail_entry',
+			'sproutemail_campaignemail' => array(
+				'model'   => 'Craft\\SproutEmail_CampaignEmail',
+				'method'  => 'saveCampaignEmail',
+				'service' => 'sproutEmail_campaignEmails',
 			)
 		);
 	}

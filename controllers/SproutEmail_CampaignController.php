@@ -40,17 +40,17 @@ class SproutEmail_CampaignController extends BaseController
 			// Create the related Email Entry if we have a notification
 			if ($campaign->type == 'notification')
 			{
-				if (sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id) == false)
+				if (sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($campaign->id) == false)
 				{
-					$entry = sproutEmail()->entries->saveRelatedEntry($campaign);
+					$campaignEmail = sproutEmail()->campaignEmails->saveRelatedCampaignEmail($campaign);
 				}
 				else
 				{
-					$entry = sproutEmail()->notifications->getNotificationEntryByCampaignId($campaign->id);
+					$campaignEmail = sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($campaign->id);
 				}
 
 				// Pass entryId for save and edit notification button
-				$campaign->entryId = $entry->id;
+				$campaign->entryId = $campaignEmail->id;
 
 				$this->redirectToPostedUrl($campaign);
 				craft()->end();

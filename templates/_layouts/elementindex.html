@@ -3,12 +3,12 @@
 {% set bodyClass = craft.request.getSegments()|slice(0, 3)|join(' ') %}
 
 {% set subnav = {
-	entries: {
-		label: "Email"|t,
-		url: url('sproutemail/entries')
+	campaigns: {
+		label: "Campaigns"|t,
+		url: url('sproutemail/campaigns')
 	},
 	notifications: {
-		label: "Notification Email"|t,
+		label: "Notifications"|t,
 		url: url('sproutemail/notifications')
 	},
 	sentemails: {

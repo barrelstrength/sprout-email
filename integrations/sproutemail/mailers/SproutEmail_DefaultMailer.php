@@ -112,12 +112,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array
 	 */
-	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -143,7 +143,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	/**
 	 * Renders the recipient list UI for this mailer
 	 *
-	 * @param SproutEmail_EntryModel[] $values
+	 * @param SproutEmail_CampaignEmailModel[] $values
 	 *
 	 * @return string|\Twig_Markup
 	 */
@@ -200,16 +200,16 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @throws \Exception
 	 *
 	 * @return array
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		$lists          = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEntryId($entry->id);
 		$recipientLists = array();
 
 		if (count($lists))
@@ -256,12 +256,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array
 	 */
-	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function previewEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$success = false;
 
@@ -289,12 +289,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return string
 	 */
-	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		// Display the testToEmailAddress if it exists
 		$email = craft()->config->get('testToEmailAddress');
@@ -320,15 +320,15 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 * @param                           $errors
 	 *
 	 * @return array
 	 */
-	public function getErrors(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign, $errors)
+	public function getErrors(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign, $errors)
 	{
-		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $entry->id);
+		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/campaigns/edit/' . $entry->id);
 		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);
 
 		if (empty($campaign->template))
@@ -342,13 +342,13 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		// All additional errors are specific to notifications.
 		if ($campaign->isNotification())
 		{
-			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+			$event = sproutEmail()->notificationEmails->getEventByCampaignId($campaign->id);
 
 			if ($event)
 			{
 				$object = $event->getMockedParams();
 
-				$vars = sproutEmail()->notifications->prepareNotificationTemplateVariables($entry, $object);
+				$vars = sproutEmail()->notificationEmails->prepareNotificationTemplateVariables($entry, $object);
 
 				// @todo - check for text template too
 				$template = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);

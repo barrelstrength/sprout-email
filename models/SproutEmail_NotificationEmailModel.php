@@ -112,18 +112,18 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	}
 
 	// Just return the model for the notification element type feature
-	public function getNotificationEntry()
+	public function getNotificationEmail()
 	{
 		return $this;
 	}
 
 	/**
-	 * Returns the entry status based on actual values and dynamic checking
+	 * Returns the email status based on actual values and dynamic checking
 	 *
-	 * Disabled - Entry is disabled
-	 * Archived - Entry has been manually set to archived
-	 * Pending  - Entry is enabled but some requirements are not yet met
-	 * Ready    - Entry is enabled and all requirements are met
+	 * Disabled - Email is disabled
+	 * Archived - Email has been manually set to archived
+	 * Pending  - Email is enabled but some requirements are not yet met
+	 * Ready    - Email is enabled and all requirements are met
 	 *
 	 * @return string
 	 */

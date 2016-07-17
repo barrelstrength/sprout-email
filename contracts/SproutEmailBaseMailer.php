@@ -38,8 +38,8 @@ abstract class SproutEmailBaseMailer
 	{
 		if (!$this->initialized)
 		{
-			$this->settings = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-			$this->installed = sproutEmail()->mailers->isInstalled($this->getId());
+			$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
+			$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
 			$this->initialized = true;
 		}
 	}
@@ -319,14 +319,14 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @todo Revise if this responsibility should fall on the mailer or the mailer service
 	 *
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $entry
+	 * @param SproutEmail_CampaignModel      $campaign
 	 *
-	 * @return SproutEmail_EntryModel
+	 * @return SproutEmail_CampaignEmailModel
 	 */
-	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
-		return new SproutEmail_EntryModel();
+		return new SproutEmail_CampaignEmailModel();
 	}
 
 	/**
@@ -341,10 +341,10 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Gives a mailer the responsibility to send campaigns if they implement SproutEmailCampaignSenderInterface
 	 *
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $entry
+	 * @param SproutEmail_CampaignModel      $campaign
 	 */
-	public function sendCampaign(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function sendCampaign(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 	}
 

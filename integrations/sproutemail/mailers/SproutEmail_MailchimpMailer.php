@@ -79,12 +79,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return string
 	 */
-	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		if (strpos($entry->replyToEmail, '{') !== false)
 		{
@@ -92,7 +92,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 		}
 
 		// Create an array of all recipient list titles
-		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists = sproutEmail()->campaignEmails->getRecipientListsByEntryId($entry->id);
 
 		$recipientLists = array();
 
@@ -120,7 +120,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	/**
 	 * Renders the recipient list UI for this mailer
 	 *
-	 * @param SproutEmail_EntryModel[]|null $values
+	 * @param SproutEmail_CampaignEmailModel[]|null $values
 	 *
 	 * @return string Rendered HTML content
 	 */
@@ -203,12 +203,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
-	 * @return array|SproutEmail_EntryModel
+	 * @return array|SproutEmail_CampaignEmailModel
 	 */
-	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -232,12 +232,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @return array|void
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$sentCampaignIds = array();
 		$response = new SproutEmail_ResponseModel();

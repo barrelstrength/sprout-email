@@ -87,7 +87,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 			),
 			'entries'       => array(
 				static::HAS_MANY,
-				'SproutEmail_EntryRecord',
+				'SproutEmail_CampaignEmailRecord',
 				'campaignId'
 			),
 			'notifications' => array(

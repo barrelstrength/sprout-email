@@ -1,7 +1,7 @@
 {% extends "sproutemail/_layouts/elementindex" %}
 
-{% set title         = "Email"|t %}
-{% set elementType   = "SproutEmail_Entry" %}
+{% set title         = "Campaigns"|t %}
+{% set elementType   = "SproutEmail_CampaignEmail" %}
 {% set campaigns     = craft.sproutEmail.getCampaigns('email') %}
 {% set notifications = craft.sproutEmail.getCampaigns('notification') %}
 
@@ -14,12 +14,11 @@
 				<ul>
 					{% if campaigns|length %}
 						{% for campaign in campaigns %}
-							<li><a href="{{ url('sproutemail/entries/' ~ campaign.id ~ '/new') }}">{{ campaign.name|t }}</a></li>
+							<li><a href="{{ url('sproutemail/campaigns/' ~ campaign.id ~ '/new') }}">{{ campaign.name|t }}</a></li>
 						{% endfor %}
 						<hr>
 					{% endif %}
 					<li><a href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Campaign"|t }}</a></li>
-					<li><a href="{{ url('sproutemail/settings/notifications/edit/new') }}">{{ "New Notification"|t }}</a></li>
 				</ul>
 			</div>
 		</div>

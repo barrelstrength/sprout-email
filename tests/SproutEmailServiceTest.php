@@ -148,7 +148,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		->andReturn($notificationModel)
 		->mock();
 
-		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables);
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables);
 
 		$expected = $notificationModel;
 
@@ -159,7 +159,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$session = serialize($notificationModel);
 
-		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, $session);
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
 
 		$expected = $notificationModel;
 
@@ -169,7 +169,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$notificationModel->id = $notificationId;
 		$variables['notificationId'] = $notificationId;
 
-		$notification = sproutEmail()->notificationemail->getNotificationByVariables($variables, null, $elementService);
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, null, $elementService);
 
 		$expected = 999;
 

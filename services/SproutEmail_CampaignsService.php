@@ -98,7 +98,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		else
 		{
 			// Updates element i18n slug and uri
-			$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
+			$criteria = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
 			$criteria->campaignId = $campaign->id;
 
 			$entryIds = $criteria->ids();
@@ -109,7 +109,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 				{
 					craft()->config->maxPowerCaptain();
 
-					$criteria = craft()->elements->getCriteria('SproutEmail_Entry');
+					$criteria = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
 					$criteria->id     = $entryId;
 					$criteria->locale = "en_us";
 					$criteria->status = null;
@@ -207,7 +207,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 			));
 
 			// This only applies to Notifications
-			sproutEmail()->notifications->deleteNotificationsByCampaignId($campaignId);
+			sproutEmail()->notificationEmails->deleteNotificationsByCampaignId($campaignId);
 
 			return true;
 		}
@@ -245,7 +245,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 */
 	public function getCampaignByEntryId($entryId)
 	{
-		$entry = SproutEmail_EntryRecord::model()->findById($entryId);
+		$entry = SproutEmail_CampaignEmailRecord::model()->findById($entryId);
 		if (!isset($entry->campaignId))
 		{
 			return false;

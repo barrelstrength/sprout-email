@@ -17,7 +17,7 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_notification_email';
+		return 'sproutemail_notifications';
 	}
 
 	/**

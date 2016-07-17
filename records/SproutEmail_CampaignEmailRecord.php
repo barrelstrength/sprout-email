@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryRecord
+ * Class SproutEmail_CampaignEmailRecord
  *
  * @package Craft
  * --
@@ -15,7 +15,7 @@ namespace Craft;
  * @property string $replyToEmail
  * @property bool   $sent
  */
-class SproutEmail_EntryRecord extends BaseRecord
+class SproutEmail_CampaignEmailRecord extends BaseRecord
 {
 	/**
 	 * @return string
@@ -151,7 +151,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 		do
 		{
 			$newField = $value . $i;
-			$entry = sproutEmail()->entries->getFieldValue($field, $newField);
+			$entry = sproutEmail()->campaignEmails->getFieldValue($field, $newField);
 			if (is_null($entry))
 			{
 				$band = false;
@@ -175,7 +175,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 		{
 			if ($_POST['saveAsNew'])
 			{
-				if (sproutEmail()->entries->getFieldValue('subjectLine', $this->subjectLine))
+				if (sproutEmail()->campaignEmails->getFieldValue('subjectLine', $this->subjectLine))
 				{
 					$this->subjectLine = $this->getFieldAsNew('subjectLine', $this->subjectLine);
 				}

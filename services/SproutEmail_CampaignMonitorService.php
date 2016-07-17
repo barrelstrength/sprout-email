@@ -73,14 +73,14 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignEmailModel    $entry
 	 * @param SproutEmail_CampaignModel $campaign
 	 *
 	 * @throws \Exception
 	 *
 	 * @return array
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$urls = $this->getEntryUrls($entry->id, $campaign->template);
 
@@ -169,7 +169,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	/*
 	 * @return true|false according to the success of the request
 	 */
-	public function sendEntry(SproutEmail_EntryModel $entry, $campaignId, $auth)
+	public function sendEntry(SproutEmail_CampaignEmailModel $entry, $campaignId, $auth)
 	{
 		// Access the newly created draft campaign
 		$campaignToSend = new CS_REST_Campaigns($campaignId, $auth);
@@ -205,7 +205,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function previewEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
 	{
 		$type = craft()->request->getPost('contentType', 'html');
 		$ext = strtolower($type) == 'text' ? '.txt' : null;
@@ -347,14 +347,14 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		 */
 		// Assign html/text URLs for Campaign Monitor to scrape
 		$urls = array(
-			'html' => craft()->siteUrl . 'index.php/admin/actions/sproutEmail/entry/shareEntry?entryId=' . $entryId . '&template=html'
+			'html' => craft()->siteUrl . 'index.php/admin/actions/sproutEmail/campaignEmails/shareCampaignEmail?entryId=' . $entryId . '&template=html'
 		);
 
 		// Determine if a text template exists
 		$urls['hasText'] = sproutEmail()->doesSiteTemplateExist($template . '.txt');
 		if ($urls['hasText'])
 		{
-			$urls['text'] = craft()->siteUrl . 'index.php/admin/actions/sproutEmail/entry/shareEntry?entryId=' . $entryId . '&template=text';
+			$urls['text'] = craft()->siteUrl . 'index.php/admin/actions/sproutEmail/campaignEmails/shareCampaignEmail?entryId=' . $entryId . '&template=text';
 		}
 
 		return $urls;

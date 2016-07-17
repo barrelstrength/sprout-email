@@ -16,45 +16,45 @@
 		{% endif %}
 
 		{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
-		<tr data-id="{{ entry.id }}" data-name="{{ entry.title|t }}">
+		<tr data-id="{{ email.id }}" data-name="{{ email.title|t }}">
 			<td class="thin" data-checkboxcell="">
 				<div class="checkbox" title="Select"></div>
 			</td>
 			<td data-titlecell>
-				<span class="status {{ entry.status == 'ready' ? 'enabled' : entry.status }}"></span>
-				<a href="{{ url('sproutemail/entries/edit/' ~ entry.id) }}">{{ entry.title ? entry.title : 'New Entry'|t }}</a>
+				<span class="status {{ email.status == 'ready' ? 'enabled' : email.status }}"></span>
+				<a href="{{ url('sproutemail/campaigns/edit/' ~ email.id) }}">{{ email.title ? email.title : 'New Email'|t }}</a>
 			</td>
 			<td>
-				{{ entry.dateCreated|date('m/d/Y') }}
+				{{ email.dateCreated|date('m/d/Y') }}
 			</td>
 			<td>
 				{{ campaign.type|ucfirst }}
 			</td>
 			<td>
 
-				{% if entry.getUrl() and not campaign.isNotification() %}
+				{% if email.getUrl() and not campaign.isNotification() %}
 
-				<a href="{{ entry.url }}" title="{{ entry.title }}" target="_blank">{{ "HTML"|t }}</a>
+				<a href="{{ email.url }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
 				&nbsp;/&nbsp;
-				<a href="{{ entry.url }}?type=text" title="{{ entry.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+				<a href="{{ email.url }}?type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 
 				{% endif %}
 
 
-				{% if not entry.getUrl() and not campaign.isNotification() %}
+				{% if not email.getUrl() and not campaign.isNotification() %}
 
-				<a href="{{ cpUrl('sproutemail/settings/campaigns/edit/' ~ entry.campaignId) }}">Enable URLs</a>
+				<a href="{{ cpUrl('sproutemail/settings/campaigns/edit/' ~ email.campaignId) }}">Enable URLs</a>
 
 				{% endif %}
 
 			</td>
 			<td class="nowrap">
 				{% if mailer and mailer.isInstalled() %}
-				{% if entry.isReady() %}
+				{% if email.isReady() %}
 				<a href="#"
 					data-action="{{ mailer.getActionForPrepareModal() }}"
 					data-mailer="{{ mailer.getId() }}"
-					data-entry-id="{{ entry.id }}"
+					data-email-id="{{ email.id }}"
 					data-campaign-id="{{ campaign.id }}"
 					class="prepare">{{ "Prepare"|t }}</a>
 				{% else %}

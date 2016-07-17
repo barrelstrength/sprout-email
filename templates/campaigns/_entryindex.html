@@ -1,0 +1,10 @@
+{% for email in elements %}
+
+	{% set campaign = craft.sproutEmail.getCampaignById(email.campaignId) %}
+
+	{% include 'sproutemail/_partials/campaignindex' with {
+		email : email,
+		campaign : campaign
+	} %}
+
+{% endfor %}

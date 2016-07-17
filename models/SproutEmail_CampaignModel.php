@@ -18,7 +18,7 @@ namespace Craft;
  * @property string                   $template
  * @property string                   $templateCopyPaste
  * @property int                      $fieldLayoutId
- * @property SproutEmail_EntryModel[] $entries
+ * @property SproutEmail_CampaignEmailModel[] $entries
  */
 class SproutEmail_CampaignModel extends BaseModel
 {
@@ -73,7 +73,7 @@ class SproutEmail_CampaignModel extends BaseModel
 	public function behaviors()
 	{
 		return array(
-			'fieldLayout' => new FieldLayoutBehavior('SproutEmail_Entry'),
+			'fieldLayout' => new FieldLayoutBehavior('SproutEmail_CampaignEmail'),
 		);
 	}
 
@@ -119,11 +119,11 @@ class SproutEmail_CampaignModel extends BaseModel
 	/**
 	 * Set the Entry Related to this Campaign if we have a notification
 	 */
-	public function getNotificationEntry()
+	public function getNotificationEmail()
 	{
 		if ($this->isNotification())
 		{
-			return sproutEmail()->notifications->getNotificationEntryByCampaignId($this->id);
+			return sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($this->id);
 		}
 	}
 
