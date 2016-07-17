@@ -202,7 +202,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	{
 		try
 		{
-			craft()->db->createCommand()->delete('sproutemail_campaigns', array(
+			craft()->db->createCommand()->delete('sproutemail_campaigntype', array(
 				'id' => $campaignId
 			));
 

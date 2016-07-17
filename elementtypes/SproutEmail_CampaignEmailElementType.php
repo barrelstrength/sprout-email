@@ -199,7 +199,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			case SproutEmail_CampaignEmailModel::PENDING:
 			{
 				$query->andWhere('elements.enabled = 1');
-				$query->andWhere('campaigns.template IS NULL OR campaigns.mailer IS NULL');
+				$query->andWhere('campaigntype.template IS NULL OR campaigntype.mailer IS NULL');
 
 				break;
 			}
@@ -213,8 +213,8 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				$query->andWhere(
 					'
 					elements.enabled = 1
-					AND campaigns.template IS NOT NULL
-					AND campaigns.mailer IS NOT NULL'
+					AND campaigntype.template IS NOT NULL
+					AND campaigntype.mailer IS NOT NULL'
 				);
 
 				break;
@@ -224,8 +224,8 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				$query->andWhere(
 					'
 					elements.enabled = 1
-					AND campaigns.template IS NOT NULL
-					AND campaigns.mailer IS NOT NULL'
+					AND campaigntype.template IS NOT NULL
+					AND campaigntype.mailer IS NOT NULL'
 				);
 
 				break;
@@ -255,28 +255,28 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$query
 			->addSelect(
-				'entries.id, 
-				 entries.subjectLine as subjectLine,
-				 entries.campaignId as campaignId,
-				 entries.recipients as recipients,
-				 entries.fromName as fromName,
-				 entries.fromEmail as fromEmail,
-				 entries.replyToEmail as replyToEmail,
-				 entries.sent as sent,
-				 entries.enableFileAttachments as enableFileAttachments,
-				 campaigns.type as type'
+				'campaigns.id, 
+				 campaigns.subjectLine as subjectLine,
+				 campaigns.campaignId as campaignId,
+				 campaigns.recipients as recipients,
+				 campaigns.fromName as fromName,
+				 campaigns.fromEmail as fromEmail,
+				 campaigns.replyToEmail as replyToEmail,
+				 campaigns.sent as sent,
+				 campaigns.enableFileAttachments as enableFileAttachments,
+				 campaigntype.type as type'
 			)
-			->join('sproutemail_campaigns_entries entries', 'entries.id = elements.id')
-			->join('sproutemail_campaigns campaigns', 'campaigns.id = entries.campaignId');
+			->join('sproutemail_campaigns campaigns', 'campaigns.id = elements.id')
+			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignId');
 
 		if ($criteria->campaignId)
 		{
-			$query->andWhere(DbHelper::parseParam('entries.campaignId', $criteria->campaignId, $query->params));
+			$query->andWhere(DbHelper::parseParam('campaigns.campaignId', $criteria->campaignId, $query->params));
 		}
 
 		if ($criteria->campaignHandle)
 		{
-			$query->andWhere(DbHelper::parseParam('campaigns.handle', $criteria->campaignHandle, $query->params));
+			$query->andWhere(DbHelper::parseParam('campaigntype.handle', $criteria->campaignHandle, $query->params));
 		}
 	}
 

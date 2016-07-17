@@ -35,7 +35,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_campaigns';
+		return 'sproutemail_campaigntype';
 	}
 
 	/**
