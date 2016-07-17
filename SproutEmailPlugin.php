@@ -141,7 +141,7 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail/campaigns/new' => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
-			'sproutemail/campaigns/edit/(?P<entryId>\d+)' => array(
+			'sproutemail/campaigns/edit/(?P<emailId>\d+)' => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
 			'sproutemail/campaigns/(?P<campaignId>\d+)/new' => array(

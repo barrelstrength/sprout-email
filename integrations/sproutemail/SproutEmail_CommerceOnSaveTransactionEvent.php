@@ -75,11 +75,11 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	}
 
 	/**
-	 * Returns whether or not the entry meets the criteria necessary to trigger the event
+	 * Returns whether or not the transaction meets the criteria necessary to trigger the event
 	 *
-	 * @param mixed      $options
-	 * @param EntryModel $entry
-	 * @param array      $params
+	 * @param mixed                     $options
+	 * @param Commerce_TransactionModel $model
+	 * @param array                     $params
 	 *
 	 * @return bool
 	 */

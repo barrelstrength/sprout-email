@@ -11,15 +11,15 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignEmailModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignModel      $campaign
 	 *
 	 * @return SproutEmail_ResponseModel
 	 */
-	public function exportEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
 	{
 		$params = array(
-			'email'     => $entry,
+			'email'     => $campaignEmail,
 			'campaign'  => $campaign,
 			'recipient' => array(
 				'firstName' => 'John',
@@ -28,7 +28,7 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 			),
 
 			// @deprecate - in favor of `email` in v3
-			'entry'     => $entry
+			'entry'     => $campaignEmail
 		);
 
 		$html = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste, $params);
@@ -47,11 +47,11 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 		return $response;
 	}
 
-	public function previewEntry(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
 	{
 		$type = craft()->request->getPost('contentType', 'html');
 		$ext = strtolower($type) == 'text' ? '.txt' : null;
-		$params = array('entry' => $entry, 'campaign' => $campaign);
+		$params = array('entry' => $campaignEmail, 'campaign' => $campaign);
 		$body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));

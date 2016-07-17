@@ -6,7 +6,7 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property int    $entryId
+ * @property int    $emailId
  * @property string $mailer
  * @property string $list
  * @property string $type
@@ -39,7 +39,7 @@ class SproutEmail_EntryRecipientListRecord extends BaseRecord
 			'entry' => array(
 				static::BELONGS_TO,
 				'SproutEmail_CampaignEmailRecord',
-				'entryId',
+				'emailId',
 				'required' => true,
 				'onDelete' => static::CASCADE,
 			)

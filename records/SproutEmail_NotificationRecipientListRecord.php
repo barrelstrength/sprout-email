@@ -6,7 +6,7 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property int    $entryId
+ * @property int    $emailId
  * @property string $mailer
  * @property string $list
  * @property string $type

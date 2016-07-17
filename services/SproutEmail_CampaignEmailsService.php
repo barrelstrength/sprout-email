@@ -6,9 +6,9 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	protected $campaignEmailRecord;
 
 	/**
-	 * Constructor
+	 * SproutEmail_CampaignEmailsService constructor.
 	 *
-	 * @param object $entryRecord
+	 * @param null $campaignEmailRecord
 	 */
 	public function __construct($campaignEmailRecord = null)
 	{
@@ -157,17 +157,17 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		return craft()->elements->getElementById($emailId, 'SproutEmail_CampaignEmail');
 	}
 
-	public function getRecipientListsByEntryId($id)
+	public function getRecipientListsByEmailId($id)
 	{
-		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $id))))
+		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $id))))
 		{
 			return SproutEmail_EntryRecipientListModel::populateModels($lists);
 		}
 	}
 
-	public function deleteRecipientListsByEntryId($id)
+	public function deleteRecipientListsByEmailId($id)
 	{
-		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $id))))
+		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $id))))
 		{
 			foreach ($lists as $list)
 			{

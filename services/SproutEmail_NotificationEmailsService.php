@@ -479,12 +479,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	 * {{ attribute }}
 	 * {{ object.attribute }}
 	 *
-	 * @param BaseModel  $entry
+	 * @param BaseModel  $notificationEmail
 	 * @param mixed|null $element
 	 *
 	 * @return array
 	 */
-	public function prepareNotificationTemplateVariables(BaseModel $entry, $element = null)
+	public function prepareNotificationTemplateVariables(BaseModel $notificationEmail, $element = null)
 	{
 		if (is_object($element) && method_exists($element, 'getAttributes'))
 		{
@@ -514,12 +514,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$vars = array_merge(
 			$attributes,
 			array(
-				'email'        => $entry,
+				'email'        => $notificationEmail,
 				'object'       => $element,
 
 				// @deprecate - in v3 in favor of `email`
-				'entry'        => $entry,
-				'notification' => $entry,
+				'entry'        => $notificationEmail,
+				'notification' => $notificationEmail,
 			)
 		);
 
@@ -667,7 +667,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $errors;
 	}
 
-	public function exportEntry(SproutEmail_NotificationEmailModel $notification)
+	public function exportEmail(SproutEmail_NotificationEmailModel $notification)
 	{
 		$lists          = $this->getRecipientListsByNotificationId($notification->id);
 		$recipientLists = array();

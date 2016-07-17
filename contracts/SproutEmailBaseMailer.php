@@ -317,14 +317,15 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
 	 *
-	 * @todo Revise if this responsibility should fall on the mailer or the mailer service
+	 * @todo     Revise if this responsibility should fall on the mailer or the mailer service
 	 *
-	 * @param SproutEmail_CampaignEmailModel $entry
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignModel      $campaign
 	 *
 	 * @return SproutEmail_CampaignEmailModel
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
 	{
 		return new SproutEmail_CampaignEmailModel();
 	}
@@ -341,10 +342,12 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Gives a mailer the responsibility to send campaigns if they implement SproutEmailCampaignSenderInterface
 	 *
-	 * @param SproutEmail_CampaignEmailModel $entry
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignModel      $campaign
+	 *
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function sendCampaign(SproutEmail_CampaignEmailModel $entry, SproutEmail_CampaignModel $campaign)
+	public function sendCampaign(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
 	{
 	}
 

@@ -41,13 +41,13 @@ class SproutEmail_NotificationController extends BaseController
 		{
 			$notification = new SproutEmail_NotificationEmailModel();
 
-			$inputs['subjectLine']	= $inputs['name'];
-			$inputs['slug']         = ElementHelper::createSlug($inputs['name']);
+			$inputs['subjectLine'] = $inputs['name'];
+			$inputs['slug']        = ElementHelper::createSlug($inputs['name']);
 		}
 
 		$notification->setAttributes($inputs);
 
-		if($notification->validate())
+		if ($notification->validate())
 		{
 			if (craft()->request->getPost('fieldLayout'))
 			{
@@ -99,14 +99,14 @@ class SproutEmail_NotificationController extends BaseController
 
 		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
 
-		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
+		$mailer         = sproutEmail()->mailers->getMailerByName('defaultmailer');
 		$recipientLists = sproutEmail()->notificationEmails->getRecipientListsByNotificationId($notification->id);
 
-		$this->renderTemplate('sproutemail/notifications/_edit',  array(
-			'notification'      => $notification,
-			'recipientLists'    => $recipientLists,
-			'mailer'            => $mailer,
-			'showPreviewBtn'    => false
+		$this->renderTemplate('sproutemail/notifications/_edit', array(
+			'notification'   => $notification,
+			'recipientLists' => $recipientLists,
+			'mailer'         => $mailer,
+			'showPreviewBtn' => false
 		));
 	}
 
@@ -127,7 +127,7 @@ class SproutEmail_NotificationController extends BaseController
 
 		if ($session != null)
 		{
-			$session = unserialize($session);
+			$session      = unserialize($session);
 			$notification = $session;
 		}
 
@@ -146,7 +146,7 @@ class SproutEmail_NotificationController extends BaseController
 
 		$notification = $this->notification;
 		// Do not clear errors to add additional validation
-		if($notification->validate(null, false) && $notification->hasErrors() == false)
+		if ($notification->validate(null, false) && $notification->hasErrors() == false)
 		{
 			$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
 
@@ -195,7 +195,7 @@ class SproutEmail_NotificationController extends BaseController
 
 		if ($email == true && filter_var($value, FILTER_VALIDATE_EMAIL) === false)
 		{
-		  $this->notification->addError($attribute, Craft::t("$label is not a valid email address."));
+			$this->notification->addError($attribute, Craft::t("$label is not a valid email address."));
 		}
 	}
 
@@ -252,13 +252,13 @@ class SproutEmail_NotificationController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$notification = craft()->elements->getElementById(craft()->request->getPost('notificationId'));
+		$notificationEmail = craft()->elements->getElementById(craft()->request->getPost('notificationId'));
 
-		if ($notification)
+		if ($notificationEmail)
 		{
 			try
 			{
-				$response = sproutEmail()->notificationEmails->exportEntry($notification);
+				$response = sproutEmail()->notificationEmails->exportEmail($notificationEmail);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{
@@ -269,8 +269,8 @@ class SproutEmail_NotificationController extends BaseController
 							$emailModel = $response->emailModel;
 
 							$event = new Event($this, array(
-								'notificationModel' => $notification,
-								'emailModel' => $emailModel
+								'notificationModel' => $notificationEmail,
+								'emailModel'        => $emailModel
 							));
 
 							sproutEmail()->onSendCampaign($event);
@@ -280,7 +280,7 @@ class SproutEmail_NotificationController extends BaseController
 					$this->returnJson($response);
 				}
 
-				$errorMessage = Craft::t('Mailer did not return a valid response model after entry export.');
+				$errorMessage = Craft::t('Mailer did not return a valid response model after notification email export.');
 
 				if (!$response)
 				{
@@ -288,40 +288,32 @@ class SproutEmail_NotificationController extends BaseController
 				}
 
 				$this->returnJson(
-					SproutEmail_ResponseModel::createErrorModalResponse(
-						'sproutemail/_modals/export',
-						array(
-							'email'    => $entry,
-							'campaign' => $campaign,
-							'message'  => Craft::t($errorMessage),
-						)
-					)
+					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/export', array(
+						'email'    => $notificationEmail,
+						'campaign' => $campaign,
+						'message'  => $errorMessage
+					))
 				);
+
 			}
 			catch (\Exception $e)
 			{
 				$this->returnJson(
-					SproutEmail_ResponseModel::createErrorModalResponse(
-						'sproutemail/_modals/export',
-						array(
-							'email'    => $entry,
-							'campaign' => $campaign,
-							'message'  => Craft::t($e->getMessage()),
-						)
-					)
+					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/export', array(
+						'email'    => $notificationEmail,
+						'campaign' => $campaign,
+						'message'  => $e->getMessage(),
+					))
 				);
 			}
 		}
 
 		$this->returnJson(
-			SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/export',
-				array(
-					'email'    => $entry,
-					'campaign' => !empty($campaign) ? $campaign : null,
-					'message'  => Craft::t('The campaign email you are trying to send is missing.'),
-				)
-			)
+			SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/export', array(
+				'email'    => $notificationEmail,
+				'campaign' => !empty($campaign) ? $campaign : null,
+				'message'  => Craft::t('The campaign email you are trying to send is missing.'),
+			))
 		);
 	}
 }

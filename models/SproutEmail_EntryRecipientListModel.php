@@ -19,7 +19,7 @@ class SproutEmail_EntryRecipientListModel extends BaseModel
 	{
 		return array(
 			'id'      => AttributeType::Number,
-			'entryId' => AttributeType::String,
+			'emailId' => AttributeType::String,
 			'mailer'  => AttributeType::String,
 			'list'    => AttributeType::String,
 			'type'    => AttributeType::String,

@@ -63,7 +63,7 @@ class SproutEmail_CampaignModel extends BaseModel
 
 			// @related
 			'fieldLayoutId'     => AttributeType::Number,
-			'entryId'           => AttributeType::Number
+			'emailId'           => AttributeType::Number
 		);
 	}
 

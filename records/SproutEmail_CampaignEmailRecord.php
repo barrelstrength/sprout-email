@@ -131,28 +131,32 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'recipientLists' => array(
 				static::HAS_MANY,
 				'SproutEmail_EntryRecipientListRecord',
-				'entryId'
+				'emailId'
 			)
 		);
 	}
 
 	/**
-	 * Create a secuencial string for the "name" and "handle" fields if they are already taken
+	 * Create a sequential string for the "name" and "handle" fields if they are already taken
 	 *
-	 * @param string
-	 * @param string
-	 * return string
+	 * @param $field
+	 * @param $value
+	 *
+	 * @return null|string
 	 */
 	private function getFieldAsNew($field, $value)
 	{
 		$newField = null;
-		$i = 1;
-		$band = true;
+		$i        = 1;
+		$band     = true;
+
 		do
 		{
 			$newField = $value . $i;
-			$entry = sproutEmail()->campaignEmails->getFieldValue($field, $newField);
-			if (is_null($entry))
+
+			$campaignEmail = sproutEmail()->campaignEmails->getFieldValue($field, $newField);
+
+			if (is_null($campaignEmail))
 			{
 				$band = false;
 			}

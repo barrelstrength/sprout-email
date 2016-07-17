@@ -249,11 +249,12 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Handles event to attach files to email
+	 * Attach files during Craft onBeforeSendEmail event
 	 *
 	 * @param Event $event
+	 *
+	 * @return bool
 	 */
-
 	public function handleOnBeforeSendEmail(Event $event)
 	{
 		$variables = $event->params['variables'];
@@ -264,26 +265,26 @@ class SproutEmailService extends BaseApplicationComponent
 			return true;
 		}
 
-		$entry                 = $variables['sproutEmailEntry'];
-		$enableFileAttachments = $entry->enableFileAttachments;
+		$notificationEmail     = $variables['sproutEmailEntry'];
+		$enableFileAttachments = $notificationEmail->enableFileAttachments;
 
 		if (isset($variables['elementEntry']) && $enableFileAttachments)
 		{
-			$entry = $variables['elementEntry'];
+			$notificationEmail = $variables['elementEntry'];
 
 			/**
 			 * @var $field FieldModel
 			 */
-			if (method_exists($entry->getFieldLayout(), 'getFields'))
+			if (method_exists($notificationEmail->getFieldLayout(), 'getFields'))
 			{
-				foreach ($entry->getFieldLayout()->getFields() as $fieldLayoutField)
+				foreach ($notificationEmail->getFieldLayout()->getFields() as $fieldLayoutField)
 				{
 					$field = $fieldLayoutField->getField();
 					$type  = $field->getFieldType();
 
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
-						$this->attachAsset($entry, $field, $event);
+						$this->attachAsset($notificationEmail, $field, $event);
 					}
 					// @todo validate assets within MatrixFieldType
 				}
@@ -552,7 +553,7 @@ class SproutEmailService extends BaseApplicationComponent
 	 * @return array|string
 	 */
 	public function getRecipients($element = null, $model)
-		{
+	{
 		$recipientsString = $model->getAttribute('recipients');
 
 		// Possibly called from entry edit screen

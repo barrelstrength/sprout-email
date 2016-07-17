@@ -369,37 +369,39 @@ Email: {email}',
 				// Save our email again with a layout
 				sproutEmail()->campaigns->saveCampaign($campaign);
 
-				$entryRecord = SproutEmail_CampaignEmailRecord::model()->findByAttributes(array('campaignId' => $campaign->id));
+				$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findByAttributes(array(
+					'campaignId' => $campaign->id
+				));
 
-				if (!$entryRecord)
+				if (!$campaignEmailRecord)
 				{
-					$entry = new SproutEmail_CampaignEmailModel();
+					$campaignEmail = new SproutEmail_CampaignEmailModel();
 				}
 				else
 				{
-					$entry = SproutEmail_CampaignEmailModel::populateModel($entryRecord->getAttributes());
+					$campaignEmail = SproutEmail_CampaignEmailModel::populateModel($campaignEmailRecord->getAttributes());
 				}
 
-				$entryData = $emailExamples[$campaign->handle];
+				$emailData = $emailExamples[$campaign->handle];
 
-				$_POST['sproutEmail'] = $entryData['sproutEmail'];
-				$_POST['recipient'] = $entryData['recipient'];
-				$_POST['rules'] = $entryData['rules'];
+				$_POST['sproutEmail'] = $emailData['sproutEmail'];
+				$_POST['recipient'] = $emailData['recipient'];
+				$_POST['rules'] = $emailData['rules'];
 
-				unset($entryData['recipient']);
-				unset($entryData['rules']);
+				unset($emailData['recipient']);
+				unset($emailData['rules']);
 
-				$entry->setAttributes($entryData);
-				$entry->campaignId = $campaign->id;
-				$entry->fromName = craft()->request->getPost('sproutEmail.fromName');
-				$entry->fromEmail = craft()->request->getPost('sproutEmail.fromEmail');
-				$entry->replyToEmail = craft()->request->getPost('sproutEmail.replyToEmail');
+				$campaignEmail->setAttributes($emailData);
+				$campaignEmail->campaignId = $campaign->id;
+				$campaignEmail->fromName = craft()->request->getPost('sproutEmail.fromName');
+				$campaignEmail->fromEmail = craft()->request->getPost('sproutEmail.fromEmail');
+				$campaignEmail->replyToEmail = craft()->request->getPost('sproutEmail.replyToEmail');
 
-				$entry->getContent()->title = $entryData['title'];
-				$entry->getContent()->exampleHtmlEmailBody = $entryData['htmlBody'];
-				$entry->getContent()->exampleTextEmailBody = $entryData['textBody'];
+				$campaignEmail->getContent()->title = $emailData['title'];
+				$campaignEmail->getContent()->exampleHtmlEmailBody = $emailData['htmlBody'];
+				$campaignEmail->getContent()->exampleTextEmailBody = $emailData['textBody'];
 
-				sproutEmail()->campaignEmails->saveCampaignEmail($entry, $campaign);
+				sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaign);
 
 				if ($campaign->type == 'notification')
 				{

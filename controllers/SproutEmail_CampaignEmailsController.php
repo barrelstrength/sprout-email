@@ -178,7 +178,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			try
 			{
-				$response = sproutEmail()->mailers->exportEntry($campaignEmail, $campaign);
+				$response = sproutEmail()->mailers->exportEmail($campaignEmail, $campaign);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{
@@ -344,7 +344,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		// end
 
-		$variables['recipientLists'] = sproutEmail()->campaignEmails->getRecipientListsByEntryId($emailId);
+		$variables['recipientLists'] = sproutEmail()->campaignEmails->getRecipientListsByEmailId($emailId);
 
 		$this->renderTemplate('sproutemail/campaigns/_edit', $variables);
 	}
@@ -360,7 +360,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			try
 			{
-				$result = sproutEmail()->mailers->previewEntry($campaignEmail, $campaign);
+				$result = sproutEmail()->mailers->previewCampaignEmail($campaignEmail, $campaign);
 
 				if (craft()->request->isAjaxRequest())
 				{

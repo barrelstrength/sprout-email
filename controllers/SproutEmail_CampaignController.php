@@ -49,8 +49,8 @@ class SproutEmail_CampaignController extends BaseController
 					$campaignEmail = sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($campaign->id);
 				}
 
-				// Pass entryId for save and edit notification button
-				$campaign->entryId = $campaignEmail->id;
+				// Pass emailId for save and edit notification button
+				$campaign->emailId = $campaignEmail->id;
 
 				$this->redirectToPostedUrl($campaign);
 				craft()->end();
