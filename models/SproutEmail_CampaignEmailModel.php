@@ -62,6 +62,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
+
 			// @related
 			'recipientLists'        => Attributetype::Mixed,
 		);
@@ -109,7 +110,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		return $campaign->getFieldLayout();
 	}
@@ -134,7 +135,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	public function getStatus()
 	{
 		$status = parent::getStatus();
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		switch ($status)
 		{
@@ -204,28 +205,11 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	}
 
 	/**
-	 * @return string Campaign Type
+	 * @return string
 	 */
-	public function getType()
+	public function getUrlFormat()
 	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
-
-		return $campaign->type;
-	}
-
-	/**
-	 * @param null $template
-	 *
-	 * @return null|string
-	 */
-	public function getUrlFormat($template = null)
-	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
-
-		if ($campaign && $campaign->type == 'notification')
-		{
-			return "sproutemail/preview/{slug}";
-		}
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		if ($campaign && $campaign->hasUrls)
 		{
@@ -240,9 +224,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/campaigns/edit/' . $this->id);
-
-		return $url;
+		return UrlHelper::getCpUrl('sproutemail/campaigns/edit/' . $this->id);
 	}
 
 	public function getUrl()

@@ -205,6 +205,54 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	}
 
 	/**
+	 * Gives us the ability to render campaign previews by using the Craft API and templates/render
+	 *
+	 * @param BaseElementModel $element
+	 *
+	 * @return array|bool
+	 * @throws HttpException
+	 */
+	public function routeRequestForMatchedElement(BaseElementModel $element)
+	{
+		// Only expose notification emails that have tokens
+		if (!craft()->request->getQuery(craft()->config->get('tokenParam')))
+		{
+			throw new HttpException(404);
+		}
+
+		$extension = null;
+
+		if (($type = craft()->request->getQuery('type')))
+		{
+			$extension = in_array(strtolower($type), array('txt', 'text')) ? '.txt' : null;
+		}
+
+		if (!craft()->templates->doesTemplateExist($element->template . $extension))
+		{
+			$templateName = $element->template . $extension;
+
+			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
+				'templateName' => $templateName
+			)));
+		}
+
+		$vars = array(
+			'email'     => $element,
+
+			// @deprecate in v3 in favor of the `email` variable
+			'entry'     => $element,
+		);
+
+		return array(
+			'action' => 'templates/render',
+			'params' => array(
+				'template'  => $element->template . $extension,
+				'variables' => $vars
+			)
+		);
+	}
+
+	/**
 	 * @inheritDoc IElementType::getAvailableActions()
 	 *
 	 * @param string|null $source

@@ -74,12 +74,12 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$urls = $this->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
 
@@ -204,7 +204,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$type = craft()->request->getPost('contentType', 'html');
 		$ext = strtolower($type) == 'text' ? '.txt' : null;

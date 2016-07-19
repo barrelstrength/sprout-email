@@ -120,7 +120,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		return array_merge($params, $extra);
 	}
 
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -134,7 +134,6 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 				$model->setAttribute('emailId', $campaignEmail->id);
 				$model->setAttribute('mailer', $this->getId());
 				$model->setAttribute('list', $id);
-				$model->setAttribute('type', $campaign->type);
 
 				$lists[] = $model;
 			}
@@ -145,12 +144,12 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return SproutEmail_ResponseModel
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		try
 		{
@@ -179,7 +178,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		return $response;
 	}
 
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		// Get entry URLs
 		$urls = $this->getService()->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
@@ -213,7 +212,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		return craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/prepare', $details);
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		try
 		{
@@ -225,7 +224,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		}
 	}
 
-	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		return $this->getService()->previewCampaignEmail($campaignEmail, $campaign);
 	}

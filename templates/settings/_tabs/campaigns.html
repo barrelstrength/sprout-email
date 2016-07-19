@@ -3,13 +3,13 @@
 
 {% set title = "Campaigns"|t %}
 
-{% set entries = craft.sproutEmail.getCampaigns('email') %}
+{% set campaignTypes = craft.sproutEmail.getCampaignTypes() %}
 
 {% set content %}
 
-	{% if entries|length %}
+	{% if campaignTypes|length %}
 
-		{% for campaign in entries %}
+		{% for campaignType in campaignTypes %}
 			{% if loop.first %}
 
 				<table id="campaigns" class="data fullwidth">
@@ -27,15 +27,15 @@
 				<th class="thin"></th>
 				</thead>
 			{% endif %}
-			<tr data-id="{{ campaign.id }}" data-name="{{ campaign.name }}">
+			<tr data-id="{{ campaignType.id }}" data-name="{{ campaignType.name }}">
 				<td>
-					<a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaign.id ) }}">{{ campaign.name }}</a>
+					<a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaignType.id ) }}">{{ campaignType.name }}</a>
 				</td>
 				<td>
-					<code>{{ campaign.handle }}</code>
+					<code>{{ campaignType.handle }}</code>
 				</td>
-				<td>{{ campaign.mailer }}</td>
-				<td><code>{{ campaign.template }}</code></td>
+				<td>{{ campaignType.mailer }}</td>
+				<td><code>{{ campaignType.template }}</code></td>
 				<td colspan="3" class="thin">
 					<a class="delete icon" title='{{ "Delete"|t }}'></a>
 				</td>
@@ -74,7 +74,7 @@
 new Craft.AdminTable({
 	tableSelector: '#campaigns',
 	noObjectsSelector: '#nocampaigns',
-	deleteAction: 'sproutEmail/campaign/deleteCampaign'
+	deleteAction: 'sproutEmail/campaignType/deleteCampaignType'
 });
 {% endset %}
 {% includeJs js %}

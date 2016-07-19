@@ -1,6 +1,6 @@
 <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/notifications/edit/' ~ campaignId) }}">
 	{{ getCsrfInput() }}
-	<input type="hidden" name="action" value="sproutEmail/notifications/saveNotification">
+	<input type="hidden" name="action" value="sproutEmail/notificationEmails/saveNotification">
 	<input type="hidden" name="redirect" value="sproutemail/settings#settings-notifications">
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 

@@ -2,25 +2,24 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_CampaignModel
+ * Class SproutEmail_CampaignTypeModel
  *
  * @package Craft
  * --
- * @property int                      $id
- * @property string                   $name
- * @property string                   $handle
- * @property string                   $type
- * @property string                   $mailer
- * @property string                   $titleFormat
- * @property string                   $urlFormat
- * @property bool                     $hasUrls
- * @property bool                     $hasAdvancedTitles
- * @property string                   $template
- * @property string                   $templateCopyPaste
- * @property int                      $fieldLayoutId
- * @property SproutEmail_CampaignEmailModel[] $entries
+ * @property int    $id
+ * @property string $name
+ * @property string $handle
+ * @property string $mailer
+ * @property string $titleFormat
+ * @property string $urlFormat
+ * @property bool   $hasUrls
+ * @property bool   $hasAdvancedTitles
+ * @property string $template
+ * @property string $templateCopyPaste
+ * @property int    $fieldLayoutId
+ * @property int    $emailId
  */
-class SproutEmail_CampaignModel extends BaseModel
+class SproutEmail_CampaignTypeModel extends BaseModel
 {
 	public $saveAsNew;
 
@@ -37,13 +36,6 @@ class SproutEmail_CampaignModel extends BaseModel
 			'id'                => AttributeType::Number,
 			'name'              => AttributeType::String,
 			'handle'            => AttributeType::String,
-			'type'              => array(
-				AttributeType::Enum,
-				'values' => array(
-					Campaign::Email,
-					Campaign::Notification
-				)
-			),
 			'mailer'            => AttributeType::String,
 			'titleFormat'       => AttributeType::String,
 			'urlFormat'         => AttributeType::String,
@@ -57,6 +49,7 @@ class SproutEmail_CampaignModel extends BaseModel
 			),
 			'template'          => AttributeType::String,
 			'templateCopyPaste' => AttributeType::String,
+
 			// @defaults
 			'dateCreated'       => AttributeType::DateTime,
 			'dateUpdated'       => AttributeType::DateTime,
@@ -97,9 +90,9 @@ class SproutEmail_CampaignModel extends BaseModel
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field = $fieldLayoutField->getField();
+				$field           = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->fields[] = $field;
+				$this->fields[]  = $field;
 			}
 		}
 
@@ -114,24 +107,5 @@ class SproutEmail_CampaignModel extends BaseModel
 	public function setFields($fields)
 	{
 		$this->fields = $fields;
-	}
-
-	/**
-	 * Set the Entry Related to this Campaign if we have a notification
-	 */
-	public function getNotificationEmail()
-	{
-		if ($this->isNotification())
-		{
-			return sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($this->id);
-		}
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isNotification()
-	{
-		return ($this->type == Campaign::Notification);
 	}
 }

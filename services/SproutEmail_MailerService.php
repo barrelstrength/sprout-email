@@ -222,7 +222,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 
 		$campaignEmail    = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 		$response = new SproutEmail_ResponseModel();
 
 		if ($campaignEmail && $campaign)
@@ -270,7 +270,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaign      = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$campaign      = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 		$response      = new SproutEmail_ResponseModel();
 
 		if ($campaignEmail && $campaign)
@@ -305,14 +305,14 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 *
 	 * @return bool
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function saveRecipientLists(SproutEmail_CampaignModel $campaign, SproutEmail_CampaignEmailModel $campaignEmail)
+	public function saveRecipientLists(SproutEmail_CampaignTypeModel $campaign, SproutEmail_CampaignEmailModel $campaignEmail)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 
@@ -340,7 +340,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				$record->emailId = $list->emailId;
 				$record->mailer  = $list->mailer;
 				$record->list    = $list->list;
-				$record->type    = $list->type;
 
 				try
 				{
@@ -358,13 +357,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 
@@ -385,13 +384,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 

@@ -21,21 +21,22 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 		$defaults = parent::defineAttributes();
 
 		$attributes = array(
-			'name'        => array('type' => AttributeType::String, 'required' => true, 'minLength' => 2),
-			'template'    => array('type' => AttributeType::String, 'required' => true, 'minLength' => 2),
-			'eventId'     => AttributeType::String,
-			'options'     => AttributeType::Mixed,
+			'name'                  => array('type' => AttributeType::String, 'required' => true, 'minLength' => 2),
+			'template'              => array('type' => AttributeType::String, 'required' => true, 'minLength' => 2),
+			'eventId'               => AttributeType::String,
+			'options'               => AttributeType::Mixed,
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
 			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
 			'fromEmail'             => array(AttributeType::String, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'        => AttributeType::Bool,
+			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'dateCreated' => AttributeType::DateTime,
-			'dateUpdated' => AttributeType::DateTime,
+			'dateCreated'           => AttributeType::DateTime,
+			'dateUpdated'           => AttributeType::DateTime,
+
 			// @related
-			'fieldLayoutId' => AttributeType::Number
+			'fieldLayoutId'         => AttributeType::Number
 		);
 
 		return array_merge($defaults, $attributes);
@@ -71,9 +72,9 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field = $fieldLayoutField->getField();
+				$field           = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->fields[] = $field;
+				$this->fields[]  = $field;
 			}
 		}
 
@@ -88,6 +89,11 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	public function setFields($fields)
 	{
 		$this->fields = $fields;
+	}
+
+	public function getUrlFormat()
+	{
+		return "sproutemail/preview/{slug}";
 	}
 
 	/**
@@ -130,7 +136,6 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	public function getStatus()
 	{
 		$status = parent::getStatus();
-
 
 		switch ($status)
 		{

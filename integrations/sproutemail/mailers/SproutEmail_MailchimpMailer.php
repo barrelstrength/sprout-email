@@ -80,12 +80,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		if (strpos($campaignEmail->replyToEmail, '{') !== false)
 		{
@@ -205,11 +205,11 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array|SproutEmail_CampaignEmailModel
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -223,7 +223,6 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 				$model->setAttribute('emailId', $campaignEmail->id);
 				$model->setAttribute('mailer', $this->getId());
 				$model->setAttribute('list', $id);
-				$model->setAttribute('type', $campaign->type);
 
 				$lists[] = $model;
 			}
@@ -234,11 +233,11 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array|void
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$sentCampaignIds = array();
 		$response = new SproutEmail_ResponseModel();

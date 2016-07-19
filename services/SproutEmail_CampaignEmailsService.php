@@ -22,14 +22,14 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return bool
 	 * @throws Exception
 	 * @throws \CDbException
 	 * @throws \Exception
 	 */
-	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$isNewEntry          = true;
 		$campaignEmailRecord = new SproutEmail_CampaignEmailRecord();
@@ -118,13 +118,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 		try
 		{
-			// Delete Campaign and Rules associated with this email
-			if ($campaignEmail->getType() == Campaign::Notification)
-			{
-				sproutEmail()->campaigns->deleteCampaign($campaignEmail->campaignId);
-			}
-
-			// Delete the Element and Entry
 			craft()->elements->deleteElementById($campaignEmail->id);
 
 			if ($transaction !== null)
@@ -205,13 +198,13 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignTypeModel $campaign
 	 *
 	 * @return bool
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function saveRelatedCampaignEmail(SproutEmail_CampaignModel $campaign)
+	public function saveRelatedCampaignEmail(SproutEmail_CampaignTypeModel $campaign)
 	{
 		$defaultMailer         = sproutEmail()->mailers->getMailerByName('defaultmailer');
 		$defaultMailerSettings = $defaultMailer->getSettings();

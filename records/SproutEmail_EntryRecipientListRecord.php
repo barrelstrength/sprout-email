@@ -29,7 +29,6 @@ class SproutEmail_EntryRecipientListRecord extends BaseRecord
 		return array(
 			'mailer' => AttributeType::String,
 			'list'   => AttributeType::String,
-			'type'   => AttributeType::String,
 		);
 	}
 

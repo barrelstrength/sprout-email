@@ -26,6 +26,34 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Returns all campaign notifications based on the passed in event id
+	 *
+	 * @param string $eventId
+	 *
+	 * @return SproutEmail_NotificationModel[]|null
+	 */
+	public function getNotifications($eventId = null)
+	{
+		if ($eventId)
+		{
+			$attributes = array('eventId' => $eventId);
+
+			$notifications = SproutEmail_NotificationEmailRecord::model()->findAllByAttributes($attributes);
+		}
+		else
+		{
+			$notifications = SproutEmail_NotificationEmailRecord::model()->findAll();
+		}
+
+		return SproutEmail_NotificationEmailModel::populateModels($notifications);
+	}
+
+	public function getNotificationEmailById($emailId)
+	{
+		return craft()->elements->getElementById($emailId, 'SproutEmail_NotificationEmail');
+	}
+
+	/**
 	 * Returns all the available events that notifications can subscribe to
 	 *
 	 * @return array
@@ -227,7 +255,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $result;
 	}
 
-	public function deleteNotificationById($id)
+	public function deleteNotificationEmailById($id)
 	{
 		$result = false;
 
@@ -550,23 +578,6 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		catch (\Exception $e)
 		{
 			throw $e;
-		}
-	}
-
-	/**
-	 * Returns all campaign notifications based on the passed in event id
-	 *
-	 * @param string $eventId
-	 *
-	 * @return SproutEmail_NotificationModel[]|null
-	 */
-	public function getNotifications($eventId)
-	{
-		$attributes = array('eventId' => $eventId);
-
-		if (($notifications = SproutEmail_NotificationEmailRecord::model()->findAllByAttributes($attributes)))
-		{
-			return SproutEmail_NotificationEmailModel::populateModels($notifications);
 		}
 	}
 

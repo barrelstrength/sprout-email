@@ -102,33 +102,14 @@ class SproutEmailVariable
 		return sproutEmail()->notificationEmails->getEventSelectedOptions($event, $notification);
 	}
 
-	/**
-	 * Returns a notification entry model if found by campaing id
-	 *
-	 * @param int $id
-	 *
-	 * @return SproutEmail_CampaignEmailModel|null
-	 */
-	public function getNotificationEmailByCampaignId($id)
+	public function getNotifications()
 	{
-		return sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($id);
+		return sproutEmail()->notificationEmails->getNotifications();
 	}
 
-	public function getNotificationById($id)
+	public function getNotificationEmailById($id)
 	{
-		return sproutEmail()->notificationEmails->getNotificationById($id);
-	}
-
-	/**
-	 * Return Campaign model by passing entry id
-	 *
-	 * @param $id
-	 *
-	 * @return bool|SproutEmail_CampaignModel
-	 */
-	public function getCampaignByEntryId($id)
-	{
-		return sproutEmail()->campaigns->getCampaignByEntryId($id);
+		return sproutEmail()->notificationEmails->getNotificationEmailById($id);
 	}
 
 	/**
@@ -136,9 +117,9 @@ class SproutEmailVariable
 	 *
 	 * @return mixed Campaign model
 	 */
-	public function getCampaigns($type = null)
+	public function getCampaignTypes()
 	{
-		return sproutEmail()->campaigns->getCampaigns($type);
+		return sproutEmail()->campaignTypes->getCampaignTypes();
 	}
 
 	/**
@@ -148,9 +129,9 @@ class SproutEmailVariable
 	 *
 	 * @return object campaign record
 	 */
-	public function getCampaignById($campaignId)
+	public function getCampaignTypeById($campaignId)
 	{
-		return sproutEmail()->campaigns->getCampaignById($campaignId);
+		return sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 	}
 
 	/**

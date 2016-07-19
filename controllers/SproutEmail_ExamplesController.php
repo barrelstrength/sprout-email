@@ -292,12 +292,11 @@ Email: {email}',
 			// Create Emails and their Content
 			foreach ($emailSettings as $settings)
 			{
-				$campaign = new SproutEmail_CampaignModel();
+				$campaign = new SproutEmail_CampaignTypeModel();
 
 				// Assign our email settings
 				$campaign->name = $settings['name'];
 				$campaign->handle = $settings['handle'];
-				$campaign->type = $settings['type'];
 				$campaign->mailer = $settings['mailer'];
 				$campaign->hasUrls = $settings['hasUrls'];
 				$campaign->urlFormat = $settings['urlFormat'];
@@ -306,7 +305,7 @@ Email: {email}',
 				$campaign->templateCopyPaste = $settings['templateCopyPaste'];
 
 				// Create the Email
-				if (!$campaign = sproutEmail()->campaigns->saveCampaign($campaign))
+				if (!$campaign = sproutEmail()->campaignTypes->saveCampaignType($campaign))
 				{
 					SproutEmailPlugin::log('Campaign NOT CREATED');
 
@@ -367,7 +366,7 @@ Email: {email}',
 				$campaign->setFieldLayout($fieldLayout);
 
 				// Save our email again with a layout
-				sproutEmail()->campaigns->saveCampaign($campaign);
+				sproutEmail()->campaignTypes->saveCampaignType($campaign);
 
 				$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findByAttributes(array(
 					'campaignId' => $campaign->id

@@ -69,8 +69,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			),
 		);
 
-		// Prepare the data for our sources sidebar
-		$campaigns = sproutEmail()->campaigns->getCampaigns('email');
+		$campaigns = sproutEmail()->campaignTypes->getCampaignTypes();
 
 		if (count($campaigns))
 		{
@@ -263,8 +262,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.fromEmail as fromEmail,
 				 campaigns.replyToEmail as replyToEmail,
 				 campaigns.sent as sent,
-				 campaigns.enableFileAttachments as enableFileAttachments,
-				 campaigntype.type as type'
+				 campaigns.enableFileAttachments as enableFileAttachments'
 			)
 			->join('sproutemail_campaigns campaigns', 'campaigns.id = elements.id')
 			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignId');
@@ -290,13 +288,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		// Only expose notification emails that have tokens
-		if ($element->getType() == 'notification' && !craft()->request->getQuery(craft()->config->get('tokenParam')))
-		{
-			throw new HttpException(404);
-		}
-
-		$campaign = sproutEmail()->campaigns->getCampaignById($element->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignId);
 
 		if (!$campaign)
 		{

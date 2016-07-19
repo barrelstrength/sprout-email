@@ -1,6 +1,6 @@
 
 <form method="post" action="" accept-charset="UTF-8" data-saveshortcut data-saveshortcut-redirect="{{ url('sproutemail/settings/campaigns/edit/{id}') }}">
-	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+	<input type="hidden" name="action" value="sproutEmail/campaignType/saveCampaign">
 	<input type="hidden" name="redirect" value="sproutemail/campaigns">
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 
@@ -175,7 +175,7 @@
 <hr>
 
 <form method="post" action="" accept-charset="UTF-8">
-	<input type="hidden" name="action" value="sproutEmail/campaign/deleteCampaign">
+	<input type="hidden" name="action" value="sproutEmail/campaignType/deleteCampaignType">
 	<input type="hidden" name="redirect" value="sproutemail/campaigns">
 	<input type="hidden" name="id" value="{{ campaignId }}">
 	<input type="submit" class="btn small" value="Delete">

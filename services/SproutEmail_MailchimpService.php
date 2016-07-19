@@ -131,7 +131,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$type   = craft()->request->getPost('contentType', 'html');
 		$ext    = strtolower($type) == 'text' ? '.txt' : null;
@@ -143,7 +143,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 * @param bool                           $sendOnExport
 	 *
 	 * @return array

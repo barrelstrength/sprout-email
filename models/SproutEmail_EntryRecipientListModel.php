@@ -8,7 +8,6 @@ namespace Craft;
  * --
  * @property string $mailer
  * @property string $mailerListId
- * @property string $mailerListType
  */
 class SproutEmail_EntryRecipientListModel extends BaseModel
 {
@@ -21,8 +20,7 @@ class SproutEmail_EntryRecipientListModel extends BaseModel
 			'id'      => AttributeType::Number,
 			'emailId' => AttributeType::String,
 			'mailer'  => AttributeType::String,
-			'list'    => AttributeType::String,
-			'type'    => AttributeType::String,
+			'list'    => AttributeType::String
 		);
 	}
 }

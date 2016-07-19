@@ -35,7 +35,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		return "Copy and paste your email campaigns to better (or worse) places.";
 	}
 
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 
@@ -50,7 +50,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		return 'sproutEmail/campaignEmails/export';
 	}
 
-	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		return $this->getService()->previewCampaignEmail($campaignEmail, $campaign);
 	}
@@ -65,7 +65,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 	}
 
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$this->includeModalResources();
 		try
@@ -78,7 +78,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		}
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		try
 		{

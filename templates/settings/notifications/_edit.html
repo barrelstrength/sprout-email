@@ -2,7 +2,9 @@
 {% import "_includes/forms" as forms %}
 
 {% set title = "Edit Notification"|t %}
-{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
+{# @todo - the campaignId variable is a notification.id variable in this context,
+					 consider renaming the slug to something more generic. #}
+{% set email = craft.sproutEmail.getNotificationEmailById(campaignId) %}
 
 {% set crumbs = [
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
@@ -18,11 +20,8 @@
 		<div class="btngroup">
 			<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
 
-			{% if campaign.type is defined and campaign.type == "notification" %}
+			{% if email['id'] is defined %}
 
-				{% set email = craft.sproutEmail.getNotificationEmailByCampaignId(campaign.id) %}
-
-			{% if email.id is defined %}
 				<div class="btn submit menubtn"></div>
 				<div class="menu">
 					<ul>
@@ -34,7 +33,6 @@
 
 					</ul>
 				</div>
-				{% endif %}
 
 			{% endif %}
 
@@ -53,7 +51,7 @@
 
 	{% if isMailerInstalled %}
 
-		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+		<input type="hidden" name="action" value="sproutEmail/campaignType/saveCampaignType">
 
 		{% if email['id'] is defined %}
 			<input type="hidden" name="redirect" value="sproutemail/settings/notifications">

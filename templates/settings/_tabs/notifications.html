@@ -5,7 +5,7 @@
 
 {% set content %}
 
-	{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
+	{% set notifications = craft.sproutEmail.getNotifications() %}
 
 	{% for campaign in notifications %}
 
@@ -71,7 +71,7 @@
 new Craft.AdminTable({
 	tableSelector: '#notification-entries',
 	noObjectsSelector: '#nonotification-entries',
-	deleteAction: 'sproutEmail/campaign/deleteCampaign'
+	deleteAction: 'sproutEmail/notificationEmails/deleteNotificationEmail'
 });
 {% endset %}
 {% includeJs js %}

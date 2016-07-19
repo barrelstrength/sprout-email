@@ -1,71 +1,59 @@
 <?php
 namespace Craft;
 
-class SproutEmail_CampaignsService extends BaseApplicationComponent
+class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 {
 	/**
 	 * @param string|null $type
 	 *
-	 * @return SproutEmail_CampaignModel[]
+	 * @return SproutEmail_CampaignTypeModel[]
 	 */
-	public function getCampaigns($type = null)
+	public function getCampaignTypes()
 	{
-		if ($type)
-		{
-			$campaigns = SproutEmail_CampaignRecord::model()->findAllByAttributes(array('type' => $type));
-		}
-		else
-		{
-			$campaigns = SproutEmail_CampaignRecord::model()->findAll();
-		}
+		$campaigns = SproutEmail_CampaignTypeRecord::model()->findAll();
 
 		if ($campaigns)
 		{
-			return SproutEmail_CampaignModel::populateModels($campaigns);
+			return SproutEmail_CampaignTypeModel::populateModels($campaigns);
 		}
 	}
 
 	/**
-	 * @param $campaignId
+	 * @param $campaignTypeId
 	 *
-	 * @return SproutEmail_CampaignModel
+	 * @return SproutEmail_CampaignTypeModel
 	 */
-	public function getCampaignById($campaignId)
+	public function getCampaignTypeById($campaignTypeId)
 	{
-		$campaignRecord = SproutEmail_CampaignRecord::model();
-		$campaignRecord = $campaignRecord->with('entries')->findById($campaignId);
+		$campaignRecord = SproutEmail_CampaignTypeRecord::model();
+		$campaignRecord = $campaignRecord->with('entries')->findById($campaignTypeId);
 
 		if ($campaignRecord)
 		{
-			return SproutEmail_CampaignModel::populateModel($campaignRecord);
+			return SproutEmail_CampaignTypeModel::populateModel($campaignRecord);
 		}
 		else
 		{
-			return new SproutEmail_CampaignModel();
+			return new SproutEmail_CampaignTypeModel();
 		}
 	}
 
-	public function getCampaignByEmailandCampaignId($emailId = false, $campaignId = false)
-	{
-		return SproutEmail_CampaignRecord::model()->getCampaignByEmailandCampaignId($emailId, $campaignId);
-	}
-
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @param string                    $tab
+	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param string                        $tab
 	 *
 	 * @throws \Exception
 	 * @return int CampaignRecordId
 	 */
-	public function saveCampaign(SproutEmail_CampaignModel $campaign)
+	public function saveCampaignType(SproutEmail_CampaignTypeModel $campaign)
 	{
-		$campaignRecord = new SproutEmail_CampaignRecord();
+		$campaignRecord = new SproutEmail_CampaignTypeRecord();
 		$oldCampaign    = null;
 
 		if (is_numeric($campaign->id) && !$campaign->saveAsNew)
 		{
-			$campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
-			$oldCampaign    = SproutEmail_CampaignModel::populateModel($campaignRecord);
+			$campaignRecord = SproutEmail_CampaignTypeRecord::model()->findById($campaign->id);
+			$oldCampaign    = SproutEmail_CampaignTypeModel::populateModel($campaignRecord);
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
@@ -84,7 +72,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		$campaign->fieldLayoutId       = $fieldLayout->id;
 		$campaignRecord->fieldLayoutId = $fieldLayout->id;
 
-		$campaignRecord = $this->saveCampaignInfo($campaign);
+		$campaignRecord = $this->saveCampaignTypeInfo($campaign);
 
 		if ($campaignRecord->hasErrors())
 		{
@@ -129,17 +117,17 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 			$transaction->commit();
 		}
 
-		return SproutEmail_CampaignModel::populateModel($campaignRecord);
+		return SproutEmail_CampaignTypeModel::populateModel($campaignRecord);
 	}
 
-	protected function saveCampaignInfo(SproutEmail_CampaignModel &$campaign)
+	protected function saveCampaignTypeInfo(SproutEmail_CampaignTypeModel &$campaign)
 	{
 		$oldCampaignMailer = null;
-		$campaignRecord    = new SproutEmail_CampaignRecord();
+		$campaignRecord    = new SproutEmail_CampaignTypeRecord();
 
 		if (isset($campaign->id) && is_numeric($campaign->id) && !$campaign->saveAsNew)
 		{
-			$campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
+			$campaignRecord = SproutEmail_CampaignTypeRecord::model()->findById($campaign->id);
 
 			if (!$campaignRecord)
 			{
@@ -159,7 +147,6 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		$campaignRecord->fieldLayoutId     = $campaign->fieldLayoutId;
 		$campaignRecord->name              = $campaign->name;
 		$campaignRecord->handle            = $campaign->handle;
-		$campaignRecord->type              = $campaign->type;
 		$campaignRecord->titleFormat       = $campaign->titleFormat;
 		$campaignRecord->hasUrls           = $campaign->hasUrls;
 		$campaignRecord->hasAdvancedTitles = $campaign->hasAdvancedTitles;
@@ -199,16 +186,13 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 *
 	 * @return bool
 	 */
-	public function deleteCampaign($campaignId)
+	public function deleteCampaignType($campaignId)
 	{
 		try
 		{
 			craft()->db->createCommand()->delete('sproutemail_campaigntype', array(
 				'id' => $campaignId
 			));
-
-			// This only applies to Notifications
-			sproutEmail()->notificationEmails->deleteNotificationsByCampaignId($campaignId);
 
 			return true;
 		}
@@ -224,7 +208,7 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 	 * @param string $field
 	 * @param string $value
 	 *
-	 * @return SproutEmail_CampaignRecord
+	 * @return SproutEmail_CampaignTypeRecord
 	 */
 	public function getFieldValue($field, $value)
 	{
@@ -233,35 +217,8 @@ class SproutEmail_CampaignsService extends BaseApplicationComponent
 		$criteria->params    = array(':value' => $value);
 		$criteria->limit     = 1;
 
-		$result = SproutEmail_CampaignRecord::model()->find($criteria);
+		$result = SproutEmail_CampaignTypeRecord::model()->find($criteria);
 
 		return $result;
-	}
-
-	/**  Get a Campaign Model by the related Campaign Email id
-	 *
-	 * @param $emailId
-	 *
-	 * @return bool|SproutEmail_CampaignModel
-	 */
-	public function getCampaignByEntryId($emailId)
-	{
-		$campaignEmail = SproutEmail_CampaignEmailRecord::model()->findById($emailId);
-
-		if (!isset($campaignEmail->campaignId))
-		{
-			return false;
-		}
-
-		$campaignId = $campaignEmail->campaignId;
-
-		$campaign = $this->getCampaignById($campaignId);
-
-		if ($campaign->id != null)
-		{
-			return $campaign;
-		}
-
-		return false;
 	}
 }

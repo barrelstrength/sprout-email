@@ -1,19 +1,19 @@
 <?php
 namespace Craft;
 
-class SproutEmail_CampaignController extends BaseController
+class SproutEmail_CampaignTypeController extends BaseController
 {
 	/**
-	 * Save campaign
+	 * Save campaign type
 	 *
 	 * @return void
 	 */
-	public function actionSaveCampaign()
+	public function actionSaveCampaignType()
 	{
 		$this->requirePostRequest();
 
 		$campaignId = craft()->request->getRequiredPost('sproutEmail.id');
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 
 		$campaign->setAttributes(craft()->request->getPost('sproutEmail'));
 
@@ -33,28 +33,9 @@ class SproutEmail_CampaignController extends BaseController
 			$campaign->setFieldLayout($fieldLayout);
 		}
 
-		if ($campaign = sproutEmail()->campaigns->saveCampaign($campaign))
+		if ($campaign = sproutEmail()->campaignTypes->saveCampaignType($campaign))
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign saved.'));
-
-			// Create the related Email Entry if we have a notification
-			if ($campaign->type == 'notification')
-			{
-				if (sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($campaign->id) == false)
-				{
-					$campaignEmail = sproutEmail()->campaignEmails->saveRelatedCampaignEmail($campaign);
-				}
-				else
-				{
-					$campaignEmail = sproutEmail()->notificationEmails->getNotificationEmailByCampaignId($campaign->id);
-				}
-
-				// Pass emailId for save and edit notification button
-				$campaign->emailId = $campaignEmail->id;
-
-				$this->redirectToPostedUrl($campaign);
-				craft()->end();
-			}
 
 			$_POST['redirect'] = str_replace('{id}', $campaign->id, $_POST['redirect']);
 
@@ -76,14 +57,14 @@ class SproutEmail_CampaignController extends BaseController
 	 *
 	 * @return void
 	 */
-	public function actionDeleteCampaign()
+	public function actionDeleteCampaignType()
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
 		$campaignId = craft()->request->getRequiredPost('id');
 
-		if ($result = craft()->sproutEmail_campaigns->deleteCampaign($campaignId))
+		if ($result = sproutEmail()->campaignTypes->deleteCampaignType($campaignId))
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign deleted.'));
 
@@ -127,7 +108,7 @@ class SproutEmail_CampaignController extends BaseController
 			// If campaign already exists, we're returning an error object
 			if (!isset($variables['campaign']))
 			{
-				$variables['campaign'] = sproutEmail()->campaigns->getCampaignById($variables['campaignId']);
+				$variables['campaign'] = sproutEmail()->campaignTypes->getCampaignTypeById($variables['campaignId']);
 			}
 		}
 		else

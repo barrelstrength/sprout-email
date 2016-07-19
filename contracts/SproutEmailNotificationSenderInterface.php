@@ -9,8 +9,8 @@ namespace Craft;
 interface SproutEmailNotificationSenderInterface
 {
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @param null                      $object
+	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param null                          $object
 	 *
 	 * @return mixed
 	 * @internal param mixed|null $element The element/object involved when triggering the event

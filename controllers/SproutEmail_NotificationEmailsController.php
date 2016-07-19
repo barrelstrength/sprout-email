@@ -2,15 +2,46 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_NotificationController
+ * Class SproutEmail_NotificationEmailsController
  *
  * @package Craft
  */
-class SproutEmail_NotificationController extends BaseController
+class SproutEmail_NotificationEmailsController extends BaseController
 {
 
 	private $notification;
 
+	/**
+	 * Renders the notification settings template with passed in route variables
+	 *
+	 * @param array $variables
+	 *
+	 * @throws HttpException
+	 */
+	public function actionNotificationSettingsTemplate(array $variables = array())
+	{
+		if (!sproutEmail()->checkPermission())
+		{
+			$this->redirect('sproutemail');
+		}
+
+		if (isset($variables['campaignId']))
+		{
+			if (!isset($variables['campaign']))
+			{
+				$variables['campaign'] = sproutEmail()->campaignTypes->getCampaignTypeById($variables['campaignId']);
+			}
+		}
+		else
+		{
+			$variables['campaign'] = new SproutEmail_CampaignTypeModel();
+		}
+
+		$variables['isMailerInstalled'] = (bool) sproutEmail()->mailers->isInstalled('defaultmailer');
+
+		$this->renderTemplate('sproutemail/settings/notifications/_edit', $variables);
+	}
+	
 	public function actionEditNotificationSetting(array $variables = array())
 	{
 		$notificationId = null;
@@ -208,7 +239,7 @@ class SproutEmail_NotificationController extends BaseController
 		));
 	}
 
-	public function actionDeleteNotification()
+	public function actionDeleteNotificationEmail()
 	{
 		$this->requirePostRequest();
 
@@ -220,7 +251,7 @@ class SproutEmail_NotificationController extends BaseController
 
 			$notification = craft()->elements->getElementById($notificationId);
 
-			if (sproutEmail()->notificationEmails->deleteNotificationById($notificationId))
+			if (sproutEmail()->notificationEmails->deleteNotificationEmailById($notificationId))
 			{
 				$this->redirectToPostedUrl($notification);
 			}

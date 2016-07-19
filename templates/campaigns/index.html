@@ -1,11 +1,11 @@
 {% extends "sproutemail/_layouts/elementindex" %}
 
-{% set title         = "Campaigns"|t %}
-{% set elementType   = "SproutEmail_CampaignEmail" %}
-{% set campaigns     = craft.sproutEmail.getCampaigns('email') %}
-{% set notifications = craft.sproutEmail.getCampaigns('notification') %}
+{% set title       = "Campaigns"|t %}
+{% set elementType = "SproutEmail_CampaignEmail" %}
 
 {% set extraPageHeaderHtml %}
+
+	{% set campaigns = craft.sproutEmail.getCampaignTypes() %}
 
 	<div class="buttons">
 		<div class="btngroup submit">

@@ -445,9 +445,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @param mixed|null                $object
-	 * @param bool                      $useMockData
+	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param mixed|null                    $object
+	 * @param bool                          $useMockData
 	 *
 	 * @return bool
 	 */
@@ -546,12 +546,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function sendMockNotification(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function sendMockNotification(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		if ($campaign->isNotification())
 		{
@@ -590,12 +590,12 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$response = array();
 

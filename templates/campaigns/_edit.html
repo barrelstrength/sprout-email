@@ -26,19 +26,10 @@
 						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
 						{% endif %}
 
-						{% if campaign.type == 'email' %}
-							<li><a class="formsubmit" data-redirect="sproutemail/campaigns/{{ campaign.id }}/new">{{ "Save and add another"|t }}</a></li>
-							{% if email.id != null %}
-								<li><a class="formsubmit" data-param='saveAsNew' data-value="true" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save as a new email"|t }}</a></li>
-							{% endif %}
-						{% endif %}
 
-						{% if campaign.type == 'notification' and currentUser.can('editSproutEmailSettings') %}
-							<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/{{ campaign.id }}">{{ "Save and edit notification settings"|t }}</a></li>
-						{% endif %}
-
-						{% if campaign.type == 'notification' %}
-							<li><a class="formsubmit" data-redirect="sproutemail/settings/notifications/edit/new">{{ "Save and add another"|t }}</a></li>
+						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/{{ campaign.id }}/new">{{ "Save and add another"|t }}</a></li>
+						{% if email.id != null %}
+							<li><a class="formsubmit" data-param='saveAsNew' data-value="true" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save as a new email"|t }}</a></li>
 						{% endif %}
 
 					</ul>
@@ -178,55 +169,6 @@
 
 					</div>
 
-				{% endif %}
-
-				{% if campaign.type == 'notification' %}
-					<div id="tab-sproutemail-rules" class="pane meta">
-
-						{% set events = craft.sproutEmail.getAvailableEvents() %}
-
-						{% if events|length %}
-
-							{{ forms.selectField({
-								id: "notificationEvent",
-								name: "notificationEvent",
-								label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
-								options: [{label: "Select event..."|t, value: null}]|merge(events),
-								value: notificationEvent is defined ? notificationEvent : null,
-							}) }}
-
-							{% for id, event in events %}
-								{% if event.getEventAction is defined and event.getOptionsHtml is defined %}
-
-								{# Avoid jquery get object error. #}
-								<div class="field event-options {{ event.getEventId() }}">
-									<div class="heading">
-										Settings
-									</div>
-									<div class="input">
-										{% set options = craft.sproutEmail.getSelectedOptions(event, campaignId) %}
-										{{ event.getOptionsHtml({
-											forms: forms,
-											options: options
-										})|raw }}
-									</div>
-								</div>
-
-								{% endif %}
-							{% endfor %}
-
-							{{ forms.lightswitchField({
-								first: true,
-								label: "Attach Files <span class='info'>All files submitted with your entries will be attached to the notification email</span>"|t,
-								id: 'sproutEmail[enableFileAttachments]',
-								name: 'sproutEmail[enableFileAttachments]',
-								on: email.enableFileAttachments,
-								onLabel: "Enable"|t,
-								offLabel: "Disable"|t
-							}) }}
-
-						{% endif %}
-					</div>
 				{% endif %}
 
 			</div>

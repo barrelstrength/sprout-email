@@ -133,10 +133,10 @@ class SproutEmailPlugin extends BasePlugin
 				'action' => 'sproutEmail/mailer/editSettings'
 			),
 			'sproutemail/settings/(?P<settingsTemplate>campaigns)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
-				'action' => 'sproutEmail/campaign/campaignSettingsTemplate'
+				'action' => 'sproutEmail/campaignType/campaignSettingsTemplate'
 			),
 			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
-				'action' => 'sproutEmail/notifications/notificationSettingsTemplate'
+				'action' => 'sproutEmail/notificationEmails/notificationSettingsTemplate'
 			),
 			'sproutemail/campaigns/new' => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
@@ -155,18 +155,18 @@ class SproutEmailPlugin extends BasePlugin
 			),
 
 			'sproutemail/notifications/setting/new' => array(
-				'action' => 'sproutEmail/notification/editNotificationSetting'
+				'action' => 'sproutEmail/notificationEmails/editNotificationSetting'
 			),
 			'sproutemail/notifications/setting/(?P<notificationId>\d+)' => array(
-				'action' => 'sproutEmail/notification/editNotificationSetting'
+				'action' => 'sproutEmail/notificationEmails/editNotificationSetting'
 			),
 
 			'sproutemail/notifications/edit/new' => array(
-				'action' => 'sproutEmail/notification/editNotification'
+				'action' => 'sproutEmail/notificationEmails/editNotification'
 			),
 
 			'sproutemail/notifications/edit/(?P<notificationId>\d+)' => array(
-				'action' => 'sproutEmail/notification/editNotification'
+				'action' => 'sproutEmail/notificationEmails/editNotification'
 			),
 
 			'sproutemail/events/new' =>
@@ -349,12 +349,12 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerSproutSeoSitemap()
 	{
 		return array(
-			'sproutemail_entry'         => array(
+			'sproutemail_entry' => array(
 				'name'           => 'Email Campaigns',
 				'elementType'    => 'SproutEmail_CampaignEmail',
 				'elementGroupId' => 'campaignId',
 				'service'        => 'sproutEmail_campaigns',
-				'method'         => 'getCampaigns'
+				'method'         => 'getCampaignTypes'
 			)
 		);
 	}

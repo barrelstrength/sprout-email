@@ -3,12 +3,6 @@ namespace Craft;
 
 /**
  * Class SproutEmail_EntryRecipientListModel
- *
- * @package Craft
- * --
- * @property string $mailer
- * @property string $mailerListId
- * @property string $mailerListType
  */
 class SproutEmail_NotificationRecipientListModel extends BaseModel
 {

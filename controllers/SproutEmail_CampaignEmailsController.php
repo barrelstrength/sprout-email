@@ -18,7 +18,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	/**
 	 * The Campaign that this Campaign Email is associated with if any
 	 *
-	 * @var SproutEmail_CampaignModel
+	 * @var SproutEmail_CampaignTypeModel
 	 */
 	protected $campaign;
 
@@ -34,7 +34,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$this->requirePostRequest();
 
 		$campaignId     = craft()->request->getRequiredPost('campaignId');
-		$this->campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$this->campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 
 		if (!$this->campaign)
 		{
@@ -174,7 +174,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById(craft()->request->getPost('emailId'));
 
-		if ($campaignEmail && ($campaign = sproutEmail()->campaigns->getCampaignById($campaignEmail->campaignId)))
+		if ($campaignEmail && ($campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignId)))
 		{
 			try
 			{
@@ -280,7 +280,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$campaignId = $variables['email']->campaignId;
 		}
 
-		$variables['campaign']   = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$variables['campaign']   = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 		$variables['campaignId'] = $campaignId;
 
 		$shareParamsHtml = array(
@@ -329,18 +329,18 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$variables['showPreviewBtn'] = false;
 		}
 
-		if ($variables['campaign']->type == 'notification')
-		{
-			$notificationId = null;
-			$notification   = sproutEmail()->notificationEmails->getNotification(array('campaignId' => $campaignId));
-
-			if ($notification)
-			{
-				$notificationId = $notification->eventId;
-			}
-
-			$variables['notificationEvent'] = $notificationId;
-		}
+		//if ($variables['campaign']->type == 'notification')
+		//{
+		//	$notificationId = null;
+		//	$notification   = sproutEmail()->notificationEmails->getNotification(array('campaignId' => $campaignId));
+		//
+		//	if ($notification)
+		//	{
+		//		$notificationId = $notification->eventId;
+		//	}
+		//
+		//	$variables['notificationEvent'] = $notificationId;
+		//}
 
 		// end
 
@@ -356,7 +356,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById(craft()->request->getPost('emailId'));
 
-		if ($campaignEmail && ($campaign = sproutEmail()->campaigns->getCampaignById($campaignEmail->campaignId)))
+		if ($campaignEmail && ($campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignId)))
 		{
 			try
 			{
@@ -413,7 +413,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		// Prepare variables to render email templates
 		// -------------------------------------------
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignEmail->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignId);
 
 		$object = null;
 
@@ -490,7 +490,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		if ($campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId))
 		{
-			$campaign = sproutEmail()->campaigns->getCampaignById($campaignEmail->campaignId);
+			$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignId);
 
 			$object = null;
 

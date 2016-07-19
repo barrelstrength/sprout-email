@@ -55,7 +55,7 @@ class SproutEmailBaseTest extends BaseTest
 		$this->setComponent(craft(), 'config', $this->config);
 
 		$mainService = new SproutEmailService();
-		$campaignService = new SproutEmail_CampaignsService();
+		$campaignService = new SproutEmail_CampaignTypesService();
 		$campaignEntryService = new SproutEmail_CampaignEmailService();
 		$notificationsService = new SproutEmail_NotificationEmailsService();
 		$mailersService = new SproutEmail_MailerService();
@@ -77,7 +77,7 @@ class SproutEmailBaseTest extends BaseTest
 		$pluginService->shouldReceive('getPlugin')->with('sproutemail')->andReturn($plugin);
 
 		$this->setComponent(craft(), 'plugins', $pluginService);
-		$this->setComponent(craft(), 'sproutEmail_campaign', new SproutEmail_CampaignsService());
+		$this->setComponent(craft(), 'sproutEmail_campaign', new SproutEmail_CampaignTypesService());
 		$this->setComponent(craft(), 'sproutEmail_campaignEntry', new SproutEmail_CampaignEmailService());
 		$this->setComponent(craft(), 'sproutEmail_notifications', new SproutEmail_NotificationEmailsService());
 		$this->setComponent(craft(), 'sproutEmail_notificationEmail', new SproutEmail_NotificationEmailService());

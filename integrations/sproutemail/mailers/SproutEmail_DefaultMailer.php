@@ -113,11 +113,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -131,7 +131,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				$model->setAttribute('emailId', $campaignEmail->id);
 				$model->setAttribute('mailer', $this->getId());
 				$model->setAttribute('list', $id);
-				$model->setAttribute('type', $campaign->type);
 
 				$lists[] = $model;
 			}
@@ -189,7 +188,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel             $campaign
+	 * @param SproutEmail_CampaignTypeModel         $campaign
 	 * @param BaseModel|BaseElementModel|array|null $object
 	 *
 	 * @return bool
@@ -201,11 +200,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
 		$recipientLists = array();
@@ -255,11 +254,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 */
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$success = false;
 
@@ -288,11 +287,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return string
 	 */
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		// Display the testToEmailAddress if it exists
 		$email = craft()->config->get('testToEmailAddress');
@@ -319,12 +318,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignModel      $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 * @param                                $errors
 	 *
 	 * @return array
 	 */
-	public function getErrors(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignModel $campaign, $errors)
+	public function getErrors(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign, $errors)
 	{
 		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/campaigns/edit/' . $campaignEmail->id);
 		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $campaign->id);

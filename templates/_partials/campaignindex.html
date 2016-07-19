@@ -7,7 +7,6 @@
 		<th></th>
 		<th>{{ "Subject Line"|t }}</th>
 		<th>{{ "Date Created"|t }}</th>
-		<th>{{ "Type"|t }}</th>
 		<th>{{ "Preview"|t }}</th>
 		<th>{{ "Send"|t }}</th>
 		</thead>
@@ -28,20 +27,14 @@
 				{{ email.dateCreated|date('m/d/Y') }}
 			</td>
 			<td>
-				{{ campaign.type|ucfirst }}
-			</td>
-			<td>
 
-				{% if email.getUrl() and not campaign.isNotification() %}
+				{% if email.getUrl() %}
 
 				<a href="{{ email.url }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
 				&nbsp;/&nbsp;
 				<a href="{{ email.url }}?type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 
-				{% endif %}
-
-
-				{% if not email.getUrl() and not campaign.isNotification() %}
+				{% else %}
 
 				<a href="{{ cpUrl('sproutemail/settings/campaigns/edit/' ~ email.campaignId) }}">Enable URLs</a>
 

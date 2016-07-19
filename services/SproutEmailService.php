@@ -7,7 +7,7 @@ namespace Craft;
  * @package Craft
  *
  * @property SproutEmail_MailerService             $mailers
- * @property SproutEmail_CampaignsService          $campaigns
+ * @property SproutEmail_CampaignTypesService      $campaignTypes
  * @property SproutEmail_CampaignEmailsService     $campaignEmails
  * @property SproutEmail_NotificationEmailsService $notificationEmails
  * @property SproutEmail_DefaultMailerService      $defaultmailer
@@ -16,7 +16,7 @@ namespace Craft;
 class SproutEmailService extends BaseApplicationComponent
 {
 	public $mailers;
-	public $campaigns;
+	public $campaignTypes;
 	public $campaignEmails;
 	public $notificationEmails;
 	public $defaultmailer;
@@ -31,7 +31,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$this->mailers            = Craft::app()->getComponent('sproutEmail_mailer');
 		$this->defaultmailer      = Craft::app()->getComponent('sproutEmail_defaultMailer');
 		$this->campaignEmails     = Craft::app()->getComponent('sproutEmail_campaignEmails');
-		$this->campaigns          = Craft::app()->getComponent('sproutEmail_campaigns');
+		$this->campaignTypes      = Craft::app()->getComponent('sproutEmail_campaignTypes');
 		$this->notificationEmails = Craft::app()->getComponent('sproutEmail_notificationEmails');
 		$this->sentEmails         = Craft::app()->getComponent('sproutEmail_sentEmails');
 	}
