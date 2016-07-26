@@ -49,11 +49,9 @@
 			data-email-id="{{ email.id }}"
 			data-campaign-id="{{ campaign.id }}"
 			class="btn submit actions">
-			{% if campaign.isNotification() %}
-				{{- "Send Test"|t -}}
-			{% else %}
-				{{- "Send Campaign"|t -}}
-			{% endif %}
+
+			{{- "Send Campaign"|t -}}
+
 		</button>
 	</div>
 </div>

@@ -551,65 +551,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function sendMockNotification(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
-	{
-		if ($campaign->isNotification())
-		{
-			$event = sproutEmail()->notificationEmails->getEventByCampaignId($campaign->id);
-
-			if ($event)
-			{
-				try
-				{
-					$sent = $this->sendNotification($campaign, $event->getMockedParams(), true);
-
-					if (!$sent)
-					{
-						$customErrorMessage = sproutEmail()->getError();
-
-						if (!empty($customErrorMessage))
-						{
-							$message = $customErrorMessage;
-						}
-						else
-						{
-							$message = Craft::t('Unable to send mock notification. Check email settings');
-						}
-						throw new Exception($message);
-					}
-				}
-				catch (\Exception $e)
-				{
-					throw $e;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
-	 *
-	 * @return bool
-	 * @throws \Exception
-	 */
 	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$response = array();
-
-		if ($campaign->isNotification())
-		{
-			try
-			{
-				return $this->sendMockNotification($campaignEmail, $campaign);
-			}
-			catch (\Exception $e)
-			{
-				throw $e;
-			}
-		}
 
 		$params = array(
 			'email'    => $campaignEmail,

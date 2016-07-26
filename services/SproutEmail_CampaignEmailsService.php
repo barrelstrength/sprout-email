@@ -223,4 +223,23 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 		return sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaign);
 	}
+
+	public function showBufferCampaignEmail(EmailModel $email, $template = 'html')
+	{
+		if ($template == 'txt')
+		{
+			$output = $email->body;
+		}
+		else
+		{
+			$output = $email->htmlBody;
+		}
+
+		// Output it into a buffer, in case TasksService wants to close the connection prematurely
+		ob_start();
+		echo $output;
+
+		// End the request
+		craft()->end();
+	}
 }

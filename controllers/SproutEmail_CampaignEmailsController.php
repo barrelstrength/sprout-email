@@ -318,10 +318,19 @@ class SproutEmail_CampaignEmailsController extends BaseController
 				'campaignId' => $variables['campaign']->id
 			);
 
+			$status = $variables['email']->getStatus();
+
 			// Should we show the Share button too?
 			if ($variables['email']->id && $variables['email']->getUrl())
 			{
-				$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', $shareParams);
+				if ($status != 'ready')
+				{
+					$variables['shareUrl'] = UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', $shareParams);
+				}
+				else
+				{
+					$variables['shareUrl'] = $variables['email']->getUrl();
+				}
 			}
 		}
 		else
@@ -417,23 +426,14 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$object = null;
 
-		// Prepare mock object if this is a notification
-		if ($campaign->isNotification())
-		{
-			$event = sproutEmail()->notificationEmails->getEventByCampaignId($campaign->id);
 
-			if ($event)
-			{
-				$object = $event->getMockedParams();
-			}
-		}
 
 		// Create an Email so we can render our template
 		$email = new EmailModel();
 
 		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $campaignEmail, $object);
 
-		$this->showEntry($email);
+		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
 	}
 
 	/**
@@ -494,51 +494,18 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 			$object = null;
 
-			// Prepare mock object if this is a notification
-			if ($campaign->isNotification())
-			{
-				$event = sproutEmail()->notificationEmails->getEventByCampaignId($campaign->id);
-
-				if ($event)
-				{
-					$object = $event->getMockedParams();
-				}
-			}
 
 			// Create an Email so we can render our template
 			$email = new EmailModel();
 
 			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $campaignEmail, $object);
 
-			$this->showEntry($email);
+			sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
 		}
 		else
 		{
 			throw new HttpException(404);
 		}
-	}
-
-	// @todo - we are overriding the renderTemplate behavior here because we've already
-	// processed the HTML we want to output via the renderEmailTemplates method and
-	// now we just need to output the template we already have on the EmailModel. Consider
-	// if this is the best implementation.
-	public function showEntry(EmailModel $email, $template = 'html')
-	{
-		if ($template == 'txt')
-		{
-			$output = $email->body;
-		}
-		else
-		{
-			$output = $email->htmlBody;
-		}
-
-		// Output it into a buffer, in case TasksService wants to close the connection prematurely
-		ob_start();
-		echo $output;
-
-		// End the request
-		craft()->end();
 	}
 
 	/**
