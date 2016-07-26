@@ -63,28 +63,6 @@ class SproutEmail_ExamplesController extends BaseController
 
 			$emailSettings = array(
 				array(
-					'name'              => 'Welcome Email - User Notification',
-					'handle'            => 'welcomeEmail',
-					'type'              => 'notification',
-					'mailer'            => 'defaultmailer',
-					'hasUrls'           => false,
-					'urlFormat'         => null,
-					'hasAdvancedTitles' => false,
-					'template'          => 'sproutemail/notification',
-					'templateCopyPaste' => null
-				),
-				array(
-					'name'              => 'New User - Admin Notification',
-					'handle'            => 'newUserEmail',
-					'type'              => 'notification',
-					'mailer'            => 'defaultmailer',
-					'hasUrls'           => false,
-					'urlFormat'         => null,
-					'hasAdvancedTitles' => false,
-					'template'          => 'sproutemail/notification',
-					'templateCopyPaste' => null
-				),
-				array(
 					'name'              => 'Monthly Newsletter',
 					'handle'            => 'monthlyNewsletter',
 					'type'              => 'email',
@@ -98,64 +76,6 @@ class SproutEmail_ExamplesController extends BaseController
 			);
 
 			$fieldSettings = array(
-				'welcomeEmail'      => array(
-					'Content' => array(
-						array(
-							'name'         => 'HTML Email Body',
-							'handle'       => 'exampleHtmlEmailBody',
-							'instructions' => '',
-							'type'         => 'RichText',
-							'required'     => 1,
-							'settings'     => array(
-								'configFile'  => '',
-								'cleanupHtml' => '1',
-								'purifyHtml'  => '',
-								'columnType'  => 'text'
-							)
-						),
-						array(
-							'name'     => 'Text Email Body',
-							'handle'   => 'exampleTextEmailBody',
-							'type'     => 'PlainText',
-							'required' => 1,
-							'settings' => array(
-								'placeholder' => '',
-								'maxLength'   => '',
-								'multiline'   => 1,
-								'initialRows' => 4,
-							)
-						)
-					)
-				),
-				'newUserEmail'      => array(
-					'Content' => array(
-						array(
-							'name'         => 'HTML Email Body',
-							'handle'       => 'exampleHtmlEmailBody',
-							'instructions' => '',
-							'type'         => 'RichText',
-							'required'     => 1,
-							'settings'     => array(
-								'configFile'  => '',
-								'cleanupHtml' => '1',
-								'purifyHtml'  => '',
-								'columnType'  => 'text'
-							)
-						),
-						array(
-							'name'     => 'Text Email Body',
-							'handle'   => 'exampleTextEmailBody',
-							'type'     => 'PlainText',
-							'required' => 1,
-							'settings' => array(
-								'placeholder' => '',
-								'maxLength'   => '',
-								'multiline'   => 1,
-								'initialRows' => 4,
-							)
-						)
-					)
-				),
 				'monthlyNewsletter' => array(
 					'Content' => array(
 						array(
@@ -401,11 +321,6 @@ Email: {email}',
 				$campaignEmail->getContent()->exampleTextEmailBody = $emailData['textBody'];
 
 				sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaign);
-
-				if ($campaign->type == 'notification')
-				{
-					sproutEmail()->notificationEmails->save('SproutEmail-users-saveUser', $campaign->id);
-				}
 			}
 		}
 		catch (\Exception $e)
@@ -684,6 +599,9 @@ Email: {email}',
 	private function _handleError($exception)
 	{
 		craft()->userSession->setError(Craft::t('Unable to install the examples.'));
+
+		craft()->userSession->setError($exception->getMessage());
+
 		$this->redirect('sproutemail/settings/examples');
 	}
 }
