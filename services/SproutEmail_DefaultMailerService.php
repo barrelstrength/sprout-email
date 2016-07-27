@@ -770,7 +770,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return bool|EmailModel
 	 */
-	public function renderEmailTemplates(EmailModel $emailModel, $campaign, $email, $object)
+	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $email, $object)
 	{
 		// Render Email Entry fields that have dynamic values
 		$emailModel->subject   = sproutEmail()->renderObjectTemplateSafely($email->subjectLine, $object);
@@ -779,7 +779,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($email->replyToEmail, $object);
 
 		// Render the email templates
-		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', array(
+		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
 			'email'        => $email,
 			'object'       => $object,
 
@@ -787,7 +787,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			'entry'        => $email,
 			'notification' => $email
 		));
-		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, array(
+		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
 			'email'        => $email,
 			'object'       => $object,
 
@@ -816,7 +816,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		if (!empty($templateError))
 		{
-			return false;
+			$emailModel->htmlBody = $templateError;
 		}
 
 		return $emailModel;

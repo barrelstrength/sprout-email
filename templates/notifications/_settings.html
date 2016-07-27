@@ -40,7 +40,7 @@ Notification'|t %}
 {% set content %}
 
 
-	<input type="hidden" name="action" value="sproutEmail/notification/saveNotificationSetting">
+	<input type="hidden" name="action" value="sproutEmail/notificationEmails/saveNotificationSetting">
 
 	{% if notification.id is not null %}
 		<input type="hidden" name="sproutEmail[id]" value="{{ notification.id }}">

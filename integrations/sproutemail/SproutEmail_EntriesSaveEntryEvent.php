@@ -25,7 +25,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 			$context['availableSections'] = $this->getAllSections();
 		}
 
-		$sectionOptions = $context['options']['craft']['saveCampaignEmail']['sectionIds'];
+		$sectionOptions = $context['options']['craft']['saveEntry']['sectionIds'];
 
 		$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($sectionOptions);
 

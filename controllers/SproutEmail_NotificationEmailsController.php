@@ -133,11 +133,48 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$mailer         = sproutEmail()->mailers->getMailerByName('defaultmailer');
 		$recipientLists = sproutEmail()->notificationEmails->getRecipientListsByNotificationId($notification->id);
 
+		$showPreviewBtn = false;
+		$shareUrl = null;
+
+		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($notification->template))
+		{
+			$showPreviewBtn = true;
+
+			craft()->templates->includeJs(
+				'Craft.LivePreview.init(' . JsonHelper::encode(
+					array(
+						'fields'        => '#subjectLine-field, #title-field, #fields > div > div > .field',
+						'extraFields'   => '#settings',
+						'previewUrl'    => $notification->getUrl(),
+						'previewAction' => 'sproutEmail/notificationEmails/livePreviewNotificationEmail',
+						'previewParams' => array(
+							'notificationId' => $notification->id,
+						)
+					)
+				) . ');'
+			);
+
+			$status = $notification->getStatus();
+
+			if ($notification->id && $notification->getUrl())
+			{
+				if ($status != 'ready')
+				{
+					$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
+				}
+				else
+				{
+					$shareUrl = $notification->getUrl();
+				}
+			}
+		}
+
 		$this->renderTemplate('sproutemail/notifications/_edit', array(
 			'notification'   => $notification,
 			'recipientLists' => $recipientLists,
 			'mailer'         => $mailer,
-			'showPreviewBtn' => false
+			'showPreviewBtn' => $showPreviewBtn,
+			'shareUrl'       => $shareUrl
 		));
 	}
 
@@ -176,6 +213,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail']);
 
 		$notification = $this->notification;
+
 		// Do not clear errors to add additional validation
 		if ($notification->validate(null, false) && $notification->hasErrors() == false)
 		{
@@ -346,5 +384,29 @@ class SproutEmail_NotificationEmailsController extends BaseController
 				'message'  => Craft::t('The campaign email you are trying to send is missing.'),
 			))
 		);
+	}
+
+	public function actionLivePreviewNotificationEmail()
+	{
+		$notificationId = craft()->request->getPost('notificationId');
+
+		$notification = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+
+		$eventId = $notification->eventId;
+
+		$event = sproutEmail()->notificationEmails->getEventById($eventId);
+
+		if ($event)
+		{
+			$object = $event->getMockedParams();
+	  }
+
+		$template = $notification->template;
+
+		$email = new EmailModel();
+
+		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notification, $object);
+
+		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
 	}
 }

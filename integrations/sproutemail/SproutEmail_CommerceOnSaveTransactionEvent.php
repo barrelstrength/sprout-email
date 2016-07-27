@@ -56,14 +56,12 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	{
 		$context['statuses'] = $this->getAllTransactionStatuses();
 
+		$context['fieldValue'] = '';
+
 		if (isset($context['options']['commerceStatuses']))
 		{
 			$options = $context['options']['commerceStatuses'];
 			$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
-		}
-		else
-		{
-			$context['fieldValue'] = '';
 		}
 
 		return craft()->templates->render('sproutemail/_events/saveTransaction', $context);

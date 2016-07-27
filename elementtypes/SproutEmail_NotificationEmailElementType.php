@@ -236,6 +236,15 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			)));
 		}
 
+		$eventId = $element->eventId;
+
+		$event = sproutEmail()->notificationEmails->getEventById($eventId);
+
+		if ($event)
+		{
+			$object = $event->getMockedParams();
+		}
+
 		$vars = array(
 			'email'     => $element,
 
@@ -243,11 +252,13 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'entry'     => $element,
 		);
 
+		$variables = array_merge($vars, $object);
+
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $element->template . $extension,
-				'variables' => $vars
+				'variables' => $variables
 			)
 		);
 	}

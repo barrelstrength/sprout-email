@@ -283,16 +283,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$variables['campaign']   = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 		$variables['campaignId'] = $campaignId;
 
-		$shareParamsHtml = array(
-			'emailId'  => $variables['email']->id,
-			'template' => 'html'
-		);
-
-		$shareParamsText = array(
-			'emailId'  => $variables['email']->id,
-			'template' => 'txt'
-		);
-
 		// Enable Live Preview?
 		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($variables['campaign']->template))
 		{
@@ -338,21 +328,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$variables['showPreviewBtn'] = false;
 		}
 
-		//if ($variables['campaign']->type == 'notification')
-		//{
-		//	$notificationId = null;
-		//	$notification   = sproutEmail()->notificationEmails->getNotification(array('campaignId' => $campaignId));
-		//
-		//	if ($notification)
-		//	{
-		//		$notificationId = $notification->eventId;
-		//	}
-		//
-		//	$variables['notificationEvent'] = $notificationId;
-		//}
-
-		// end
-
 		$variables['recipientLists'] = sproutEmail()->campaignEmails->getRecipientListsByEmailId($emailId);
 
 		$this->renderTemplate('sproutemail/campaigns/_edit', $variables);
@@ -374,7 +349,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 				if (craft()->request->isAjaxRequest())
 				{
 					return $result['content'];
-					// $this->returnJson($result);
 				}
 				craft()->end();
 			}
@@ -431,7 +405,9 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		// Create an Email so we can render our template
 		$email = new EmailModel();
 
-		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $campaignEmail, $object);
+		$template = $campaign->template;
+
+		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
 		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
 	}
@@ -498,7 +474,9 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			// Create an Email so we can render our template
 			$email = new EmailModel();
 
-			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $campaignEmail, $object);
+			$template = $campaign->template;
+
+			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
 			sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
 		}

@@ -46,7 +46,7 @@ Notification Email'|t %}
 {% endblock %}
 
 {% block main %}
-	<input type="hidden" name="action" value="sproutEmail/notification/saveNotification">
+	<input type="hidden" name="action" value="sproutEmail/notificationEmails/saveNotification">
 	<input type="hidden" name="redirect" value="sproutemail/notifications/">
 
 	{% if notification.id is not null %}

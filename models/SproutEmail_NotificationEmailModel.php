@@ -91,11 +91,6 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 		$this->fields = $fields;
 	}
 
-	public function getUrlFormat()
-	{
-		return "sproutemail/preview/{slug}";
-	}
-
 	/**
 	 * @return false|string
 	 */

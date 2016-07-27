@@ -67,7 +67,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error($e->getMessage(), 'template');
+			$this->error( Craft::t('Cannot render template. Check template file and object variables.'), 'template');
 		}
 	}
 
