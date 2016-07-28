@@ -149,7 +149,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $notification;
 	}
 
-	public function saveNotification(SproutEmail_NotificationEmailModel $notification)
+	public function saveNotification(SproutEmail_NotificationEmailModel $notification, $isSettingPage = false)
 	{
 		$result = false;
 
@@ -174,7 +174,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$eventId = $notification->eventId;
 		$event   = $this->getEventById($eventId);
 
-		if ($event)
+		if ($event && $isSettingPage == false)
 		{
 			$options = $event->prepareOptions();
 
@@ -748,7 +748,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 					{
 						$message = Craft::t('Unable to send mock notification. Check email settings');
 					}
-					throw new Exception($message);
+					throw new \Exception($message);
 				}
 			}
 			catch (\Exception $e)

@@ -414,6 +414,14 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		try
 		{
+			$error = $this->getError();
+			if (!empty($error))
+			{
+				$this->handleOnSendEmailErrorEvent($error, $emailModel, $variables);
+
+				return false;
+			}
+
 			return craft()->email->sendEmail($emailModel, $variables);
 		}
 		catch (\Exception $e)
@@ -506,6 +514,23 @@ class SproutEmailService extends BaseApplicationComponent
 		// Add a few additional variables to our info table
 		$event->params['variables']['info']->deliveryStatus = $deliveryStatus;
 		$event->params['variables']['info']->message        = $message;
+
+		if (isset($event->params['variables']['info']))
+		{
+			// Add a few additional variables to our info table
+			$event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+			$event->params['variables']['info']->message        = $message;
+		}
+		else
+		{
+			// This is for logging errors before sproutEmail()->sendEmail is called.
+			$infoTable  = new SproutEmail_SentEmailInfoTableModel();
+
+			$infoTable->deliveryStatus = $deliveryStatus;
+			$infoTable->message        = $message;
+
+			$event->params['variables']['info'] = $infoTable;
+		}
 
 		sproutEmail()->sentEmails->logSentEmail($event);
 	}

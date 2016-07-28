@@ -127,12 +127,6 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 		}
 	}
 
-	// Just return the model for the notification element type feature
-	public function getNotificationEmail()
-	{
-		return $this;
-	}
-
 	/**
 	 * Returns the email status based on actual values and dynamic checking
 	 *

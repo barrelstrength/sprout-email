@@ -451,10 +451,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return bool
 	 */
-	public function sendNotification($campaign, $object = null, $useMockData = false)
+	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
 	{
 		$email             = new EmailModel();
-		$notificationEmail = $campaign->getNotificationEmail();
 
 		// Allow disabled emails to be tested
 		if (!$notificationEmail->isReady() AND !$useMockData)
@@ -467,27 +466,28 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		if (empty($recipients))
 		{
 			sproutEmail()->error(Craft::t('No recipients found.'));
-
-			return false;
 		}
 
 		// Pass this variable for logging sent error
 		$emailModel = $email;
 
-		$email = $this->renderEmailTemplates($email, $campaign, $notificationEmail, $object);
+		$template = $notificationEmail->template;
+
+		$email = $this->renderEmailTemplates($email, $template, $notificationEmail, $object);
 
 		if (!$email)
 		{
 			// Template error
 			$message = sproutEmail()->getError('template');
 
-			// Double check this may be a bug
-			//	sproutEmail()->handleOnSendEmailErrorEvent($message, $emailModel);
+			sproutEmail()->error($message);
 		}
 
 		if (empty($email->body) OR empty($email->htmlBody))
 		{
-			return false;
+			$message = Craft::t('Email Text or HTML template cannot be blank. Check template setting.');
+
+			sproutEmail()->error($message);
 		}
 
 		$processedRecipients = array();
@@ -513,7 +513,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				$variables = array(
 					'email'               => $notificationEmail,
 					'renderedEmail'       => $email,
-					'campaign'            => $campaign,
 					'object'              => $object,
 					'recipients'          => $recipients,
 					'processedRecipients' => null,

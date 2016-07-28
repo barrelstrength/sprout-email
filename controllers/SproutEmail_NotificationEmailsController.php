@@ -97,7 +97,8 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 			if (!empty($notification->id))
 			{
-				sproutEmail()->notificationEmails->saveNotification($notification);
+				// retain options attribute by the second parameter
+				sproutEmail()->notificationEmails->saveNotification($notification, true);
 			}
 			else
 			{

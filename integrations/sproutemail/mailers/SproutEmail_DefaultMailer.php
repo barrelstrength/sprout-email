@@ -335,37 +335,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			));
 		}
 
-		// @todo - refactor
-		// All additional errors are specific to notifications.
-		if ($campaign->isNotification())
-		{
-			$event = sproutEmail()->notificationEmails->getEventByCampaignId($campaign->id);
-
-			if ($event)
-			{
-				$object = $event->getMockedParams();
-
-				$vars = sproutEmail()->notificationEmails->prepareNotificationTemplateVariables($campaignEmail, $object);
-
-				// @todo - check for text template too
-				$template = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $vars);
-
-				if (empty($template))
-				{
-					$errors[] = Craft::t('{message} <a href="{url}">Edit Settings</a>', array(
-						'message' => sproutEmail()->getError('template'),
-						'url' => $notificationEditSettingsUrl
-					));
-				}
-			}
-			else
-			{
-				$errors[] = Craft::t('No Event is selected. <a href="{url}">Edit Notification</a>.', array(
-					'url' => $notificationEditUrl
-				));
-			}
-		}
-
 		return $errors;
 	}
 }
