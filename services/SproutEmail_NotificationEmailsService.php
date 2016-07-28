@@ -190,10 +190,10 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			}
 		}
 
+		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
 		if ($record->validate())
 		{
-			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
 			$fieldLayout = $notification->getFieldLayout();
 
 			// Assign our new layout id info to our
@@ -758,5 +758,27 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 
 		return false;
+	}
+
+	public function getPreviewNotificationEmailById($notificationId)
+	{
+		$notification = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+
+		$eventId = $notification->eventId;
+
+		$event = sproutEmail()->notificationEmails->getEventById($eventId);
+
+		if ($event)
+		{
+			$object = $event->getMockedParams();
+		}
+
+		$template = $notification->template;
+
+		$email = new EmailModel();
+
+		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notification, $object);
+
+		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
 	}
 }

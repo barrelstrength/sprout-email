@@ -156,16 +156,13 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 			$status = $notification->getStatus();
 
+			$shareParams = array(
+				'notificationId'    => $notification->id,
+			);
+
 			if ($notification->id && $notification->getUrl())
 			{
-				if ($status != 'ready')
-				{
-					$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
-				}
-				else
-				{
-					$shareUrl = $notification->getUrl();
-				}
+				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
 			}
 		}
 
@@ -213,6 +210,14 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail']);
 
 		$notification = $this->notification;
+
+		$notification->subjectLine  = craft()->request->getRequiredPost('subjectLine');
+		$notification->slug         = craft()->request->getRequiredPost('slug');
+
+		if (empty($notification->slug))
+		{
+			$notification->slug = ElementHelper::createSlug($notification->subjectLine);
+		}
 
 		// Do not clear errors to add additional validation
 		if ($notification->validate(null, false) && $notification->hasErrors() == false)
@@ -386,27 +391,50 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		);
 	}
 
+	public function actionShareNotificationEmail($notificationId = null)
+	{
+		if ($notificationId)
+		{
+			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+
+			if (!$notificationEmail)
+			{
+				throw new HttpException(404);
+			}
+
+			$params = array(
+				'notificationId' => $notificationId,
+			);
+		}
+		else
+		{
+			throw new HttpException(404);
+		}
+
+		// Create the token and redirect to the entry URL with the token in place
+		$token = craft()->tokens->createToken(
+			array(
+				'action' => 'sproutEmail/notificationEmails/viewSharedNotificationEmail',
+				'params' => $params
+			)
+		);
+
+		$url = UrlHelper::getUrlWithToken($notificationEmail->getUrl(), $token);
+
+		craft()->request->redirect($url);
+	}
+
 	public function actionLivePreviewNotificationEmail()
 	{
 		$notificationId = craft()->request->getPost('notificationId');
 
-		$notification = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId);
+	}
 
-		$eventId = $notification->eventId;
+	public function actionViewSharedNotificationEmail($notificationId = null)
+	{
+		$this->requireToken();
 
-		$event = sproutEmail()->notificationEmails->getEventById($eventId);
-
-		if ($event)
-		{
-			$object = $event->getMockedParams();
-	  }
-
-		$template = $notification->template;
-
-		$email = new EmailModel();
-
-		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notification, $object);
-
-		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
+		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId);
 	}
 }

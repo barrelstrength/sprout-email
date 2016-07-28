@@ -1,7 +1,7 @@
 {% from "_includes/forms" import textField %}
 
 {% if notification.getErrors('subjectLine') %}
-	{% set subjectLineError = ['Subject Line cannot be blank.'|t] %}
+
 {% endif %}
 
 {{ textField({
@@ -9,7 +9,7 @@
 	id: 'subjectLine',
 	name: 'subjectLine',
 	value: notification.subjectLine,
-	errors: (subjectLineError is defined ? subjectLineError : null),
+	errors:  (notification is defined ? notification.getErrors('subjectLine') : null),
 	first: true,
 	autofocus: true,
 	required: true,

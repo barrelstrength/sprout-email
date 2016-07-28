@@ -91,6 +91,21 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 		$this->fields = $fields;
 	}
 
+	public function getUrlFormat()
+	{
+		return "sproutemail/{slug}";
+	}
+
+	public function getUrl()
+	{
+		if ($this->uri !== null)
+		{
+			$url = UrlHelper::getSiteUrl($this->uri, null, null, $this->locale);
+
+			return $url;
+		}
+	}
+
 	/**
 	 * @return false|string
 	 */
