@@ -348,7 +348,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 								'emailModel'        => $emailModel
 							));
 
-							sproutEmail()->onSendCampaign($event);
+							sproutEmail()->onSendSproutEmail($event);
 						}
 					}
 

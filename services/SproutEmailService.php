@@ -118,7 +118,15 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error($e->getMessage(), 'template');
+			// Specify template .html if no .txt
+			$message = $e->getMessage();
+
+			if (strpos($template, '.txt') === FALSE)
+			{
+				$message = str_replace($template, $template . '.html', $message);
+			}
+
+			$this->error($message, 'template-' . $template);
 		}
 
 		craft()->path->setTemplatesPath($oldPath);
@@ -414,10 +422,14 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		try
 		{
-			$error = $this->getError();
-			if (!empty($error))
+			$errorMessage = $this->getError();
+			if (!empty($errorMessage))
 			{
-				$this->handleOnSendEmailErrorEvent($error, $emailModel, $variables);
+				if (is_array($errorMessage))
+				{
+					$errorMessage = implode("\n", $errorMessage);
+				}
+				$this->handleOnSendEmailErrorEvent($errorMessage, $emailModel, $variables);
 
 				return false;
 			}
@@ -554,9 +566,9 @@ class SproutEmailService extends BaseApplicationComponent
 	 *
 	 * @throws \CException
 	 */
-	public function onSendCampaign(Event $event)
+	public function onSendSproutEmail(Event $event)
 	{
-		$this->raiseEvent('onSendCampaign', $event);
+		$this->raiseEvent('onSendSproutEmail', $event);
 	}
 
 	/**

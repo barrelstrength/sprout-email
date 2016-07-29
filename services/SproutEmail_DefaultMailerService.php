@@ -475,20 +475,15 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$email = $this->renderEmailTemplates($email, $template, $notificationEmail, $object);
 
-		if (!$email)
-		{
-			// Template error
-			$message = sproutEmail()->getError('template');
+		$templateErrors = sproutEmail()->getError();
 
-			sproutEmail()->error($message);
-		}
-
-		if (empty($email->body) OR empty($email->htmlBody))
+		if (empty($templateErrors) && (empty($email->body) OR empty($email->htmlBody)))
 		{
 			$message = Craft::t('Email Text or HTML template cannot be blank. Check template setting.');
 
-			sproutEmail()->error($message);
+			sproutEmail()->error($message, 'blank-template');
 		}
+
 
 		$processedRecipients = array();
 
@@ -769,30 +764,30 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return bool|EmailModel
 	 */
-	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $email, $object)
+	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $notification, $object)
 	{
 		// Render Email Entry fields that have dynamic values
-		$emailModel->subject   = sproutEmail()->renderObjectTemplateSafely($email->subjectLine, $object);
-		$emailModel->fromName  = sproutEmail()->renderObjectTemplateSafely($email->fromName, $object);
-		$emailModel->fromEmail = sproutEmail()->renderObjectTemplateSafely($email->fromEmail, $object);
-		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($email->replyToEmail, $object);
+		$emailModel->subject   = sproutEmail()->renderObjectTemplateSafely($notification->subjectLine, $object);
+		$emailModel->fromName  = sproutEmail()->renderObjectTemplateSafely($notification->fromName, $object);
+		$emailModel->fromEmail = sproutEmail()->renderObjectTemplateSafely($notification->fromEmail, $object);
+		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($notification->replyToEmail, $object);
 
 		// Render the email templates
 		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
-			'email'        => $email,
+			'email'        => $notification,
 			'object'       => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $email,
-			'notification' => $email
+			'entry'        => $notification,
+			'notification' => $notification
 		));
 		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
-			'email'        => $email,
+			'email'        => $notification,
 			'object'       => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $email,
-			'notification' => $email
+			'entry'        => $notification,
+			'notification' => $notification
 		));
 
 		$styleTags = array();

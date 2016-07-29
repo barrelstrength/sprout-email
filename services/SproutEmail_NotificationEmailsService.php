@@ -642,30 +642,29 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/notifications/edit/' . $notification->id);
 		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/notifications/setting/' . $notification->id);
 
-		if (empty($notification->template))
-		{
-			$errors[] = Craft::t('Email Template setting is blank. <a href="{url}">Edit Settings</a>.', array(
-				'url' => $notificationEditSettingsUrl
-			));
-		}
-
 		$event = $this->getEventById($notification->eventId);
 
 		if ($event)
 		{
 			$object = $event->getMockedParams();
 
-			$vars = sproutEmail()->notificationEmails->prepareNotificationTemplateVariables($notification, $object);
+			$template = $notification->template;
 
-			// @todo - check for text template too
-			$template = sproutEmail()->renderSiteTemplateIfExists($notification->template, $vars);
+			$emailModel = new EmailModel();
 
-			if (empty($template))
+			sproutEmail()->defaultmailer->renderEmailTemplates($emailModel, $template, $notification, $object);
+
+			$templateErrors = sproutEmail()->getError();
+
+			if (!empty($templateErrors))
 			{
-				$errors[] = Craft::t('{message} <a href="{url}">Edit Settings</a>', array(
-					'message' => sproutEmail()->getError('template'),
-					'url' => $notificationEditSettingsUrl
-				));
+				foreach ($templateErrors as $templateError)
+				{
+					$errors[] = Craft::t($templateError . ' <a href="{url}">Edit Settings</a>.',
+					array(
+						'url' => $notificationEditSettingsUrl
+					));
+				}
 			}
 		}
 		else

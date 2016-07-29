@@ -194,7 +194,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 								'campaign'   => $campaign
 							));
 
-							sproutEmail()->onSendCampaign($event);
+							sproutEmail()->onSendSproutEmail($event);
 						}
 					}
 
