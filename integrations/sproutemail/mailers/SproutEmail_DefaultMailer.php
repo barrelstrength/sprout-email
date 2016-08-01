@@ -229,11 +229,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'         => $campaignEmail,
+					'email'         => $campaignEmail,
 					'campaign'      => $campaign,
 					'emailModel'    => $response['emailModel'],
 					'recipentLists' => $recipientLists,
-					'message'       => $campaign->isNotification() ? Craft::t('Notification sent successfully.') : Craft::t('Campaign sent successfully to email ' . $sessionEmail),
+					'message'       => Craft::t('Campaign sent successfully to email.'),
 				)
 			);
 		}
@@ -244,7 +244,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			return SproutEmail_ResponseModel::createErrorModalResponse(
 				'sproutemail/_modals/export',
 				array(
-					'entry'    => $campaignEmail,
+					'email'    => $campaignEmail,
 					'campaign' => $campaign,
 					'message'  => Craft::t($e->getMessage()),
 				)
@@ -276,7 +276,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		$content = craft()->templates->render(
 			'sproutemail/_modals/export',
 			array(
-				'entry'    => $campaignEmail,
+				'email'    => $campaignEmail,
 				'campaign' => $campaign,
 				'success'  => $success,
 			)
@@ -308,7 +308,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		return craft()->templates->render(
 			'sproutemail/_modals/prepare',
 			array(
-				'entry'     => $campaignEmail,
+				'email'     => $campaignEmail,
 				'campaign'  => $campaign,
 				'recipient' => $email,
 				'errors'    => $errors
