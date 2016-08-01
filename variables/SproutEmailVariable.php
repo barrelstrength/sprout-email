@@ -52,6 +52,7 @@ class SproutEmailVariable
 	{
 		$mailers = $this->getMailers();
 
+		// Hide defaultmailer for now.
 		unset($mailers['defaultmailer']);
 
 		return $mailers;

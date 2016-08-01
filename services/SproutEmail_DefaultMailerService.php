@@ -453,7 +453,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
 	{
-		$email             = new EmailModel();
+		$email= new EmailModel();
 
 		// Allow disabled emails to be tested
 		if (!$notificationEmail->isReady() AND !$useMockData)
@@ -569,6 +569,24 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 
 		$recipients = array();
+
+		$recipients = craft()->request->getPost('recipients');
+
+		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
+
+		$invalidRecipients = $result['invalid'];
+		$validRecipients   = $result['valid'];
+
+		if (!empty($invalidRecipients))
+		{
+			$invalidEmails = implode("<br />", $invalidRecipients);
+
+			throw new Exception(Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				'invalidEmails' => $invalidEmails
+			)));
+		}
+
+		$recipients = $validRecipients;
 
 		if (($entryRecipientLists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id))))
 		{

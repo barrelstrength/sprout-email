@@ -110,7 +110,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 		return craft()->templates->render(
 			'sproutemail/settings/_mailers/mailchimp/prepare',
 			array(
-				'entry'    => $campaignEmail,
+				'email'    => $campaignEmail,
 				'lists'    => $recipientLists,
 				'mailer'   => $this,
 				'campaign' => $campaign

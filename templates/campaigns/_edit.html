@@ -147,17 +147,6 @@
 
 					<div id="tab-sproutemail-recipients" class="pane meta">
 
-							{% if campaign.isNotification() %}
-								{{ forms.textField({
-									label: "Recipients <span class='info'>A comma separated list of email addresses.</span>"|t,
-									placeholder: "user@domain.com, other@domain.com"|t,
-									name: "recipient[onTheFlyRecipients]",
-									class: "code",
-									value: email is defined ? email.recipients : "",
-									errors: email is defined ? email.getErrors('recipients')
-								}) }}
-							{% endif %}
-
 							<div class="field mailing-lists">
 								<div class="heading">
 									Lists
