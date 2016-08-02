@@ -29,7 +29,8 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	 * @throws \CDbException
 	 * @throws \Exception
 	 */
-	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel
+	$campaignType)
 	{
 		$isNewEntry          = true;
 		$campaignEmailRecord = new SproutEmail_CampaignEmailRecord();
@@ -77,19 +78,15 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 					$campaignEmailRecord->save(false);
 
-					$notificationEvent = craft()->request->getPost('notificationEvent');
+					sproutEmail()->mailers->saveRecipientLists($campaignType, $campaignEmail);
 
-					sproutEmail()->mailers->saveRecipientLists($campaign, $campaignEmail);
-
-					if ((!$notificationEvent || sproutEmail()->notificationEmails->save($notificationEvent, $campaign->id)))
+					if ($transaction && $transaction->active)
 					{
-						if ($transaction && $transaction->active)
-						{
-							$transaction->commit();
-						}
-
-						return $campaignEmailRecord;
+						$transaction->commit();
 					}
+
+					return $campaignEmailRecord;
+
 				}
 			}
 			catch (\Exception $e)

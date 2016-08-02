@@ -50,7 +50,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	/**
 	 * @return array
 	 */
-	protected function defineAttributes()
+	public function defineAttributes()
 	{
 		$defaults = parent::defineAttributes();
 		$attributes = array(

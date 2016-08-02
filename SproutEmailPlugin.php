@@ -191,6 +191,8 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.enums.*');
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
+		// Sprout import integration
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
 
 		sproutEmail()->notificationEmails->registerDynamicEventHandler();
 
@@ -275,9 +277,9 @@ class SproutEmailPlugin extends BasePlugin
 
 		if (isset($commercePlugin))
 		{
-			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_orders.onOrderComplete'] = new SproutEmail_CommerceOnOrderCompleteEvent();
 			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
-			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
+			$events['commerce_orderHistories.onStatusChange'] = new SproutEmail_CommerceOnStatusChangeEvent();
 		}
 
 		return $events;
@@ -303,7 +305,7 @@ class SproutEmailPlugin extends BasePlugin
 
 		foreach ($pluginMailers as $handle => $class)
 		{
-			$namespace   = "Craft\\" . $class;
+			$namespace = "Craft\\" . $class;
 			$mailerClass = new $namespace();
 
 			$mailers[$handle] = $mailerClass;
@@ -359,21 +361,13 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function sproutMigrateRegisterElements()
+	public function registerSproutImportImporters()
 	{
 		return array(
-			'sproutemail_campaignemail' => array(
-				'model'   => 'Craft\\SproutEmail_CampaignEmail',
-				'method'  => 'saveCampaignEmail',
-				'service' => 'sproutEmail_campaignEmails',
-			)
+			new SproutEmail_CampaignEmailSproutImportElementImporter()
 		);
 	}
 }
-
 /**
  * @return SproutEmailService
  */
