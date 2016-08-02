@@ -6,7 +6,7 @@ class SproutEmail_EntrySproutImportElementImporter extends BaseSproutImportEleme
 	/**
 	 * @return mixed
 	 */
-	public function defineModel()
+	public function getModelName()
 	{
 		return 'SproutEmail_EntryModel';
 	}
