@@ -481,11 +481,17 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			// Template error
 			$message = sproutEmail()->getError('template');
 
-			sproutEmail()->handleOnSendEmailErrorEvent($message, $emailModel);
+			sproutEmail()->error($message);
+
+			return false;
 		}
 
 		if (empty($email->body) OR empty($email->htmlBody))
 		{
+			$message = Craft::t('Email Text or HTML template cannot be blank. Check template setting.');
+
+			sproutEmail()->error($message);
+
 			return false;
 		}
 
