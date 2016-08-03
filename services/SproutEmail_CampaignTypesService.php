@@ -26,7 +26,7 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 	public function getCampaignTypeById($campaignTypeId)
 	{
 		$campaignRecord = SproutEmail_CampaignTypeRecord::model();
-		$campaignRecord = $campaignRecord->with('entries')->findById($campaignTypeId);
+		$campaignRecord = $campaignRecord->with('campaignEmails')->findById($campaignTypeId);
 
 		if ($campaignRecord)
 		{
@@ -81,7 +81,7 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 				$transaction->rollBack();
 			}
 
-			return $campaign;
+			return false;
 		}
 		else
 		{
@@ -115,6 +115,9 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 		if ($transaction)
 		{
 			$transaction->commit();
+
+			// Pass update attributes
+			$campaign->setAttributes($campaignRecord->getAttributes());
 		}
 
 		return SproutEmail_CampaignTypeModel::populateModel($campaignRecord);
@@ -220,5 +223,14 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 		$result = SproutEmail_CampaignTypeRecord::model()->find($criteria);
 
 		return $result;
+	}
+
+	public function getCampaignTypesByHandle($handle)
+	{
+		$campaignTypeRecords = SproutEmail_CampaignTypeRecord::model()->findAllByAttributes(array(
+			'handle' => $handle
+		));
+
+		return SproutEmail_CampaignTypeModel::populateModels($campaignTypeRecords);
 	}
 }

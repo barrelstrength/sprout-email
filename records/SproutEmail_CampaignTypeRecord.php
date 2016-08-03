@@ -62,8 +62,7 @@ class SproutEmail_CampaignTypeRecord extends BaseRecord
 			'dateCreated'       => AttributeType::DateTime,
 			'dateUpdated'       => AttributeType::DateTime,
 			// @related
-			'fieldLayoutId'     => AttributeType::Number,
-			'notifications'     => AttributeType::Mixed,
+			'fieldLayoutId'     => AttributeType::Number
 		);
 	}
 
@@ -78,14 +77,9 @@ class SproutEmail_CampaignTypeRecord extends BaseRecord
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL
 			),
-			'entries'       => array(
+			'campaignEmails'       => array(
 				static::HAS_MANY,
 				'SproutEmail_CampaignEmailRecord',
-				'campaignId'
-			),
-			'notifications' => array(
-				self::HAS_MANY,
-				'SproutEmail_NotificationRecord',
 				'campaignId'
 			)
 		);

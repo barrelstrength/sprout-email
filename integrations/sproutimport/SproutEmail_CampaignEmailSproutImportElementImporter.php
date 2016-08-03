@@ -17,7 +17,7 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 	 */
 	public function hasSeedGenerator()
 	{
-		return true;
+		return false;
 	}
 
 	public function setModel($model, $settings)
@@ -32,37 +32,15 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 
 			$this->campaignTypeModel = $campaignTypeModel;
 		}
-		else
+		elseif (isset($settings['campaignType']))
 		{
-			/*
-			 * @todo Create a campaignTypeModel Setting Importer
-			 */
+			$settings['campaignType']['@model'] = "SproutEmail_CampaignType";
 
-			//$this->campaignTypeModel = new SproutEmail_CampaignTypeModel();
-			//
-			//$this->campaignTypeModel->mailer = "defaultmailer";
-			//
-			//$this->campaignTypeModel->setAttributes($settings);
-			//
-			//if (isset($settings['fieldLayout']) && !empty($settings['fieldLayout']))
-			//{
-			//	$fieldLayouts = array();
-			//	foreach ($settings['fieldLayout'] as $name => $fields)
-			//	{
-			//		$entryFields = sproutImport()->getFieldIdsByHandle($name, $fields);
-			//
-			//		if (!empty($entryFields))
-			//		{
-			//			$fieldLayouts = array_merge($fieldLayouts, $entryFields);
-			//		}
-			//	}
-			//
-			//	$fieldLayout = craft()->fields->assembleLayout($fieldLayouts);
-			//	$fieldLayout->type = 'SproutEmail_Campaign';
-			//	$this->campaignTypeModel->setFieldLayout($fieldLayout);
-			}
+			$newCampaignType = $settings['campaignType'];
 
-			$this->campaignTypeModel = sproutEmail()->campaignEmails->saveCampaignType($this->campaignTypeModel);
+			$campaignTypeModel = sproutImport()->settingsService->saveSetting($newCampaignType);
+
+			$this->campaignTypeModel = $campaignTypeModel;
 		}
 
 		$model->campaignId = $this->campaignTypeModel->id;
@@ -93,6 +71,6 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 
 		$attributeKeys = array_keys($attributes);
 
-		return array_merge(array("fieldLayout", "campaignId"), $attributeKeys);
+		return array_merge(array("fieldLayout", "campaignId", "campaignType"), $attributeKeys);
 	}
 }
