@@ -195,6 +195,7 @@ class SproutEmailPlugin extends BasePlugin
 		// Sprout import integration
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
 
 		sproutEmail()->notificationEmails->registerDynamicEventHandler();
 
@@ -367,6 +368,7 @@ class SproutEmailPlugin extends BasePlugin
 	{
 		return array(
 			new SproutEmail_CampaignEmailSproutImportElementImporter(),
+			new SproutEmail_NotificationEmailSproutImportElementImporter(),
 			new SproutEmail_CampaignTypeSproutImportSettingsImporter()
 		);
 	}

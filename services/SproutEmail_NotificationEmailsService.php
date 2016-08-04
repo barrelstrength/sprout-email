@@ -181,7 +181,6 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			$notification->setAttribute('options', $options);
 		}
 
-
 		if (!empty($notification->getAttributes()))
 		{
 			foreach ($notification->getAttributes() as $handle => $value)
@@ -200,7 +199,6 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			// form model and records
 			$notification->fieldLayoutId = $fieldLayout->id;
 			$record->fieldLayoutId       = $fieldLayout->id;
-
 
 			try
 			{

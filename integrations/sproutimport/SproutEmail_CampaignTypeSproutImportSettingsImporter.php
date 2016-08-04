@@ -57,7 +57,7 @@ class SproutEmail_CampaignTypeSproutImportSettingsImporter extends BaseSproutImp
 				}
 			}
 
-			if ($model->getFieldLayout() != null)
+			if ($model->fieldLayoutId != null)
 			{
 				// Remove previous field layout and update layout
 				craft()->fields->deleteLayoutById($model->fieldLayoutId);

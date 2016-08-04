@@ -89,8 +89,11 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 				$notification->setFieldLayout($fieldLayout);
 
-				// Remove previous field layout
-				craft()->fields->deleteLayoutById($notification->fieldLayoutId);
+				if ($notification->fieldLayoutId != null)
+				{
+					// Remove previous field layout
+					craft()->fields->deleteLayoutById($notification->fieldLayoutId);
+				}
 
 				craft()->fields->saveLayout($fieldLayout);
 			}
