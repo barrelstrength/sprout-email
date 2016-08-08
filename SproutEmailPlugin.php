@@ -191,6 +191,7 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.enums.*');
 		Craft::import('plugins.sproutemail.contracts.*');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
+		Craft::import('plugins.sproutemail.integrations.sproutimport.*');
 
 		// Sprout import integration
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
