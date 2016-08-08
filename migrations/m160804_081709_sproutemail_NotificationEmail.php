@@ -18,16 +18,25 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 
 		if (craft()->db->tableExists($tableName))
 		{
-			craft()->db->createCommand()->dropColumn($tableName, 'type');
+			if (craft()->db->columnExists($tableName, 'type'))
+			{
+				craft()->db->createCommand()->dropColumn($tableName, 'type');
+			}
 
-			craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigntype');
+			if (!craft()->db->tableExists('sproutemail_campaigntype'))
+			{
+				craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigntype');
+			}
 		}
 
 		$tableName  = "sproutemail_campaigns_entries";
 
 		if (craft()->db->tableExists($tableName))
 		{
-			craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigns');
+			if (!craft()->db->tableExists('sproutemail_campaigns'))
+			{
+				craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigns');
+			}
 		}
 
 		SproutEmailPlugin::log('Running naming convention migration');
