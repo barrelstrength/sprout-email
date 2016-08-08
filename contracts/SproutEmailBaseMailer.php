@@ -38,8 +38,8 @@ abstract class SproutEmailBaseMailer
 	{
 		if (!$this->initialized)
 		{
-			$this->settings = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-			$this->installed = sproutEmail()->mailers->isInstalled($this->getId());
+			$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
+			$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
 			$this->initialized = true;
 		}
 	}
@@ -317,48 +317,51 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
 	 *
-	 * @todo Revise if this responsibility should fall on the mailer or the mailer service
+	 * @todo     Revise if this responsibility should fall on the mailer or the mailer service
 	 *
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
-	 * @return SproutEmail_EntryModel
+	 * @return SproutEmail_CampaignEmailModel
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
-		return new SproutEmail_EntryModel();
+		return new SproutEmail_CampaignEmailModel();
 	}
 
 	/**
 	 * @todo Decide how this should be standardised across mailers
 	 *
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignTypeModel $campaign
 	 */
-	public function saveRecipientList(SproutEmail_CampaignModel $campaign)
+	public function saveRecipientList(SproutEmail_CampaignTypeModel $campaign)
 	{
 	}
 
 	/**
 	 * Gives a mailer the responsibility to send campaigns if they implement SproutEmailCampaignSenderInterface
 	 *
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 *
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function sendCampaign(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function sendCampaign(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 	}
 
 	/**
 	 * Gives a mailer the responsibility to send notifications if they implement SproutEmailNotificationSenderInterface
 	 *
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignTypeModel $campaign
 	 * @param                           $object
 	 *
 	 * @return bool
 	 * @internal param mixed|null $element
 	 *
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $object)
+	public function sendNotification(SproutEmail_CampaignTypeModel $campaign, $object)
 	{
 	}
 }

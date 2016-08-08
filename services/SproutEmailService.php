@@ -6,19 +6,19 @@ namespace Craft;
  *
  * @package Craft
  *
- * @property SproutEmail_MailerService        $mailers
- * @property SproutEmail_EntriesService       $entries
- * @property SproutEmail_CampaignsService     $campaigns
- * @property SproutEmail_NotificationsService $notifications
- * @property SproutEmail_DefaultMailerService $defaultmailer
- * @property SproutEmail_SentEmailsService    $sentEmails
+ * @property SproutEmail_MailerService             $mailers
+ * @property SproutEmail_CampaignTypesService      $campaignTypes
+ * @property SproutEmail_CampaignEmailsService     $campaignEmails
+ * @property SproutEmail_NotificationEmailsService $notificationEmails
+ * @property SproutEmail_DefaultMailerService      $defaultmailer
+ * @property SproutEmail_SentEmailsService         $sentEmails
  */
 class SproutEmailService extends BaseApplicationComponent
 {
 	public $mailers;
-	public $entries;
-	public $campaigns;
-	public $notifications;
+	public $campaignTypes;
+	public $campaignEmails;
+	public $notificationEmails;
 	public $defaultmailer;
 	public $sentEmails;
 
@@ -28,12 +28,12 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		parent::init();
 
-		$this->mailers       = Craft::app()->getComponent('sproutEmail_mailer');
-		$this->defaultmailer = Craft::app()->getComponent('sproutEmail_defaultMailer');
-		$this->entries       = Craft::app()->getComponent('sproutEmail_entries');
-		$this->campaigns     = Craft::app()->getComponent('sproutEmail_campaigns');
-		$this->notifications = Craft::app()->getComponent('sproutEmail_notifications');
-		$this->sentEmails    = Craft::app()->getComponent('sproutEmail_sentEmails');
+		$this->mailers            = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->defaultmailer      = Craft::app()->getComponent('sproutEmail_defaultMailer');
+		$this->campaignEmails     = Craft::app()->getComponent('sproutEmail_campaignEmails');
+		$this->campaignTypes      = Craft::app()->getComponent('sproutEmail_campaignTypes');
+		$this->notificationEmails = Craft::app()->getComponent('sproutEmail_notificationEmails');
+		$this->sentEmails         = Craft::app()->getComponent('sproutEmail_sentEmails');
 	}
 
 	/**
@@ -67,7 +67,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error($e->getMessage(), 'template');
+			$this->error( Craft::t('Cannot render template. Check template file and object variables.'), 'template');
 		}
 	}
 
@@ -118,7 +118,15 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error($e->getMessage(), 'template');
+			// Specify template .html if no .txt
+			$message = $e->getMessage();
+
+			if (strpos($template, '.txt') === FALSE)
+			{
+				$message = str_replace($template, $template . '.html', $message);
+			}
+
+			$this->error($message, 'template-' . $template);
 		}
 
 		craft()->path->setTemplatesPath($oldPath);
@@ -249,11 +257,12 @@ class SproutEmailService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Handles event to attach files to email
+	 * Attach files during Craft onBeforeSendEmail event
 	 *
 	 * @param Event $event
+	 *
+	 * @return bool
 	 */
-
 	public function handleOnBeforeSendEmail(Event $event)
 	{
 		$variables = $event->params['variables'];
@@ -264,26 +273,26 @@ class SproutEmailService extends BaseApplicationComponent
 			return true;
 		}
 
-		$entry                 = $variables['sproutEmailEntry'];
-		$enableFileAttachments = $entry->enableFileAttachments;
+		$notificationEmail     = $variables['sproutEmailEntry'];
+		$enableFileAttachments = $notificationEmail->enableFileAttachments;
 
 		if (isset($variables['elementEntry']) && $enableFileAttachments)
 		{
-			$entry = $variables['elementEntry'];
+			$notificationEmail = $variables['elementEntry'];
 
 			/**
 			 * @var $field FieldModel
 			 */
-			if (method_exists($entry->getFieldLayout(), 'getFields'))
+			if (method_exists($notificationEmail->getFieldLayout(), 'getFields'))
 			{
-				foreach ($entry->getFieldLayout()->getFields() as $fieldLayoutField)
+				foreach ($notificationEmail->getFieldLayout()->getFields() as $fieldLayoutField)
 				{
 					$field = $fieldLayoutField->getField();
 					$type  = $field->getFieldType();
 
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
-						$this->attachAsset($entry, $field, $event);
+						$this->attachAsset($notificationEmail, $field, $event);
 					}
 					// @todo validate assets within MatrixFieldType
 				}
@@ -413,6 +422,18 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		try
 		{
+			$errorMessage = $this->getError();
+			if (!empty($errorMessage))
+			{
+				if (is_array($errorMessage))
+				{
+					$errorMessage = implode("\n", $errorMessage);
+				}
+				$this->handleOnSendEmailErrorEvent($errorMessage, $emailModel, $variables);
+
+				return false;
+			}
+
 			return craft()->email->sendEmail($emailModel, $variables);
 		}
 		catch (\Exception $e)
@@ -519,6 +540,23 @@ class SproutEmailService extends BaseApplicationComponent
 			$event->params['variables']['info'] = $infoTable;
 		}
 
+		if (isset($event->params['variables']['info']))
+		{
+			// Add a few additional variables to our info table
+			$event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+			$event->params['variables']['info']->message        = $message;
+		}
+		else
+		{
+			// This is for logging errors before sproutEmail()->sendEmail is called.
+			$infoTable  = new SproutEmail_SentEmailInfoTableModel();
+
+			$infoTable->deliveryStatus = $deliveryStatus;
+			$infoTable->message        = $message;
+
+			$event->params['variables']['info'] = $infoTable;
+		}
+
 		sproutEmail()->sentEmails->logSentEmail($event);
 	}
 
@@ -541,9 +579,9 @@ class SproutEmailService extends BaseApplicationComponent
 	 *
 	 * @throws \CException
 	 */
-	public function onSendCampaign(Event $event)
+	public function onSendSproutEmail(Event $event)
 	{
-		$this->raiseEvent('onSendCampaign', $event);
+		$this->raiseEvent('onSendSproutEmail', $event);
 	}
 
 	/**
@@ -556,5 +594,60 @@ class SproutEmailService extends BaseApplicationComponent
 	public function onSetStatus(Event $event)
 	{
 		$this->raiseEvent('onSetStatus', $event);
+	}
+
+	/**
+	 * @param mixed|null $element
+	 *
+	 * @throws \Exception
+	 * @return array|string
+	 */
+	public function getRecipients($element = null, $model)
+	{
+		$recipientsString = $model->getAttribute('recipients');
+
+		// Possibly called from entry edit screen
+		if (is_null($element))
+		{
+			return $recipientsString;
+		}
+
+		// Previously converted to array somehow?
+		if (is_array($recipientsString))
+		{
+			return $recipientsString;
+		}
+
+		// Previously stored as JSON string?
+		if (stripos($recipientsString, '[') === 0)
+		{
+			return JsonHelper::decode($recipientsString);
+		}
+
+		// Still a string with possible twig generator code?
+		if (stripos($recipientsString, '{') !== false)
+		{
+			try
+			{
+				$recipients = craft()->templates->renderObjectTemplate(
+					$recipientsString,
+					$element
+				);
+
+				return array_unique(ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipients)));
+			}
+			catch (\Exception $e)
+			{
+				throw $e;
+			}
+		}
+
+		// Just a regular CSV list
+		if (!empty($recipientsString))
+		{
+			return ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipientsString));
+		}
+
+		return array();
 	}
 }

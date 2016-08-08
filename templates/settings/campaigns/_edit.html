@@ -30,12 +30,12 @@
 
 {% set content %}
 
-	<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+	<input type="hidden" name="action" value="sproutEmail/campaignType/saveCampaignType">
 	<input type="hidden" name="redirect" value="sproutemail/settings/campaigns">
 	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
 	<input type="hidden" name="sproutEmail[type]" value="email">
 
-	{% set mailers = craft.sproutemail.getCampaignMailers() %}
+	{% set mailers = craft.sproutEmail.getCampaignMailers() %}
 
 	{% if mailers %}
 
@@ -43,7 +43,7 @@
 			label: "Campaign Name"|t,
 			id: 'name',
 			name: 'sproutEmail[name]',
-			instructions: "Human readable name for this type of Entry"|t,
+			instructions: "Human readable name for this type of Email"|t,
 			value: (campaign is defined ? campaign.name : null),
 			autofocus: true,
 			required: true,
@@ -73,17 +73,17 @@
 		}) }}
 
 		{{ forms.textField({
-			label: "Entry Template"|t,
+			label: "Email Template"|t,
 			id: 'template',
 			name: 'sproutEmail[template]',
-			instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+			instructions: "The template to use when an Email's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
 			placeholder: '_emails/emailtemplate',
 			value: (campaign is defined ? campaign.template : null),
 			errors: (campaign is defined ? campaign.getErrors('template') : null)
 		}) }}
 
 		{{ forms.textField({
-			label: "Entry Copy/Paste Template"|t,
+			label: "Email Copy/Paste Template"|t,
 			id: 'templateCopyPaste',
 			name: 'sproutEmail[templateCopyPaste]',
 			instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
@@ -105,8 +105,8 @@
 		<div id="url-settings" class="nested-fields{% if not campaign.hasUrls %} hidden{% endif %}">
 
 			{{ forms.textField({
-				label: "Entry URL Format"|t,
-				instructions: 'What the online version of the Entry URLs should look like. You can include tags that output entry properties, such as {slug} or {postDate|date("Y")}.'|t,
+				label: "Email URL Format"|t,
+				instructions: 'What the online version of the Email URLs should look like. You can include tags that output email properties, such as {slug} or {postDate|date("Y")}.'|t,
 				placeholder: 'email/{slug}',
 				name: 'sproutEmail[urlFormat]',
 				value: (campaign is defined ? campaign.urlFormat : null),
@@ -129,7 +129,7 @@
 
 			{{ forms.textField({
 				label: "Title Format"|t,
-				instructions: "What the auto-generated Entry titles should look like. You can include tags that output entry properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
+				instructions: "What the auto-generated Email titles should look like. You can include tags that output email properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
 				id: 'titleFormat',
 				name: 'sproutEmail[titleFormat]',
 				value: (campaign is defined ? campaign.titleFormat : null),

@@ -18,23 +18,22 @@ class SproutEmail_DeleteElementAction extends DeleteElementAction
 	{
 		$ids = $criteria->ids();
 
+		$elementType = $criteria->getElementType();
+
 		if (!empty($ids))
 		{
 			foreach ($ids as $id)
 			{
-				if ($campaign = sproutEmail()->campaigns->getCampaignByEntryId($id))
+				if (is_a($elementType, "\\Craft\\SproutEmail_CampaignEmailElementType"))
 				{
-					if ($campaign->type == 'notification')
-					{
-						// Delete notification and related notification settings
-						sproutEmail()->campaigns->deleteCampaign($campaign->id);
-					}
+					$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($id);
+					sproutEmail()->campaignEmails->deleteCampaignEmail($campaignEmail);
+				}
 
-					if ($campaign->type == 'email')
-					{
-						$entry = sproutEmail()->entries->getEntryById($id);
-						sproutEmail()->entries->deleteEntry($entry);
-					}
+				if (is_a($elementType, "\\Craft\\SproutEmail_NotificationEmailElementType"))
+				{
+					// Delete notification and related notification settings
+					sproutEmail()->notificationEmails->deleteNotificationEmailById($id);
 				}
 			}
 		}

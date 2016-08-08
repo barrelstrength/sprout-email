@@ -81,13 +81,13 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param int $entryId
+	 * @param int $emailId
 	 *
 	 * @return SproutEmail_DefaultMailerRecipientListModel[]|null
 	 */
-	public function getRecipientListsByEntryId($entryId)
+	public function getRecipientListsByEmailId($emailId)
 	{
-		if (($record = SproutEmail_EntryRecipientListRecord::model()->with('entry')->findAll('entryId=:entryId', array(':entryId' => $entryId))))
+		if (($record = SproutEmail_EntryRecipientListRecord::model()->with('entry')->findAll('emailId=:emailId', array(':emailId' => $emailId))))
 		{
 			$recipientLists = array();
 
@@ -101,15 +101,15 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel $entry
-	 * @param mixed                  $element
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param mixed                          $element
 	 *
 	 * @return array
 	 */
-	public function getRecipientsFromEntryModel(SproutEmail_EntryModel $entry, $element)
+	public function getRecipientsFromCampaignEmailModel($campaignEmail, $element)
 	{
 		$recipients         = array();
-		$onTheFlyRecipients = $entry->getRecipients($element);
+		$onTheFlyRecipients = $campaignEmail->getRecipients($element);
 
 		if (is_string($onTheFlyRecipients))
 		{
@@ -445,54 +445,43 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @param mixed|null                $object
-	 * @param bool                      $useMockData
+	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param mixed|null                    $object
+	 * @param bool                          $useMockData
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_CampaignModel $campaign, $object = null, $useMockData = false)
+	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
 	{
-		$email = new EmailModel();
-		$entry = $campaign->getNotificationEntry();
+		$email= new EmailModel();
 
 		// Allow disabled emails to be tested
-		if (!$entry->isReady() AND !$useMockData)
+		if (!$notificationEmail->isReady() AND !$useMockData)
 		{
 			return false;
 		}
 
-		$recipients = $this->prepareRecipients($entry, $object, $useMockData);
+		$recipients = $this->prepareRecipients($notificationEmail, $object, $useMockData);
 
 		if (empty($recipients))
 		{
 			sproutEmail()->error(Craft::t('No recipients found.'));
-
-			return false;
 		}
 
 		// Pass this variable for logging sent error
 		$emailModel = $email;
 
-		$email = $this->renderEmailTemplates($email, $campaign, $entry, $object);
+		$template = $notificationEmail->template;
 
-		if (!$email)
-		{
-			// Template error
-			$message = sproutEmail()->getError('template');
+		$email = $this->renderEmailTemplates($email, $template, $notificationEmail, $object);
 
-			sproutEmail()->error($message);
+		$templateErrors = sproutEmail()->getError();
 
-			return false;
-		}
-
-		if (empty($email->body) OR empty($email->htmlBody))
+		if (empty($templateErrors) && (empty($email->body) OR empty($email->htmlBody)))
 		{
 			$message = Craft::t('Email Text or HTML template cannot be blank. Check template setting.');
 
-			sproutEmail()->error($message);
-
-			return false;
+			sproutEmail()->error($message, 'blank-template');
 		}
 
 		$processedRecipients = array();
@@ -516,9 +505,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 				));
 
 				$variables = array(
-					'email'               => $entry,
+					'email'               => $notificationEmail,
 					'renderedEmail'       => $email,
-					'campaign'            => $campaign,
 					'object'              => $object,
 					'recipients'          => $recipients,
 					'processedRecipients' => null,
@@ -550,96 +538,56 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
-	 *
-	 * @throws \Exception
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return bool
-	 */
-	public function sendMockNotification(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
-	{
-		if ($campaign->isNotification())
-		{
-			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
-
-			if ($event)
-			{
-				try
-				{
-					$sent = $this->sendNotification($campaign, $event->getMockedParams(), true);
-
-					if (!$sent)
-					{
-						$customErrorMessage = sproutEmail()->getError();
-
-						if (!empty($customErrorMessage))
-						{
-							$message = $customErrorMessage;
-						}
-						else
-						{
-							$message = Craft::t('Unable to send mock notification. Check email settings');
-						}
-						throw new Exception($message);
-					}
-				}
-				catch (\Exception $e)
-				{
-					throw $e;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
-	 *
 	 * @throws \Exception
-	 *
-	 * @return bool
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$response = array();
 
-		if ($campaign->isNotification())
-		{
-			try
-			{
-				return $this->sendMockNotification($entry, $campaign);
-			}
-			catch (\Exception $e)
-			{
-				throw $e;
-			}
-		}
-
 		$params = array(
-			'email'    => $entry,
+			'email'    => $campaignEmail,
 			'campaign' => $campaign,
 
 			// @deprecate - in favor of `email` in v3
-			'entry'    => $entry
+			'entry'    => $campaignEmail
 		);
 
 		$email = array(
-			'fromEmail' => $entry->fromEmail,
-			'fromName'  => $entry->fromName,
-			'subject'   => $entry->subjectLine,
+			'fromEmail' => $campaignEmail->fromEmail,
+			'fromName'  => $campaignEmail->fromName,
+			'subject'   => $campaignEmail->subjectLine,
 		);
 
-		if ($entry->replyToEmail && filter_var($entry->replyToEmail, FILTER_VALIDATE_EMAIL))
+		if ($campaignEmail->replyToEmail && filter_var($campaignEmail->replyToEmail, FILTER_VALIDATE_EMAIL))
 		{
-			$email['replyToEmail'] = $entry->replyToEmail;
+			$email['replyToEmail'] = $campaignEmail->replyToEmail;
 		}
 
 		$recipients = array();
 
-		if (($entryRecipientLists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('entryId' => $entry->id))))
+		$recipients = craft()->request->getPost('recipients');
+
+		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
+
+		$invalidRecipients = $result['invalid'];
+		$validRecipients   = $result['valid'];
+
+		if (!empty($invalidRecipients))
+		{
+			$invalidEmails = implode("<br />", $invalidRecipients);
+
+			throw new Exception(Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				'invalidEmails' => $invalidEmails
+			)));
+		}
+
+		$recipients = $validRecipients;
+
+		if (($entryRecipientLists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id))))
 		{
 			foreach ($entryRecipientLists as $entryRecipientList)
 			{
@@ -750,13 +698,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param $entry
+	 * @param $email
 	 * @param $object
 	 * @param $useMockData
 	 *
 	 * @return array
+	 * @throws Exception
 	 */
-	protected function prepareRecipients($entry, $object, $useMockData)
+	protected function prepareRecipients($email, $object, $useMockData)
 	{
 		// Get recipients for test notifications
 		if ($useMockData)
@@ -788,9 +737,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		}
 
 		// Get recipients for live emails
-		$entryRecipients   = $this->getRecipientsFromEntryModel($entry, $object);
-		$dynamicRecipients = sproutEmail()->notifications->getDynamicRecipientsFromElement($object);
-		$listRecipients    = $this->getListRecipients($entry);
+		$entryRecipients   = $this->getRecipientsFromCampaignEmailModel($email, $object);
+		$dynamicRecipients = sproutEmail()->notificationEmails->getDynamicRecipientsFromElement($object);
+		$listRecipients    = $this->getListRecipients($email);
 
 		$recipients = array_merge(
 			$listRecipients,
@@ -802,14 +751,14 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param $entry
+	 * @param $email
 	 *
 	 * @return array|SproutEmail_DefaultMailerRecipientModel[]
 	 */
-	protected function getListRecipients($entry)
+	protected function getListRecipients($email)
 	{
 		$listIds        = array();
-		$recipientLists = $this->getRecipientListsByEntryId($entry->id);
+		$recipientLists = $this->getRecipientListsByEmailId($email->id);
 
 		if ($recipientLists && count($recipientLists))
 		{
@@ -825,60 +774,63 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @param SproutEmail_EntryModel    $email
-	 * @param                           $object
+	 * @param EmailModel $emailModel
+	 * @param            $campaign
+	 * @param            $email
+	 * @param            $object
+	 *
+	 * @return bool|EmailModel
 	 */
-	public function renderEmailTemplates(EmailModel $email, SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry, $object)
+	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $notification, $object)
 	{
 		// Render Email Entry fields that have dynamic values
-		$email->subject   = sproutEmail()->renderObjectTemplateSafely($entry->subjectLine, $object);
-		$email->fromName  = sproutEmail()->renderObjectTemplateSafely($entry->fromName, $object);
-		$email->fromEmail = sproutEmail()->renderObjectTemplateSafely($entry->fromEmail, $object);
-		$email->replyTo   = sproutEmail()->renderObjectTemplateSafely($entry->replyToEmail, $object);
+		$emailModel->subject   = sproutEmail()->renderObjectTemplateSafely($notification->subjectLine, $object);
+		$emailModel->fromName  = sproutEmail()->renderObjectTemplateSafely($notification->fromName, $object);
+		$emailModel->fromEmail = sproutEmail()->renderObjectTemplateSafely($notification->fromEmail, $object);
+		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($notification->replyToEmail, $object);
 
 		// Render the email templates
-		$email->body     = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', array(
-			'email'        => $entry,
+		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
+			'email'        => $notification,
 			'object'       => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $entry,
-			'notification' => $entry
+			'entry'        => $notification,
+			'notification' => $notification
 		));
-		$email->htmlBody = sproutEmail()->renderSiteTemplateIfExists($campaign->template, array(
-			'email'        => $entry,
+		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
+			'email'        => $notification,
 			'object'       => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $entry,
-			'notification' => $entry
+			'entry'        => $notification,
+			'notification' => $notification
 		));
 
 		$styleTags = array();
 
-		$htmlBody = $this->addPlaceholderStyleTags($email->htmlBody, $styleTags);
+		$htmlBody = $this->addPlaceholderStyleTags($emailModel->htmlBody, $styleTags);
 
 		// Some Twig code in our email fields may need us to decode
 		// entities so our email doesn't throw errors when we try to
 		// render the field objects. Example: {variable|date("Y/m/d")}
-		$email->body = HtmlHelper::decode($email->body);
-		$htmlBody    = HtmlHelper::decode($htmlBody);
+		$emailModel->body = HtmlHelper::decode($emailModel->body);
+		$htmlBody         = HtmlHelper::decode($htmlBody);
 
 		// Process the results of the template s once more, to render any dynamic objects used in fields
-		$email->body     = sproutEmail()->renderObjectTemplateSafely($email->body, $object);
-		$email->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
+		$emailModel->body     = sproutEmail()->renderObjectTemplateSafely($emailModel->body, $object);
+		$emailModel->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
 
-		$email->htmlBody = $this->removePlaceholderStyleTags($email->htmlBody, $styleTags);
+		$emailModel->htmlBody = $this->removePlaceholderStyleTags($emailModel->htmlBody, $styleTags);
 
 		$templateError = sproutEmail()->getError('template');
 
 		if (!empty($templateError))
 		{
-			return false;
+			$emailModel->htmlBody = $templateError;
 		}
 
-		return $email;
+		return $emailModel;
 	}
 
 	public function addPlaceholderStyleTags($htmlBody, &$styleTags)

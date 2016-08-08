@@ -1,27 +1,27 @@
 
 {{ forms.field({
     label: "From Name <span class='info'>The person or business sending the email</span>"|t,
-		errors: (entry is defined ? entry.getErrors('fromName') : null),
+		errors: (email is defined ? email.getErrors('fromName') : null),
 		required: true,  
 	}, forms.textField({
 		name: 'sproutEmail[fromName]',
-		value: (entry is defined ? entry.fromName : ''),
+		value: (email is defined ? email.fromName : ''),
 })) }}
 
 {{ forms.field({
     label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
     required: true,  
-		errors: (entry is defined ? entry.getErrors('fromEmail') : null),
+		errors: (email is defined ? email.getErrors('fromEmail') : null),
 	}, forms.textField({
 		name: 'sproutEmail[fromEmail]',
-		value: (entry is defined ? entry.fromEmail : ''),
+		value: (email is defined ? email.fromEmail : ''),
 })) }}
 
 {{ forms.field({
     label: "Reply To Email <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
     required: true,  
-		errors: (entry is defined ? entry.getErrors('replyToEmail') : null),
+		errors: (email is defined ? email.getErrors('replyToEmail') : null),
 	}, forms.textField({
 		name: 'sproutEmail[replyToEmail]',
-		value: (entry is defined ? entry.replyToEmail : ''),
+		value: (email is defined ? email.replyToEmail : ''),
 })) }}

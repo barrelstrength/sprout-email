@@ -35,29 +35,29 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		return "Copy and paste your email campaigns to better (or worse) places.";
 	}
 
-	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 
 		return craft()->templates->render('sproutemail/_modal', array(
-			'entry'    => $entry,
+			'entry'    => $campaignEmail,
 			'campaign' => $campaign
 		));
 	}
 
 	public function getActionForPrepareModal()
 	{
-		return 'sproutEmail/entry/export';
+		return 'sproutEmail/campaignEmails/export';
 	}
 
-	public function getPreviewModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
-		return $this->getService()->previewEntry($entry, $campaign);
+		return $this->getService()->previewCampaignEmail($campaignEmail, $campaign);
 	}
 
 	public function getActionForPreview()
 	{
-		return 'sproutEmail/entry/preview';
+		return 'sproutEmail/campaignEmails/preview';
 	}
 
 	public function includeModalResources()
@@ -65,12 +65,12 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 	}
 
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$this->includeModalResources();
 		try
 		{
-			return $this->getService()->exportEntry($entry, $campaign);
+			return $this->getService()->exportEmail($campaignEmail, $campaign);
 		}
 		catch (\Exception $e)
 		{
@@ -78,11 +78,11 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		}
 	}
 
-	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		try
 		{
-			return $this->getService()->previewEntry($entry, $campaign);
+			return $this->getService()->previewCampaignEmail($campaignEmail, $campaign);
 		}
 		catch (\Exception $e)
 		{

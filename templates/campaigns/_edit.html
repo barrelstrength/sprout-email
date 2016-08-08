@@ -1,0 +1,171 @@
+{% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% set crumbs = [
+	{ label: "Email"|t, url: url('sproutemail/campaigns') },
+] %}
+
+{% set title  = email is defined and email.title is not empty ? campaign.name : 'Create a new Email' %}
+{% set mailer = craft.sproutEmail.getMailer(campaign.mailer) %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = url('sproutemail/campaigns/edit/{id}') %}
+
+{% block saveButton %}
+	<section class="buttons">
+		<div class="btngroup submit">
+			<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+				<div class="btn submit menubtn"></div>
+				<div class="menu">
+					<ul>
+
+						{% if email.id != null %}
+						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{{ email.id  }}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+						{% else %}
+						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+						{% endif %}
+
+
+						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/{{ campaign.id }}/new">{{ "Save and add another"|t }}</a></li>
+						{% if email.id != null %}
+							<li><a class="formsubmit" data-param='saveAsNew' data-value="true" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save as a new email"|t }}</a></li>
+						{% endif %}
+
+					</ul>
+				</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block main %}
+
+		<input type="hidden" name="action" value="sproutEmail/campaignEmails/saveCampaignEmail">
+		<input type="hidden" name="redirect" value="sproutemail/campaigns">
+
+		{% if emailId is defined and emailId %}
+		<input type="hidden" name="emailId" value="{{ emailId }}">
+		{% endif %}
+		<input type="hidden" name="campaignId" value="{{ campaignId }}">
+
+		{% if namespace is not defined %}{% set namespace = 'fields' %}{% endif %}
+
+		<div class="grid first" data-max-cols="3">
+
+			<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
+				<div id="fields" class="pane">
+					{% include "sproutemail/campaigns/_fields" %}
+				</div>
+			</div>
+
+			<div class="item" data-position="right" data-colspan="1">
+
+				{% if showPreviewBtn %}
+					{% include "_includes/previewbtns" %}
+				{% endif %}
+
+				<div class="pane meta">
+
+					<div class="field">
+						<div class="heading">
+							<label>Mailer <span class="info">Update your Mailer in the <a href="{{ cpUrl('sproutemail/settings/campaigns/edit') ~ '/' ~ campaignId }}">Campaign Settings</a>. Add new Mailers in the <a href="{{ cpUrl('sproutemail/settings/mailers') }}">Mailer Settings</a></span></label>
+						</div>
+						<div class="input">
+							<h6>{{ mailer.getTitle() }}</h6>
+						</div>
+					</div>
+
+					{{ forms.textField({
+						label: "Slug"|t,
+						locale: email.locale,
+						id: 'slug',
+						name: 'slug',
+						value: email.slug,
+						errors: (email ? email.getErrors('slug')|merge(email.getErrors('uri'))),
+					}) }}
+
+					{% set statusInput %}
+						<div class="left">
+							{{ forms.lightswitch({
+								id: 'enabled',
+								name: 'enabled',
+								on: email.enabled
+							}) }}
+						</div>
+
+						<div class="right">
+							<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}" data-action="sproutEmail/campaignEmails/deleteCampaignEmail" data-confirm="Are you sure you want to delete this Email and all of it's data?" data-redirect="sproutemail/campaigns">
+						</div>
+					{% endset %}
+
+					{{ forms.field({
+						label: "Status"|t,
+						id: 'enabled'
+					}, statusInput) }}
+
+				</div>
+
+				{% if mailer.getId() != 'copypaste' %}
+
+					<div id="tab-sproutemail-sender" class="pane meta">
+
+						{% set defaultFromName  = "" %}
+						{% set defaultFromEmail = "" %}
+						{% set defaultReplyTo   = "" %}
+
+						{% if mailer.getId() == 'defaultmailer' %}
+							{% set defaultFromName  = mailer.settings.fromName is defined ? mailer.settings.fromName : "" %}
+							{% set defaultFromEmail = mailer.settings.fromEmail is defined ? mailer.settings.fromEmail : "" %}
+							{% set defaultReplyTo   = mailer.settings.replyToEmail is defined ? mailer.settings.replyToEmail : "" %}
+						{% endif %}
+
+						{{ forms.textField({
+							label: "From Name <span class='info'>The person or business sending the email</span>"|t,
+							name: 'sproutEmail[fromName]',
+							value: (email.fromName is not empty ? email.fromName : defaultFromName ),
+							errors: (email is defined ? email.getErrors('fromName') : null),
+							required: true
+						}) }}
+
+						{{ forms.textField({
+							name: 'sproutEmail[fromEmail]',
+							value: (email.fromEmail is not empty ? email.fromEmail : defaultFromEmail),
+							label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
+							errors: (email is defined ? email.getErrors('fromEmail') : null),
+							required: true
+						}) }}
+
+						{{ forms.textField({
+							name: 'sproutEmail[replyToEmail]',
+							value: (email.replyToEmail is not empty ? email.replyToEmail : defaultReplyTo),
+							label: "Reply To <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
+							errors: (email is defined ? email.getErrors('replyToEmail') : null),
+							required: true
+						}) }}
+
+					</div>
+
+					<div id="tab-sproutemail-recipients" class="pane meta">
+
+							<div class="field mailing-lists">
+								<div class="heading">
+									Lists
+								</div>
+								<div class="input">
+								{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
+								</div>
+							</div>
+
+					</div>
+
+				{% endif %}
+
+			</div>
+
+		</div>
+
+{% endblock %}
+
+{% if not email.slug %}
+	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#subjectLine', '#slug');" %}
+{% endif %}

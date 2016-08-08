@@ -16,24 +16,24 @@
 
 {% endif %}
 
-			<tr class="infoRow" data-id="{{ entry.id }}">
+			<tr class="infoRow" data-id="{{ email.id }}">
 				<td>
-					<span class="status {{ entry.status }}"></span> {{ entry.dateCreated|date('M j, Y g:ia') }}
+					<span class="status {{ email.status }}"></span> {{ email.dateCreated|date('M j, Y g:ia') }}
 				</td>
 
 				<td>
-					{{ entry.toEmail }}
+					{{ email.toEmail }}
 				</td>
 
 				<td data-titlecell>
-					{{ entry.title }}
+					{{ email.title }}
 				</td>
 
 				<td>
-					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-entry-id="{{ entry.id }}" href="{{ url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "View Content"|t }}</a>
+					<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal" data-email-id="{{ email.id }}" href="{{ url('sproutemail/sentemails/view/' ~ email.id) }}">{{ "View Content"|t }}</a>
 				</td>
 				<td>
-			<a class="prepare" data-action="sproutEmail/sentEmail/getResendModal" data-entry-id="{{ entry.id }}" href="{{	url('sproutemail/sentemails/view/' ~ entry.id) }}">{{ "Prepare"|t }}</a>
+			<a class="prepare" data-action="sproutEmail/sentEmail/getResendModal" data-email-id="{{ email.id }}" href="{{	url('sproutemail/sentemails/view/' ~ email.id) }}">{{ "Prepare"|t }}</a>
 				</td>
 
 				<td>

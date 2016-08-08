@@ -79,20 +79,21 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return string
+	 * @throws \Exception
 	 */
-	public function getPrepareModalHtml(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
-		if (strpos($entry->replyToEmail, '{') !== false)
+		if (strpos($campaignEmail->replyToEmail, '{') !== false)
 		{
-			$entry->replyToEmail = $entry->fromEmail;
+			$campaignEmail->replyToEmail = $campaignEmail->fromEmail;
 		}
 
 		// Create an array of all recipient list titles
-		$lists = sproutEmail()->entries->getRecipientListsByEntryId($entry->id);
+		$lists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
 
 		$recipientLists = array();
 
@@ -109,7 +110,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 		return craft()->templates->render(
 			'sproutemail/settings/_mailers/mailchimp/prepare',
 			array(
-				'entry'    => $entry,
+				'email'    => $campaignEmail,
 				'lists'    => $recipientLists,
 				'mailer'   => $this,
 				'campaign' => $campaign
@@ -120,7 +121,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	/**
 	 * Renders the recipient list UI for this mailer
 	 *
-	 * @param SproutEmail_EntryModel[]|null $values
+	 * @param SproutEmail_CampaignEmailModel[]|null $values
 	 *
 	 * @return string Rendered HTML content
 	 */
@@ -203,12 +204,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
-	 * @return array|SproutEmail_EntryModel
+	 * @return array|SproutEmail_CampaignEmailModel
 	 */
-	public function prepareRecipientLists(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -219,10 +220,9 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 			{
 				$model = new SproutEmail_EntryRecipientListModel();
 
-				$model->setAttribute('entryId', $entry->id);
+				$model->setAttribute('emailId', $campaignEmail->id);
 				$model->setAttribute('mailer', $this->getId());
 				$model->setAttribute('list', $id);
-				$model->setAttribute('type', $campaign->type);
 
 				$lists[] = $model;
 			}
@@ -232,19 +232,19 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array|void
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$sentCampaignIds = array();
 		$response = new SproutEmail_ResponseModel();
 
 		try
 		{
-			$sentCampaign = $this->getService()->export($entry, $campaign);
+			$sentCampaign = $this->getService()->export($campaignEmail, $campaign);
 
 			$sentCampaignIds = $sentCampaign['ids'];
 
@@ -264,7 +264,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 		$response->content = craft()->templates->render(
 			'sproutemail/settings/_mailers/mailchimp/export',
 			array(
-				'entry'       => $entry,
+				'entry'       => $campaignEmail,
 				'campaign'    => $campaign,
 				'mailer'      => $this,
 				'success'     => $response->success,
