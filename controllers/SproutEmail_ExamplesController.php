@@ -44,7 +44,6 @@ class SproutEmail_ExamplesController extends BaseController
 		}
 		catch (\Exception $e)
 		{
-
 			$this->_handleError($e);
 		}
 	}
