@@ -13,6 +13,28 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 	 */
 	public function safeUp()
 	{
+/*		$rows = craft()->db->createCommand()
+			->select('*')
+			->from('sproutemail_campaigns setting')
+			->join('sproutemail_campaigns_notifications notification', 'setting.id = notification.campaignId')
+			->join('sproutemail_campaigns_entries email', 'setting.id = email.campaignId')
+			->where(array('type' => 'notification'))
+			->queryAll();
+
+		$oldNotifications = array();
+		foreach ($rows as $key => $row)
+		{
+			$recipientList = craft()->db->createCommand()
+				->select('*')
+				->from('sproutemail_campaigns_entries_recipientlists')
+				->where(array('type' => 'notification', 'entryId' => $row['id']))
+				->queryAll();
+
+			$oldNotifications[$key] = $row;
+
+			$oldNotifications[$key]['recipientList'] = $recipientList;
+
+		}*/
 		$tableName  = "sproutemail_campaigns";
 		$columnName = "type";
 
