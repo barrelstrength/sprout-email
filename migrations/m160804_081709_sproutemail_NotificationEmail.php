@@ -62,6 +62,9 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 
 		if (!craft()->db->tableExists($tableName))
 		{
+			try
+			{
+
 			// Create the craft_sproutemail_notifications table
 			craft()->db->createCommand()->createTable($tableName, array(
 				'id'                    => array('column' => 'integer', 'required' => true, 'primaryKey' => true),
@@ -93,15 +96,20 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 				                                 'column' => 'integer'),
 			), null, false);
 
-			craft()->db->createCommand()->addPrimaryKey($tableName, 'id');
 			craft()->db->createCommand()->createIndex($tableName, 'id');
 
 			// Add foreign keys to craft_sproutemail_notifications
 			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE', null);
 			craft()->db->createCommand()->addForeignKey($tableName, 'fieldLayoutId', 'fieldlayouts',
 				'id', 'SET NULL', null);
+			}
+			catch (\Exception $e)
+			{
+				Craft::dd($e->getMessage(), 10, false);
+			}
 		}
-		$tableName = 'sproutemail_notification_recipientlists';
+
+/*		$tableName = 'sproutemail_notification_recipientlists';
 
 		if (!craft()->db->tableExists($tableName))
 		{
@@ -113,7 +121,7 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 
 			// Add foreign keys to craft_sproutemail_notification_recipientlists
 			craft()->db->createCommand()->addForeignKey($tableName, 'notificationId', 'sproutemail_notifications', 'id', 'CASCADE', null);
-		}
+		}*/
 
 		SproutEmailPlugin::log('!Running naming convention migration');
 
