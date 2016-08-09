@@ -17,7 +17,7 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 
 		$this->moveOldNotifications();
 
-		//$this->alterTablesColumns();
+		$this->alterTablesColumns();
 
 		SproutEmailPlugin::log('Running naming convention migration');
 
@@ -112,7 +112,7 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 
 			$oldNotifications[$key] = $entry;
 
-			$oldNotifications[$key]['recipientList'] = $recipientList;
+			$oldNotifications[$key]['recipientLists'] = $recipientList;
 		}
 
 		if (!empty($oldNotifications))
@@ -135,7 +135,16 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 					'enableFileAttachments' => $oldNotification['enableFileAttachments'],
 				);
 
+				$existNotification = craft()->db->createCommand()
+					->select('id')
+					->from('sproutemail_notifications')
+					->where(array('id' => $oldNotification['id']))
+					->queryAll();
+
+				if (!empty($existNotification)) continue;
+
 				craft()->db->createCommand()->insert('sproutemail_notifications', $insertData);
+
 
 				craft()->db->createCommand()->update('elements', array(
 					'type' => 'SproutEmail_NotificationEmail'
@@ -143,12 +152,24 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 					'id= :id', array(':id' => $oldNotification['id'])
 				);
 
-				//if (!empty($oldNotification['recipientList']))
-				//{
-				//	craft()->db->createCommand()->insert('sproutemail_notification_recipientlists', array(
-				//		'' => ''
-				//	));
-				//}
+				if (!empty($oldNotification['recipientLists']))
+				{
+					foreach ($oldNotification['recipientLists'] as $recipientList)
+					{
+						craft()->db->createCommand()->insert('sproutemail_notification_recipientlists', array(
+							'notificationId' => $recipientList['entryId'],
+							'list'           => $recipientList['list']
+						));
+					}
+				}
+
+				craft()->db->createCommand()->delete('sproutemail_campaigns_entries', array(
+					'id' => $oldNotification['id']
+				));
+
+				craft()->db->createCommand()->delete('sproutemail_campaigns', array(
+					'type' => 'notification'
+				));
 			}
 		}
 	}
