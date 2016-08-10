@@ -19,6 +19,8 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 
 		$this->alterTablesColumns();
 
+		$this->dropTables();
+
 		SproutEmailPlugin::log('Running naming convention migration');
 
 		return true;
@@ -197,6 +199,14 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 			{
 				craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigns');
 			}
+		}
+	}
+
+	public function dropTables()
+	{
+		if (craft()->db->tableExists('sproutemail_campaigns_notifications'))
+		{
+			craft()->db->createCommand()->dropTable('sproutemail_campaigns_notifications');
 		}
 	}
 }
