@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
+class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -37,7 +37,7 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 					'id'                    => array('column' => 'integer', 'required' => true),
 					'name'                  => array('required' => true),
 					'template'              => array('required' => true),
-					'eventId'               => array('column' => 'text'),
+					'eventId'               => AttributeType::String,
 					'options'               => array('column' => 'text'),
 					'subjectLine'           => array('required' => true),
 					'recipients'            => array('required' => false),
@@ -56,14 +56,11 @@ class m160804_081709_sproutemail_NotificationEmail extends BaseMigration
 					                                 'unsigned' => true),
 					'dateCreated'           => array('column' => 'datetime'),
 					'dateUpdated'           => array('column' => 'datetime'),
-					'fieldLayoutId'         => array('maxLength' => 11,
-					                                 'decimals' => 0,
-					                                 'unsigned' => false,
-					                                 'length' => 11,
-					                                 'column' => 'integer'),
+					'fieldLayoutId'         => array('column' => 'integer',
+					                                 'length' => 10),
 				), null, false);
 
-				craft()->db->createCommand()->createIndex($tableName, 'id');
+				craft()->db->createCommand()->addPrimaryKey($tableName, 'id');
 
 				// Add foreign keys to craft_sproutemail_notifications
 				craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE', null);
