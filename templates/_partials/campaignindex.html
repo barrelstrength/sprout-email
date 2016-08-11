@@ -27,12 +27,21 @@
 				{{ email.dateCreated|date('m/d/Y') }}
 			</td>
 			<td>
+				{% set status = email.getStatus() %}
 
 				{% if email.getUrl() %}
 
-				<a href="{{ email.url }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
+					{% if status != 'ready' %}
+						{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaign.id) %}
+						{% set emailUrlSep = '&'  %}
+					{% else %}
+						{% set emailUrl = email.url %}
+						{% set emailUrlSep = '?'  %}
+					{% endif %}
+
+				<a href="{{ emailUrl }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
 				&nbsp;/&nbsp;
-				<a href="{{ email.url }}?type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+				<a href="{{ emailUrl ~ emailUrlSep }}type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 
 				{% else %}
 

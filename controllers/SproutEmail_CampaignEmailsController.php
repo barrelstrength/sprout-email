@@ -420,7 +420,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	 * @throws HttpException
 	 * @return null
 	 */
-	public function actionShareCampaignEmail($emailId = null)
+	public function actionShareCampaignEmail($emailId = null, $campaignId = null)
 	{
 		if ($emailId)
 		{
@@ -431,8 +431,11 @@ class SproutEmail_CampaignEmailsController extends BaseController
 				throw new HttpException(404);
 			}
 
+			$type = craft()->request->getQuery('type');
+
 			$params = array(
 				'emailId' => $emailId,
+				'type'    => $type
 			);
 		}
 		else
@@ -460,7 +463,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionViewSharedCampaignEmail($emailId = null, $template = null)
+	public function actionViewSharedCampaignEmail($emailId = null, $type = null)
 	{
 		$this->requireToken();
 
@@ -478,7 +481,14 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
-			sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
+			// Output email text
+			$bufferTemplate = 'html';
+			if ($type != null && $type == 'text')
+			{
+				$bufferTemplate ='txt';
+			}
+
+			sproutEmail()->campaignEmails->showBufferCampaignEmail($email, $bufferTemplate);
 		}
 		else
 		{

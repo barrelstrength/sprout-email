@@ -311,23 +311,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			)));
 		}
 
-		// Use buffer script on showEntry for notification to render mock object
-		if ($element->getType() == 'notification')
-		{
-			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
-
-			if ($event)
-			{
-				$object = $event->getMockedParams();
-			}
-
-			// Create an Email so we can render our template
-			$email = new EmailModel();
-
-			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $element, $object);
-
-			sproutEmail()->notifications->showBufferEntry($email);
-		}
 
 		$vars = array(
 			'email'     => $element,

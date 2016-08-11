@@ -221,6 +221,16 @@ class SproutEmailVariable
 		return false;
 	}
 
+	public function getCampaignEmailShareUrl($emailId, $campaignId)
+	{
+		$shareParams = array(
+			'emailId'    => $emailId,
+			'campaignId' => $campaignId
+		);
+
+		return UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', $shareParams);
+	}
+
 	public function getRecipientLists($mailer)
 	{
 		return sproutEmail()->mailers->getRecipientLists($mailer);
