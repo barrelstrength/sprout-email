@@ -35,9 +35,9 @@ class SproutEmail_EntryRecipientListRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'entry' => array(
+			'element' => array(
 				static::BELONGS_TO,
-				'SproutEmail_CampaignEmailRecord',
+				'ElementRecord',
 				'emailId',
 				'required' => true,
 				'onDelete' => static::CASCADE,

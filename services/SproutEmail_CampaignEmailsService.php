@@ -78,7 +78,9 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 					$campaignEmailRecord->save(false);
 
-					sproutEmail()->mailers->saveRecipientLists($campaignType, $campaignEmail);
+					$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
+
+					sproutEmail()->mailers->saveRecipientLists($mailer, $campaignEmail);
 
 					if ($transaction && $transaction->active)
 					{

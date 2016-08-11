@@ -212,7 +212,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 					if($record->save(false))
 					{
 						// Save recipient after record is saved to avoid Integrity constraint violation.
-						sproutEmail()->notificationEmails->saveRecipientLists($notification);
+						//sproutEmail()->notificationEmails->saveRecipientLists($notification);
+
+						$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
+
+						sproutEmail()->mailers->saveRecipientLists($mailer, $notification);
 
 						if ($transaction && $transaction->active)
 						{

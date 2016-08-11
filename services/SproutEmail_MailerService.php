@@ -312,18 +312,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function saveRecipientLists(SproutEmail_CampaignTypeModel $campaign, SproutEmail_CampaignEmailModel $campaignEmail)
+	public function saveRecipientLists($mailer = 'defaultmailer', $campaignEmail)
 	{
-		$mailer = $this->getMailerByName($campaign->mailer);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('The {m} mailer is not supported.', array('m' => $campaign->mailer)));
-		}
-
 		sproutEmail()->campaignEmails->deleteRecipientListsByEmailId($campaignEmail->id);
 
-		$lists = $mailer->prepareRecipientLists($campaignEmail, $campaign);
+		$lists = $mailer->prepareRecipientLists($campaignEmail);
 
 		if ($lists && is_array($lists) && count($lists))
 		{

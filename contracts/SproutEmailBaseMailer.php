@@ -325,7 +325,7 @@ abstract class SproutEmailBaseMailer
 	 * @return SproutEmail_CampaignEmailModel
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
 	{
 		return new SproutEmail_CampaignEmailModel();
 	}

@@ -473,7 +473,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 			$object = null;
 
-
 			// Create an Email so we can render our template
 			$email = new EmailModel();
 
