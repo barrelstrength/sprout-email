@@ -1,14 +1,14 @@
 <?php
 namespace Craft;
 
-class SproutEmail_EntryElementType extends BaseElementType
+class SproutEmail_CampaignEmailElementType extends BaseElementType
 {
 	/**
 	 * @return string
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Email Entry');
+		return Craft::t('Sprout Email Campaign Email');
 	}
 
 	/**
@@ -48,9 +48,9 @@ class SproutEmail_EntryElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_EntryModel::ENABLED  => Craft::t('Enabled'),
-			SproutEmail_EntryModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_EntryModel::DISABLED => Craft::t('Disabled')
+			SproutEmail_CampaignEmailModel::ENABLED  => Craft::t('Enabled'),
+			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
 		);
 	}
 
@@ -63,34 +63,13 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function getSources($context = null)
 	{
-		// Grab all of our Notifications
-		$notifications = sproutEmail()->campaigns->getCampaigns('notification');
-		$notificationIds = array();
-
 		$sources = array(
 			'*' => array(
-				'label' => Craft::t('All Emails'),
+				'label' => Craft::t('All Campaigns'),
 			),
 		);
 
-		if (count($notifications))
-		{
-			// Create a list of Notification IDs we can use as criteria to filter by
-			foreach ($notifications as $notification)
-			{
-				$notificationIds[] = $notification->id;
-			}
-
-			$sources['notifications'] = array(
-				'label'    => Craft::t('Notifications'),
-				'criteria' => array(
-					'campaignId' => $notificationIds
-				)
-			);
-		}
-
-		// Prepare the data for our sources sidebar
-		$campaigns = sproutEmail()->campaigns->getCampaigns('email');
+		$campaigns = sproutEmail()->campaignTypes->getCampaignTypes();
 
 		if (count($campaigns))
 		{
@@ -143,14 +122,12 @@ class SproutEmail_EntryElementType extends BaseElementType
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
-		return craft()->templates->render(
-			'sproutemail/entries/_entryindex', array(
-				'context'            => $context,
-				'elementType'        => new ElementTypeVariable($this),
-				'disabledElementIds' => $disabledElementIds,
-				'elements'           => $criteria->find(),
-			)
-		);
+		return craft()->templates->render('sproutemail/campaigns/_entryindex', array(
+			'context'            => $context,
+			'elementType'        => new ElementTypeVariable($this),
+			'disabledElementIds' => $disabledElementIds,
+			'elements'           => $criteria->find(),
+		));
 	}
 
 	/**
@@ -212,42 +189,42 @@ class SproutEmail_EntryElementType extends BaseElementType
 	{
 		switch ($status)
 		{
-			case SproutEmail_EntryModel::DISABLED:
+			case SproutEmail_CampaignEmailModel::DISABLED:
 			{
 				$query->andWhere('elements.enabled = 0');
 
 				break;
 			}
-			case SproutEmail_EntryModel::PENDING:
+			case SproutEmail_CampaignEmailModel::PENDING:
 			{
 				$query->andWhere('elements.enabled = 1');
-				$query->andWhere('campaigns.template IS NULL OR campaigns.mailer IS NULL');
+				$query->andWhere('campaigntype.template IS NULL OR campaigntype.mailer IS NULL');
 
 				break;
 			}
-			case SproutEmail_EntryModel::ARCHIVED:
+			case SproutEmail_CampaignEmailModel::ARCHIVED:
 			{
 				$query->andWhere('elements.archived = 1');
 				break;
 			}
-			case SproutEmail_EntryModel::READY:
+			case SproutEmail_CampaignEmailModel::READY:
 			{
 				$query->andWhere(
 					'
 					elements.enabled = 1
-					AND campaigns.template IS NOT NULL
-					AND campaigns.mailer IS NOT NULL'
+					AND campaigntype.template IS NOT NULL
+					AND campaigntype.mailer IS NOT NULL'
 				);
 
 				break;
 			}
-			case SproutEmail_EntryModel::ENABLED:
+			case SproutEmail_CampaignEmailModel::ENABLED:
 			{
 				$query->andWhere(
 					'
 					elements.enabled = 1
-					AND campaigns.template IS NOT NULL
-					AND campaigns.mailer IS NOT NULL'
+					AND campaigntype.template IS NOT NULL
+					AND campaigntype.mailer IS NOT NULL'
 				);
 
 				break;
@@ -277,28 +254,27 @@ class SproutEmail_EntryElementType extends BaseElementType
 	{
 		$query
 			->addSelect(
-				'entries.id
-				, entries.subjectLine as subjectLine
-				, entries.campaignId as campaignId
-				, entries.recipients as recipients
-				, entries.fromName as fromName
-				, entries.fromEmail as fromEmail
-				, entries.replyToEmail as replyToEmail
-				, entries.sent as sent
-				, entries.enableFileAttachments as enableFileAttachments
-				, campaigns.type as type'
+				'campaigns.id, 
+				 campaigns.subjectLine as subjectLine,
+				 campaigns.campaignId as campaignId,
+				 campaigns.recipients as recipients,
+				 campaigns.fromName as fromName,
+				 campaigns.fromEmail as fromEmail,
+				 campaigns.replyToEmail as replyToEmail,
+				 campaigns.sent as sent,
+				 campaigns.enableFileAttachments as enableFileAttachments'
 			)
-			->join('sproutemail_campaigns_entries entries', 'entries.id = elements.id')
-			->join('sproutemail_campaigns campaigns', 'campaigns.id = entries.campaignId');
+			->join('sproutemail_campaigns campaigns', 'campaigns.id = elements.id')
+			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignId');
 
 		if ($criteria->campaignId)
 		{
-			$query->andWhere(DbHelper::parseParam('entries.campaignId', $criteria->campaignId, $query->params));
+			$query->andWhere(DbHelper::parseParam('campaigns.campaignId', $criteria->campaignId, $query->params));
 		}
 
 		if ($criteria->campaignHandle)
 		{
-			$query->andWhere(DbHelper::parseParam('campaigns.handle', $criteria->campaignHandle, $query->params));
+			$query->andWhere(DbHelper::parseParam('campaigntype.handle', $criteria->campaignHandle, $query->params));
 		}
 	}
 
@@ -307,17 +283,12 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 *
 	 * @param BaseElementModel $element
 	 *
-	 * @return array|bool|mixed
+	 * @return array|bool
+	 * @throws HttpException
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		// Only expose notification emails that have tokens
-		if ($element->getType() == 'notification' && !craft()->request->getQuery(craft()->config->get('tokenParam')))
-		{
-			throw new HttpException(404);
-		}
-
-		$campaign = sproutEmail()->campaigns->getCampaignById($element->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignId);
 
 		if (!$campaign)
 		{
@@ -338,6 +309,24 @@ class SproutEmail_EntryElementType extends BaseElementType
 			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
 				'templateName' => $templateName
 			)));
+		}
+
+		// Use buffer script on showEntry for notification to render mock object
+		if ($element->getType() == 'notification')
+		{
+			$event = sproutEmail()->notifications->getEventByCampaignId($campaign->id);
+
+			if ($event)
+			{
+				$object = $event->getMockedParams();
+			}
+
+			// Create an Email so we can render our template
+			$email = new EmailModel();
+
+			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $campaign, $element, $object);
+
+			sproutEmail()->notifications->showBufferEntry($email);
 		}
 
 		$vars = array(
@@ -368,12 +357,10 @@ class SproutEmail_EntryElementType extends BaseElementType
 	{
 		$deleteAction = craft()->elements->getAction('SproutEmail_Delete');
 
-		$deleteAction->setParams(
-			array(
-				'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
-				'successMessage'      => Craft::t('Emails deleted.'),
-			)
-		);
+		$deleteAction->setParams(array(
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
+			'successMessage'      => Craft::t('Emails deleted.'),
+		));
 
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
 
@@ -389,6 +376,6 @@ class SproutEmail_EntryElementType extends BaseElementType
 	 */
 	public function populateElementModel($row)
 	{
-		return SproutEmail_EntryModel::populateModel($row);
+		return SproutEmail_CampaignEmailModel::populateModel($row);
 	}
 }

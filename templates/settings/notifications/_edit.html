@@ -2,7 +2,9 @@
 {% import "_includes/forms" as forms %}
 
 {% set title = "Edit Notification"|t %}
-{% set campaign = craft.sproutEmail.getCampaignById(campaignId) %}
+{# @todo - the campaignId variable is a notification.id variable in this context,
+					 consider renaming the slug to something more generic. #}
+{% set email = craft.sproutEmail.getNotificationEmailById(campaignId) %}
 
 {% set crumbs = [
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
@@ -18,31 +20,27 @@
 		<div class="btngroup">
 			<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
 
-			{% if campaign.type is defined and campaign.type == "notification" %}
+			{% if email['id'] is defined %}
 
-				{% set entry = craft.sproutemail.getNotificationEntryByCampaignId(campaign.id) %}
-
-			{% if entry.id is defined %}
 				<div class="btn submit menubtn"></div>
 				<div class="menu">
 					<ul>
 
-						{% set dataSaveEditRedirect = cpUrl('sproutemail/entries/edit/' ~ entry.id) %}
+						{% set dataSaveEditRedirect = cpUrl('sproutemail/campaigns/edit/' ~ email.id) %}
 
-						<li><a class="formsubmit" data-redirect="{{ dataSaveEditRedirect }}" title="{{ "Save and edit notification entry"|t }}">{{ "Save and edit notification entry"|t }}</a></li>
+						<li><a class="formsubmit" data-redirect="{{ dataSaveEditRedirect }}" title="{{ "Save and edit notification email"|t }}">{{ "Save and edit notification email"|t }}</a></li>
 						<li><a class="formsubmit" data-redirect="{{ cpUrl('sproutemail/settings/notifications/edit/new') }}">{{ "Save and add another"|t }}</a></li>
 
 					</ul>
 				</div>
-				{% endif %}
 
 			{% endif %}
 
 		</div>
 
 		<div class="secondary-buttons" style="float:left;">
-		{% if entry is defined %}
-			<a class="btn icon add submit" href="{{ cpUrl('sproutemail/entries/edit/' ~ entry.id) }}" title="{{ "Edit Notification Email"|t }}" style="float:none;margin:0;">{{ "Edit Notification Email"|t }}</a>
+		{% if email is defined %}
+			<a class="btn icon add submit" href="{{ cpUrl('sproutemail/campaigns/edit/' ~ email.id) }}" title="{{ "Edit Notification Email"|t }}" style="float:none;margin:0;">{{ "Edit Notification Email"|t }}</a>
 		{% endif %}
 		</div>
 	</div>
@@ -53,9 +51,9 @@
 
 	{% if isMailerInstalled %}
 
-		<input type="hidden" name="action" value="sproutEmail/campaign/saveCampaign">
+		<input type="hidden" name="action" value="sproutEmail/campaignType/saveCampaignType">
 
-		{% if entry['id'] is defined %}
+		{% if email['id'] is defined %}
 			<input type="hidden" name="redirect" value="sproutemail/settings/notifications">
 		{% else %}
 			<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
@@ -78,10 +76,10 @@
 		}) }}
 
 		{{ forms.textField({
-			label: "Entry Template"|t,
+			label: "Email Template"|t,
 			id: 'template',
 			name: 'sproutEmail[template]',
-			instructions: "The template to use when an Entry's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+			instructions: "The template to use when an Email's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
 			placeholder: 'email/_emailtemplate',
 			value: (campaign is defined ? campaign.template : null),
 			errors: (campaign is defined ? campaign.getErrors('template') : null)

@@ -7,7 +7,7 @@
 		<tbody>
 		<tr>
 			<td><strong>{{ "Subject"|t }}</strong></td>
-			<td class="title">{{ entry.title }}</td>
+			<td class="title">{{ email.title }}</td>
 		</tr>
 
 		<tr>
@@ -45,15 +45,13 @@
 		<button
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
-			data-action="sproutEmail/entry/export"
-			data-entry-id="{{ entry.id }}"
+			data-action="sproutEmail/campaignEmails/export"
+			data-email-id="{{ email.id }}"
 			data-campaign-id="{{ campaign.id }}"
 			class="btn submit actions">
-			{% if campaign.isNotification() %}
-				{{- "Send Test"|t -}}
-			{% else %}
-				{{- "Send Campaign"|t -}}
-			{% endif %}
+
+			{{- "Send Campaign"|t -}}
+
 		</button>
 	</div>
 </div>

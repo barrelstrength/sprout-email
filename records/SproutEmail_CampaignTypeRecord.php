@@ -19,7 +19,7 @@ namespace Craft;
  * @property string $templateCopyPaste
  * @property int    $fieldLayoutId
  */
-class SproutEmail_CampaignRecord extends BaseRecord
+class SproutEmail_CampaignTypeRecord extends BaseRecord
 {
 	public $sectionRecord;
 
@@ -35,7 +35,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_campaigns';
+		return 'sproutemail_campaigntype';
 	}
 
 	/**
@@ -46,13 +46,6 @@ class SproutEmail_CampaignRecord extends BaseRecord
 		return array(
 			'name'              => AttributeType::String,
 			'handle'            => AttributeType::String,
-			'type'              => array(
-				AttributeType::Enum,
-				'values' => array(
-					Campaign::Email,
-					Campaign::Notification
-				)
-			),
 			'mailer'            => AttributeType::String,
 			'titleFormat'       => AttributeType::String,
 			'urlFormat'         => AttributeType::String,
@@ -69,8 +62,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 			'dateCreated'       => AttributeType::DateTime,
 			'dateUpdated'       => AttributeType::DateTime,
 			// @related
-			'fieldLayoutId'     => AttributeType::Number,
-			'notifications'     => AttributeType::Mixed,
+			'fieldLayoutId'     => AttributeType::Number
 		);
 	}
 
@@ -85,14 +77,9 @@ class SproutEmail_CampaignRecord extends BaseRecord
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL
 			),
-			'entries'       => array(
+			'campaignEmails'       => array(
 				static::HAS_MANY,
-				'SproutEmail_EntryRecord',
-				'campaignId'
-			),
-			'notifications' => array(
-				self::HAS_MANY,
-				'SproutEmail_NotificationRecord',
+				'SproutEmail_CampaignEmailRecord',
 				'campaignId'
 			)
 		);
@@ -163,7 +150,7 @@ class SproutEmail_CampaignRecord extends BaseRecord
 		do
 		{
 			$newField = $value . $i;
-			$campaign = sproutEmail()->campaigns->getFieldValue($field, $newField);
+			$campaign = sproutEmail()->campaignTypes->getFieldValue($field, $newField);
 			if (is_null($campaign))
 			{
 				$band = false;
@@ -187,12 +174,12 @@ class SproutEmail_CampaignRecord extends BaseRecord
 		{
 			if ($_POST['saveAsNew'])
 			{
-				if (sproutEmail()->campaigns->getFieldValue('name', $this->name))
+				if (sproutEmail()->campaignTypes->getFieldValue('name', $this->name))
 				{
 					$this->name = $this->getFieldAsNew('name', $this->name);
 				}
 
-				if (sproutEmail()->campaigns->getFieldValue('handle', $this->handle))
+				if (sproutEmail()->campaignTypes->getFieldValue('handle', $this->handle))
 				{
 					$this->handle = $this->getFieldAsNew('handle', $this->handle);
 				}

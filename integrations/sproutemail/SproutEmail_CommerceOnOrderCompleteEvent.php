@@ -58,11 +58,11 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	}
 
 	/**
-	 * Returns whether or not the entry meets the criteria necessary to trigger the event
+	 * Returns whether or not the order meets the criteria necessary to trigger the event
 	 *
-	 * @param mixed      $options
-	 * @param EntryModel $entry
-	 * @param array      $params
+	 * @param mixed               $options
+	 * @param Commerce_OrderModel $order
+	 * @param array               $params
 	 *
 	 * @return bool
 	 */

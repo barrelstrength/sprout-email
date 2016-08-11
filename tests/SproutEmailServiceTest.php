@@ -132,9 +132,48 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$selectId = $importer->getEventId();
 
-		$expected = "SproutEmail:entries-saveEntry";
+		$expected = "SproutEmail-entries-saveEntry";
 
 		$this->assertEquals($expected, $selectId);
+	}
+
+	public function testGetNotificationByVariables()
+	{
+		$variables = array();
+
+		$notificationModel = new SproutEmail_NotificationEmailModel;
+
+		$elementService = m::mock('Craft\ElementsService')
+		->shouldReceive('getElementById')
+		->andReturn($notificationModel)
+		->mock();
+
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables);
+
+		$expected = $notificationModel;
+
+		$this->assertEquals($expected, $notification);
+
+		$expected = null;
+		$this->assertEquals($expected, $notification->id);
+
+		$session = serialize($notificationModel);
+
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
+
+		$expected = $notificationModel;
+
+		$this->assertEquals($expected, $notification);
+
+		$notificationId = '999';
+		$notificationModel->id = $notificationId;
+		$variables['notificationId'] = $notificationId;
+
+		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, null, $elementService);
+
+		$expected = 999;
+
+		$this->assertEquals($expected, $notification->id);
 	}
 
 	/**

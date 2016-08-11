@@ -1,0 +1,213 @@
+{% extends "sproutemail/_layouts/base" %}
+{% import "_includes/forms" as forms %}
+
+{% if notification.id is null %}
+	{% set redirectEnd = 'new'  %}
+{% else %}
+	{% set redirectEnd = notification.id  %}
+{% endif %}
+
+{% set crumbs = [
+	{ label: "Notifications"|t, url: url('sproutemail/notifications') },
+	{ label: "Setting"|t, url: url('sproutemail/notifications/setting/' ~ redirectEnd) },
+] %}
+
+{% set title  = notification.id is defined and notification.title is not empty ? notification.name : 'Create a new
+Notification Email'|t %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = url('sproutemail/notifications/edit/' ~ redirectEnd) %}
+
+{% block saveButton %}
+
+	<div class="buttons">
+		<div class="btngroup">
+			<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
+			<div class="btn submit menubtn"></div>
+			<div class="menu">
+				<ul>
+					<li><a class="formsubmit" data-redirect="sproutemail/notifications/edit/{{ redirectEnd  }}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+					<li><a class="formsubmit" data-redirect="sproutemail/notifications/setting/new">{{ "Save and add another"|t
+							}}</a></li>
+					<li><a class="formsubmit" data-redirect="sproutemail/notifications/setting/{{ redirectEnd }}">{{ "Save
+					and edit notification settings"|t }}</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="secondary-buttons" style="float:left;">
+				<a class="btn icon settings submit" href="{{ cpUrl('sproutemail/notifications/setting/' ~ redirectEnd) }}"
+					title="{{
+				"Edit
+				Notification Email"|t }}" style="float:none;margin:0;">{{ "Edit Notification Setting"|t }}</a>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block main %}
+	<input type="hidden" name="action" value="sproutEmail/notificationEmails/saveNotification">
+	<input type="hidden" name="redirect" value="sproutemail/notifications/">
+
+	{% if notification.id is not null %}
+		<input type="hidden" name="sproutEmail[id]" value="{{ notification.id }}">
+	{% endif %}
+
+	{% if namespace is not defined %}{% set namespace = 'fields' %}{% endif %}
+
+	<div class="grid first" data-max-cols="3">
+
+		<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
+			<div id="fields" class="pane">
+				{% include "sproutemail/notifications/_fields" %}
+			</div>
+		</div>
+
+		<div class="item" data-position="right" data-colspan="1">
+			{% if showPreviewBtn %}
+				{% include "_includes/previewbtns" %}
+			{% endif %}
+
+			<div class="pane meta">
+
+					{{ forms.textField({
+						label: "Slug"|t,
+						locale: notification.locale,
+						id: 'slug',
+						name: 'slug',
+						value: notification.slug,
+						errors: (notification ? notification.getErrors('slug')|merge(notification.getErrors('uri'))),
+					}) }}
+
+					{% set statusInput %}
+						<div class="left">
+							{{ forms.lightswitch({
+								id: 'enabled',
+								name: 'enabled',
+								on: notification.enabled
+							}) }}
+						</div>
+
+						{% if notification.id is not null %}
+								<div class="right">
+									<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}"
+										data-action="sproutEmail/notificationEmails/deleteNotificationEmail"
+										data-confirm="Are you sure you want to delete this notification email and all of it's data?"
+										data-redirect="sproutemail/notifications">
+								</div>
+						{% endif %}
+
+					{% endset %}
+
+					{{ forms.field({
+						label: "Status"|t,
+						id: 'enabled'
+					}, statusInput) }}
+
+			</div>
+
+			<div id="tab-sproutemail-sender" class="pane meta">
+				{{ forms.textField({
+					label: "From Name <span class='info'>The person or business sending the email</span>"|t,
+					name: 'sproutEmail[fromName]',
+					value: (notification.fromName is not empty ? notification.fromName : '' ),
+					errors: (notification is defined ? notification.getErrors('fromName') : null),
+					required: true
+				}) }}
+
+				{{ forms.textField({
+					name: 'sproutEmail[fromEmail]',
+					value: (notification.fromEmail is not empty ? notification.fromEmail : ''),
+					label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
+					errors: (notification is defined ? notification.getErrors('fromEmail') : null),
+					required: true
+				}) }}
+
+				{{ forms.textField({
+					name: 'sproutEmail[replyToEmail]',
+					value: (notification.replyToEmail is not empty ? notification.replyToEmail : ''),
+					label: "Reply To <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
+					errors: (notification is defined ? notification.getErrors('replyToEmail') : null),
+					required: true
+				}) }}
+
+			</div>
+
+			<div id="tab-sproutemail-recipients" class="pane meta">
+
+				{{ forms.textField({
+					label: "Recipients <span class='info'>A comma separated list of email addresses.</span>"|t,
+					placeholder: "user@domain.com, other@domain.com"|t,
+					name: "sproutEmail[recipients]",
+					class: "code",
+					value: notification is defined ? notification.recipients : "",
+					errors: notification is defined ? notification.getErrors('recipients')
+				}) }}
+
+				<div class="field mailing-lists">
+					<div class="heading">
+						Lists
+					</div>
+					<div class="input">
+						{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
+					</div>
+				</div>
+
+				<div id="tab-sproutemail-rules" class="pane meta">
+
+					{% set events = craft.sproutEmail.getAvailableEvents() %}
+
+					{% if events|length %}
+
+						{{ forms.selectField({
+							id: "notificationEvent",
+							name: "sproutEmail[eventId]",
+							label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
+							options: [{label: "Select event..."|t, value: null}]|merge(events),
+							value: notification.eventId is defined ? notification.eventId : null,
+						}) }}
+
+						{% for id, event in events %}
+							{% if event.getEventAction is defined and event.getOptionsHtml is defined %}
+
+								{# Avoid jquery get object error. #}
+								<div class="field event-options {{ event.getEventId() }}">
+									<div class="heading">
+										Settings
+									</div>
+									<div class="input">
+										{% set options = craft.sproutEmail.getEventSelectedOptions(event, notification) %}
+
+										{{ event.getOptionsHtml({
+											forms: forms,
+											options: options
+										})|raw }}
+									</div>
+								</div>
+							{% endif %}
+						{% endfor %}
+
+						{{ forms.lightswitchField({
+							first: true,
+							label: "Attach Files <span class='info'>All files submitted with your entries will be attached to the notification email</span>"|t,
+							id: 'sproutEmail[enableFileAttachments]',
+							name: 'sproutEmail[enableFileAttachments]',
+							on: notification.enableFileAttachments,
+							onLabel: "Enable"|t,
+							offLabel: "Disable"|t
+						}) }}
+
+					{% endif %}
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+{% endblock %}
+
+{% if not notification.slug %}
+	{% includeJs "window.slugGenerator = new Craft.SlugGenerator('#subjectLine', '#slug');" %}
+{% endif %}

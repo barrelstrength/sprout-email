@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryRecord
+ * Class SproutEmail_CampaignEmailRecord
  *
  * @package Craft
  * --
@@ -15,14 +15,14 @@ namespace Craft;
  * @property string $replyToEmail
  * @property bool   $sent
  */
-class SproutEmail_EntryRecord extends BaseRecord
+class SproutEmail_CampaignEmailRecord extends BaseRecord
 {
 	/**
 	 * @return string
 	 */
 	public function getTableName()
 	{
-		return 'sproutemail_campaigns_entries';
+		return 'sproutemail_campaigns';
 	}
 
 	/**
@@ -124,35 +124,39 @@ class SproutEmail_EntryRecord extends BaseRecord
 			),
 			'campaign'       => array(
 				static::BELONGS_TO,
-				'SproutEmail_CampaignRecord',
+				'SproutEmail_CampaignTypeRecord',
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
 			'recipientLists' => array(
 				static::HAS_MANY,
 				'SproutEmail_EntryRecipientListRecord',
-				'entryId'
+				'emailId'
 			)
 		);
 	}
 
 	/**
-	 * Create a secuencial string for the "name" and "handle" fields if they are already taken
+	 * Create a sequential string for the "name" and "handle" fields if they are already taken
 	 *
-	 * @param string
-	 * @param string
-	 * return string
+	 * @param $field
+	 * @param $value
+	 *
+	 * @return null|string
 	 */
 	private function getFieldAsNew($field, $value)
 	{
 		$newField = null;
-		$i = 1;
-		$band = true;
+		$i        = 1;
+		$band     = true;
+
 		do
 		{
 			$newField = $value . $i;
-			$entry = sproutEmail()->entries->getFieldValue($field, $newField);
-			if (is_null($entry))
+
+			$campaignEmail = sproutEmail()->campaignEmails->getFieldValue($field, $newField);
+
+			if (is_null($campaignEmail))
 			{
 				$band = false;
 			}
@@ -175,7 +179,7 @@ class SproutEmail_EntryRecord extends BaseRecord
 		{
 			if ($_POST['saveAsNew'])
 			{
-				if (sproutEmail()->entries->getFieldValue('subjectLine', $this->subjectLine))
+				if (sproutEmail()->campaignEmails->getFieldValue('subjectLine', $this->subjectLine))
 				{
 					$this->subjectLine = $this->getFieldAsNew('subjectLine', $this->subjectLine);
 				}

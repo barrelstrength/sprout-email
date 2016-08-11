@@ -149,8 +149,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if ($mailer)
 		{
-			$record = $this->getMailerRecordByName($name);
-			$settingsFromDb = isset($record->settings) ? $record->settings : array();
+			$record           = $this->getMailerRecordByName($name);
+			$settingsFromDb   = isset($record->settings) ? $record->settings : array();
 			$settingsFromFile = isset($configs) ? $configs : array();
 
 			$settings->setAttributes(array_merge($settingsFromDb, $settingsFromFile));
@@ -206,13 +206,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param $mailerName
-	 * @param $entryId
+	 * @param $emailId
 	 * @param $campaignId
 	 *
 	 * @return array(content => '', actions => array())
 	 * @throws Exception
 	 */
-	public function getPrepareModal($mailerName, $entryId, $campaignId)
+	public function getPrepareModal($mailerName, $emailId, $campaignId)
 	{
 		$mailer = $this->getMailerByName($mailerName);
 
@@ -221,16 +221,16 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $mailerName)));
 		}
 
-		$entry = sproutEmail()->entries->getEntryById($entryId);
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
+		$campaignEmail    = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 		$response = new SproutEmail_ResponseModel();
 
-		if ($entry && $campaign)
+		if ($campaignEmail && $campaign)
 		{
 			try
 			{
 				$response->success = true;
-				$response->content = $mailer->getPrepareModalHtml($entry, $campaign);
+				$response->content = $mailer->getPrepareModalHtml($campaignEmail, $campaign);
 
 				return $response;
 			}
@@ -244,7 +244,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 		else
 		{
-			$name = $mailer->getTitle();
+			$name              = $mailer->getTitle();
 			$response->success = false;
 			$response->message = "<h1>$name</h1><br><p>" . Craft::t('No actions available for this campaign entry.') . "</p>";
 		}
@@ -254,13 +254,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param $mailerName
-	 * @param $entryId
+	 * @param $emailId
 	 * @param $campaignId
 	 *
 	 * @return array(content => '', actions => array())
 	 * @throws Exception
 	 */
-	public function getPreviewModal($mailerName, $entryId, $campaignId)
+	public function getPreviewModal($mailerName, $emailId, $campaignId)
 	{
 		$mailer = $this->getMailerByName($mailerName);
 
@@ -269,13 +269,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaign->mailer)));
 		}
 
-		$entry = sproutEmail()->entries->getEntryById($entryId);
-		$campaign = sproutEmail()->campaigns->getCampaignById($campaignId);
-		$response = new SproutEmail_ResponseModel();
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaign      = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$response      = new SproutEmail_ResponseModel();
 
-		if ($entry && $campaign)
+		if ($campaignEmail && $campaign)
 		{
-			$response->content = $mailer->getPreviewModalHtml($entry, $campaign);
+			$response->content = $mailer->getPreviewModalHtml($campaignEmail, $campaign);
 
 			return $response;
 		}
@@ -305,14 +305,14 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @param SproutEmail_EntryModel    $entry
+	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 *
+	 * @return bool
 	 * @throws Exception
 	 * @throws \Exception
-	 * @return bool
 	 */
-	public function saveRecipientLists(SproutEmail_CampaignModel $campaign, SproutEmail_EntryModel $entry)
+	public function saveRecipientLists(SproutEmail_CampaignTypeModel $campaign, SproutEmail_CampaignEmailModel $campaignEmail)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 
@@ -321,9 +321,9 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			throw new Exception(Craft::t('The {m} mailer is not supported.', array('m' => $campaign->mailer)));
 		}
 
-		sproutEmail()->entries->deleteRecipientListsByEntryId($entry->id);
+		sproutEmail()->campaignEmails->deleteRecipientListsByEmailId($campaignEmail->id);
 
-		$lists = $mailer->prepareRecipientLists($entry, $campaign);
+		$lists = $mailer->prepareRecipientLists($campaignEmail, $campaign);
 
 		if ($lists && is_array($lists) && count($lists))
 		{
@@ -331,16 +331,15 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			{
 				$record = SproutEmail_EntryRecipientListRecord::model()->findByAttributes(
 					array(
-						'entryId' => $entry->id,
+						'emailId' => $campaignEmail->id,
 						'list'    => $list->list
 					)
 				);
 				$record = $record ? $record : new SproutEmail_EntryRecipientListRecord();
 
-				$record->entryId = $list->entryId;
-				$record->mailer = $list->mailer;
-				$record->list = $list->list;
-				$record->type = $list->type;
+				$record->emailId = $list->emailId;
+				$record->mailer  = $list->mailer;
+				$record->list    = $list->list;
 
 				try
 				{
@@ -357,15 +356,14 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
-	 *
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function exportEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 
@@ -376,7 +374,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		try
 		{
-			return $mailer->exportEntry($entry, $campaign);
+			return $mailer->exportEmail($campaignEmail, $campaign);
 		}
 		catch (\Exception $e)
 		{
@@ -385,15 +383,14 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_EntryModel    $entry
-	 * @param SproutEmail_CampaignModel $campaign
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
-	 *
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function previewEntry(SproutEmail_EntryModel $entry, SproutEmail_CampaignModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$mailer = $this->getMailerByName($campaign->mailer);
 
@@ -404,7 +401,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		try
 		{
-			return $mailer->previewEntry($entry, $campaign);
+			return $mailer->previewCampaignEmail($campaignEmail, $campaign);
 		}
 		catch (\Exception $e)
 		{
@@ -435,7 +432,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function installMailer($name)
 	{
-		$vars = array('name' => $name);
+		$vars   = array('name' => $name);
 		$mailer = $this->getMailerByName($name, true);
 
 		if (!$mailer)
@@ -462,7 +459,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function uninstallMailer($name)
 	{
-		$vars = array('name' => $name);
+		$vars   = array('name' => $name);
 		$mailer = $this->getMailerByName($name, true);
 
 		$builtInMailers = array('copypaste', 'campaignmonitor', 'mailchimp');

@@ -10,7 +10,7 @@ class SproutEmailVariable
 
 	public function __construct()
 	{
-		$this->entries = craft()->elements->getCriteria('SproutEmail_Entry');
+		$this->entries = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
 	}
 
 	/**
@@ -52,6 +52,7 @@ class SproutEmailVariable
 	{
 		$mailers = $this->getMailers();
 
+		// Hide defaultmailer for now.
 		unset($mailers['defaultmailer']);
 
 		return $mailers;
@@ -74,7 +75,7 @@ class SproutEmailVariable
 	 */
 	public function getAvailableEvents()
 	{
-		return sproutEmail()->notifications->getAvailableEvents();
+		return sproutEmail()->notificationEmails->getAvailableEvents();
 	}
 
 	public function getSelectedOptions($event, $campaignId)
@@ -84,7 +85,7 @@ class SproutEmailVariable
 			return $event->prepareOptions();
 		}
 
-		$notification = sproutEmail()->notifications->getNotification(
+		$notification = sproutEmail()->notificationEmails->getNotification(
 			array(
 				'eventId'    => $event->getEventId(),
 				'campaignId' => $campaignId
@@ -97,33 +98,19 @@ class SproutEmailVariable
 		}
 	}
 
-	/**
-	 * Returns a notification entry model if found by campaing id
-	 *
-	 * @param int $id
-	 *
-	 * @return SproutEmail_EntryModel|null
-	 */
-	public function getNotificationEntryByCampaignId($id)
+	public function getEventSelectedOptions($event, $notification)
 	{
-		return sproutEmail()->notifications->getNotificationEntryByCampaignId($id);
+		return sproutEmail()->notificationEmails->getEventSelectedOptions($event, $notification);
 	}
 
-	public function getNotificationById($id)
+	public function getNotifications()
 	{
-		return sproutEmail()->notifications->getNotificationById($id);
+		return sproutEmail()->notificationEmails->getNotifications();
 	}
 
-	/**
-	 * Return Campaign model by passing entry id
-	 *
-	 * @param $id
-	 *
-	 * @return bool|SproutEmail_CampaignModel
-	 */
-	public function getCampaignByEntryId($id)
+	public function getNotificationEmailById($id)
 	{
-		return sproutEmail()->campaigns->getCampaignByEntryId($id);
+		return sproutEmail()->notificationEmails->getNotificationEmailById($id);
 	}
 
 	/**
@@ -131,9 +118,9 @@ class SproutEmailVariable
 	 *
 	 * @return mixed Campaign model
 	 */
-	public function getCampaigns($type = null)
+	public function getCampaignTypes()
 	{
-		return sproutEmail()->campaigns->getCampaigns($type);
+		return sproutEmail()->campaignTypes->getCampaignTypes();
 	}
 
 	/**
@@ -143,9 +130,9 @@ class SproutEmailVariable
 	 *
 	 * @return object campaign record
 	 */
-	public function getCampaignById($campaignId)
+	public function getCampaignTypeById($campaignId)
 	{
-		return sproutEmail()->campaigns->getCampaignById($campaignId);
+		return sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 	}
 
 	/**

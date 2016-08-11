@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryModel
+ * Class SproutEmail_CampaignEmailModel
  *
  * @package Craft
  * --
@@ -18,11 +18,11 @@ namespace Craft;
  * @property string      $slug
  * @property bool        $enabled
  */
-class SproutEmail_EntryModel extends BaseElementModel
+class SproutEmail_CampaignEmailModel extends BaseElementModel
 {
 	public $saveAsNew;
 	protected $fields;
-	protected $elementType = 'SproutEmail_Entry';
+	protected $elementType = 'SproutEmail_CampaignEmail';
 
 	/**
 	 * @todo Clean up this status mess before 0.9.0
@@ -44,57 +44,13 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getRecipients($element = null)
 	{
-		$recipientsString = $this->getAttribute('recipients');
-
-		// Possibly called from entry edit screen
-		if (is_null($element))
-		{
-			return $recipientsString;
-		}
-
-		// Previously converted to array somehow?
-		if (is_array($recipientsString))
-		{
-			return $recipientsString;
-		}
-
-		// Previously stored as JSON string?
-		if (stripos($recipientsString, '[') === 0)
-		{
-			return JsonHelper::decode($recipientsString);
-		}
-
-		// Still a string with possible twig generator code?
-		if (stripos($recipientsString, '{') !== false)
-		{
-			try
-			{
-				$recipients = craft()->templates->renderObjectTemplate(
-					$recipientsString,
-					$element
-				);
-
-				return array_unique(ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipients)));
-			}
-			catch (\Exception $e)
-			{
-				throw $e;
-			}
-		}
-
-		// Just a regular CSV list
-		if (!empty($recipientsString))
-		{
-			return ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipientsString));
-		}
-
-		return array();
+		return sproutEmail()->getRecipients($element, $this);
 	}
 
 	/**
 	 * @return array
 	 */
-	protected function defineAttributes()
+	public function defineAttributes()
 	{
 		$defaults = parent::defineAttributes();
 		$attributes = array(
@@ -106,6 +62,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
+
 			// @related
 			'recipientLists'        => Attributetype::Mixed,
 		);
@@ -153,7 +110,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		return $campaign->getFieldLayout();
 	}
@@ -178,7 +135,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	public function getStatus()
 	{
 		$status = parent::getStatus();
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		switch ($status)
 		{
@@ -248,28 +205,11 @@ class SproutEmail_EntryModel extends BaseElementModel
 	}
 
 	/**
-	 * @return string Campaign Type
+	 * @return string
 	 */
-	public function getType()
+	public function getUrlFormat()
 	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
-
-		return $campaign->type;
-	}
-
-	/**
-	 * @param null $template
-	 *
-	 * @return null|string
-	 */
-	public function getUrlFormat($template = null)
-	{
-		$campaign = sproutEmail()->campaigns->getCampaignById($this->campaignId);
-
-		if ($campaign && $campaign->type == 'notification')
-		{
-			return "sproutemail/preview/{slug}";
-		}
+		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		if ($campaign && $campaign->hasUrls)
 		{
@@ -284,9 +224,7 @@ class SproutEmail_EntryModel extends BaseElementModel
 	 */
 	public function getCpEditUrl()
 	{
-		$url = UrlHelper::getCpUrl('sproutemail/entries/edit/' . $this->id);
-
-		return $url;
+		return UrlHelper::getCpUrl('sproutemail/campaigns/edit/' . $this->id);
 	}
 
 	public function getUrl()

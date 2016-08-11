@@ -6,19 +6,19 @@
 	<tbody>
 		<tr>
 			<td><strong>Subject</strong></td>
-			<td>{{ entry.subjectLine }}</td>
+			<td>{{ email.subjectLine }}</td>
 		</tr>
 		<tr>
 			<td><strong>From Name</strong></td>
-			<td>{{ entry.fromName }}</td>
+			<td>{{ email.fromName }}</td>
 		</tr>
 		<tr>
 			<td><strong>From Email</strong></td>
-			<td>{{ entry.fromEmail }}</td>
+			<td>{{ email.fromEmail }}</td>
 		</tr>
 		<tr>
 			<td><strong>Reply To</strong></td>
-			<td>{{ entry.replyToEmail }}</td>
+			<td>{{ email.replyToEmail }}</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top;">
@@ -40,8 +40,8 @@
 		<button id="cancel" class="btn">{{ "Cancel"|t }}</button>
 		<button
 	        data-mailer="campaignmonitor"
-			data-action="sproutEmail/entry/export"
-	        data-entry-id="{{ entry.id }}"
+			data-action="sproutEmail/campaignEmails/export"
+	        data-email-id="{{ email.id }}"
 	        data-campaign-id="{{ campaign.id }}"
 	        class="btn submit icon actions send-campaign">{{ "Send Campaign"|t }}</button>
 	</div>
