@@ -757,7 +757,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return false;
 	}
 
-	public function getPreviewNotificationEmailById($notificationId)
+	public function getPreviewNotificationEmailById($notificationId, $type = null)
 	{
 		$notification = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
 
@@ -771,11 +771,16 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 
 		$template = $notification->template;
-
+		// Output email text
+		$bufferTemplate = 'html';
+		if ($type != null && $type == 'text')
+		{
+			$bufferTemplate ='txt';
+		}
 		$email = new EmailModel();
 
 		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notification, $object);
 
-		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
+		sproutEmail()->campaignEmails->showBufferCampaignEmail($email, $bufferTemplate);
 	}
 }

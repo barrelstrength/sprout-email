@@ -406,8 +406,11 @@ class SproutEmail_NotificationEmailsController extends BaseController
 				throw new HttpException(404);
 			}
 
+			$type = craft()->request->getQuery('type');
+
 			$params = array(
 				'notificationId' => $notificationId,
+				'type'           => $type
 			);
 		}
 		else
@@ -435,10 +438,10 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId);
 	}
 
-	public function actionViewSharedNotificationEmail($notificationId = null)
+	public function actionViewSharedNotificationEmail($notificationId = null, $type = null)
 	{
 		$this->requireToken();
 
-		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId);
+		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId, $type);
 	}
 }
