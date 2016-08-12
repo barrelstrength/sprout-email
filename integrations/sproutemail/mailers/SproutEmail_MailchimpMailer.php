@@ -128,12 +128,18 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	public function getRecipientListsHtml(array $values = null)
 	{
 		$lists = $this->getRecipientLists();
+
 		$options = array();
 		$selected = array();
 
-		if ($lists == false)
+		if ($lists === false)
 		{
 			return craft()->templates->render('sproutemail/settings/_mailers/mailchimp/lists/sslerror');
+		}
+
+		if (!is_array($lists))
+		{
+			return $lists;
 		}
 
 		if (!count($lists))
@@ -209,7 +215,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	 *
 	 * @return array|SproutEmail_CampaignEmailModel
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
 	{
 		$ids = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();

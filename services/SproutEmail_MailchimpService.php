@@ -62,6 +62,10 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 			{
 				return false;
 			}
+			else
+			{
+				return $e->getMessage();
+			}
 		}
 	}
 
