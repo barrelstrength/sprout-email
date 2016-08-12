@@ -13,6 +13,8 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 	 */
 	public function safeUp()
 	{
+		$this->modifyRecipientsTable();
+
 		$this->createNotificationTables();
 
 		$this->moveOldNotifications();
@@ -74,24 +76,19 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 				Craft::dd($e->getMessage(), 10, false);
 			}
 		}
-
-		$tableName = 'sproutemail_notification_recipientlists';
-
-		if (!craft()->db->tableExists($tableName))
-		{
-			// Create the craft_sproutemail_notification_recipientlists table
-			craft()->db->createCommand()->createTable($tableName, array(
-				'notificationId' => array('column' => 'integer', 'required' => true),
-				'list'           => array(),
-			), null, true);
-
-			// Add foreign keys to craft_sproutemail_notification_recipientlists
-			craft()->db->createCommand()->addForeignKey($tableName, 'notificationId', 'sproutemail_notifications', 'id', 'CASCADE', null);
-		}
 	}
 
 	private function moveOldNotifications()
 	{
+
+		if (!craft()->db->tableExists('sproutemail_campaigns') ||
+			!craft()->db->tableExists('sproutemail_campaigns_notifications') ||
+			!craft()->db->tableExists('sproutemail_campaigns_entries')
+		)
+		{
+			return false;
+		}
+
 		$entries = craft()->db->createCommand()
 			->select('*')
 			->from('sproutemail_campaigns setting')
@@ -101,17 +98,13 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 			->queryAll();
 
 		$oldNotifications = array();
-		foreach ($entries as $key => $entry)
+
+		if (!empty($entries))
 		{
-			$recipientList = craft()->db->createCommand()
-				->select('*')
-				->from('sproutemail_campaigns_entries_recipientlists')
-				->where(array('type' => 'notification', 'entryId' => $entry['id']))
-				->queryAll();
-
-			$oldNotifications[$key] = $entry;
-
-			$oldNotifications[$key]['recipientLists'] = $recipientList;
+			foreach ($entries as $key => $entry)
+			{
+				$oldNotifications[$key] = $entry;
+			}
 		}
 
 		if (!empty($oldNotifications))
@@ -134,16 +127,18 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 					'enableFileAttachments' => $oldNotification['enableFileAttachments'],
 				);
 
-				$existNotification = craft()->db->createCommand()
-					->select('id')
-					->from('sproutemail_notifications')
-					->where(array('id' => $oldNotification['id']))
-					->queryAll();
+				if (craft()->db->tableExists('sproutemail_notifications'))
+				{
+					$existNotification = craft()->db->createCommand()
+						->select('id')
+						->from('sproutemail_notifications')
+						->where(array('id' => $oldNotification['id']))
+						->queryAll();
 
-				if (!empty($existNotification)) continue;
+					if (!empty($existNotification)) continue;
 
-				craft()->db->createCommand()->insert('sproutemail_notifications', $insertData);
-
+					craft()->db->createCommand()->insert('sproutemail_notifications', $insertData);
+				}
 
 				craft()->db->createCommand()->update('elements', array(
 					'type' => 'SproutEmail_NotificationEmail'
@@ -151,17 +146,7 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 					'id= :id', array(':id' => $oldNotification['id'])
 				);
 
-				if (!empty($oldNotification['recipientLists']))
-				{
-					foreach ($oldNotification['recipientLists'] as $recipientList)
-					{
-						craft()->db->createCommand()->insert('sproutemail_notification_recipientlists', array(
-							'notificationId' => $recipientList['entryId'],
-							'list'           => $recipientList['list']
-						));
-					}
-				}
-
+				// Remove old notifications data
 				craft()->db->createCommand()->delete('sproutemail_campaigns_entries', array(
 					'id' => $oldNotification['id']
 				));
@@ -202,11 +187,34 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 		}
 	}
 
-	public function dropTables()
+	private function dropTables()
 	{
 		if (craft()->db->tableExists('sproutemail_campaigns_notifications'))
 		{
 			craft()->db->createCommand()->dropTable('sproutemail_campaigns_notifications');
+		}
+	}
+
+	private function modifyRecipientsTable()
+	{
+		$tableName = 'sproutemail_campaigns_entries_recipientlists';
+
+		if (craft()->db->tableExists($tableName))
+		{
+			if (craft()->db->columnExists($tableName, 'entryId'))
+			{
+				// Solve issue on older version of MySQL where we can't rename columns with a FK
+				MigrationHelper::dropForeignKeyIfExists($tableName, array('entryId'));
+
+				//craft()->db->createCommand()->addForeignKey($tableName, 'entryId', 'elements', 'id', 'CASCADE');
+
+				MigrationHelper::renameColumn($tableName, 'entryId', 'emailId');
+			}
+
+			if (craft()->db->columnExists($tableName, 'type'))
+			{
+				craft()->db->createCommand()->dropColumn($tableName, 'type');
+			}
 		}
 	}
 }
