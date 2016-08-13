@@ -19,17 +19,49 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 
 		$this->moveOldNotifications();
 
-		$this->alterTablesColumns();
+		$this->updateCampaignTables();
 
 		$this->dropTables();
-
-		SproutEmailPlugin::log('Running naming convention migration');
 
 		return true;
 	}
 
+
+	private function modifyRecipientsTable()
+	{
+		SproutEmailPlugin::log('Modifying the sproutemail_campaigns_entries_recipientlists table');
+
+		$tableName = 'sproutemail_campaigns_entries_recipientlists';
+
+		if (craft()->db->tableExists($tableName))
+		{
+			if (craft()->db->columnExists($tableName, 'entryId'))
+			{
+				SproutEmailPlugin::log('Updating Foreign Key on sproutemail_campaigns_entries_recipientlists table from entryId => emailId');
+
+				// Solve issue on older version of MySQL where we can't rename columns with a FK
+				MigrationHelper::dropForeignKeyIfExists($tableName, array('entryId'));
+
+				//craft()->db->createCommand()->addForeignKey($tableName, 'entryId', 'elements', 'id', 'CASCADE');
+
+				MigrationHelper::renameColumn($tableName, 'entryId', 'emailId');
+			}
+
+			if (craft()->db->columnExists($tableName, 'type'))
+			{
+				SproutEmailPlugin::log('Removing type column from sproutemail_campaigns_entries_recipientlists table');
+
+				craft()->db->createCommand()->dropColumn($tableName, 'type');
+			}
+		}
+
+		SproutEmailPlugin::log('Finished modifying the sproutemail_campaigns_entries_recipientlists table');
+	}
+
 	private function createNotificationTables()
 	{
+		SproutEmailPlugin::log('Creating the sproutemail_notifications table');
+
 		$tableName = 'sproutemail_notifications';
 
 		if (!craft()->db->tableExists($tableName))
@@ -73,13 +105,16 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 			}
 			catch (\Exception $e)
 			{
-				Craft::dd($e->getMessage(), 10, false);
+				SproutEmailPlugin::log('Error creating the sproutemail_notifications table: ' . $e->getMessage());
 			}
 		}
+
+		SproutEmailPlugin::log('Finished creating the sproutemail_notifications table');
 	}
 
 	private function moveOldNotifications()
 	{
+		SproutEmailPlugin::log('Moving all notifications to the sproutemail_notifications table');
 
 		if (!craft()->db->tableExists('sproutemail_campaigns') ||
 			!craft()->db->tableExists('sproutemail_campaigns_notifications') ||
@@ -159,65 +194,52 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 				));
 			}
 		}
+
+		SproutEmailPlugin::log('Finished moving all notifications to the sproutemail_notifications table');
 	}
 
-	private function alterTablesColumns()
+	private function updateCampaignTables()
 	{
+		SproutEmailPlugin::log('Updating sproutemail_campaigns_entries table to sproutemail_campaigns table');
+
 		$tableName  = "sproutemail_campaigns";
-		$columnName = "type";
 
 		if (craft()->db->tableExists($tableName))
 		{
 			if (craft()->db->columnExists($tableName, 'type'))
 			{
+				SproutEmailPlugin::log('Remove type column from sproutemail_campaigns table');
+
 				craft()->db->createCommand()->dropColumn($tableName, 'type');
 			}
 
 			if (!craft()->db->tableExists('sproutemail_campaigntype'))
 			{
+				SproutEmailPlugin::log('Rename sproutemail_campaigns table to sproutemail_campaigntype');
+
 				craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigntype');
 			}
 		}
 
 		$tableName = "sproutemail_campaigns_entries";
 
-		if (craft()->db->tableExists($tableName))
+		if (craft()->db->tableExists($tableName) && !craft()->db->tableExists('sproutemail_campaigns'))
 		{
-			if (!craft()->db->tableExists('sproutemail_campaigns'))
-			{
-				craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigns');
-			}
+			SproutEmailPlugin::log('Rename sproutemail_campaigns_entries table to sproutemail_campaigns');
+
+			craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigns');
 		}
+
+		SproutEmailPlugin::log('Finished updating sproutemail_campaigns_entries table to sproutemail_campaigns table');
 	}
 
 	private function dropTables()
 	{
 		if (craft()->db->tableExists('sproutemail_campaigns_notifications'))
 		{
+			SproutEmailPlugin::log('Remove sproutemail_campaigns_notifications table');
+
 			craft()->db->createCommand()->dropTable('sproutemail_campaigns_notifications');
-		}
-	}
-
-	private function modifyRecipientsTable()
-	{
-		$tableName = 'sproutemail_campaigns_entries_recipientlists';
-
-		if (craft()->db->tableExists($tableName))
-		{
-			if (craft()->db->columnExists($tableName, 'entryId'))
-			{
-				// Solve issue on older version of MySQL where we can't rename columns with a FK
-				MigrationHelper::dropForeignKeyIfExists($tableName, array('entryId'));
-
-				//craft()->db->createCommand()->addForeignKey($tableName, 'entryId', 'elements', 'id', 'CASCADE');
-
-				MigrationHelper::renameColumn($tableName, 'entryId', 'emailId');
-			}
-
-			if (craft()->db->columnExists($tableName, 'type'))
-			{
-				craft()->db->createCommand()->dropColumn($tableName, 'type');
-			}
 		}
 	}
 }
