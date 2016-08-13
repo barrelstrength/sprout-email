@@ -1,0 +1,94 @@
+{% macro mediaBox(settings) %}
+
+	{% set resourceUrl = settings.resourceUrl ?? null %}
+	{% set resourceAltText = settings.resourceAltText ?? null %}
+	{% set heading = settings.heading ?? null %}
+	{% set body = settings.body ?? null %}
+
+	<div class="sprout-mediabox-outer">
+		<div class="sprout-mediabox-inner">
+			<div class="sprout-mediathumb">
+				<img src="{{ resourceUrl }}" alt="{{ resourceAltText }}" />
+			</div>
+			<div class="sprout-mediabody">
+				<h2>{{ heading }}</h2>
+				<hr>
+				<p>{{ body|raw }}</p>
+			</div>
+		</div>
+	</div>
+
+{% endmacro %}
+
+{% macro helpVideo(settings) %}
+
+	{% set heading = settings.heading %}
+	{% set description = settings.description %}
+	{% set videoUrl = settings.videoUrl %}
+
+	<div class="pane sprout-docbox sprout-video-wrapper">
+
+		<div class="sprout-mediabox">
+			<a href="{{ videoUrl }}" class="sprout-videothumb"></a>
+		</div>
+
+		<div class="sprout-mediabody">
+			<h2>{{ heading }}</h2>
+			<hr>
+			<p class="light">{{ description|raw }}</p>
+		</div>
+
+	</div>
+
+	<style>
+		.sprout-docbox {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+			align-items: flex-start;
+			align-content: space-around;
+		}
+
+		.sprout-mediabox {
+			flex-basis: auto;
+			min-width: 25%;
+		}
+
+		.sprout-mediabody {
+			flex-basis: auto;
+			width: 75%;
+		}
+		.sprout-mediabody h2 {
+			font-size: 18px;
+			margin-top: 8px;
+		}
+		.sprout-mediabody hr {
+			margin: 8px 0;
+		}
+
+		.sprout-videothumb {
+			border: 1px solid #e3e5e8;
+			border-radius: 4px;
+			background-color: #0d78f2;
+			display: block;
+			height: 120px;
+			margin-bottom: 1rem;
+			margin-right: 10px;
+			width: 180px;
+		}
+	</style>
+{% endmacro %}
+
+{# Help Video Macro
+{{ sprout.helpVideo({
+	heading: "Thing or two about things."|t,
+	description: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+			<a href="#" style="font-weight: bold;">Watch our video</a> nascetur ridiculus mus. Donec quam felis, ultricies
+			nec arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis
+			pretium. <a href="#" style="font-weight: bold;">Learn more&hellip;</a>'|t,
+	videoUrl: "http://barrelstrengthdesign.com"
+}) }}
+
+<br>
+#}
