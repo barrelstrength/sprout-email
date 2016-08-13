@@ -200,7 +200,7 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 
 	private function updateCampaignTables()
 	{
-		SproutEmailPlugin::log('Updating sproutemail_campaigns_entries table to sproutemail_campaigns table');
+		SproutEmailPlugin::log('Updating Campaign tables');
 
 		$tableName  = "sproutemail_campaigns";
 
@@ -230,7 +230,7 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 			craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigns');
 		}
 
-		SproutEmailPlugin::log('Finished updating sproutemail_campaigns_entries table to sproutemail_campaigns table');
+		SproutEmailPlugin::log('Finished updating Campaign tables');
 	}
 
 	private function dropTables()
