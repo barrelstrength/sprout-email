@@ -44,4 +44,11 @@ class SproutEmail_CampaignEmailRecipientListRecord extends BaseRecord
 			)
 		);
 	}
+
+	public function defineIndexes()
+	{
+		return array(
+			array('columns' => array('emailId'))
+		);
+	}
 }
