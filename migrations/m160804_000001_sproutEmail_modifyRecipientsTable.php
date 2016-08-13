@@ -26,9 +26,9 @@ class m160804_000001_sproutEmail_modifyRecipientsTable extends BaseMigration
 				// Solve issue on older version of MySQL where we can't rename columns with a FK
 				MigrationHelper::dropForeignKeyIfExists($tableName, array('entryId'));
 
-				//craft()->db->createCommand()->addForeignKey($tableName, 'entryId', 'elements', 'id', 'CASCADE');
-
 				MigrationHelper::renameColumn($tableName, 'entryId', 'emailId');
+
+				craft()->db->createCommand()->addForeignKey($tableName, 'emailId', 'elements', 'id', 'CASCADE');
 			}
 
 			if (craft()->db->columnExists($tableName, 'type'))
