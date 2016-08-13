@@ -9,7 +9,7 @@
 
 {% set crumbs = [
 	{ label: "Notifications"|t, url: url('sproutemail/notifications') },
-	{ label: "Setting"|t, url: url('sproutemail/notifications/setting/' ~ redirectEnd) },
+	{ label: "Settings"|t, url: url('sproutemail/notifications/setting/' ~ redirectEnd) },
 ] %}
 
 {% set title  = notification.id is defined and notification.title is not empty ? notification.name : 'Create a new
