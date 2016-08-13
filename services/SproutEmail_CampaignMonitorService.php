@@ -83,7 +83,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	{
 		$urls = $this->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
 
-		$lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id));
+		$lists = SproutEmail_CampaignEmailRecipientListRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id));
 		$recipientLists = array();
 		$toEmails = array();
 		foreach ($lists as $list)

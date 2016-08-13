@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryRecipientListRecord
+ * Class SproutEmail_CampaignEmailRecipientListRecord
  *
  * @package Craft
  * --

@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryRecipientListRecord
+ * Class SproutEmail_CampaignEmailRecipientListRecord
  *
  * @package Craft
  * --
@@ -11,7 +11,7 @@ namespace Craft;
  * @property string $list
  * @property string $type
  */
-class SproutEmail_EntryRecipientListRecord extends BaseRecord
+class SproutEmail_CampaignEmailRecipientListRecord extends BaseRecord
 {
 	/**
 	 * @return string
