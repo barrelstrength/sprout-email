@@ -27,7 +27,7 @@ class SproutEmail_NotificationRecipientListRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'list'   => AttributeType::String
+			'list' => AttributeType::String
 		);
 	}
 

@@ -60,7 +60,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 
 		if (isset($context['options']['commerceStatuses']))
 		{
-			$options = $context['options']['commerceStatuses'];
+			$options               = $context['options']['commerceStatuses'];
 			$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
 		}
 
@@ -127,7 +127,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 			Commerce_TransactionRecord::STATUS_SUCCESS,
 			Commerce_TransactionRecord::STATUS_FAILED
 		];
-		$options = array();
+		$options  = array();
 		if (!empty($statuses))
 		{
 			foreach ($statuses as $status)
@@ -155,7 +155,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 		// Return the oldest order
 		if (!empty($order))
 		{
-			$orderId = $order->id;
+			$orderId      = $order->id;
 			$transactions = craft()->commerce_transactions->getAllTransactionsByOrderId($orderId);
 			if (!empty($transactions))
 			{

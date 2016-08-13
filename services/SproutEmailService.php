@@ -67,7 +67,7 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$this->error( Craft::t('Cannot render template. Check template file and object variables.'), 'template');
+			$this->error(Craft::t('Cannot render template. Check template file and object variables.'), 'template');
 		}
 	}
 
@@ -121,7 +121,7 @@ class SproutEmailService extends BaseApplicationComponent
 			// Specify template .html if no .txt
 			$message = $e->getMessage();
 
-			if (strpos($template, '.txt') === FALSE)
+			if (strpos($template, '.txt') === false)
 			{
 				$message = str_replace($template, $template . '.html', $message);
 			}
@@ -532,7 +532,7 @@ class SproutEmailService extends BaseApplicationComponent
 		else
 		{
 			// This is for logging errors before sproutEmail()->sendEmail is called.
-			$infoTable  = new SproutEmail_SentEmailInfoTableModel();
+			$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
 			$infoTable->deliveryStatus = $deliveryStatus;
 			$infoTable->message        = $message;
@@ -549,7 +549,7 @@ class SproutEmailService extends BaseApplicationComponent
 		else
 		{
 			// This is for logging errors before sproutEmail()->sendEmail is called.
-			$infoTable  = new SproutEmail_SentEmailInfoTableModel();
+			$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
 			$infoTable->deliveryStatus = $deliveryStatus;
 			$infoTable->message        = $message;

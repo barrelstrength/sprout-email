@@ -29,8 +29,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	 * @throws \CDbException
 	 * @throws \Exception
 	 */
-	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel
-	$campaignType)
+	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$isNewEntry          = true;
 		$campaignEmailRecord = new SproutEmail_CampaignEmailRecord();
@@ -88,7 +87,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 					}
 
 					return $campaignEmailRecord;
-
 				}
 			}
 			catch (\Exception $e)

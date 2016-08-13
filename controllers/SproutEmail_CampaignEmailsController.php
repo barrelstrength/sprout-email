@@ -85,7 +85,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$this->requirePostRequest();
 
 		// Get the Campaign Email
-		$emailId = craft()->request->getRequiredPost('emailId');
+		$emailId       = craft()->request->getRequiredPost('emailId');
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 
 		if (sproutEmail()->campaignEmails->deleteCampaignEmail($campaignEmail))
@@ -400,8 +400,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$object = null;
 
-
-
 		// Create an Email so we can render our template
 		$email = new EmailModel();
 
@@ -484,7 +482,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$bufferTemplate = 'html';
 			if ($type != null && $type == 'text')
 			{
-				$bufferTemplate ='txt';
+				$bufferTemplate = 'txt';
 			}
 
 			sproutEmail()->campaignEmails->showBufferCampaignEmail($email, $bufferTemplate);

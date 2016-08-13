@@ -153,7 +153,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	 */
 	protected function getAllSections()
 	{
-		$result = craft()->sections->getAllSections();
+		$result  = craft()->sections->getAllSections();
 		$options = array();
 
 		foreach ($result as $key => $section)

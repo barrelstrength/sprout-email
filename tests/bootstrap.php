@@ -22,14 +22,14 @@ define('YII_DEBUG', true);
 /**
  * Defines server variables to use at runtime
  */
-$_SERVER['DOCUMENT_ROOT'] = SITE_BASE_PATH . 'public/';
-$_SERVER['HTTP_HOST'] = 'sandbox.dev';
-$_SERVER['HTTPS'] = 'off';
-$_SERVER['PHP_SELF'] = '/index.php';
-$_SERVER['REQUEST_URI'] = '/index.php';
-$_SERVER['SERVER_PORT'] = 80;
+$_SERVER['DOCUMENT_ROOT']   = SITE_BASE_PATH . 'public/';
+$_SERVER['HTTP_HOST']       = 'sandbox.dev';
+$_SERVER['HTTPS']           = 'off';
+$_SERVER['PHP_SELF']        = '/index.php';
+$_SERVER['REQUEST_URI']     = '/index.php';
+$_SERVER['SERVER_PORT']     = 80;
 $_SERVER['SCRIPT_FILENAME'] = SITE_BASE_PATH . 'index.php';
-$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['SCRIPT_NAME']     = '/index.php';
 
 /**
  * @param string $path
@@ -78,7 +78,7 @@ craft_ensureFolderIsReadable(CRAFT_STORAGE_PATH, true);
 craft_createFolder(CRAFT_STORAGE_PATH . 'runtime/');
 craft_ensureFolderIsReadable(CRAFT_STORAGE_PATH . 'runtime/', true);
 
-$yiit = CRAFT_APP_PATH . 'framework/yiit.php';
+$yiit   = CRAFT_APP_PATH . 'framework/yiit.php';
 $config = CRAFT_APP_PATH . 'etc/config/test.php';
 
 require_once $yiit;

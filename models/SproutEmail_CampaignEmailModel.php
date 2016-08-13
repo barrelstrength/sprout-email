@@ -52,7 +52,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function defineAttributes()
 	{
-		$defaults = parent::defineAttributes();
+		$defaults   = parent::defineAttributes();
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignId'            => array(AttributeType::Number, 'required' => true),
@@ -134,7 +134,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getStatus()
 	{
-		$status = parent::getStatus();
+		$status   = parent::getStatus();
 		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
 
 		switch ($status)
@@ -185,9 +185,9 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 			foreach ($fieldLayoutFields as $fieldLayoutField)
 			{
-				$field = $fieldLayoutField->getField();
+				$field           = $fieldLayoutField->getField();
 				$field->required = $fieldLayoutField->required;
-				$this->fields[] = $field;
+				$this->fields[]  = $field;
 			}
 		}
 

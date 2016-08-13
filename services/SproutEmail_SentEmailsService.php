@@ -76,7 +76,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$emailModel = $event->params['emailModel'];
 		$campaign   = $event->params['campaign'];
 
-		$infoTable  = new SproutEmail_SentEmailInfoTableModel();
+		$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
 		// If we have info set, grab the custom info that's already prepared
 		// If we don't have info, we probably have an email sent by Craft so

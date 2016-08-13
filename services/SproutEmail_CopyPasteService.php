@@ -39,7 +39,7 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 			'text' => trim($text),
 		);
 
-		$response = new SproutEmail_ResponseModel();
+		$response          = new SproutEmail_ResponseModel();
 		$response->success = true;
 
 		$response->content = craft()->templates->render('sproutemail/settings/_mailers/copypaste/prepare', $vars);
@@ -49,10 +49,10 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 
 	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
-		$type = craft()->request->getPost('contentType', 'html');
-		$ext = strtolower($type) == 'text' ? '.txt' : null;
+		$type   = craft()->request->getPost('contentType', 'html');
+		$ext    = strtolower($type) == 'text' ? '.txt' : null;
 		$params = array('entry' => $campaignEmail, 'campaign' => $campaign);
-		$body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
+		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}

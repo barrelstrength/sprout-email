@@ -4,6 +4,7 @@ namespace Craft;
 class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImportElementImporter
 {
 	protected $campaignTypeModel = null;
+
 	/**
 	 * @return mixed
 	 */

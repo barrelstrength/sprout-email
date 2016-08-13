@@ -281,9 +281,9 @@ class SproutEmailPlugin extends BasePlugin
 
 		if (isset($commercePlugin))
 		{
-			$events['commerce_orders.onOrderComplete'] = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
 			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
-			$events['commerce_orderHistories.onStatusChange'] = new SproutEmail_CommerceOnStatusChangeEvent();
+			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
 		}
 
 		return $events;
@@ -309,7 +309,7 @@ class SproutEmailPlugin extends BasePlugin
 
 		foreach ($pluginMailers as $handle => $class)
 		{
-			$namespace = "Craft\\" . $class;
+			$namespace   = "Craft\\" . $class;
 			$mailerClass = new $namespace();
 
 			$mailers[$handle] = $mailerClass;
@@ -374,6 +374,7 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 }
+
 /**
  * @return SproutEmailService
  */

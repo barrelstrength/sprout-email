@@ -221,9 +221,9 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $mailerName)));
 		}
 
-		$campaignEmail    = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
-		$response = new SproutEmail_ResponseModel();
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaign      = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$response      = new SproutEmail_ResponseModel();
 
 		if ($campaignEmail && $campaign)
 		{

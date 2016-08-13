@@ -355,7 +355,7 @@ abstract class SproutEmailBaseMailer
 	 * Gives a mailer the responsibility to send notifications if they implement SproutEmailNotificationSenderInterface
 	 *
 	 * @param SproutEmail_CampaignTypeModel $campaign
-	 * @param                           $object
+	 * @param                               $object
 	 *
 	 * @return bool
 	 * @internal param mixed|null $element

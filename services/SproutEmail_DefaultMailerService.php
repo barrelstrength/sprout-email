@@ -453,7 +453,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
 	{
-		$email= new EmailModel();
+		$email = new EmailModel();
 
 		// Allow disabled emails to be tested
 		if (!$notificationEmail->isReady() AND !$useMockData)

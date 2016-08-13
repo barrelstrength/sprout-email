@@ -79,7 +79,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 				'<!-- %style0% -->' => "<style> .red { color: red }</style>",
 				'<!-- %style1% -->' => "<style> .green { color: green }</style>"
 			),
-		  'body' => '
+			'body' => '
 						<html>
 							<head>
 								<!-- %style0% -->
@@ -117,7 +117,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$this->assertEquals($expected, $result['invalid']);
 
-		$object = new SproutEmail_SimpleRecipientModel;
+		$object        = new SproutEmail_SimpleRecipientModel;
 		$object->email = "email@valid.com";
 
 		$expected = array($object);
@@ -144,9 +144,9 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 		$notificationModel = new SproutEmail_NotificationEmailModel;
 
 		$elementService = m::mock('Craft\ElementsService')
-		->shouldReceive('getElementById')
-		->andReturn($notificationModel)
-		->mock();
+			->shouldReceive('getElementById')
+			->andReturn($notificationModel)
+			->mock();
 
 		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables);
 
@@ -165,8 +165,8 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$this->assertEquals($expected, $notification);
 
-		$notificationId = '999';
-		$notificationModel->id = $notificationId;
+		$notificationId              = '999';
+		$notificationModel->id       = $notificationId;
 		$variables['notificationId'] = $notificationId;
 
 		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, null, $elementService);

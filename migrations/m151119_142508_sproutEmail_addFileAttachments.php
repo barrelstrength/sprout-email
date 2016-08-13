@@ -11,7 +11,7 @@ class m151119_142508_sproutEmail_addFileAttachments extends BaseMigration
 	public function safeUp()
 	{
 		// specify the table name here
-		$tableName = 'sproutemail_campaigns_entries';
+		$tableName  = 'sproutemail_campaigns_entries';
 		$columnName = 'enableFileAttachments';
 
 		if (!craft()->db->columnExists($tableName, $columnName))

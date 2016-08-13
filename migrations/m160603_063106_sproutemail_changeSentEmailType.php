@@ -39,7 +39,7 @@ class m160603_063106_sproutemail_changeSentEmailType extends BaseMigration
 					$newInfo = json_encode($data);
 
 					craft()->db->createCommand()->update($tableName, array(
-						'info' => $newInfo ),
+						'info' => $newInfo),
 						'id= :id',
 						array(
 							':id' => $sentEmail['id']

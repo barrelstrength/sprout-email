@@ -178,7 +178,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	{
 
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
-		$sort = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
+		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);

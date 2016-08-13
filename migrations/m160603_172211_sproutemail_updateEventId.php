@@ -13,8 +13,8 @@ class m160603_172211_sproutemail_updateEventId extends BaseMigration
 	 */
 	public function safeUp()
 	{
-		$tableName  = 'sproutemail_campaigns_notifications';
-		$columnName = 'eventId';
+		$tableName       = 'sproutemail_campaigns_notifications';
+		$columnName      = 'eventId';
 		$supportedEvents = array(
 			'entries-saveEntry',
 			'entries-deleteEntry',
@@ -45,22 +45,25 @@ class m160603_172211_sproutemail_updateEventId extends BaseMigration
 					{
 						$newEventId = str_replace(':', '-', $oldEventId);
 					}
-					else if (in_array($newEventId, $supportedEvents))
-					{
-						$newEventId = 'SproutEmail-'.$newEventId;
-					}
 					else
 					{
-						$prefix = explode('-', $newEventId);
-
-						if (count($prefix) > 0)
+						if (in_array($newEventId, $supportedEvents))
 						{
-							$newEventId = ucfirst($prefix[0]).'-'.$newEventId;
+							$newEventId = 'SproutEmail-' . $newEventId;
+						}
+						else
+						{
+							$prefix = explode('-', $newEventId);
+
+							if (count($prefix) > 0)
+							{
+								$newEventId = ucfirst($prefix[0]) . '-' . $newEventId;
+							}
 						}
 					}
 
 					craft()->db->createCommand()->update($tableName, array(
-						'eventId' => $newEventId ),
+						'eventId' => $newEventId),
 						'id= :id',
 						array(
 							':id' => $notification['id']

@@ -13,15 +13,15 @@ class SproutEmail_CampaignTypeController extends BaseController
 		$this->requirePostRequest();
 
 		$campaignId = craft()->request->getRequiredPost('sproutEmail.id');
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$campaign   = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
 
 		$campaign->setAttributes(craft()->request->getPost('sproutEmail'));
 
 		if (craft()->request->getPost('saveAsNew'))
 		{
 			$campaign->saveAsNew = true;
-			$campaign->id = null;
-			$_POST['redirect'] = 'sproutemail/settings/campaigns/edit/{id}';
+			$campaign->id        = null;
+			$_POST['redirect']   = 'sproutemail/settings/campaigns/edit/{id}';
 		}
 
 		if (craft()->request->getPost('fieldLayout'))
@@ -49,7 +49,6 @@ class SproutEmail_CampaignTypeController extends BaseController
 				'campaign' => $campaign
 			));
 		}
-
 	}
 
 	/**

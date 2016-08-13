@@ -43,12 +43,12 @@ class SproutEmail_EntrySproutImportElementImporter extends BaseSproutImportEleme
 					}
 				}
 
-				$fieldLayout = craft()->fields->assembleLayout($fieldLayouts);
+				$fieldLayout       = craft()->fields->assembleLayout($fieldLayouts);
 				$fieldLayout->type = 'SproutEmail_Campaign';
 				$campaign->setFieldLayout($fieldLayout);
 			}
 
-			$this->campaignModel  = sproutEmail()->campaigns->saveCampaign($campaign);
+			$this->campaignModel = sproutEmail()->campaigns->saveCampaign($campaign);
 		}
 
 		$model->campaignId = $this->campaignModel->id;

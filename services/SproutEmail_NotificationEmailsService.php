@@ -105,7 +105,6 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return isset($this->availableEvents[$id]) ? $this->availableEvents[$id] : $default;
 	}
 
-
 	public function getEventSelectedOptions($event, $notification)
 	{
 		if (craft()->request->getRequestType() == 'POST')
@@ -153,14 +152,14 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	{
 		$result = false;
 
-		$isNewEntry  = true;
-		$record = new SproutEmail_NotificationEmailRecord();
+		$isNewEntry = true;
+		$record     = new SproutEmail_NotificationEmailRecord();
 
 		if (!empty($notification->id))
 		{
 			$record = SproutEmail_NotificationEmailRecord::model()->findById($notification->id);
 
-			$isNewEntry  = false;
+			$isNewEntry = false;
 			if (!$record)
 			{
 				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $notification->id)));
@@ -209,7 +208,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 						$record->id = $notification->id;
 					}
 
-					if($record->save(false))
+					if ($record->save(false))
 					{
 						// Save recipient after record is saved to avoid Integrity constraint violation.
 						//sproutEmail()->notificationEmails->saveRecipientLists($notification);
@@ -279,7 +278,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 				$record = SproutEmail_NotificationRecipientListRecord::model()->findByAttributes(
 					array(
 						'notificationId' => $notification->id,
-						'list'    => $list->list
+						'list'           => $list->list
 					)
 				);
 
@@ -305,7 +304,8 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	public function deleteRecipientListsById($id)
 	{
 		if (($lists = SproutEmail_NotificationRecipientListRecord::model()->findAllByAttributes(array('notificationId' =>
-			                                                                                              $id))))
+			                                                                                              $id)))
+		)
 		{
 			foreach ($lists as $list)
 			{
@@ -338,7 +338,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	public function getRecipientListsByNotificationId($id)
 	{
 		if (($lists = SproutEmail_NotificationRecipientListRecord::model()->findAllByAttributes(array('notificationId' =>
-			                                                                                              $id))))		{
+			                                                                                              $id)))
+		)
+		{
 			return SproutEmail_NotificationRecipientListModel::populateModels($lists);
 		}
 	}
@@ -355,7 +357,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	 */
 	public function registerDynamicEventHandler()
 	{
-		$self = $this;
+		$self   = $this;
 		$events = $this->getAvailableEvents();
 
 		if (count($events))
@@ -451,7 +453,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	 */
 	public function handleDynamicEvent($eventId, Event $event, SproutEmailBaseEvent $listener)
 	{
-		$params = $listener->prepareParams($event);
+		$params  = $listener->prepareParams($event);
 		$element = isset($params['value']) ? $params['value'] : null;
 
 		if ($notifications = $this->getNotifications($eventId))
@@ -558,7 +560,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_NotificationEmailModel $notification
-	 * @param mixed  $object Will be an element model most of the time
+	 * @param mixed                              $object Will be an element model most of the time
 	 *
 	 * @return mixed
 	 * @throws Exception
@@ -663,9 +665,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 				foreach ($templateErrors as $templateError)
 				{
 					$errors[] = Craft::t($templateError . ' <a href="{url}">Edit Settings</a>.',
-					array(
-						'url' => $notificationEditSettingsUrl
-					));
+						array(
+							'url' => $notificationEditSettingsUrl
+						));
 				}
 			}
 		}
@@ -704,8 +706,8 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/notifications/_modals/export',
 				array(
-					'notification' => $notification,
-					'emailModel'   => $response['emailModel'],
+					'notification'  => $notification,
+					'emailModel'    => $response['emailModel'],
 					'recipentLists' => $recipientLists,
 					'message'       => Craft::t('Notification sent successfully.')
 				)
@@ -719,7 +721,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 				'sproutemail/notifications/_modals/export',
 				array(
 					'notification' => $notification,
-					'message'  => Craft::t($e->getMessage()),
+					'message'      => Craft::t($e->getMessage()),
 				)
 			);
 		}
@@ -779,7 +781,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$bufferTemplate = 'html';
 		if ($type != null && $type == 'text')
 		{
-			$bufferTemplate ='txt';
+			$bufferTemplate = 'txt';
 		}
 		$email = new EmailModel();
 

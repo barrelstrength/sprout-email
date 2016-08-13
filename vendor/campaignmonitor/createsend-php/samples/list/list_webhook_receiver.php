@@ -11,7 +11,7 @@ $raw_post = file_get_contents("php://input");
 
 // We can log the raw data straight to disk
 $raw_log = fopen('raw_log.txt', 'a') or die('Can\'t open raw log');
-fwrite($raw_log, date('H:i:s').$raw_post."\n\n\n");
+fwrite($raw_log, date('H:i:s') . $raw_post . "\n\n\n");
 fclose($raw_log);
 
 // And deserialise the data
@@ -19,12 +19,13 @@ $deserialised_data = $serialiser->deserialise($raw_post);
 
 $parsed_log = fopen('parsed_log.txt', 'a') or die('Can\'t open parsed log');
 
-fwrite($parsed_log, date('H:i:s').' Got hook data for list: '.$deserialised_data->ListID."\n");
+fwrite($parsed_log, date('H:i:s') . ' Got hook data for list: ' . $deserialised_data->ListID . "\n");
 
 // And now just do something with the data
-foreach ($deserialised_data->Events as $event) {
-    fwrite($parsed_log, 'Got '.$event->Type.' event for: '.$event->EmailAddress."\n");
-    fwrite($parsed_log, var_export($event, true));
+foreach ($deserialised_data->Events as $event)
+{
+	fwrite($parsed_log, 'Got ' . $event->Type . ' event for: ' . $event->EmailAddress . "\n");
+	fwrite($parsed_log, var_export($event, true));
 }
 
 fclose($parsed_log);

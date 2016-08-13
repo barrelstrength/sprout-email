@@ -25,7 +25,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 			$context['groups'] = $this->getAllGroups();
 		}
 
-		$options = $context['options']['craft']['saveUser']['userGroupIds'];
+		$options               = $context['options']['craft']['saveUser']['userGroupIds'];
 		$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
 
 		return craft()->templates->render('sproutemail/_events/saveUser', $context);
@@ -64,7 +64,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 		// If any user groups were checked, make sure the user is in one of the groups
 		if (is_array($options['craft']['saveUser']['userGroupIds']) && !empty($options['craft']['saveUser']['userGroupIds']) && count($options['craft']['saveUser']['userGroupIds']))
 		{
-			$inGroup = false;
+			$inGroup            = false;
 			$existingUserGroups = $user->getGroups('id');
 
 			// When saving a new user, we grab our groups from the post request

@@ -23,6 +23,7 @@ class SproutEmailBaseEvent
 	{
 		$this->pluginName = $pluginName;
 	}
+
 	/**
 	 * Returns the event title when used in string context
 	 *

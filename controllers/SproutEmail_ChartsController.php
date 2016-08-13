@@ -14,10 +14,10 @@ class SproutEmail_ChartsController extends ElementIndexController
 	public function actionGetEntriesData()
 	{
 		$startDateParam = craft()->request->getRequiredPost('startDate');
-		$endDateParam = craft()->request->getRequiredPost('endDate');
+		$endDateParam   = craft()->request->getRequiredPost('endDate');
 
 		$startDate = DateTime::createFromString($startDateParam, craft()->timezone);
-		$endDate = DateTime::createFromString($endDateParam, craft()->timezone);
+		$endDate   = DateTime::createFromString($endDateParam, craft()->timezone);
 		$endDate->modify('+1 day');
 
 		$intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
@@ -36,26 +36,26 @@ class SproutEmail_ChartsController extends ElementIndexController
 		// Get the chart data table
 		$dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'sentemail.dateCreated', array(
 			'intervalUnit' => $intervalUnit,
-			'valueLabel' => Craft::t('Submissions'),
-			'valueType' => 'number',
+			'valueLabel'   => Craft::t('Submissions'),
+			'valueType'    => 'number',
 		));
 
 		// Get the total submissions
 		$total = 0;
 
-		foreach($dataTable['rows'] as $row)
+		foreach ($dataTable['rows'] as $row)
 		{
 			$total = $total + $row[1];
 		}
 
 		$this->returnJson(array(
 			'dataTable' => $dataTable,
-			'total' => $total,
+			'total'     => $total,
 			'totalHtml' => $total,
 
-			'formats' => ChartHelper::getFormats(),
-			'orientation' => craft()->locale->getOrientation(),
-			'scale' => $intervalUnit,
+			'formats'          => ChartHelper::getFormats(),
+			'orientation'      => craft()->locale->getOrientation(),
+			'scale'            => $intervalUnit,
 			'localeDefinition' => array(),
 		));
 	}

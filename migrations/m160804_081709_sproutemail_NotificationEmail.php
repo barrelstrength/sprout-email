@@ -49,15 +49,15 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 					'fromEmail'             => array('required' => false),
 					'replyToEmail'          => array('required' => false),
 					'sent'                  => array('maxLength' => 1,
-					                                 'default' => false,
-					                                 'required' => true,
-					                                 'column' => 'tinyint',
-					                                 'unsigned' => true),
+					                                 'default'   => false,
+					                                 'required'  => true,
+					                                 'column'    => 'tinyint',
+					                                 'unsigned'  => true),
 					'enableFileAttachments' => array('maxLength' => 1,
-					                                 'default' => false,
-					                                 'required' => true,
-					                                 'column' => 'tinyint',
-					                                 'unsigned' => true),
+					                                 'default'   => false,
+					                                 'required'  => true,
+					                                 'column'    => 'tinyint',
+					                                 'unsigned'  => true),
 					'dateCreated'           => array('column' => 'datetime'),
 					'dateUpdated'           => array('column' => 'datetime'),
 					'fieldLayoutId'         => array('column' => 'integer',
@@ -112,18 +112,18 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 			foreach ($oldNotifications as $oldNotification)
 			{
 				$insertData = array(
-					'id'            => $oldNotification['id'],
-					'name'          => $oldNotification['name'],
-					'template'      => $oldNotification['template'],
-					'eventId'       => $oldNotification['eventId'],
-					'options'       => $oldNotification['options'],
-					'subjectLine'   => $oldNotification['subjectLine'],
-					'recipients'    => $oldNotification['recipients'],
-					'fromName'      => $oldNotification['fromName'],
-					'fromEmail'     => $oldNotification['fromEmail'],
-					'replyToEmail'  => $oldNotification['replyToEmail'],
-					'sent'          => $oldNotification['sent'],
-					'fieldLayoutId' => $oldNotification['fieldLayoutId'],
+					'id'                    => $oldNotification['id'],
+					'name'                  => $oldNotification['name'],
+					'template'              => $oldNotification['template'],
+					'eventId'               => $oldNotification['eventId'],
+					'options'               => $oldNotification['options'],
+					'subjectLine'           => $oldNotification['subjectLine'],
+					'recipients'            => $oldNotification['recipients'],
+					'fromName'              => $oldNotification['fromName'],
+					'fromEmail'             => $oldNotification['fromEmail'],
+					'replyToEmail'          => $oldNotification['replyToEmail'],
+					'sent'                  => $oldNotification['sent'],
+					'fieldLayoutId'         => $oldNotification['fieldLayoutId'],
 					'enableFileAttachments' => $oldNotification['enableFileAttachments'],
 				);
 
@@ -135,7 +135,10 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 						->where(array('id' => $oldNotification['id']))
 						->queryAll();
 
-					if (!empty($existNotification)) continue;
+					if (!empty($existNotification))
+					{
+						continue;
+					}
 
 					craft()->db->createCommand()->insert('sproutemail_notifications', $insertData);
 				}
@@ -176,7 +179,7 @@ class m160804_081709_sproutEmail_NotificationEmail extends BaseMigration
 			}
 		}
 
-		$tableName  = "sproutemail_campaigns_entries";
+		$tableName = "sproutemail_campaigns_entries";
 
 		if (craft()->db->tableExists($tableName))
 		{
