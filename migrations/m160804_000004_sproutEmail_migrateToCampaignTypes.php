@@ -21,9 +21,16 @@ class m160804_000004_sproutEmail_migrateToCampaignTypes extends BaseMigration
 		{
 			if (craft()->db->columnExists($tableName, 'type'))
 			{
-				SproutEmailPlugin::log('Remove type column from sproutemail_campaigns table');
+				SproutEmailPlugin::log('Remove `type` column from sproutemail_campaigns table');
 
 				craft()->db->createCommand()->dropColumn($tableName, 'type');
+			}
+
+			if (craft()->db->columnExists($tableName, 'notifications'))
+			{
+				SproutEmailPlugin::log('Remove `notifications` column from sproutemail_campaigns table');
+
+				craft()->db->createCommand()->dropColumn($tableName, 'notifications');
 			}
 
 			if (!craft()->db->tableExists('sproutemail_campaigntype'))
