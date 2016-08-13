@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m160804_000005_sproutEmail_migrateCampaignEmails extends BaseMigration
+class m160804_000006_sproutEmail_migrateCampaignEmails extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -26,14 +26,6 @@ class m160804_000005_sproutEmail_migrateCampaignEmails extends BaseMigration
 			MigrationHelper::dropAllForeignKeysOnTable($oldTable);
 
 			craft()->db->createCommand()->renameTable($oldTableName, $newTableName);
-
-			$newTable = MigrationHelper::getTable($newTableName);
-
-			// Drop the FK again, since renameTable restores fks
-			MigrationHelper::dropAllForeignKeysOnTable($newTable);
-
-			craft()->db->createCommand()->addForeignKey($newTableName, 'id', 'elements', 'id', 'CASCADE');
-			craft()->db->createCommand()->addForeignKey($newTableName, 'campaignId', 'sproutemail_campaigntype', 'id', 'CASCADE');
 		}
 
 		return true;

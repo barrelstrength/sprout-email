@@ -41,13 +41,6 @@ class m160804_000004_sproutEmail_migrateToCampaignTypes extends BaseMigration
 				MigrationHelper::dropForeignKeyIfExists($tableName, array('fieldLayoutId'));
 
 				craft()->db->createCommand()->renameTable($tableName, 'sproutemail_campaigntype');
-
-				$table = MigrationHelper::getTable($tableName);
-
-				// Drop the FK again, since renameTable restores fks
-				MigrationHelper::dropAllForeignKeysOnTable($table);
-
-				craft()->db->createCommand()->addForeignKey($tableName, 'fieldLayoutId', 'fieldlayouts', 'id', 'SET NULL');
 			}
 		}
 
