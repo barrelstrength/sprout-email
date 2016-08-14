@@ -779,16 +779,19 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 
 		$template = $notification->template;
+
 		// Output email text
-		$bufferTemplate = 'html';
+		$fileExtension = 'html';
+
 		if ($type != null && $type == 'text')
 		{
-			$bufferTemplate = 'txt';
+			$fileExtension = 'txt';
 		}
+		
 		$email = new EmailModel();
 
 		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notification, $object);
 
-		sproutEmail()->campaignEmails->showBufferCampaignEmail($email, $bufferTemplate);
+		sproutEmail()->campaignEmails->showCampaignEmail($email, $fileExtension);
 	}
 }

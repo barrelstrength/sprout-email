@@ -407,7 +407,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
-		sproutEmail()->campaignEmails->showBufferCampaignEmail($email);
+		sproutEmail()->campaignEmails->showCampaignEmail($email);
 	}
 
 	/**
@@ -479,13 +479,13 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
 			// Output email text
-			$bufferTemplate = 'html';
+			$fileExtension = 'html';
 			if ($type != null && $type == 'text')
 			{
-				$bufferTemplate = 'txt';
+				$fileExtension = 'txt';
 			}
 
-			sproutEmail()->campaignEmails->showBufferCampaignEmail($email, $bufferTemplate);
+			sproutEmail()->campaignEmails->showCampaignEmail($email, $fileExtension);
 		}
 		else
 		{

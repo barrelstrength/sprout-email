@@ -221,9 +221,13 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		return sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaign);
 	}
 
-	public function showBufferCampaignEmail(EmailModel $email, $template = 'html')
+	/**
+	 * @param EmailModel $email
+	 * @param string     $template
+	 */
+	public function showCampaignEmail(EmailModel $email, $fileExtension = 'html')
 	{
-		if ($template == 'txt')
+		if ($fileExtension == 'txt')
 		{
 			$output = $email->body;
 		}
