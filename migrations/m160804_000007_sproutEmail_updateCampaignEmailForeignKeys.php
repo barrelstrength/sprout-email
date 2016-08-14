@@ -15,7 +15,7 @@ class m160804_000007_sproutEmail_updateCampaignEmailForeignKeys extends BaseMigr
 	{
 		MigrationHelper::refresh();
 
-		$tableName = 'sproutemail_campaigns';
+		$tableName = 'sproutemail_campaignemails';
 
 		if (craft()->db->tableExists($tableName))
 		{

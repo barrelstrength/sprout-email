@@ -264,7 +264,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.sent as sent,
 				 campaigns.enableFileAttachments as enableFileAttachments'
 			)
-			->join('sproutemail_campaigns campaigns', 'campaigns.id = elements.id')
+			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')
 			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignId');
 
 		if ($criteria->campaignId)
