@@ -13,15 +13,15 @@ class m160804_000002_sproutEmail_createNotificationTables extends BaseMigration
 	 */
 	public function safeUp()
 	{
-		SproutEmailPlugin::log('Creating the sproutemail_notifications table');
+		SproutEmailPlugin::log('Creating the sproutemail_notificationemails table');
 
-		$tableName = 'sproutemail_notifications';
+		$tableName = 'sproutemail_notificationemails';
 
 		if (!craft()->db->tableExists($tableName))
 		{
 			try
 			{
-				// Create the craft_sproutemail_notifications table
+				// Create the sproutemail_notificationemails table
 				craft()->db->createCommand()->createTable($tableName, array(
 					'id'                    => array('column' => 'integer', 'required' => true),
 					'name'                  => array('required' => true),
@@ -51,18 +51,18 @@ class m160804_000002_sproutEmail_createNotificationTables extends BaseMigration
 
 				craft()->db->createCommand()->addPrimaryKey($tableName, 'id');
 
-				// Add foreign keys to craft_sproutemail_notifications
+				// Add foreign keys to sproutemail_notificationemails
 				craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE', null);
 				craft()->db->createCommand()->addForeignKey($tableName, 'fieldLayoutId', 'fieldlayouts',
 					'id', 'SET NULL', null);
 			}
 			catch (\Exception $e)
 			{
-				SproutEmailPlugin::log('Error creating the sproutemail_notifications table: ' . $e->getMessage());
+				SproutEmailPlugin::log('Error creating the sproutemail_notificationemails table: ' . $e->getMessage());
 			}
 		}
 
-		SproutEmailPlugin::log('Finished creating the sproutemail_notifications table');
+		SproutEmailPlugin::log('Finished creating the sproutemail_notificationemails table');
 
 		return true;
 	}

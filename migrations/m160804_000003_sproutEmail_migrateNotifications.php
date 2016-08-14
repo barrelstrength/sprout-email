@@ -13,7 +13,7 @@ class m160804_000003_sproutEmail_migrateNotifications extends BaseMigration
 	 */
 	public function safeUp()
 	{
-		SproutEmailPlugin::log('Moving all notifications to the sproutemail_notifications table');
+		SproutEmailPlugin::log('Moving all notifications to the sproutemail_notificationemails table');
 
 		if (!craft()->db->tableExists('sproutemail_campaigns') ||
 			!craft()->db->tableExists('sproutemail_campaigns_notifications') ||
@@ -61,11 +61,11 @@ class m160804_000003_sproutEmail_migrateNotifications extends BaseMigration
 					'enableFileAttachments' => $oldNotification['enableFileAttachments'],
 				);
 
-				if (craft()->db->tableExists('sproutemail_notifications'))
+				if (craft()->db->tableExists('sproutemail_notificationemails'))
 				{
 					$existNotification = craft()->db->createCommand()
 						->select('id')
-						->from('sproutemail_notifications')
+						->from('sproutemail_notificationemails')
 						->where(array('id' => $oldNotification['id']))
 						->queryAll();
 
@@ -74,7 +74,7 @@ class m160804_000003_sproutEmail_migrateNotifications extends BaseMigration
 						continue;
 					}
 
-					craft()->db->createCommand()->insert('sproutemail_notifications', $insertData);
+					craft()->db->createCommand()->insert('sproutemail_notificationemails', $insertData);
 				}
 
 				craft()->db->createCommand()->update('elements', array(
@@ -94,7 +94,7 @@ class m160804_000003_sproutEmail_migrateNotifications extends BaseMigration
 			}
 		}
 
-		SproutEmailPlugin::log('Finished moving all notifications to the sproutemail_notifications table');
+		SproutEmailPlugin::log('Finished moving all notifications to the sproutemail_notificationemails table');
 
 		return true;
 	}

@@ -209,7 +209,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		// join with the table
 		$query->addSelect('notificationemail.*')
-			->join('sproutemail_notifications notificationemail', 'notificationemail.id = elements.id');
+			->join('sproutemail_notificationemails notificationemail', 'notificationemail.id = elements.id');
 
 		if ($criteria->order)
 		{
