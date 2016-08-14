@@ -64,8 +64,8 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 			),
 			'recipientLists' => array(
 				static::HAS_MANY,
-				'SproutEmail_NotificationRecipientListRecord',
-				'notificationId'
+				'SproutEmail_RecipientListRelationsRecord',
+				'emailId'
 			)
 		);
 	}

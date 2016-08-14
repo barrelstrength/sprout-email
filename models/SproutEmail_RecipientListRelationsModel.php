@@ -2,14 +2,14 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryRecipientListModel
+ * Class SproutEmail_RecipientListRelationsModel
  *
  * @package Craft
  * --
  * @property string $mailer
  * @property string $mailerListId
  */
-class SproutEmail_EntryRecipientListModel extends BaseModel
+class SproutEmail_RecipientListRelationsModel extends BaseModel
 {
 	/**
 	 * @return array

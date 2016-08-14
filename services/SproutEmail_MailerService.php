@@ -322,13 +322,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			foreach ($lists as $list)
 			{
-				$record = SproutEmail_CampaignEmailRecipientListRecord::model()->findByAttributes(
+				$record = SproutEmail_RecipientListRelationsRecord::model()->findByAttributes(
 					array(
 						'emailId' => $campaignEmail->id,
 						'list'    => $list->list
 					)
 				);
-				$record = $record ? $record : new SproutEmail_CampaignEmailRecipientListRecord();
+				$record = $record ? $record : new SproutEmail_RecipientListRelationsRecord();
 
 				$record->emailId = $list->emailId;
 				$record->mailer  = $list->mailer;

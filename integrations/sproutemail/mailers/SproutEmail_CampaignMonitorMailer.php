@@ -129,7 +129,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		{
 			foreach ($ids as $id)
 			{
-				$model = new SproutEmail_EntryRecipientListModel();
+				$model = new SproutEmail_RecipientListRelationsModel();
 
 				$model->setAttribute('emailId', $campaignEmail->id);
 				$model->setAttribute('mailer', $this->getId());

@@ -149,15 +149,15 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 	public function getRecipientListsByEmailId($id)
 	{
-		if (($lists = SproutEmail_CampaignEmailRecipientListRecord::model()->findAllByAttributes(array('emailId' => $id))))
+		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
 		{
-			return SproutEmail_EntryRecipientListModel::populateModels($lists);
+			return SproutEmail_RecipientListRelationsModel::populateModels($lists);
 		}
 	}
 
 	public function deleteRecipientListsByEmailId($id)
 	{
-		if (($lists = SproutEmail_CampaignEmailRecipientListRecord::model()->findAllByAttributes(array('emailId' => $id))))
+		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
 		{
 			foreach ($lists as $list)
 			{

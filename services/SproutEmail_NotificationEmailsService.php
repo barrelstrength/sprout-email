@@ -275,17 +275,17 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		{
 			foreach ($lists as $list)
 			{
-				$record = SproutEmail_NotificationRecipientListRecord::model()->findByAttributes(
+				$record = SproutEmail_RecipientListRelationsRecord::model()->findByAttributes(
 					array(
-						'notificationId' => $notification->id,
-						'list'           => $list->list
+						'emailId' => $notification->id,
+						'list'    => $list->list
 					)
 				);
 
-				$record = $record ? $record : new SproutEmail_NotificationRecipientListRecord();
+				$record = $record ? $record : new SproutEmail_RecipientListRelationsRecord();
 
-				$record->notificationId = $list->notificationId;
-				$record->list           = $list->list;
+				$record->emailId = $list->notificationId;
+				$record->list    = $list->list;
 
 				try
 				{
@@ -303,8 +303,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 	public function deleteRecipientListsById($id)
 	{
-		if (($lists = SproutEmail_NotificationRecipientListRecord::model()->findAllByAttributes(array('notificationId' =>
-			                                                                                              $id)))
+		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array(
+			'emailId' => $id
+		)))
 		)
 		{
 			foreach ($lists as $list)
@@ -323,9 +324,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		{
 			foreach ($ids as $id)
 			{
-				$model = new SproutEmail_NotificationRecipientListModel();
+				$model = new SproutEmail_RecipientListRelationsModel();
 
-				$model->setAttribute('notificationId', $notification->id);
+				$model->setAttribute('emailId', $notification->id);
 				$model->setAttribute('list', $id);
 
 				$lists[] = $model;
@@ -337,11 +338,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 	public function getRecipientListsByNotificationId($id)
 	{
-		if (($lists = SproutEmail_NotificationRecipientListRecord::model()->findAllByAttributes(array('notificationId' =>
-			                                                                                              $id)))
+		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array(
+			'emailId' => $id
+		)))
 		)
 		{
-			return SproutEmail_NotificationRecipientListModel::populateModels($lists);
+			return SproutEmail_RecipientListRelationsModel::populateModels($lists);
 		}
 	}
 
