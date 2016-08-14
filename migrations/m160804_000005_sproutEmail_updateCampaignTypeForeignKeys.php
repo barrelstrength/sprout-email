@@ -13,6 +13,8 @@ class m160804_000005_sproutEmail_updateCampaignTypeForeignKeys extends BaseMigra
 	 */
 	public function safeUp()
 	{
+		MigrationHelper::refresh();
+		
 		$tableName = 'sproutemail_campaigntype';
 
 		if (craft()->db->tableExists($tableName))
