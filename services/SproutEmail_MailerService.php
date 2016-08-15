@@ -84,6 +84,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			}
 		}
 
+		asort($this->mailers, SORT_NATURAL);
+
 		return $this->mailers;
 	}
 
@@ -207,12 +209,12 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	/**
 	 * @param $mailerName
 	 * @param $emailId
-	 * @param $campaignId
+	 * @param $campaignTypeId
 	 *
-	 * @return array(content => '', actions => array())
+	 * @return array )
 	 * @throws Exception
 	 */
-	public function getPrepareModal($mailerName, $emailId, $campaignId)
+	public function getPrepareModal($mailerName, $emailId, $campaignTypeId)
 	{
 		$mailer = $this->getMailerByName($mailerName);
 
@@ -222,15 +224,15 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaign      = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
 		$response      = new SproutEmail_ResponseModel();
 
-		if ($campaignEmail && $campaign)
+		if ($campaignEmail && $campaignType)
 		{
 			try
 			{
 				$response->success = true;
-				$response->content = $mailer->getPrepareModalHtml($campaignEmail, $campaign);
+				$response->content = $mailer->getPrepareModalHtml($campaignEmail, $campaignType);
 
 				return $response;
 			}
@@ -255,27 +257,27 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	/**
 	 * @param $mailerName
 	 * @param $emailId
-	 * @param $campaignId
+	 * @param $campaignTypeId
 	 *
-	 * @return array(content => '', actions => array())
+	 * @return array )
 	 * @throws Exception
 	 */
-	public function getPreviewModal($mailerName, $emailId, $campaignId)
+	public function getPreviewModal($mailerName, $emailId, $campaignTypeId)
 	{
 		$mailer = $this->getMailerByName($mailerName);
 
 		if (!$mailer)
 		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaign->mailer)));
+			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
 		}
 
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaign      = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
 		$response      = new SproutEmail_ResponseModel();
 
-		if ($campaignEmail && $campaign)
+		if ($campaignEmail && $campaignType)
 		{
-			$response->content = $mailer->getPreviewModalHtml($campaignEmail, $campaign);
+			$response->content = $mailer->getPreviewModalHtml($campaignEmail, $campaignType);
 
 			return $response;
 		}
@@ -350,24 +352,24 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return array
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$mailer = $this->getMailerByName($campaign->mailer);
+		$mailer = $this->getMailerByName($campaignType->mailer);
 
 		if (!$mailer || !$mailer->isInstalled())
 		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaign->mailer)));
+			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
 		}
 
 		try
 		{
-			return $mailer->exportEmail($campaignEmail, $campaign);
+			return $mailer->exportEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{
@@ -377,24 +379,24 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return array
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$mailer = $this->getMailerByName($campaign->mailer);
+		$mailer = $this->getMailerByName($campaignType->mailer);
 
 		if (!$mailer)
 		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaign->mailer)));
+			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
 		}
 
 		try
 		{
-			return $mailer->previewCampaignEmail($campaignEmail, $campaign);
+			return $mailer->previewCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{

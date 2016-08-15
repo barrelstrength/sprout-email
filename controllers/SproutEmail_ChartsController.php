@@ -23,11 +23,8 @@ class SproutEmail_ChartsController extends ElementIndexController
 		$intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
 
 		// Prep the query
-		$criteria = $this->getElementCriteria();
-
-		$criteria->limit = null;
-
-		// Don't use the search
+		$criteria         = $this->getElementCriteria();
+		$criteria->limit  = null;
 		$criteria->search = null;
 
 		$query = craft()->elements->buildElementsQuery($criteria)
@@ -49,10 +46,9 @@ class SproutEmail_ChartsController extends ElementIndexController
 		}
 
 		$this->returnJson(array(
-			'dataTable' => $dataTable,
-			'total'     => $total,
-			'totalHtml' => $total,
-
+			'dataTable'        => $dataTable,
+			'total'            => $total,
+			'totalHtml'        => $total,
 			'formats'          => ChartHelper::getFormats(),
 			'orientation'      => craft()->locale->getOrientation(),
 			'scale'            => $intervalUnit,

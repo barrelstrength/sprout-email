@@ -15,7 +15,7 @@ class m160804_000007_sproutEmail_updateCampaignEmailForeignKeys extends BaseMigr
 	{
 		MigrationHelper::refresh();
 
-		$tableName = 'sproutemail_campaigns';
+		$tableName = 'sproutemail_campaignemails';
 
 		if (craft()->db->tableExists($tableName))
 		{
@@ -25,7 +25,7 @@ class m160804_000007_sproutEmail_updateCampaignEmailForeignKeys extends BaseMigr
 			MigrationHelper::dropAllForeignKeysOnTable($table);
 
 			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE');
-			craft()->db->createCommand()->addForeignKey($tableName, 'campaignId', 'sproutemail_campaigntype', 'id', 'CASCADE');
+			craft()->db->createCommand()->addForeignKey($tableName, 'campaignTypeId', 'sproutemail_campaigntype', 'id', 'CASCADE');
 		}
 
 		return true;

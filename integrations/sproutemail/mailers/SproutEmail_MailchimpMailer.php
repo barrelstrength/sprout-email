@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Enables you to send your campaigns using Mail Chimp
+ * Enables you to send your campaigns using MailChimp
  *
  * Class SproutEmailMailchimpMailer
  *
@@ -75,17 +75,16 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	{
 		$context['settings'] = $this->getSettings();
 
-		return craft()->templates->render('sproutemail/settings/_mailers/mailchimp/settings', $context);
+		return craft()->templates->render('sproutemail/settings/mailers/mailchimp/settings', $context);
 	}
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return string
-	 * @throws \Exception
 	 */
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		if (strpos($campaignEmail->replyToEmail, '{') !== false)
 		{
@@ -108,12 +107,12 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 		}
 
 		return craft()->templates->render(
-			'sproutemail/settings/_mailers/mailchimp/prepare',
+			'sproutemail/settings/mailers/mailchimp/prepare',
 			array(
 				'email'    => $campaignEmail,
 				'lists'    => $recipientLists,
 				'mailer'   => $this,
-				'campaign' => $campaign
+				'campaign' => $campaignType
 			)
 		);
 	}
@@ -134,7 +133,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 		if ($lists === false)
 		{
-			return craft()->templates->render('sproutemail/settings/_mailers/mailchimp/lists/sslerror');
+			return craft()->templates->render('sproutemail/settings/mailers/mailchimp/lists/sslerror');
 		}
 
 		if (!is_array($lists))
@@ -144,7 +143,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 		if (!count($lists))
 		{
-			return craft()->templates->render('sproutemail/settings/_mailers/mailchimp/lists/norecipientlists');
+			return craft()->templates->render('sproutemail/settings/mailers/mailchimp/lists/norecipientlists');
 		}
 
 		if (count($lists))
@@ -239,18 +238,18 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return array|void
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$sentCampaignIds = array();
 		$response        = new SproutEmail_ResponseModel();
 
 		try
 		{
-			$sentCampaign = $this->getService()->export($campaignEmail, $campaign);
+			$sentCampaign = $this->getService()->export($campaignEmail, $campaignType);
 
 			$sentCampaignIds = $sentCampaign['ids'];
 
@@ -268,10 +267,10 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 		}
 
 		$response->content = craft()->templates->render(
-			'sproutemail/settings/_mailers/mailchimp/export',
+			'sproutemail/settings/mailers/mailchimp/export',
 			array(
 				'entry'       => $campaignEmail,
-				'campaign'    => $campaign,
+				'campaign'    => $campaignType,
 				'mailer'      => $this,
 				'success'     => $response->success,
 				'message'     => $response->message,

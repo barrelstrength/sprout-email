@@ -80,7 +80,7 @@ class SproutEmail_CampaignTypeRecord extends BaseRecord
 			'campaignEmails' => array(
 				static::HAS_MANY,
 				'SproutEmail_CampaignEmailRecord',
-				'campaignId'
+				'campaignTypeId'
 			)
 		);
 	}

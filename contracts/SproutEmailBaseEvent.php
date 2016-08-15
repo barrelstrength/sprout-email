@@ -34,7 +34,11 @@ class SproutEmailBaseEvent
 		return $this->getTitle();
 	}
 
-	// @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
+	/**
+	 * @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
+	 *
+	 * @return string
+	 */
 	public function getId()
 	{
 		craft()->deprecator->log('SproutEmailBaseEvent->getId()', 'The SproutEmailBaseEvent getId() method has been deprecated in favor of getEventAction().');

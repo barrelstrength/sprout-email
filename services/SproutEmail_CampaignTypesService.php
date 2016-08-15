@@ -10,11 +10,11 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 	 */
 	public function getCampaignTypes()
 	{
-		$campaigns = SproutEmail_CampaignTypeRecord::model()->findAll();
+		$campaignsType = SproutEmail_CampaignTypeRecord::model()->findAll();
 
-		if ($campaigns)
+		if ($campaignsType)
 		{
-			return SproutEmail_CampaignTypeModel::populateModels($campaigns);
+			return SproutEmail_CampaignTypeModel::populateModels($campaignsType);
 		}
 	}
 
@@ -39,42 +39,42 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignTypeModel $campaign
-	 * @param string                        $tab
+	 * @param SproutEmail_CampaignTypeModel $campaignType
 	 *
-	 * @throws \Exception
-	 * @return int CampaignRecordId
+	 * @return int
+	 * @internal param string $tab
+	 *
 	 */
-	public function saveCampaignType(SproutEmail_CampaignTypeModel $campaign)
+	public function saveCampaignType(SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$campaignRecord = new SproutEmail_CampaignTypeRecord();
-		$oldCampaign    = null;
+		$campaignTypeRecord  = new SproutEmail_CampaignTypeRecord();
+		$oldCampaignType = null;
 
-		if (is_numeric($campaign->id) && !$campaign->saveAsNew)
+		if (is_numeric($campaignType->id) && !$campaignType->saveAsNew)
 		{
-			$campaignRecord = SproutEmail_CampaignTypeRecord::model()->findById($campaign->id);
-			$oldCampaign    = SproutEmail_CampaignTypeModel::populateModel($campaignRecord);
+			$campaignTypeRecord  = SproutEmail_CampaignTypeRecord::model()->findById($campaignType->id);
+			$oldCampaignType = SproutEmail_CampaignTypeModel::populateModel($campaignTypeRecord);
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-		$fieldLayout = $campaign->getFieldLayout();
+		$fieldLayout = $campaignType->getFieldLayout();
 		craft()->fields->saveLayout($fieldLayout);
 
 		// Delete our previous record
-		if ($campaign->id && $oldCampaign && $oldCampaign->fieldLayoutId)
+		if ($campaignType->id && $oldCampaignType && $oldCampaignType->fieldLayoutId)
 		{
-			craft()->fields->deleteLayoutById($oldCampaign->fieldLayoutId);
+			craft()->fields->deleteLayoutById($oldCampaignType->fieldLayoutId);
 		}
 
 		// Assign our new layout id info to our
 		// form model and records
-		$campaign->fieldLayoutId       = $fieldLayout->id;
-		$campaignRecord->fieldLayoutId = $fieldLayout->id;
+		$campaignType->fieldLayoutId   = $fieldLayout->id;
+		$campaignTypeRecord->fieldLayoutId = $fieldLayout->id;
 
-		$campaignRecord = $this->saveCampaignTypeInfo($campaign);
+		$campaignTypeRecord = $this->saveCampaignTypeInfo($campaignType);
 
-		if ($campaignRecord->hasErrors())
+		if ($campaignTypeRecord->hasErrors())
 		{
 			if ($transaction)
 			{
@@ -86,8 +86,8 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 		else
 		{
 			// Updates element i18n slug and uri
-			$criteria             = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
-			$criteria->campaignId = $campaign->id;
+			$criteria                 = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
+			$criteria->campaignTypeId = $campaignType->id;
 
 			$emailIds = $criteria->ids();
 
@@ -117,84 +117,82 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 			$transaction->commit();
 
 			// Pass update attributes
-			$campaign->setAttributes($campaignRecord->getAttributes());
+			$campaignType->setAttributes($campaignTypeRecord->getAttributes());
 		}
 
-		return SproutEmail_CampaignTypeModel::populateModel($campaignRecord);
+		return SproutEmail_CampaignTypeModel::populateModel($campaignTypeRecord);
 	}
 
-	protected function saveCampaignTypeInfo(SproutEmail_CampaignTypeModel &$campaign)
+	protected function saveCampaignTypeInfo(SproutEmail_CampaignTypeModel &$campaignType)
 	{
 		$oldCampaignMailer = null;
-		$campaignRecord    = new SproutEmail_CampaignTypeRecord();
+		$campaignTypeRecord    = new SproutEmail_CampaignTypeRecord();
 
-		if (isset($campaign->id) && is_numeric($campaign->id) && !$campaign->saveAsNew)
+		if (isset($campaignType->id) && is_numeric($campaignType->id) && !$campaignType->saveAsNew)
 		{
-			$campaignRecord = SproutEmail_CampaignTypeRecord::model()->findById($campaign->id);
+			$campaignTypeRecord = SproutEmail_CampaignTypeRecord::model()->findById($campaignType->id);
 
-			if (!$campaignRecord)
+			if (!$campaignTypeRecord)
 			{
 				throw new Exception(
 					Craft::t(
 						'No campaign exists with the ID “{id}”', array(
-							'id' => $campaign->id
+							'id' => $campaignType->id
 						)
 					)
 				);
 			}
-
-			$oldCampaignMailer = $campaignRecord->mailer;
 		}
 
 		// Set common attributes
-		$campaignRecord->fieldLayoutId     = $campaign->fieldLayoutId;
-		$campaignRecord->name              = $campaign->name;
-		$campaignRecord->handle            = $campaign->handle;
-		$campaignRecord->titleFormat       = $campaign->titleFormat;
-		$campaignRecord->hasUrls           = $campaign->hasUrls;
-		$campaignRecord->hasAdvancedTitles = $campaign->hasAdvancedTitles;
-		$campaignRecord->mailer            = $campaign->mailer;
+		$campaignTypeRecord->fieldLayoutId     = $campaignType->fieldLayoutId;
+		$campaignTypeRecord->name              = $campaignType->name;
+		$campaignTypeRecord->handle            = $campaignType->handle;
+		$campaignTypeRecord->titleFormat       = $campaignType->titleFormat;
+		$campaignTypeRecord->hasUrls           = $campaignType->hasUrls;
+		$campaignTypeRecord->hasAdvancedTitles = $campaignType->hasAdvancedTitles;
+		$campaignTypeRecord->mailer            = $campaignType->mailer;
 
-		$campaignRecord->urlFormat         = $campaign->urlFormat;
-		$campaignRecord->template          = $campaign->template;
-		$campaignRecord->templateCopyPaste = $campaign->templateCopyPaste;
+		$campaignTypeRecord->urlFormat         = $campaignType->urlFormat;
+		$campaignTypeRecord->template          = $campaignType->template;
+		$campaignTypeRecord->templateCopyPaste = $campaignType->templateCopyPaste;
 
-		if ($campaign->saveAsNew)
+		if ($campaignType->saveAsNew)
 		{
-			$campaignRecord->handle = $campaign->handle . "-1";
+			$campaignTypeRecord->handle = $campaignType->handle . "-1";
 		}
 
-		$campaignRecord->validate();
-		$campaign->addErrors($campaignRecord->getErrors());
+		$campaignTypeRecord->validate();
+		$campaignType->addErrors($campaignTypeRecord->getErrors());
 
 		// Get the title back from model because record validate append it with 1
-		if ($campaign->saveAsNew)
+		if ($campaignType->saveAsNew)
 		{
-			$campaignRecord->name = $campaign->name;
+			$campaignTypeRecord->name = $campaignType->name;
 		}
 
-		if (!$campaignRecord->hasErrors())
+		if (!$campaignTypeRecord->hasErrors())
 		{
-			$campaignRecord->save(false);
+			$campaignTypeRecord->save(false);
 		}
 
-		return $campaignRecord;
+		return $campaignTypeRecord;
 	}
 
 	/**
 	 * Deletes a campaign by its ID along with associations;
 	 * also cleans up any remaining orphans
 	 *
-	 * @param int $campaignId
+	 * @param int $campaignTypeId
 	 *
 	 * @return bool
 	 */
-	public function deleteCampaignType($campaignId)
+	public function deleteCampaignType($campaignTypeId)
 	{
 		try
 		{
 			craft()->db->createCommand()->delete('sproutemail_campaigntype', array(
-				'id' => $campaignId
+				'id' => $campaignTypeId
 			));
 
 			return true;

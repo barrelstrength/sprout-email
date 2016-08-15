@@ -8,51 +8,41 @@ namespace Craft;
  */
 class SproutEmail_DefaultMailerController extends BaseController
 {
-	public function actionExport()
-	{
-		$attributes = craft()->httpSession->get('__exportJob');
-
-		craft()->httpSession->remove('__exportJob');
-
-		if ($attributes && ($recipients = craft()->elements->getCriteria('SproutEmail_DefaultMailerRecipient', $attributes)->find()))
-		{
-			$this->generateCsvExport($recipients);
-
-			craft()->end();
-		}
-
-		craft()->userSession->setError(Craft::t('Nothing to export.'));
-		craft()->request->redirect(UrlHelper::getCpUrl('sproutemail/recipients'));
-	}
-
 	/**
-	 * @param SproutEmail_DefaultMailerRecipientModel[] $elements
-	 * @param string                                    $filename
-	 * @param string                                    $delimiter
+	 * @param array $variables
 	 *
-	 * @return bool
+	 * @throws HttpException
 	 */
-	protected function generateCsvExport(array $elements, $filename = 'recipients.csv', $delimiter = ',')
+	public function actionShowRecipientIndexTemplate(array $variables = array())
 	{
-		header('Content-Type: application/csv');
-		header('Content-Disposition: attachment; filename="' . $filename . '";');
+		$recipientListId = isset($variables['recipientListId']) ? $variables['recipientListId'] : null;
+		$recipientLists  = sproutEmailDefaultMailer()->getRecipientLists();
+		$recipients      = null;
 
-		$f = fopen('php://output', 'w');
-
-		foreach ($elements as $element)
+		if ($recipientListId)
 		{
-			fputcsv(
-				$f,
-				array(
-					$element->firstName,
-					$element->lastName,
-					$element->email,
-				),
-				$delimiter
-			);
+			/**
+			 * @var $recipientList SproutEmail_DefaultMailerRecipientListModel
+			 */
+			$recipientList = sproutEmailDefaultMailer()->getRecipientListById($recipientListId);
+
+			if (!$recipientList)
+			{
+				throw new HttpException(404);
+			}
+
+			$recipients = $recipientList->recipients;
+		}
+		else
+		{
+			$recipients = sproutEmailDefaultMailer()->getRecipients();
 		}
 
-		fclose($f);
+		$this->renderTemplate('sproutemail/recipients/index', array(
+			'recipientListId' => $recipientListId,
+			'recipientLists'  => $recipientLists,
+			'recipients'      => $recipients
+		));
 	}
 
 	/**
@@ -60,12 +50,11 @@ class SproutEmail_DefaultMailerController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionShowEditRecipientTemplate(array $variables = array())
+	public function actionShowRecipientEditTemplate(array $variables = array())
 	{
-		$variables['title']              = Craft::t('Recipient');
 		$variables['recipientListsHtml'] = null;
 		$defaultRecipientList            = array();
-		// @todo - Refactor and improve
+
 		if (isset($variables['recipient']))
 		{
 			// When a form doesn't validate, we can use our SproutEmail_DefaultMailerRecipientModel object here
@@ -119,36 +108,56 @@ class SproutEmail_DefaultMailerController extends BaseController
 	}
 
 	/**
-	 * @param array $variables
-	 *
-	 * @throws HttpException
+	 * Export Recipients
 	 */
-	public function actionShowIndexRecipientTemplate(array $variables = array())
+	public function actionExportCsv()
 	{
-		if (isset($variables['recipientListId']))
-		{
-			/**
-			 * @var $recipientList SproutEmail_DefaultMailerRecipientListModel
-			 */
-			$recipientList = sproutEmailDefaultMailer()->getRecipientListById($variables['recipientListId']);
+		$attributes = craft()->httpSession->get('__exportJob');
 
-			if (!$recipientList)
-			{
-				throw new HttpException(404);
-			}
+		craft()->httpSession->remove('__exportJob');
 
-			$recipients = $recipientList->recipients;
-		}
-		else
+		$recipients = craft()->elements->getCriteria('SproutEmail_DefaultMailerRecipient', $attributes)->find();
+
+		if ($attributes && $recipients)
 		{
-			$recipients = sproutEmailDefaultMailer()->getRecipients();
+			$this->generateCsvExport($recipients);
+
+			craft()->end();
 		}
 
-		$variables['title']          = Craft::t('Recipients');
-		$variables['recipientLists'] = sproutEmailDefaultMailer()->getRecipientLists();
-		$variables['recipients']     = $recipients;
+		craft()->userSession->setError(Craft::t('Nothing to export.'));
 
-		$this->renderTemplate('sproutemail/recipients/index', $variables);
+		craft()->request->redirect(UrlHelper::getCpUrl('sproutemail/recipients'));
+	}
+
+	/**
+	 * @param SproutEmail_DefaultMailerRecipientModel[] $elements
+	 * @param string                                    $filename
+	 * @param string                                    $delimiter
+	 *
+	 * @return bool
+	 */
+	protected function generateCsvExport(array $elements, $filename = 'recipients.csv', $delimiter = ',')
+	{
+		header('Content-Type: application/csv');
+		header('Content-Disposition: attachment; filename="' . $filename . '";');
+
+		$f = fopen('php://output', 'w');
+
+		foreach ($elements as $element)
+		{
+			fputcsv(
+				$f,
+				array(
+					$element->firstName,
+					$element->lastName,
+					$element->email,
+				),
+				$delimiter
+			);
+		}
+
+		fclose($f);
 	}
 
 	/**

@@ -50,7 +50,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	{
 		$context['settings'] = $this->getSettings();
 
-		$html = craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/settings', $context);
+		$html = craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/settings', $context);
 
 		return TemplateHelper::getRaw($html);
 	}
@@ -75,7 +75,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 		if (!count($lists))
 		{
-			return craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/recipientlists/norecipientlists');
+			return craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/defaultMailer/norecipientlists');
 		}
 
 		if (count($lists))
@@ -120,7 +120,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		return array_merge($params, $extra);
 	}
 
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -144,16 +144,16 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return SproutEmail_ResponseModel
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		try
 		{
-			$result            = $this->getService()->exportEmail($campaignEmail, $campaign);
+			$result            = $this->getService()->exportEmail($campaignEmail, $campaignType);
 			$createdCampaignId = $result['id'];
 		}
 		catch (\Exception $e)
@@ -165,10 +165,10 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		$response->emailModel = $result['emailModel'];
 		$response->success    = true;
 		$response->content    = craft()->templates->render(
-			'sproutemail/settings/_mailers/campaignmonitor/export',
+			'sproutemail/settings/mailers/campaignmonitor/export',
 			array(
 				'entry'             => $campaignEmail,
-				'campaign'          => $campaign,
+				'campaign'          => $campaignType,
 				'success'           => true,
 				'response'          => $response,
 				'createdCampaignId' => $createdCampaignId,
@@ -178,10 +178,10 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		return $response;
 	}
 
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		// Get entry URLs
-		$urls = $this->getService()->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
+		$urls = $this->getService()->getCampaignEmailUrls($campaignEmail->id, $campaignType->template);
 
 		// Create an array of all recipient list titles
 		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
@@ -195,28 +195,20 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 			}
 		}
 
-		// Set up an array of details to output to the user
-		$details = array(
+		return craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/prepare', array(
 			'htmlUrl'  => $urls['html'],
+			'textUrl'  => ($urls['hasText']) ? stripslashes($urls['text']) : null,
 			'lists'    => $recipientLists,
 			'entry'    => $campaignEmail,
-			'campaign' => $campaign
-		);
-
-		// Append textUrl to $details if a text template exists
-		if ($urls['hasText'])
-		{
-			$details['textUrl'] = stripslashes($urls['text']);
-		}
-
-		return craft()->templates->render('sproutemail/settings/_mailers/campaignmonitor/prepare', $details);
+			'campaign' => $campaignType
+		));
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		try
 		{
-			return $this->getService()->previewCampaignEmail($campaignEmail, $campaign);
+			return $this->getService()->previewCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{
@@ -224,9 +216,9 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		}
 	}
 
-	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		return $this->getService()->previewCampaignEmail($campaignEmail, $campaign);
+		return $this->getService()->previewCampaignEmail($campaignEmail, $campaignType);
 	}
 
 	public function getActionForPreview()

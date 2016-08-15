@@ -4,6 +4,36 @@ namespace Craft;
 class SproutEmail_CampaignTypeController extends BaseController
 {
 	/**
+	 * Renders a Campaign Type settings template
+	 *
+	 * @param array $variables
+	 */
+	public function actionCampaignSettingsTemplate(array $variables = array())
+	{
+		$campaignTypeId = isset($variables['campaignTypeId']) ? $variables['campaignTypeId'] : null;
+		$campaignType   = isset($variables['campaignType']) ? $variables['campaignType'] : null;
+
+		if ($campaignTypeId)
+		{
+			// If campaign already exists, we're returning an error object
+			if (!$campaignType)
+			{
+				$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
+			}
+		}
+		else
+		{
+			$campaignType = new SproutEmail_CampaignTypeModel();
+		}
+
+		// Load our template
+		$this->renderTemplate('sproutemail/settings/campaigntypes/_edit', array(
+			'campaignTypeId' => $campaignTypeId,
+			'campaignType'   => $campaignType
+		));
+	}
+
+	/**
 	 * Save campaign type
 	 *
 	 * @return void
@@ -12,16 +42,16 @@ class SproutEmail_CampaignTypeController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$campaignId = craft()->request->getRequiredPost('sproutEmail.id');
-		$campaign   = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$campaignTypeId = craft()->request->getRequiredPost('campaignTypeId');
+		$campaignType   = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
 
-		$campaign->setAttributes(craft()->request->getPost('sproutEmail'));
+		$campaignType->setAttributes(craft()->request->getPost('sproutEmail'));
 
 		if (craft()->request->getPost('saveAsNew'))
 		{
-			$campaign->saveAsNew = true;
-			$campaign->id        = null;
-			$_POST['redirect']   = 'sproutemail/settings/campaigns/edit/{id}';
+			$campaignType->saveAsNew = true;
+			$campaignType->id        = null;
+			$_POST['redirect']       = 'sproutemail/settings/campaigntypes/edit/{id}';
 		}
 
 		if (craft()->request->getPost('fieldLayout'))
@@ -29,15 +59,15 @@ class SproutEmail_CampaignTypeController extends BaseController
 			// Set the field layout
 			$fieldLayout = craft()->fields->assembleLayoutFromPost();
 
-			$fieldLayout->type = 'SproutEmail_Campaign';
-			$campaign->setFieldLayout($fieldLayout);
+			$fieldLayout->type = 'SproutEmail_CampaignEmail';
+			$campaignType->setFieldLayout($fieldLayout);
 		}
 
-		if ($campaign = sproutEmail()->campaignTypes->saveCampaignType($campaign))
+		if ($campaignType = sproutEmail()->campaignTypes->saveCampaignType($campaignType))
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign saved.'));
 
-			$_POST['redirect'] = str_replace('{id}', $campaign->id, $_POST['redirect']);
+			$_POST['redirect'] = str_replace('{id}', $campaignType->id, $_POST['redirect']);
 
 			$this->redirectToPostedUrl();
 		}
@@ -46,13 +76,13 @@ class SproutEmail_CampaignTypeController extends BaseController
 			craft()->userSession->setError(Craft::t('Unable to save campaign.'));
 
 			craft()->urlManager->setRouteVariables(array(
-				'campaign' => $campaign
+				'campaignType' => $campaignType
 			));
 		}
 	}
 
 	/**
-	 * Delete campaign
+	 * Delete Campaign Type
 	 *
 	 * @return void
 	 */
@@ -61,11 +91,11 @@ class SproutEmail_CampaignTypeController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$campaignId = craft()->request->getRequiredPost('id');
+		$campaignTypeId = craft()->request->getRequiredPost('campaignTypeId');
 
-		if ($result = sproutEmail()->campaignTypes->deleteCampaignType($campaignId))
+		if ($result = sproutEmail()->campaignTypes->deleteCampaignType($campaignTypeId))
 		{
-			craft()->userSession->setNotice(Craft::t('Campaign deleted.'));
+			craft()->userSession->setNotice(Craft::t('Campaign Type deleted.'));
 
 			$this->returnJson(array(
 				'success' => true
@@ -73,49 +103,11 @@ class SproutEmail_CampaignTypeController extends BaseController
 		}
 		else
 		{
-			craft()->userSession->setError(Craft::t("Couldn’t delete Campaign."));
+			craft()->userSession->setError(Craft::t("Couldn't delete Campaign."));
 
 			$this->returnJson(array(
 				'success' => false
 			));
 		}
-	}
-
-	/**
-	 * Save settings
-	 *
-	 * @return void
-	 */
-	public function actionSaveSettings()
-	{
-		$this->requirePostRequest();
-
-		foreach (craft()->request->getPost('settings') as $provider => $settings)
-		{
-			$service = 'sproutEmail_' . lcfirst($provider);
-			craft()->$service->saveSettings($settings);
-		}
-
-		craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
-		$this->redirectToPostedUrl();
-	}
-
-	public function actionCampaignSettingsTemplate(array $variables = array())
-	{
-		if (isset($variables['campaignId']))
-		{
-			// If campaign already exists, we're returning an error object
-			if (!isset($variables['campaign']))
-			{
-				$variables['campaign'] = sproutEmail()->campaignTypes->getCampaignTypeById($variables['campaignId']);
-			}
-		}
-		else
-		{
-			$variables['campaign'] = new SproutEmail_Campaign();
-		}
-
-		// Load our template
-		$this->renderTemplate('sproutemail/settings/campaigns/_edit', $variables);
 	}
 }

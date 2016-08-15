@@ -1,6 +1,6 @@
 {% from "_includes/forms" import textField %}
 
-{% if email.getErrors('subjectLine') %}
+{% if campaignEmail.getErrors('subjectLine') %}
 	{% set subjectLineError = ['Subject Line cannot be blank.'|t] %}
 {% endif %}
 
@@ -8,7 +8,7 @@
 	label: "Subject Line"|t,
 	id: 'subjectLine',
 	name: 'subjectLine',
-	value: email.subjectLine,
+	value: campaignEmail.subjectLine,
 	errors: (subjectLineError is defined ? subjectLineError : null),
 	first: true,
 	autofocus: true,
@@ -17,11 +17,11 @@
 }) }}
 
 <div>
-	{% for tab in campaign.getFieldLayout().getTabs() %}
+	{% for tab in campaignType.getFieldLayout().getTabs() %}
 		<div id="tab{{ loop.index }}"{% if not loop.first %} class="hidden"{% endif %}>
 			{% include "_includes/fields" with {
 				fields:  tab.getFields(),
-				element: email,
+				element: campaignEmail,
 				static:  (static is defined ? static : false)
 			} only %}
 		</div>

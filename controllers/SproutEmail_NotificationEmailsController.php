@@ -8,139 +8,36 @@ namespace Craft;
  */
 class SproutEmail_NotificationEmailsController extends BaseController
 {
-
+	/**
+	 * @var
+	 */
 	private $notification;
 
 	/**
-	 * Renders the notification settings template with passed in route variables
+	 * Renders the Edit Notification Email template
 	 *
 	 * @param array $variables
-	 *
-	 * @throws HttpException
 	 */
-	public function actionNotificationSettingsTemplate(array $variables = array())
+	public function actionEditNotificationEmailTemplate(array $variables = array())
 	{
-		if (!sproutEmail()->checkPermission())
+		$notificationId = isset($variables['notificationId']) ? $variables['notificationId'] : null;
+		$notificationEmail = isset($variables['notificationEmail']) ? $variables['notificationEmail'] : null;
+
+		if (!$notificationEmail)
 		{
-			$this->redirect('sproutemail');
+			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
 		}
-
-		if (isset($variables['campaignId']))
-		{
-			if (!isset($variables['campaign']))
-			{
-				$variables['campaign'] = sproutEmail()->campaignTypes->getCampaignTypeById($variables['campaignId']);
-			}
-		}
-		else
-		{
-			$variables['campaign'] = new SproutEmail_CampaignTypeModel();
-		}
-
-		$variables['isMailerInstalled'] = (bool) sproutEmail()->mailers->isInstalled('defaultmailer');
-
-		$this->renderTemplate('sproutemail/settings/notifications/_edit', $variables);
-	}
-
-	public function actionEditNotificationSetting(array $variables = array())
-	{
-		$notificationId = null;
-
-		$session = craft()->httpSession->get('newNotification');
-
-		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
-
-		$this->renderTemplate('sproutemail/notifications/_settings', array(
-			'notification'    => $notification,
-			'newNotification' => $session
-		));
-	}
-
-	public function actionSaveNotificationSetting()
-	{
-		$this->requirePostRequest();
-
-		$inputs = craft()->request->getPost('sproutEmail');
-
-		if (isset($inputs['id']))
-		{
-			$notificationId = $inputs['id'];
-
-			$notification = craft()->elements->getElementById($notificationId);
-		}
-		else
-		{
-			$notification = new SproutEmail_NotificationEmailModel();
-
-			$inputs['subjectLine'] = $inputs['name'];
-			$inputs['slug']        = ElementHelper::createSlug($inputs['name']);
-		}
-
-		$notification->setAttributes($inputs);
-
-		if ($notification->validate())
-		{
-			if (craft()->request->getPost('fieldLayout'))
-			{
-				// Set the field layout
-				$fieldLayout = craft()->fields->assembleLayoutFromPost();
-
-				$fieldLayout->type = 'SproutEmail_Notification';
-
-				$notification->setFieldLayout($fieldLayout);
-
-				if ($notification->fieldLayoutId != null)
-				{
-					// Remove previous field layout
-					craft()->fields->deleteLayoutById($notification->fieldLayoutId);
-				}
-
-				craft()->fields->saveLayout($fieldLayout);
-			}
-
-			if (!empty($notification->id))
-			{
-				// retain options attribute by the second parameter
-				sproutEmail()->notificationEmails->saveNotification($notification, true);
-			}
-			else
-			{
-				craft()->httpSession->add('newNotification', serialize($notification));
-			}
-
-			$this->redirectToPostedUrl();
-		}
-		else
-		{
-			craft()->userSession->setError(Craft::t('Unable to save setting.'));
-
-			craft()->urlManager->setRouteVariables(array(
-				'notification' => $notification
-			));
-		}
-	}
-
-	public function actionEditNotification(array $variables = array())
-	{
-		$notificationId = null;
-
-		$session = craft()->httpSession->get('newNotification');
-
-		if ($session == null && !isset($variables['notificationId']))
-		{
-			$url = UrlHelper::getCpUrl() . '/sproutemail/notifications/setting/new';
-			$this->redirect($url);
-		}
-
-		$notification = sproutEmail()->notificationEmails->getNotificationByVariables($variables, $session);
 
 		$mailer         = sproutEmail()->mailers->getMailerByName('defaultmailer');
-		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($notification->id);
+		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($notificationEmail->id);
 
 		$showPreviewBtn = false;
 		$shareUrl       = null;
 
-		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($notification->template))
+		$isMobileBrowser = craft()->request->isMobileBrowser(true);
+		$siteTemplateExists = sproutEmail()->doesSiteTemplateExist($notificationEmail->template);
+
+		if (!$isMobileBrowser && $siteTemplateExists)
 		{
 			$showPreviewBtn = true;
 
@@ -149,180 +46,73 @@ class SproutEmail_NotificationEmailsController extends BaseController
 					array(
 						'fields'        => '#subjectLine-field, #title-field, #fields > div > div > .field',
 						'extraFields'   => '#settings',
-						'previewUrl'    => $notification->getUrl(),
+						'previewUrl'    => $notificationEmail->getUrl(),
 						'previewAction' => 'sproutEmail/notificationEmails/livePreviewNotificationEmail',
 						'previewParams' => array(
-							'notificationId' => $notification->id,
+							'notificationId' => $notificationEmail->id,
 						)
 					)
 				) . ');'
 			);
 
-			$status = $notification->getStatus();
-
-			$shareParams = array(
-				'notificationId' => $notification->id,
-			);
-
-			if ($notification->id && $notification->getUrl())
+			if ($notificationEmail->id && $notificationEmail->getUrl())
 			{
-				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
+				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', array(
+					'notificationId' => $notificationEmail->id,
+				));
 			}
 		}
 
 		$this->renderTemplate('sproutemail/notifications/_edit', array(
-			'notification'   => $notification,
-			'recipientLists' => $recipientLists,
-			'mailer'         => $mailer,
-			'showPreviewBtn' => $showPreviewBtn,
-			'shareUrl'       => $shareUrl
+			'notificationEmail' => $notificationEmail,
+			'recipientLists'    => $recipientLists,
+			'mailer'            => $mailer,
+			'showPreviewBtn'    => $showPreviewBtn,
+			'shareUrl'          => $shareUrl
 		));
-	}
-
-	public function actionSaveNotification()
-	{
-		$this->requirePostRequest();
-
-		$inputs = craft()->request->getPost('sproutEmail');
-
-		$session = craft()->httpSession->get('newNotification');
-
-		if (isset($inputs['id']))
-		{
-			$notificationId = $inputs['id'];
-
-			$notification = craft()->elements->getElementById($notificationId);
-		}
-
-		if ($session != null)
-		{
-			$session      = unserialize($session);
-			$notification = $session;
-		}
-
-		// Make sure to clear previous errors
-		$notification->clearErrors();
-
-		$notification->setAttributes($inputs);
-
-		$this->notification = $notification;
-
-		$this->validateAttribute('fromName', 'From Name', $inputs['fromName'], false);
-
-		$this->validateAttribute('fromEmail', 'From Email', $inputs['fromEmail']);
-
-		$this->validateAttribute('replyToEmail', 'Reply To', $inputs['replyToEmail']);
-
-		$notification = $this->notification;
-
-		$notification->subjectLine = craft()->request->getRequiredPost('subjectLine');
-		$notification->slug        = craft()->request->getRequiredPost('slug');
-
-		if (empty($notification->slug))
-		{
-			$notification->slug = ElementHelper::createSlug($notification->subjectLine);
-		}
-
-		// Do not clear errors to add additional validation
-		if ($notification->validate(null, false) && $notification->hasErrors() == false)
-		{
-			$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
-
-			$notification->setContentFromPost($fieldsLocation);
-			$notification->setContentPostLocation($fieldsLocation);
-
-			$notification->getContent()->title = $notification->subjectLine;
-
-			$result = sproutEmail()->notificationEmails->saveNotification($notification);
-
-			if ($result !== false)
-			{
-				craft()->userSession->setNotice(Craft::t('Notification saved.'));
-
-				$_POST['redirect'] = str_replace('new', $notification->id, $_POST['redirect']);
-			}
-			else
-			{
-				craft()->userSession->setError(Craft::t('Unable to save notification.'));
-
-				sproutEmail()->log($notification->getErrors());
-			}
-
-			if (craft()->httpSession->get('newNotification') != null)
-			{
-				craft()->httpSession->remove('newNotification');
-			}
-
-			$this->redirectToPostedUrl();
-		}
-		else
-		{
-			$this->returnErrors($notification);
-		}
-	}
-
-	private function validateAttribute($attribute, $label, $value, $email = true)
-	{
-		// Fix the &#8203 bug to test try the @asdf emails
-		$value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
-
-		if (empty($value))
-		{
-			$this->notification->addError($attribute, Craft::t("$label cannot be blank."));
-		}
-
-		if ($email == true && filter_var($value, FILTER_VALIDATE_EMAIL) === false)
-		{
-			$this->notification->addError($attribute, Craft::t("$label is not a valid email address."));
-		}
-	}
-
-	private function returnErrors($notification)
-	{
-		craft()->userSession->setError(Craft::t('Unable to save notification email.'));
-
-		craft()->urlManager->setRouteVariables(array(
-			'notification' => $notification
-		));
-	}
-
-	public function actionDeleteNotificationEmail()
-	{
-		$this->requirePostRequest();
-
-		$inputs = craft()->request->getPost('sproutEmail');
-
-		if (isset($inputs['id']))
-		{
-			$notificationId = $inputs['id'];
-
-			$notification = craft()->elements->getElementById($notificationId);
-
-			if (sproutEmail()->notificationEmails->deleteNotificationEmailById($notificationId))
-			{
-				$this->redirectToPostedUrl($notification);
-			}
-			else
-			{
-				// @TODO - return errors
-				SproutEmailPlugin::log(json_encode($notification->getErrors()));
-			}
-		}
-	}
-
-	public function actionGetPrepareModal()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$notificationId = craft()->request->getRequiredPost('notificationId');
-
-		$response = sproutEmail()->notificationEmails->getPrepareModal($notificationId);
-
-		$this->returnJson($response->getAttributes());
 	}
 
 	/**
+	 * Renders the Edit Notification Email Settings template
+	 *
+	 * @param array $variables
+	 *
+	 * @throws HttpException
+	 */
+	public function actionEditNotificationEmailSettingsTemplate(array $variables = array())
+	{
+		$currentUser = craft()->userSession->getUser();
+
+		if (!$currentUser->can('editSproutEmailSettings'))
+		{
+			$this->redirect('sproutemail');
+		}
+
+		$emailId                = isset($variables['emailId']) ? $variables['emailId'] : null;
+		$notificationEmail      = isset($variables['notificationEmail']) ? $variables['notificationEmail'] : null;
+		$isMailerInstalled      = (bool) sproutEmail()->mailers->isInstalled('defaultmailer');
+		$isNewNotificationEmail = isset($emailId) && $emailId == 'new' ? true : false;
+
+		if (!$isNewNotificationEmail && !isset($notificationEmail))
+		{
+			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($emailId);
+		}
+		else
+		{
+			$notificationEmail = new SproutEmail_NotificationEmailModel();
+		}
+
+		$this->renderTemplate('sproutemail/settings/notifications/_edit', array(
+			'emailId'                => $emailId,
+			'notificationEmail'      => $notificationEmail,
+			'isMailerInstalled'      => $isMailerInstalled,
+			'isNewNotificationEmail' => $isNewNotificationEmail
+		));
+	}
+
+	/**
+	 * Send a notification email via a Mailer
+	 *
 	 * @throws HttpException
 	 */
 	public function actionExport()
@@ -368,7 +158,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 				$this->returnJson(
 					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/export', array(
 						'email'    => $notificationEmail,
-						'campaign' => $campaign,
 						'message'  => $errorMessage
 					))
 				);
@@ -378,7 +167,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 				$this->returnJson(
 					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/export', array(
 						'email'    => $notificationEmail,
-						'campaign' => $campaign,
 						'message'  => $e->getMessage(),
 					))
 				);
@@ -394,6 +182,190 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		);
 	}
 
+	/**
+	 * Save a Notification Email from the Notification Email template
+	 */
+	public function actionSaveNotificationEmail()
+	{
+		$this->requirePostRequest();
+
+		$fields = craft()->request->getPost('sproutEmail');
+
+		if (isset($fields['id']))
+		{
+			$notificationId = $fields['id'];
+
+			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+		}
+
+		$notificationEmail->clearErrors();
+
+		$notificationEmail->setAttributes($fields);
+
+		$this->notification = $notificationEmail;
+
+		$this->validateAttribute('fromName', 'From Name', $fields['fromName'], false);
+
+		$this->validateAttribute('fromEmail', 'From Email', $fields['fromEmail']);
+
+		$this->validateAttribute('replyToEmail', 'Reply To', $fields['replyToEmail']);
+
+		$notificationEmail = $this->notification;
+
+		$notificationEmail->subjectLine = craft()->request->getRequiredPost('subjectLine');
+		$notificationEmail->slug        = craft()->request->getRequiredPost('slug');
+
+		if (empty($notificationEmail->slug))
+		{
+			$notificationEmail->slug = ElementHelper::createSlug($notificationEmail->subjectLine);
+		}
+
+		// Do not clear errors to add additional validation
+		if ($notificationEmail->validate(null, false) && $notificationEmail->hasErrors() == false)
+		{
+			$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
+			$notificationEmail->setContentFromPost($fieldsLocation);
+			$notificationEmail->setContentPostLocation($fieldsLocation);
+
+			$notificationEmail->getContent()->title = $notificationEmail->subjectLine;
+
+			$result = sproutEmail()->notificationEmails->saveNotification($notificationEmail);
+
+			if ($result !== false)
+			{
+				craft()->userSession->setNotice(Craft::t('Notification saved.'));
+
+				$_POST['redirect'] = str_replace('new', $notificationEmail->id, $_POST['redirect']);
+			}
+			else
+			{
+				craft()->userSession->setError(Craft::t('Unable to save notification.'));
+
+				sproutEmail()->log($notificationEmail->getErrors());
+			}
+
+			$this->redirectToPostedUrl();
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t('Unable to save notification email.'));
+
+			craft()->urlManager->setRouteVariables(array(
+				'notificationEmail' => $notificationEmail
+			));
+		}
+	}
+
+	/**
+	 * Save a Notification Email from the Notification Email Settings template
+	 */
+	public function actionSaveNotificationEmailSettings()
+	{
+		$this->requirePostRequest();
+
+		$emailId                = craft()->request->getPost('emailId');
+		$fields                 = craft()->request->getPost('sproutEmail');
+		$isNewNotificationEmail = isset($emailId) && $emailId == 'new' ? true : false;
+
+		if (!$isNewNotificationEmail)
+		{
+			$notificationEmail = craft()->elements->getElementById($emailId);
+		}
+		else
+		{
+			$notificationEmail = new SproutEmail_NotificationEmailModel();
+
+			$notificationEmail->getContent()->title = $fields['subjectLine'];
+
+			$fields['subjectLine'] = $fields['name'];
+			$fields['slug']        = ElementHelper::createSlug($fields['name']);
+		}
+
+		$notificationEmail->setAttributes($fields);
+
+		if ($notificationEmail->validate())
+		{
+			if (craft()->request->getPost('fieldLayout'))
+			{
+				// Set the field layout
+				$fieldLayout = craft()->fields->assembleLayoutFromPost();
+
+				$fieldLayout->type = 'SproutEmail_NotificationEmail';
+
+				$notificationEmail->setFieldLayout($fieldLayout);
+
+				if ($notificationEmail->fieldLayoutId != null)
+				{
+					// Remove previous field layout
+					craft()->fields->deleteLayoutById($notificationEmail->fieldLayoutId);
+				}
+
+				craft()->fields->saveLayout($fieldLayout);
+			}
+
+			// retain options attribute by the second parameter
+			sproutEmail()->notificationEmails->saveNotification($notificationEmail, true);
+
+			$this->redirectToPostedUrl($notificationEmail);
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t('Unable to save setting.'));
+
+			craft()->urlManager->setRouteVariables(array(
+				'notificationEmail' => $notificationEmail
+			));
+		}
+	}
+
+	/**
+	 * Delete a Notification Email
+	 */
+	public function actionDeleteNotificationEmail()
+	{
+		$this->requirePostRequest();
+
+		$notificationId = craft()->request->getRequiredPost('sproutEmail.id');
+
+		if ($notificationId)
+		{
+			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+
+			if (sproutEmail()->notificationEmails->deleteNotificationEmailById($notificationId))
+			{
+				$this->redirectToPostedUrl($notificationEmail);
+			}
+			else
+			{
+				// @TODO - return errors
+				SproutEmailPlugin::log(json_encode($notificationEmail->getErrors()));
+			}
+		}
+	}
+
+	/**
+	 * Provides a way for mailers to render content to perform actions inside a a modal window
+	 */
+	public function actionGetPrepareModal()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$notificationId = craft()->request->getRequiredPost('notificationId');
+
+		$response = sproutEmail()->notificationEmails->getPrepareModal($notificationId);
+
+		$this->returnJson($response->getAttributes());
+	}
+
+	/**
+	 * Prepares a Notification Email to be shared via token-based URL
+	 *
+	 * @param null $notificationId
+	 *
+	 * @throws HttpException
+	 */
 	public function actionShareNotificationEmail($notificationId = null)
 	{
 		if ($notificationId)
@@ -418,18 +390,32 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		}
 
 		// Create the token and redirect to the entry URL with the token in place
-		$token = craft()->tokens->createToken(
-			array(
-				'action' => 'sproutEmail/notificationEmails/viewSharedNotificationEmail',
-				'params' => $params
-			)
-		);
+		$token = craft()->tokens->createToken(array(
+			'action' => 'sproutEmail/notificationEmails/viewSharedNotificationEmail',
+			'params' => $params
+		));
 
 		$url = UrlHelper::getUrlWithToken($notificationEmail->getUrl(), $token);
 
 		craft()->request->redirect($url);
 	}
 
+	/**
+	 * Renders a shared Notification Email
+	 *
+	 * @param null $notificationId
+	 * @param null $type
+	 */
+	public function actionViewSharedNotificationEmail($notificationId = null, $type = null)
+	{
+		$this->requireToken();
+
+		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId, $type);
+	}
+
+	/**
+	 * Renders a Notification Email for Live Preview
+	 */
 	public function actionLivePreviewNotificationEmail()
 	{
 		$notificationId = craft()->request->getPost('notificationId');
@@ -437,10 +423,27 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId);
 	}
 
-	public function actionViewSharedNotificationEmail($notificationId = null, $type = null)
+	/**
+	 * Validate a Notification Email attribute and add errors to the model
+	 *
+	 * @param      $attribute
+	 * @param      $label
+	 * @param      $value
+	 * @param bool $email
+	 */
+	private function validateAttribute($attribute, $label, $value, $email = true)
 	{
-		$this->requireToken();
+		// Fix the &#8203 bug to test try the @asdf emails
+		$value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
 
-		sproutEmail()->notificationEmails->getPreviewNotificationEmailById($notificationId, $type);
+		if (empty($value))
+		{
+			$this->notification->addError($attribute, Craft::t("$label cannot be blank."));
+		}
+
+		if ($email == true && filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+		{
+			$this->notification->addError($attribute, Craft::t("$label is not a valid email address."));
+		}
 	}
 }

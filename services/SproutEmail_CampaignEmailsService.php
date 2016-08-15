@@ -38,14 +38,15 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		{
 			$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findById($campaignEmail->id);
 			$isNewEntry          = false;
+
 			if (!$campaignEmailRecord)
 			{
 				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $campaignEmail->id)));
 			}
 		}
 
-		$campaignEmailRecord->campaignId  = $campaignEmail->campaignId;
-		$campaignEmailRecord->subjectLine = $campaignEmail->subjectLine;
+		$campaignEmailRecord->campaignTypeId = $campaignEmail->campaignTypeId;
+		$campaignEmailRecord->subjectLine    = $campaignEmail->subjectLine;
 
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
 		$campaignEmailRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
@@ -195,35 +196,39 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param SproutEmail_CampaignTypeModel $campaignType
 	 *
 	 * @return bool
-	 * @throws Exception
-	 * @throws \Exception
 	 */
-	public function saveRelatedCampaignEmail(SproutEmail_CampaignTypeModel $campaign)
+	public function saveRelatedCampaignEmail(SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$defaultMailer         = sproutEmail()->mailers->getMailerByName('defaultmailer');
 		$defaultMailerSettings = $defaultMailer->getSettings();
 
 		$campaignEmail = new SproutEmail_CampaignEmailModel();
 
-		$campaignEmail->campaignId   = $campaign->getAttribute('id');
-		$campaignEmail->dateCreated  = date('Y-m-d H:i:s');
-		$campaignEmail->enabled      = true;
-		$campaignEmail->saveAsNew    = true;
-		$campaignEmail->fromName     = $defaultMailerSettings->fromName;
-		$campaignEmail->fromEmail    = $defaultMailerSettings->fromEmail;
-		$campaignEmail->replyToEmail = $defaultMailerSettings->replyToEmail;
-		$campaignEmail->recipients   = null;
-		$campaignEmail->subjectLine  = $campaign->getAttribute('name');
+		$campaignEmail->campaignTypeId = $campaignType->getAttribute('id');
+		$campaignEmail->dateCreated    = date('Y-m-d H:i:s');
+		$campaignEmail->enabled        = true;
+		$campaignEmail->saveAsNew      = true;
+		$campaignEmail->fromName       = $defaultMailerSettings->fromName;
+		$campaignEmail->fromEmail      = $defaultMailerSettings->fromEmail;
+		$campaignEmail->replyToEmail   = $defaultMailerSettings->replyToEmail;
+		$campaignEmail->recipients     = null;
+		$campaignEmail->subjectLine    = $campaignType->getAttribute('name');
 
-		return sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaign);
+		return sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaignType);
 	}
 
-	public function showBufferCampaignEmail(EmailModel $email, $template = 'html')
+	/**
+	 * Output the prepared Email to the page
+	 *
+	 * @param EmailModel $email
+	 * @param string     $template
+	 */
+	public function showCampaignEmail(EmailModel $email, $fileExtension = 'html')
 	{
-		if ($template == 'txt')
+		if ($fileExtension == 'txt')
 		{
 			$output = $email->body;
 		}

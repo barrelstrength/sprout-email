@@ -12,13 +12,12 @@
 		{% for campaignType in campaignTypes %}
 			{% if loop.first %}
 
-				<table id="campaigns" class="data fullwidth">
+				<table id="campaigntypes" class="data fullwidth">
 				<thead>
 				<th width="25%">
-					{{ "Campaign"|t }}
+					{{ "Campaign Type"|t }}
 	        <span class="info">
-	          <p>{{ "Create multiple Campaigns with unique fields, layouts, and email service provider integrations."|t
-		          }}</p>
+	          <p>{{ "Create multiple Campaign Types with unique fields, layouts, and email service provider integrations."|t }}</p>
 	        </span>
 				</th>
 				<th width="20%">{{ "Handle"|t }}</th>
@@ -29,7 +28,7 @@
 			{% endif %}
 			<tr data-id="{{ campaignType.id }}" data-name="{{ campaignType.name }}">
 				<td>
-					<a href="{{ url('sproutemail/settings/campaigns/edit/' ~ campaignType.id ) }}">{{ campaignType.name }}</a>
+					<a href="{{ url('sproutemail/settings/campaigntypes/edit/' ~ campaignType.id ) }}">{{ campaignType.name }}</a>
 				</td>
 				<td>
 					<code>{{ campaignType.handle }}</code>
@@ -47,8 +46,7 @@
 		{% endfor %}
 
 		<div class="buttons">
-			<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Campaign"|t
-				}}</a>
+			<a class="btn submit add icon" href="{{ url('sproutemail/settings/campaigntypes/edit/new') }}">{{ "New Campaign"|t }}</a>
 		</div>
 
 	{% else %}
@@ -61,7 +59,7 @@
 				email program to manage your email."|t }}</p>
 
 			<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "Create an
+				<a class="btn submit icon" href="{{ url('sproutemail/settings/campaigntypes/edit/new') }}">{{ "Create an
 					Campaign"|t }} &raquo;</a>
 			</div>
 
@@ -72,8 +70,8 @@
 
 {% set js %}
 new Craft.AdminTable({
-	tableSelector: '#campaigns',
-	noObjectsSelector: '#nocampaigns',
+	tableSelector: '#campaigntypes',
+	noObjectsSelector: '#nocampaigntypes',
 	deleteAction: 'sproutEmail/campaignType/deleteCampaignType'
 });
 {% endset %}

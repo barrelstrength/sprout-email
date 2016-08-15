@@ -3,7 +3,7 @@
 {% if email.getUrl() %}
 
 	{% if status != 'ready' %}
-		{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaign.id) %}
+		{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaignType.id) %}
 		{% set emailUrlSep = '&'  %}
 	{% else %}
 		{% set emailUrl = email.url %}
@@ -16,6 +16,6 @@
 
 {% else %}
 
-	<a href="{{ cpUrl('sproutemail/settings/campaigns/edit/' ~ email.campaignId) }}">Enable URLs</a>
+	<a href="{{ cpUrl('sproutemail/settings/campaigntypes/edit/' ~ email.campaignTypeId) }}">Enable URLs</a>
 
 {% endif %}

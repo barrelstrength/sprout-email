@@ -80,7 +80,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'title'       => array('label' => Craft::t('Title')),
+			'title'       => array('label' => Craft::t('Subject Line')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
 			'preview'     => array('label' => Craft::t('Preview')),
@@ -104,6 +104,15 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'dateUpdated';
 		$attributes[] = 'preview';
 		$attributes[] = 'send';
+
+		return $attributes;
+	}
+
+	public function defineSortableAttributes()
+	{
+		$attributes['title']       = Craft::t('Subject Line');
+		$attributes['dateCreated'] = Craft::t('Date Created');
+		$attributes['dateUpdated'] = Craft::t('Date Updated');
 
 		return $attributes;
 	}
@@ -209,7 +218,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		// join with the table
 		$query->addSelect('notificationemail.*')
-			->join('sproutemail_notifications notificationemail', 'notificationemail.id = elements.id');
+			->join('sproutemail_notificationemails notificationemail', 'notificationemail.id = elements.id');
 
 		if ($criteria->order)
 		{
@@ -285,19 +294,16 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutEmail_NotificationDelete');
+		$deleteAction = craft()->elements->getAction('SproutEmail_NotificationEmailDelete');
 
-		$deleteAction->setParams(
-			array(
-				'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
-				'successMessage'      => Craft::t('Emails deleted.'),
-			)
-		);
+		$deleteAction->setParams(array(
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
+			'successMessage'      => Craft::t('Emails deleted.'),
+		));
 
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
 
-		//return array($deleteAction, $setStatusAction);
-		return array($deleteAction);
+		return array($deleteAction, $setStatusAction);
 	}
 
 	/**

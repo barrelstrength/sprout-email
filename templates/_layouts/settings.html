@@ -29,14 +29,11 @@
 {% endif %}
 
 {% set selectedSubnavItem = craft.request.segment(2) %}
-{% set selectedSidebarItem = craft.request.segment(3) %}
+{% set selectedSidebarItem = craft.request.segment(4) ? craft.request.segment(4) : craft.request.segment(3) %}
 
 {% set fullPageForm = true %}
 
 {% block saveButton %}{% endblock %}
-
-{# @todo - improve naming convention, not clear what this does #}
-{% set models = craft.session.hasFlash('models') ? craft.session.getFlash('models') : null %}
 
 {% set sidebar %}
 
@@ -44,22 +41,19 @@
 		<ul>
 			<li><a href="{{ url('sproutemail/settings/general') }}" {% if selectedSidebarItem == 'general'
 				%}class="sel"{% endif %}>General</a></li>
-			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif %}>Mailers</a></li>
 
-			<li class="heading"><span>Content</span></li>
-			<li><a href="{{ url('sproutemail/settings/campaigns') }}" {% if selectedSidebarItem == 'campaigns' %}class="sel"{% endif
-				%}>Campaigns</a></li>
-			<li><a href="{{ url('sproutemail/settings/notifications') }}" {% if selectedSidebarItem == 'notifications' %}class="sel"{%
-				endif %}>Notifications</a></li>
+			<li class="heading"><span>Email</span></li>
+			<li><a href="{{ url('sproutemail/settings/campaigntypes') }}" {% if selectedSidebarItem == 'campaigntypes' %}class="sel"{% endif %}>Campaign Types</a></li>
+			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif %}>Mailers</a></li>
 
 			<li class="heading"><span>Examples</span></li>
 			<li><a href="{{ url('sproutemail/settings/examples') }}" {% if selectedSidebarItem == 'examples'
 				%}class="sel"{% endif %}>Examples</a></li>
 
 			<li class="heading"><span>Integrations</span></li>
-			<li><a href="{{ url('sproutemail/settings/forms') }}" {% if selectedSidebarItem == 'forms'
+			<li><a href="{{ url('sproutemail/settings/integrations/forms') }}" {% if selectedSidebarItem == 'forms'
 				%}class="sel"{% endif %}>Forms</a></li>
-			<li><a href="{{ url('sproutemail/settings/seo') }}" {% if selectedSidebarItem == 'seo'
+			<li><a href="{{ url('sproutemail/settings/integrations/seo') }}" {% if selectedSidebarItem == 'seo'
 				%}class="sel"{% endif %}>SEO</a></li>
 
 		</ul>

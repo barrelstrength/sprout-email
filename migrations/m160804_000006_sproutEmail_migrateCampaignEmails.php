@@ -14,11 +14,11 @@ class m160804_000006_sproutEmail_migrateCampaignEmails extends BaseMigration
 	public function safeUp()
 	{
 		$oldTableName = "sproutemail_campaigns_entries";
-		$newTableName = "sproutemail_campaigns";
+		$newTableName = "sproutemail_campaignemails";
 
 		if (craft()->db->tableExists($oldTableName) && !craft()->db->tableExists($newTableName))
 		{
-			SproutEmailPlugin::log('Rename sproutemail_campaigns_entries table to sproutemail_campaigns');
+			SproutEmailPlugin::log('Rename sproutemail_campaigns_entries table to sproutemail_campaignemails');
 
 			$oldTable = MigrationHelper::getTable($oldTableName);
 

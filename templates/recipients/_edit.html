@@ -5,11 +5,18 @@
 	{ label: "Recipients"|t, url: url('sproutemail/recipients') }
 ] %}
 
+{% set title = recipient is defined ? 'Recipient' : 'New Recipient' %}
+
 {% set selectedTab    = 'recipients' %}
 {% set selectedListId = craft.request.getParam('recipientListId') %}
 
-{% if element is empty %}{% exit 404 %}{% endif %}
-{% if recipient is defined %}{% set element = recipient %}{% endif %}
+{% if element is empty %}
+	{% exit 404 %}
+{% endif %}
+
+{% if recipient is defined %}
+	{% set element = recipient %}
+{% endif %}
 
 {% set fullPageForm = true %}
 {% set saveShortcutRedirect = continueEditingUrl %}
@@ -42,12 +49,10 @@
 			<input type="hidden" id="recipientLists-selectedListId" name="recipient[recipientLists][]" value="{{ selectedListId }}">
 		{% endif %}
 		<input type="hidden" id="redirect" name="redirect" value="sproutemail/recipients/">
-		{{ getCsrfInput() }}
 
 		{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
 		{% if craft.isLocalized() %}<input type="hidden" name="locale" value="{{ element.locale }}">{% endif %}
 
-		{# BEGIN FORM #}
 		<section id="default-fields">
 
 			{{ forms.textField({
@@ -59,6 +64,7 @@
 				value: element is defined ? element.email : null,
 				errors: element is defined and element.hasErrors('email') ? element.getErrors('email') : null
 			}) }}
+
 			{{ forms.textField({
 				id: 'firstName',
 				name: 'recipient[firstName]',
@@ -66,6 +72,7 @@
 				value: element is defined ? element.firstName : null,
 				errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
 			}) }}
+
 			{{ forms.textField({
 				id: 'lastName',
 				name: 'recipient[lastName]',
@@ -73,6 +80,7 @@
 				value: element is defined ? element.lastName : null,
 				errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null
 			}) }}
+
 		</section>
 
 		</div>

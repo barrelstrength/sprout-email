@@ -69,20 +69,20 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			),
 		);
 
-		$campaigns = sproutEmail()->campaignTypes->getCampaignTypes();
+		$campaignTypes = sproutEmail()->campaignTypes->getCampaignTypes();
 
-		if (count($campaigns))
+		if (count($campaignTypes))
 		{
 			$sources[] = array('heading' => Craft::t('Campaigns'));
 
-			foreach ($campaigns as $campaign)
+			foreach ($campaignTypes as $campaignType)
 			{
-				$key = 'campaign:' . $campaign->id;
+				$key = 'campaignType:' . $campaignType->id;
 
 				$sources[$key] = array(
-					'label'    => $campaign->name,
-					'data'     => array('campaignId' => $campaign->id),
-					'criteria' => array('campaignId' => $campaign->id)
+					'label'    => $campaignType->name,
+					'data'     => array('campaignTypeId' => $campaignType->id),
+					'criteria' => array('campaignTypeId' => $campaignType->id)
 				);
 			}
 		}
@@ -172,7 +172,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		return array(
 			'title'          => AttributeType::String,
-			'campaignId'     => AttributeType::Number,
+			'campaignTypeId' => AttributeType::Number,
 			'campaignHandle' => AttributeType::Handle,
 		);
 	}
@@ -256,7 +256,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			->addSelect(
 				'campaigns.id, 
 				 campaigns.subjectLine as subjectLine,
-				 campaigns.campaignId as campaignId,
+				 campaigns.campaignTypeId as campaignTypeId,
 				 campaigns.recipients as recipients,
 				 campaigns.fromName as fromName,
 				 campaigns.fromEmail as fromEmail,
@@ -264,12 +264,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.sent as sent,
 				 campaigns.enableFileAttachments as enableFileAttachments'
 			)
-			->join('sproutemail_campaigns campaigns', 'campaigns.id = elements.id')
-			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignId');
+			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')
+			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignTypeId');
 
-		if ($criteria->campaignId)
+		if ($criteria->campaignTypeId)
 		{
-			$query->andWhere(DbHelper::parseParam('campaigns.campaignId', $criteria->campaignId, $query->params));
+			$query->andWhere(DbHelper::parseParam('campaigns.campaignTypeId', $criteria->campaignTypeId, $query->params));
 		}
 
 		if ($criteria->campaignHandle)
@@ -288,9 +288,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignId);
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignTypeId);
 
-		if (!$campaign)
+		if (!$campaignType)
 		{
 			return false;
 		}
@@ -302,9 +302,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			$extension = in_array(strtolower($type), array('txt', 'text')) ? '.txt' : null;
 		}
 
-		if (!craft()->templates->doesTemplateExist($campaign->template . $extension))
+		if (!craft()->templates->doesTemplateExist($campaignType->template . $extension))
 		{
-			$templateName = $campaign->template . $extension;
+			$templateName = $campaignType->template . $extension;
 
 			sproutEmail()->error(Craft::t("The template '{templateName}' could not be found", array(
 				'templateName' => $templateName
@@ -313,7 +313,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 		$vars = array(
 			'email'    => $element,
-			'campaign' => $campaign,
+			'campaign' => $campaignType,
 
 			// @deprecate in v3 in favor of the `email` variable
 			'entry'    => $element,
@@ -322,7 +322,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
-				'template'  => $campaign->template . $extension,
+				'template'  => $campaignType->template . $extension,
 				'variables' => $vars
 			)
 		);
@@ -337,7 +337,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutEmail_Delete');
+		$deleteAction = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
 
 		$deleteAction->setParams(array(
 			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),

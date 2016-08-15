@@ -335,7 +335,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @param SproutEmail_CampaignTypeModel $campaign
 	 */
-	public function saveRecipientList(SproutEmail_CampaignTypeModel $campaign)
+	public function saveRecipientList(SproutEmail_CampaignTypeModel $campaignType)
 	{
 	}
 
@@ -347,7 +347,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function sendCampaign(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function sendCampaign(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 	}
 
@@ -361,7 +361,7 @@ abstract class SproutEmailBaseMailer
 	 * @internal param mixed|null $element
 	 *
 	 */
-	public function sendNotification(SproutEmail_CampaignTypeModel $campaign, $object)
+	public function sendNotification(SproutEmail_CampaignTypeModel $campaignType, $object)
 	{
 	}
 }

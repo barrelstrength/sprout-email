@@ -47,7 +47,7 @@ class SproutEmail_ExportRecipientsElementAction extends BaseElementAction
 		$this->setMessage($this->getParams()->successMessage);
 
 		craft()->templates->includeJs('
-			var exportUrl = Craft.getActionUrl("sproutEmail/defaultMailer/export");
+			var exportUrl = Craft.getActionUrl("sproutEmail/defaultMailer/exportCsv");
 			setTimeout(function() { window.location=exportUrl; }, 1500);
 		');
 

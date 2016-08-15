@@ -14,11 +14,11 @@
 	</tr>
 {% endif %}
 
-	{% if email.recipients is defined and email.recipients|length %}
-		<tr>
-			<td><strong>{{ "Recipients"|t }}</strong></td>
-			<td>
-				{{ email.recipients|replace({',' : "<br />"})|raw }}
-			</td>
-		</tr>
-	{% endif %}
+{% if email.recipients is defined and email.recipients|length %}
+	<tr>
+		<td><strong>{{ "Recipients"|t }}</strong></td>
+		<td>
+			{{ email.recipients|replace({',' : "<br />"})|raw }}
+		</td>
+	</tr>
+{% endif %}

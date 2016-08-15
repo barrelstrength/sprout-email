@@ -34,7 +34,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 			$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($sectionOptions);
 		}
 
-		return craft()->templates->render('sproutemail/_events/saveEntry', $context);
+		return craft()->templates->render('sproutemail/_integrations/events/saveEntry', $context);
 	}
 
 	public function prepareOptions()

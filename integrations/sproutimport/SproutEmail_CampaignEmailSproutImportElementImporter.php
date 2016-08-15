@@ -25,9 +25,9 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 	{
 		$model = parent::setModel($model, $settings);
 
-		if (isset($settings['campaignId']))
+		if (isset($settings['campaignTypeId']))
 		{
-			$campaignTypeRecord = SproutEmail_CampaignTypeRecord::model()->findById($settings['campaignId']);
+			$campaignTypeRecord = SproutEmail_CampaignTypeRecord::model()->findById($settings['campaignTypeId']);
 
 			$campaignTypeModel = SproutEmail_CampaignTypeModel::populateModel($campaignTypeRecord);
 
@@ -44,7 +44,7 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 			$this->campaignTypeModel = $campaignTypeModel;
 		}
 
-		$model->campaignId = $this->campaignTypeModel->id;
+		$model->campaignTypeId = $this->campaignTypeModel->id;
 
 		$this->model = $model;
 
@@ -72,6 +72,6 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 
 		$attributeKeys = array_keys($attributes);
 
-		return array_merge(array("fieldLayout", "campaignId", "campaignType"), $attributeKeys);
+		return array_merge(array("fieldLayout", "campaignTypeId", "campaignType"), $attributeKeys);
 	}
 }
