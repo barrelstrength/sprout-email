@@ -24,15 +24,11 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$emailModel = $event->params['emailModel'];
 		$variables  = $event->params['variables'];
 		$emailKey   = isset($variables['emailKey']) ? $variables['emailKey'] : null;
-		$infoTable  = new SproutEmail_SentEmailInfoTableModel();
 
 		// If we have info set, grab the custom info that's already prepared
 		// If we don't have info, we probably have an email sent by Craft so
 		// we can continue with our generic info table model
-		if (isset($variables['info']))
-		{
-			$infoTable = $variables['info'];
-		}
+		$infoTable = isset($variables['info']) ? $variables['info'] : new SproutEmail_SentEmailInfoTableModel();
 
 		// Prepare our info table settings for Notifications
 		// -----------------------------------------------------------
@@ -76,15 +72,10 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$emailModel = $event->params['emailModel'];
 		$campaign   = $event->params['campaign'];
 
-		$infoTable = new SproutEmail_SentEmailInfoTableModel();
-
 		// If we have info set, grab the custom info that's already prepared
 		// If we don't have info, we probably have an email sent by Craft so
 		// we can continue with our generic info table model
-		if (isset($variables['info']))
-		{
-			$infoTable = $variables['info'];
-		}
+		$infoTable = isset($variables['info']) ? $variables['info'] : new SproutEmail_SentEmailInfoTableModel();
 
 		// Prepare our info table settings for Campaigns
 		// -----------------------------------------------------------

@@ -4,7 +4,7 @@
 
 {% set crumbs = [
 	{ label: "Settings"|t, url: url('sproutemail/settings') },
-	{ label: "Campaigns", url: url('sproutemail/settings/campaigns') },
+	{ label: "Campaign Types", url: url('sproutemail/settings/campaigntypes') },
 ] %}
 
 {% if craft.request.getSegment(6) %}
@@ -12,12 +12,12 @@
 {% endif %}
 
 {% set fullPageForm = true %}
-{% set saveShortcutRedirect = campaignId != 'new' ? 'sproutemail/settings/campaigns/edit/' ~ campaignId : 'sproutemail/settings/campaigns/edit/{id}' %}
+{% set saveShortcutRedirect = (campaignTypeId != 'new') ? 'sproutemail/settings/campaigntypes/edit/' ~ campaignTypeId : 'sproutemail/settings/campaigntypes/edit/{id}' %}
 
 {% block saveButton %}
 	<div class="btngroup submit first">
 		<input type="submit" class="btn submit" value="{{ 'Save Campaign'|t }}">
-		{% if campaign.id != null %}
+		{% if campaignType.id != null %}
 			<div class="btn submit menubtn"></div>
 			<div class="menu">
 				<ul>
@@ -31,9 +31,8 @@
 {% set content %}
 
 	<input type="hidden" name="action" value="sproutEmail/campaignType/saveCampaignType">
-	<input type="hidden" name="redirect" value="sproutemail/settings/campaigns">
-	<input type="hidden" name="sproutEmail[id]" value="{{ campaignId }}">
-	<input type="hidden" name="sproutEmail[type]" value="email">
+	<input type="hidden" name="redirect" value="sproutemail/settings/campaigntypes">
+	<input type="hidden" name="campaignTypeId" value="{{ campaignTypeId }}">
 
 	{% set mailers = craft.sproutEmail.getCampaignMailers() %}
 
@@ -44,11 +43,11 @@
 			id: 'name',
 			name: 'sproutEmail[name]',
 			instructions: "Human readable name for this type of Email"|t,
-			value: (campaign is defined ? campaign.name : null),
+			value: (campaignType is defined ? campaignType.name : null),
 			autofocus: true,
 			required: true,
 			first: true,
-			errors: (campaign is defined ? campaign.getErrors('name') : null)
+			errors: (campaignType is defined ? campaignType.getErrors('name') : null)
 		}) }}
 
 		{{ forms.textField({
@@ -56,9 +55,9 @@
 			id: 'handle',
 			name: 'sproutEmail[handle]',
 			instructions: "How you'll refer to this section in the templates."|t,
-			value: (campaign is defined ? campaign.handle : null),
+			value: (campaignType is defined ? campaignType.handle : null),
 			required: true,
-			errors: (campaign is defined ? campaign.getErrors('handle') : null)
+			errors: (campaignType is defined ? campaignType.getErrors('handle') : null)
 		}) }}
 
 		{{ forms.selectField({
@@ -68,8 +67,8 @@
 			name: 'sproutEmail[mailer]',
 			required: true,
 			options : mailers,
-			value: (campaign is defined ? campaign.mailer : null),
-			errors: (campaign is defined ? campaign.getErrors('mailer') : null)
+			value: (campaignType is defined ? campaignType.mailer : null),
+			errors: (campaignType is defined ? campaignType.getErrors('mailer') : null)
 		}) }}
 
 		{{ forms.textField({
@@ -78,8 +77,8 @@
 			name: 'sproutEmail[template]',
 			instructions: "The template to use when an Email's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
 			placeholder: '_emails/emailtemplate',
-			value: (campaign is defined ? campaign.template : null),
-			errors: (campaign is defined ? campaign.getErrors('template') : null)
+			value: (campaignType is defined ? campaignType.template : null),
+			errors: (campaignType is defined ? campaignType.getErrors('template') : null)
 		}) }}
 
 		{{ forms.textField({
@@ -88,8 +87,8 @@
 			name: 'sproutEmail[templateCopyPaste]',
 			instructions: "The template to use if you want to copy only part of your template.  The text version of the Copy/Paste content will use the same template name and append .txt"|t,
 			placeholder: 'email/copypaste-template',
-			value: (campaign is defined ? campaign.templateCopyPaste : null),
-			errors: (campaign is defined ? campaign.getErrors('templateCopyPaste') : null)
+			value: (campaignType is defined ? campaignType.templateCopyPaste : null),
+			errors: (campaignType is defined ? campaignType.getErrors('templateCopyPaste') : null)
 		}) }}
 
 		<hr>
@@ -98,19 +97,19 @@
 			label: "Entries of this type have their own URLs"|t,
 			id: 'hasUrls',
 			name: 'sproutEmail[hasUrls]',
-			checked: (campaign is defined ? campaign.hasUrls : 0),
+			checked: (campaignType is defined ? campaignType.hasUrls : 0),
 			toggle: 'url-settings'
 		}) }}
 
-		<div id="url-settings" class="nested-fields{% if not campaign.hasUrls %} hidden{% endif %}">
+		<div id="url-settings" class="nested-fields{% if not campaignType.hasUrls %} hidden{% endif %}">
 
 			{{ forms.textField({
 				label: "Email URL Format"|t,
 				instructions: 'What the online version of the Email URLs should look like. You can include tags that output email properties, such as {slug} or {postDate|date("Y")}.'|t,
 				placeholder: 'email/{slug}',
 				name: 'sproutEmail[urlFormat]',
-				value: (campaign is defined ? campaign.urlFormat : null),
-				errors: (campaign is defined ? campaign.getErrors('urlFormat') : null)
+				value: (campaignType is defined ? campaignType.urlFormat : null),
+				errors: (campaignType is defined ? campaignType.getErrors('urlFormat') : null)
 			}) }}
 
 		</div>
@@ -121,36 +120,33 @@
 			label: "Add a custom format to the Title field?"|t,
 			id: 'hasAdvancedTitles',
 			name: 'sproutEmail[hasAdvancedTitles]',
-			checked: (campaign is defined ? campaign.hasAdvancedTitles : 0),
+			checked: (campaignType is defined ? campaignType.hasAdvancedTitles : 0),
 			toggle: 'advancedtitle-settings'
 		}) }}
 
-		<div id="advancedtitle-settings" class="nested-fields{% if not campaign.hasAdvancedTitles %} hidden{% endif %}">
+		<div id="advancedtitle-settings" class="nested-fields{% if not campaignType.hasAdvancedTitles %} hidden{% endif %}">
 
 			{{ forms.textField({
 				label: "Title Format"|t,
 				instructions: "What the auto-generated Email titles should look like. You can include tags that output email properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
 				id: 'titleFormat',
 				name: 'sproutEmail[titleFormat]',
-				value: (campaign is defined ? campaign.titleFormat : null),
-				errors: (campaign is defined ? campaign.getErrors('titleFormat') : null),
+				value: (campaignType is defined ? campaignType.titleFormat : null),
+				errors: (campaignType is defined ? campaignType.getErrors('titleFormat') : null),
 			}) }}
 
 		</div>
 
 		<hr>
 
-		{% include "_includes/fieldlayoutdesigner" with {fieldLayout: campaign.getFieldLayout()} only %}
+		{% include "_includes/fieldlayoutdesigner" with {fieldLayout: campaignType.getFieldLayout()} only %}
 
 	{% else %}
 
-		<h2>{{ "Setup your first campaign."|t }}</h2>
+		<h2>{{ "Setup your first Campaign Type."|t }}</h2>
 
-		<p>Install and setup a Mailer Service to create your first Campaign. Mailers are available as
-		separate plugins
-		and can be downloaded from the links listed in the <a href="{{ url('sproutemail/settings/mailers') }}">Mailer
-		Setttings</a>
-		.</p>
+		<p>Install and setup a Mailer Service to create your first Campaign Type. Mailers are available as
+		separate plugins and can be downloaded from the links listed in the <a href="{{ url('sproutemail/settings/mailers') }}">Mailer Setttings</a>.</p>
 
 	{% endif %}
 
@@ -183,7 +179,7 @@
 		// Show/hide copy/paste field on page load
 		toggleCopyPasteField($('#mailer').val());
 
-		{% if campaign is not defined or not campaign.handle %}
+		{% if campaignType is not defined or not campaignType.handle %}
 			new Craft.HandleGenerator('#name', '#handle');
 		{% endif %}
 

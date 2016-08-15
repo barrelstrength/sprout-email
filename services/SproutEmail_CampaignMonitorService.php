@@ -74,18 +74,22 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$urls = $this->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
+		$urls = $this->getCampaignEmailUrls($campaignEmail->id, $campaignType->template);
 
-		$lists          = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id));
+		$lists          = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array(
+			'emailId' => $campaignEmail->id
+		));
+
 		$recipientLists = array();
 		$toEmails       = array();
+
 		foreach ($lists as $list)
 		{
 			array_push($recipientLists, $list->list);
@@ -94,7 +98,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 		$params = array(
 			'email'     => $campaignEmail,
-			'campaign'  => $campaign,
+			'campaign'  => $campaignType,
 			'recipient' => array(
 				'firstName' => 'First',
 				'lastName'  => 'Last',
@@ -106,8 +110,8 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		);
 
 		$content = array(
-			'html' => sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params),
-			'text' => sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params),
+			'html' => sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params),
+			'text' => sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $params),
 		);
 
 		try
@@ -115,7 +119,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 			$auth   = $this->getPostParams();
 			$params = array(
 				'Subject'   => $campaignEmail->subjectLine,
-				'Name'      => $campaign->name . ': ' . $campaignEmail->subjectLine,
+				'Name'      => $campaignType->name . ': ' . $campaignEmail->subjectLine,
 				'FromName'  => $campaignEmail->fromName,
 				'FromEmail' => $campaignEmail->fromEmail,
 				'ReplyTo'   => $campaignEmail->replyToEmail,
@@ -168,10 +172,10 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	/*
 	 * @return true|false according to the success of the request
 	 */
-	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, $campaignId, $auth)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, $campaignTypeId, $auth)
 	{
 		// Access the newly created draft campaign
-		$campaignToSend = new CS_REST_Campaigns($campaignId, $auth);
+		$campaignToSend = new CS_REST_Campaigns($campaignTypeId, $auth);
 
 		// Try to send the campaign 
 		try
@@ -191,7 +195,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 			}
 			else
 			{
-				sproutEmail()->info('Successfully sent campaign through Campaign Monitor with ID: ' . $campaignId);
+				sproutEmail()->info('Successfully sent campaign through Campaign Monitor with ID: ' . $campaignTypeId);
 
 				return true;
 			}
@@ -204,12 +208,15 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$type   = craft()->request->getPost('contentType', 'html');
 		$ext    = strtolower($type) == 'text' ? '.txt' : null;
-		$params = array('entry' => $campaignEmail, 'campaign' => $campaign);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
+		$params = array(
+			'entry' => $campaignEmail,
+			'campaign' => $campaignType
+		);
+		$body   = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}

@@ -13,7 +13,7 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 	 */
 	public function getTriggerHtml()
 	{
-		return craft()->templates->render('sproutemail/_actions/setStatus');
+		return craft()->templates->render('sproutemail/_components/elementactions/setStatus');
 	}
 
 	/**

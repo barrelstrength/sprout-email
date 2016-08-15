@@ -12,15 +12,15 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return SproutEmail_ResponseModel
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$params = array(
 			'email'     => $campaignEmail,
-			'campaign'  => $campaign,
+			'campaign'  => $campaignType,
 			'recipient' => array(
 				'firstName' => 'John',
 				'lastName'  => 'Doe',
@@ -31,8 +31,8 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 			'entry'     => $campaignEmail
 		);
 
-		$html = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste, $params);
-		$text = sproutEmail()->renderSiteTemplateIfExists($campaign->templateCopyPaste . '.txt', $params);
+		$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->templateCopyPaste, $params);
+		$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->templateCopyPaste . '.txt', $params);
 
 		$vars = array(
 			'html' => trim($html),
@@ -42,17 +42,20 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 		$response          = new SproutEmail_ResponseModel();
 		$response->success = true;
 
-		$response->content = craft()->templates->render('sproutemail/settings/_mailers/copypaste/prepare', $vars);
+		$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/prepare', $vars);
 
 		return $response;
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$type   = craft()->request->getPost('contentType', 'html');
 		$ext    = strtolower($type) == 'text' ? '.txt' : null;
-		$params = array('entry' => $campaignEmail, 'campaign' => $campaign);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
+		$params = array(
+			'entry' => $campaignEmail,
+			'campaign' => $campaignType
+		);
+		$body   = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}

@@ -117,83 +117,90 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function registerCpRoutes()
 	{
-		// @formatter:off
-
-		$url         = 'sproutemail';
-		$ctrl        = 'sproutEmail/defaultMailer';
-		$recipients  = $url.'/recipients';
-		$emailClient = array(
-			$recipients                       => array('action' => $ctrl.'/showIndexRecipientTemplate'),
-			$recipients.'/new'                => array('action' => $ctrl.'/showEditRecipientTemplate'),
-			$recipients.'/edit/(?P<id>[\d]+)' => array('action' => $ctrl.'/showEditRecipientTemplate'),
-		);
-
-		return array_merge($emailClient, array(
-			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)' => array(
-				'action' => 'sproutEmail/mailer/editSettings'
-			),
-			'sproutemail/settings/(?P<settingsTemplate>campaigns)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
-				'action' => 'sproutEmail/campaignType/campaignSettingsTemplate'
-			),
-			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<campaignId>\d+|new)(/(template|recipients|fields))?' => array(
-				'action' => 'sproutEmail/notificationEmails/notificationSettingsTemplate'
-			),
-			'sproutemail/campaigns/new' => array(
+		return array(
+			// Campaign Email Edit Page
+			'sproutemail/campaigns/(?P<campaignTypeId>\d+)/new' => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
 			'sproutemail/campaigns/edit/(?P<emailId>\d+)' => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
-			'sproutemail/campaigns/(?P<campaignId>\d+)/new' => array(
-				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
+
+			// Notification Email Edit Page
+			'sproutemail/notifications/edit/(?P<notificationId>\d+|new)' => array(
+				'action' => 'sproutEmail/notificationEmails/editNotificationEmailTemplate'
 			),
+
+			// Notification Email Settings
+			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<emailId>\d+|new)' => array(
+				'action' => 'sproutEmail/notificationEmails/editNotificationEmailSettingsTemplate'
+			),
+
+			// Campaign Type Settings
+			'sproutemail/settings/(?P<settingsTemplate>campaigntypes)/edit/(?P<campaignTypeId>\d+|new)?' => array(
+				'action' => 'sproutEmail/campaignType/campaignSettingsTemplate'
+			),
+
+			// Mailer Settings Route
+			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)' => array(
+				'action' => 'sproutEmail/mailer/editSettingsTemplate'
+			),
+
+			// Redirects to `general` settings
 			'sproutemail/settings' => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
+
+			// Settings templates such as `general` and `mailers`
 			'sproutemail/settings/(?P<settingsTemplate>.*)' => array(
 					'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
-			'sproutemail/notifications/setting/new' => array(
-				'action' => 'sproutEmail/notificationEmails/editNotificationSetting'
+			// Recipient Lists
+			'sproutemail/recipients' => array(
+				'action' => 'sproutEmail/defaultMailer/showRecipientIndexTemplate'
 			),
-			'sproutemail/notifications/setting/(?P<notificationId>\d+)' => array(
-				'action' => 'sproutEmail/notificationEmails/editNotificationSetting'
+			'sproutemail/recipients/edit/(?P<id>[\d]+)' => array(
+				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
 			),
-
-			'sproutemail/notifications/edit/new' => array(
-				'action' => 'sproutEmail/notificationEmails/editNotification'
-			),
-
-			'sproutemail/notifications/edit/(?P<notificationId>\d+)' => array(
-				'action' => 'sproutEmail/notificationEmails/editNotification'
+			'sproutemail/recipients/new' => array(
+				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
 			),
 
-			'sproutemail/events/new' =>
-			'sproutemail/events/_edit',
-
-			'sproutemail/events/edit/(?P<eventId>\d+)' =>
-			'sproutemail/events/_edit',
-
-			// Install Examples
+			// Examples
 			'sproutemail/settings/examples' =>
 			'sproutemail/settings/_tabs/examples',
-
-		));
-
-		// @formatter:on
+		);
 	}
 
 	public function init()
 	{
 		parent::init();
 
-		Craft::import('plugins.sproutemail.enums.*');
-		Craft::import('plugins.sproutemail.contracts.*');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.*');
-		Craft::import('plugins.sproutemail.integrations.sproutimport.*');
+		// Sprout Email Contracts
+		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailCampaignSenderInterface');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationSenderInterface');
 
-		// Sprout import integration
+		// Sprout Email Mailers
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CampaignMonitorMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CopyPasteMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_DefaultMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_MailchimpMailer');
+
+		// Sprout Email Events
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnOrderCompleteEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnSaveTransactionEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnStatusChangeEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesDeleteEntryEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesSaveEntryEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersActivateUserEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersDeleteUserEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UserSessionLoginEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersSaveUserEvent');
+
+		// Sprout Import Importers
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
@@ -358,7 +365,7 @@ class SproutEmailPlugin extends BasePlugin
 			'sproutemail_entry' => array(
 				'name'           => 'Email Campaigns',
 				'elementType'    => 'SproutEmail_CampaignEmail',
-				'elementGroupId' => 'campaignId',
+				'elementGroupId' => 'campaignTypeId',
 				'service'        => 'sproutEmail_campaigns',
 				'method'         => 'getCampaignTypes'
 			)

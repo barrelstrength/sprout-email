@@ -135,25 +135,25 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$type   = craft()->request->getPost('contentType', 'html');
 		$ext    = strtolower($type) == 'text' ? '.txt' : null;
-		$params = array('entry' => $campaignEmail, 'campaign' => $campaign);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
+		$params = array('entry' => $campaignEmail, 'campaign' => $campaignType);
+		$body   = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 * @param bool                           $sendOnExport
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function export($campaignEmail, $campaign, $sendOnExport = true)
+	public function export($campaignEmail, $campaignType, $sendOnExport = true)
 	{
 		$lists       = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
 		$campaignIds = array();
@@ -175,7 +175,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 			$params = array(
 				'email'     => $campaignEmail,
-				'campaign'  => $campaign,
+				'campaign'  => $campaignType,
 				'recipient' => array(
 					'firstName' => 'First',
 					'lastName'  => 'Last',
@@ -187,8 +187,8 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 			);
 
 			$content = array(
-				'html' => sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params),
-				'text' => sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params),
+				'html' => sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params),
+				'text' => sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $params),
 			);
 
 			foreach ($lists as $list)
@@ -202,10 +202,10 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 
 				try
 				{
-					$campaign      = $this->client->campaigns->create($type, $options, $content);
-					$campaignIds[] = $campaign['id'];
+					$campaignType  = $this->client->campaigns->create($type, $options, $content);
+					$campaignIds[] = $campaignType['id'];
 
-					sproutEmail()->info($campaign);
+					sproutEmail()->info($campaignType);
 				}
 				catch (\Exception $e)
 				{

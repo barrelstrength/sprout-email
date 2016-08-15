@@ -7,7 +7,7 @@ namespace Craft;
  * @package Craft
  * --
  * @property int    $id
- * @property int    $campaignId
+ * @property int    $campaignTypeId
  * @property int    $recipientListId
  * @property string $subjectLine
  * @property string $fromName
@@ -34,7 +34,7 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 	{
 		return array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
-			'campaignId'            => array(AttributeType::Number, 'required' => true),
+			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
 			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
 			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),

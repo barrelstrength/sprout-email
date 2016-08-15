@@ -5,20 +5,20 @@
 
 {% set extraPageHeaderHtml %}
 
-	{% set campaigns = craft.sproutEmail.getCampaignTypes() %}
+	{% set campaignTypes = craft.sproutEmail.getCampaignTypes() %}
 
 	<div class="buttons">
 		<div class="btngroup submit">
 			<div class="btn submit menubtn add icon">{{ "New Email"|t }}</div>
 			<div class="menu">
 				<ul>
-					{% if campaigns|length %}
-						{% for campaign in campaigns %}
-							<li><a href="{{ url('sproutemail/campaigns/' ~ campaign.id ~ '/new') }}">{{ campaign.name|t }}</a></li>
+					{% if campaignTypes|length %}
+						{% for campaignType in campaignTypes %}
+							<li><a href="{{ url('sproutemail/campaigns/' ~ campaignType.id ~ '/new') }}">{{ campaignType.name|t }}</a></li>
 						{% endfor %}
 						<hr>
 					{% endif %}
-					<li><a href="{{ url('sproutemail/settings/campaigns/edit/new') }}">{{ "New Campaign"|t }}</a></li>
+					<li><a href="{{ url('sproutemail/settings/campaigntypes/edit/new') }}">{{ "New Campaign"|t }}</a></li>
 				</ul>
 			</div>
 		</div>

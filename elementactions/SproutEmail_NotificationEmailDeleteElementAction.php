@@ -2,11 +2,11 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_SetStatusElementAction
+ * Class SproutEmail_NotificationEmailDeleteElementAction
  *
  * @package Craft
  */
-class SproutEmail_NotificationDeleteElementAction extends DeleteElementAction
+class SproutEmail_NotificationEmailDeleteElementAction extends DeleteElementAction
 {
 
 	/**
@@ -16,8 +16,6 @@ class SproutEmail_NotificationDeleteElementAction extends DeleteElementAction
 	 */
 	public function performAction(ElementCriteriaModel $criteria)
 	{
-		// Additional deletion script in the future
-
 		parent::performAction($criteria);
 
 		return true;

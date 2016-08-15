@@ -64,7 +64,7 @@ class SproutEmail_CampaignTypeSproutImportSettingsImporter extends BaseSproutImp
 
 			$fieldLayout = craft()->fields->assembleLayout($fieldLayouts);
 
-			$fieldLayout->type = 'SproutEmail_Campaign';
+			$fieldLayout->type = 'SproutEmail_CampaignEmail';
 
 			$model->setFieldLayout($fieldLayout);
 		}

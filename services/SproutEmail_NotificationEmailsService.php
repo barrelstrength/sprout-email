@@ -118,104 +118,75 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
-	public function getNotificationByVariables($variables, $session = null, $elementService = null)
-	{
-		$notification = null;
-
-		if (isset($variables['notification']))
-		{
-			$notification = $variables['notification'];
-		}
-		elseif (isset($variables['notificationId']))
-		{
-			$notificationId = $variables['notificationId'];
-
-			if ($elementService == null)
-			{
-				$elementService = craft()->elements;
-			}
-			$notification = $elementService->getElementById($notificationId);
-		}
-		elseif ($session != null)
-		{
-			$notification = unserialize($session);
-		}
-		else
-		{
-			$notification = new SproutEmail_NotificationEmailModel();
-		}
-
-		return $notification;
-	}
-
-	public function saveNotification(SproutEmail_NotificationEmailModel $notification, $isSettingPage = false)
+	public function saveNotification(SproutEmail_NotificationEmailModel $notificationEmail, $isSettingPage = false)
 	{
 		$result = false;
 
-		$isNewEntry = true;
-		$record     = new SproutEmail_NotificationEmailRecord();
+		$isNewEntry              = true;
+		$notificationEmailRecord = new SproutEmail_NotificationEmailRecord();
 
-		if (!empty($notification->id))
+		if (!empty($notificationEmail->id))
 		{
-			$record = SproutEmail_NotificationEmailRecord::model()->findById($notification->id);
+			$notificationEmailRecord = SproutEmail_NotificationEmailRecord::model()->findById($notificationEmail->id);
 
 			$isNewEntry = false;
-			if (!$record)
+
+			if (!$notificationEmailRecord)
 			{
-				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $notification->id)));
+				throw new Exception(Craft::t('No entry exists with the ID “{id}”', array('id' => $notificationEmail->id)));
 			}
 		}
 		else
 		{
-			$record->subjectLine = $notification->subjectLine;
+			$notificationEmailRecord->subjectLine = $notificationEmail->subjectLine;
 		}
 
-		$eventId = $notification->eventId;
+		$eventId = $notificationEmail->eventId;
 		$event   = $this->getEventById($eventId);
 
 		if ($event && $isSettingPage == false)
 		{
 			$options = $event->prepareOptions();
 
-			$notification->setAttribute('options', $options);
+			$notificationEmail->setAttribute('options', $options);
 		}
 
-		if (!empty($notification->getAttributes()))
+		if (!empty($notificationEmail->getAttributes()))
 		{
-			foreach ($notification->getAttributes() as $handle => $value)
+			foreach ($notificationEmail->getAttributes() as $handle => $value)
 			{
-				$record->setAttribute($handle, $value);
+				$notificationEmailRecord->setAttribute($handle, $value);
 			}
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-		if ($record->validate())
+		if ($notificationEmailRecord->validate())
 		{
-			$fieldLayout = $notification->getFieldLayout();
+			$fieldLayout = $notificationEmail->getFieldLayout();
 
 			// Assign our new layout id info to our
 			// form model and records
-			$notification->fieldLayoutId = $fieldLayout->id;
-			$record->fieldLayoutId       = $fieldLayout->id;
+			$notificationEmail->fieldLayoutId       = $fieldLayout->id;
+			$notificationEmailRecord->fieldLayoutId = $fieldLayout->id;
 
 			try
 			{
-				if (craft()->elements->saveElement($notification))
+				if (craft()->elements->saveElement($notificationEmail))
 				{
 					if ($isNewEntry)
 					{
-						$record->id = $notification->id;
+						$notificationEmailRecord->id = $notificationEmail->id;
 					}
 
-					if ($record->save(false))
+					if ($notificationEmailRecord->save(false))
 					{
 						// Save recipient after record is saved to avoid Integrity constraint violation.
 						//sproutEmail()->notificationEmails->saveRecipientLists($notification);
 
 						$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
 
-						sproutEmail()->mailers->saveRecipientLists($mailer, $notification);
+						sproutEmail()->mailers->saveRecipientLists($mailer, $notificationEmail);
 
 						if ($transaction && $transaction->active)
 						{
@@ -226,7 +197,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 					}
 					else
 					{
-						$notification->addErrors($record->getErrors());
+						$notificationEmail->addErrors($notificationEmailRecord->getErrors());
 					}
 				}
 			}
@@ -242,7 +213,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 		else
 		{
-			$notification->addErrors($record->getErrors());
+			$notificationEmail->addErrors($notificationEmailRecord->getErrors());
 		}
 
 		if (!$result)
@@ -265,31 +236,31 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $result;
 	}
 
-	public function saveRecipientLists(SproutEmail_NotificationEmailModel $notification)
+	public function saveRecipientLists(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
-		$this->deleteRecipientListsById($notification->id);
+		$this->deleteRecipientListsById($notificationEmail->id);
 
-		$lists = $this->prepareRecipientLists($notification);
+		$lists = $this->prepareRecipientLists($notificationEmail);
 
 		if ($lists && is_array($lists) && count($lists))
 		{
 			foreach ($lists as $list)
 			{
-				$record = SproutEmail_RecipientListRelationsRecord::model()->findByAttributes(
+				$recipientListRelationsRecord = SproutEmail_RecipientListRelationsRecord::model()->findByAttributes(
 					array(
-						'emailId' => $notification->id,
+						'emailId' => $notificationEmail->id,
 						'list'    => $list->list
 					)
 				);
 
-				$record = $record ? $record : new SproutEmail_RecipientListRelationsRecord();
+				$recipientListRelationsRecord = $recipientListRelationsRecord ? $recipientListRelationsRecord : new SproutEmail_RecipientListRelationsRecord();
 
-				$record->emailId = $list->notificationId;
-				$record->list    = $list->list;
+				$recipientListRelationsRecord->emailId = $list->notificationId;
+				$recipientListRelationsRecord->list    = $list->list;
 
 				try
 				{
-					$record->save();
+					$recipientListRelationsRecord->save();
 				}
 				catch (\Exception $e)
 				{
@@ -315,7 +286,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
-	public function prepareRecipientLists(SproutEmail_NotificationEmailModel $notification)
+	public function prepareRecipientLists(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
@@ -326,7 +297,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			{
 				$model = new SproutEmail_RecipientListRelationsModel();
 
-				$model->setAttribute('emailId', $notification->id);
+				$model->setAttribute('emailId', $notificationEmail->id);
 				$model->setAttribute('list', $id);
 
 				$lists[] = $model;
@@ -458,15 +429,15 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$params  = $listener->prepareParams($event);
 		$element = isset($params['value']) ? $params['value'] : null;
 
-		if ($notifications = $this->getNotifications($eventId))
+		if ($notificationEmails = $this->getNotifications($eventId))
 		{
-			foreach ($notifications as $notification)
+			foreach ($notificationEmails as $notificationEmail)
 			{
-				if ($listener->validateOptions($notification['options'], $element, $params))
+				if ($listener->validateOptions($notificationEmail['options'], $element, $params))
 				{
-					$notification = craft()->elements->getElementById($notification->id);
+					$notificationEmail = craft()->elements->getElementById($notificationEmail->id);
 
-					$this->relayNotificationThroughAssignedMailer($notification, $element);
+					$this->relayNotificationThroughAssignedMailer($notificationEmail, $element);
 				}
 			}
 		}
@@ -561,14 +532,14 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_NotificationEmailModel $notification
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
 	 * @param mixed                              $object Will be an element model most of the time
 	 *
 	 * @return mixed
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	protected function relayNotificationThroughAssignedMailer(SproutEmail_NotificationEmailModel $notification, $object)
+	protected function relayNotificationThroughAssignedMailer(SproutEmail_NotificationEmailModel $notificationEmail, $object)
 	{
 		$mailer = sproutEmail()->mailers->getMailerByName("defaultmailer");
 
@@ -579,7 +550,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		try
 		{
-			return $mailer->sendNotification($notification, $object);
+			return $mailer->sendNotification($notificationEmail, $object);
 		}
 		catch (\Exception $e)
 		{
@@ -589,16 +560,16 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 	public function getPrepareModal($notificationId)
 	{
-		$notification = craft()->elements->getElementById($notificationId);
+		$notificationEmail = craft()->elements->getElementById($notificationId);
 
 		$response = new SproutEmail_ResponseModel();
 
-		if ($notification)
+		if ($notificationEmail)
 		{
 			try
 			{
 				$response->success = true;
-				$response->content = $this->getPrepareModalHtml($notification);
+				$response->content = $this->getPrepareModalHtml($notificationEmail);
 
 				return $response;
 			}
@@ -619,7 +590,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $response;
 	}
 
-	public function getPrepareModalHtml(SproutEmail_NotificationEmailModel $notification)
+	public function getPrepareModalHtml(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		// Display the testToEmailAddress if it exists
 		$email = craft()->config->get('testToEmailAddress');
@@ -631,34 +602,34 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		$errors = array();
 
-		$errors = $this->getErrors($notification, $errors);
+		$errors = $this->getErrors($notificationEmail, $errors);
 
 		return craft()->templates->render(
 			'sproutemail/notifications/_modals/prepare',
 			array(
-				'notification' => $notification,
+				'notification' => $notificationEmail,
 				'recipient'    => $email,
 				'errors'       => $errors
 			)
 		);
 	}
 
-	public function getErrors($notification, $errors)
+	public function getErrors($notificationEmail, $errors)
 	{
-		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/notifications/edit/' . $notification->id);
-		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/notifications/setting/' . $notification->id);
+		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/notifications/edit/' . $notificationEmail->id);
+		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/notifications/setting/' . $notificationEmail->id);
 
-		$event = $this->getEventById($notification->eventId);
+		$event = $this->getEventById($notificationEmail->eventId);
 
 		if ($event)
 		{
 			$object = $event->getMockedParams();
 
-			$template = $notification->template;
+			$template = $notificationEmail->template;
 
 			$emailModel = new EmailModel();
 
-			sproutEmail()->defaultmailer->renderEmailTemplates($emailModel, $template, $notification, $object);
+			sproutEmail()->defaultmailer->renderEmailTemplates($emailModel, $template, $notificationEmail, $object);
 
 			$templateErrors = sproutEmail()->getError();
 
@@ -683,9 +654,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $errors;
 	}
 
-	public function exportEmail(SproutEmail_NotificationEmailModel $notification)
+	public function exportEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
-		$lists          = $this->getRecipientListsByNotificationId($notification->id);
+		$lists          = $this->getRecipientListsByNotificationId($notificationEmail->id);
 		$recipientLists = array();
 
 		if (count($lists))
@@ -703,12 +674,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		try
 		{
-			$response = $this->sendMockNotification($notification);
+			$response = $this->sendMockNotification($notificationEmail);
 
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/notifications/_modals/export',
 				array(
-					'notification'  => $notification,
+					'notification'  => $notificationEmail,
 					'emailModel'    => $response['emailModel'],
 					'recipentLists' => $recipientLists,
 					'message'       => Craft::t('Notification sent successfully.')
@@ -722,7 +693,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			return SproutEmail_ResponseModel::createErrorModalResponse(
 				'sproutemail/notifications/_modals/export',
 				array(
-					'notification' => $notification,
+					'notification' => $notificationEmail,
 					'message'      => Craft::t($e->getMessage()),
 				)
 			);
@@ -765,11 +736,17 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return false;
 	}
 
+	/**
+	 * Retrieves a rendered Notification Email to be shared or for Live Preview
+	 *
+	 * @param      $notificationId
+	 * @param null $type
+	 */
 	public function getPreviewNotificationEmailById($notificationId, $type = null)
 	{
-		$notification = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+		$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
 
-		$eventId = $notification->eventId;
+		$eventId = $notificationEmail->eventId;
 
 		$event = sproutEmail()->notificationEmails->getEventById($eventId);
 
@@ -778,19 +755,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			$object = $event->getMockedParams();
 		}
 
-		$template = $notification->template;
+		$email         = new EmailModel();
+		$template      = $notificationEmail->template;
+		$fileExtension = ($type != null && $type == 'text') ? 'txt' : 'html';
 
-		// Output email text
-		$fileExtension = 'html';
-
-		if ($type != null && $type == 'text')
-		{
-			$fileExtension = 'txt';
-		}
-		
-		$email = new EmailModel();
-
-		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notification, $object);
+		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notificationEmail, $object);
 
 		sproutEmail()->campaignEmails->showCampaignEmail($email, $fileExtension);
 	}

@@ -5,10 +5,6 @@ namespace Craft;
  * Class SproutEmail_NotificationEmailRecord
  *
  * @package Craft
- * --
- * @property string $eventId
- * @property int    $campaignId
- * @property array  $options
  */
 class SproutEmail_NotificationEmailRecord extends BaseRecord
 {

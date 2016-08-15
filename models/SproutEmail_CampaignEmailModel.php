@@ -8,7 +8,7 @@ namespace Craft;
  * --
  * @property int         $id
  * @property string      $subjectLine
- * @property int         $campaignId
+ * @property int         $campaignTypeId
  * @property string      $fromName
  * @property string      $fromEmail
  * @property string      $replyToEmail
@@ -25,11 +25,12 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	protected $elementType = 'SproutEmail_CampaignEmail';
 
 	/**
-	 * @todo Clean up this status mess before 0.9.0
-	 * Disabled - Campaign isn't even setup properly
+	 * Disabled - Campaign isn't setup properly
 	 * Pending -  Campaign is setup but Entry is disabled
 	 * Ready -    Campaign is setup and is enabled
 	 * Archived - has been sent, or exported and manually marked archived
+	 *
+	 * @todo - needs some testing
 	 */
 	const READY    = 'ready';
 	const PENDING  = 'pending';
@@ -55,7 +56,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 		$defaults   = parent::defineAttributes();
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
-			'campaignId'            => array(AttributeType::Number, 'required' => true),
+			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
 			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),
@@ -110,9 +111,9 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getFieldLayout()
 	{
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
-		return $campaign->getFieldLayout();
+		return $campaignType->getFieldLayout();
 	}
 
 	/**
@@ -135,7 +136,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	public function getStatus()
 	{
 		$status   = parent::getStatus();
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
 		switch ($status)
 		{
@@ -152,7 +153,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 					return static::ARCHIVED;
 				}
 
-				if (empty($campaign->mailer) || empty($campaign->template))
+				if (empty($campaignType->mailer) || empty($campaignType->template))
 				{
 					return static::PENDING;
 				}
@@ -209,11 +210,11 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getUrlFormat()
 	{
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignId);
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
-		if ($campaign && $campaign->hasUrls)
+		if ($campaignType && $campaignType->hasUrls)
 		{
-			return $campaign->urlFormat;
+			return $campaignType->urlFormat;
 		}
 	}
 

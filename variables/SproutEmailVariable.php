@@ -10,6 +10,9 @@ class SproutEmailVariable
 
 	public function __construct()
 	{
+		/**
+		 * craft.sproutEmail.entries
+		 */
 		$this->entries = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
 	}
 
@@ -78,36 +81,30 @@ class SproutEmailVariable
 		return sproutEmail()->notificationEmails->getAvailableEvents();
 	}
 
-	public function getSelectedOptions($event, $campaignId)
+	/**
+	 * @param $event
+	 * @param $notificationEmail
+	 *
+	 * @return mixed
+	 */
+	public function getEventSelectedOptions($event, $notificationEmail)
 	{
-		if (craft()->request->getRequestType() == 'POST')
-		{
-			return $event->prepareOptions();
-		}
-
-		$notification = sproutEmail()->notificationEmails->getNotification(
-			array(
-				'eventId'    => $event->getEventId(),
-				'campaignId' => $campaignId
-			)
-		);
-
-		if ($notification)
-		{
-			return $event->prepareValue($notification->options);
-		}
+		return sproutEmail()->notificationEmails->getEventSelectedOptions($event, $notificationEmail);
 	}
 
-	public function getEventSelectedOptions($event, $notification)
-	{
-		return sproutEmail()->notificationEmails->getEventSelectedOptions($event, $notification);
-	}
-
+	/**
+	 * @return SproutEmail_NotificationModel[]|null
+	 */
 	public function getNotifications()
 	{
 		return sproutEmail()->notificationEmails->getNotifications();
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @return BaseElementModel|null
+	 */
 	public function getNotificationEmailById($id)
 	{
 		return sproutEmail()->notificationEmails->getNotificationEmailById($id);
@@ -124,15 +121,15 @@ class SproutEmailVariable
 	}
 
 	/**
-	 * Get a Campaign by id *
+	 * Get a Campaign Type by id *
 	 *
-	 * @param int $campaignId
+	 * @param int $campaignTypeId
 	 *
 	 * @return object campaign record
 	 */
-	public function getCampaignTypeById($campaignId)
+	public function getCampaignTypeById($campaignTypeId)
 	{
-		return sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		return sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
 	}
 
 	/**
@@ -221,14 +218,12 @@ class SproutEmailVariable
 		return false;
 	}
 
-	public function getCampaignEmailShareUrl($emailId, $campaignId)
+	public function getCampaignEmailShareUrl($emailId, $campaignTypeId)
 	{
-		$shareParams = array(
-			'emailId'    => $emailId,
-			'campaignId' => $campaignId
-		);
-
-		return UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', $shareParams);
+		return UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', array(
+			'emailId'        => $emailId,
+			'campaignTypeId' => $campaignTypeId
+		));
 	}
 
 	public function getRecipientLists($mailer)

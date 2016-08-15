@@ -45,7 +45,7 @@ class SproutEmail_NotificationEmailSproutImportElementImporter extends BaseSprou
 
 			$fieldLayout = craft()->fields->assembleLayout($fieldLayouts);
 
-			$fieldLayout->type = 'SproutEmail_Notification';
+			$fieldLayout->type = 'SproutEmail_NotificationEmail';
 
 			$model->setFieldLayout($fieldLayout);
 

@@ -109,8 +109,8 @@ class SproutEmailService extends BaseApplicationComponent
 			return $renderedTemplate;
 		}
 
-		$oldPath = craft()->path->getTemplatesPath();
-		craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+		$oldPath = craft()->templates->getTemplatesPath();
+		craft()->templates->setTemplatesPath(craft()->path->getSiteTemplatesPath());
 
 		try
 		{
@@ -129,7 +129,7 @@ class SproutEmailService extends BaseApplicationComponent
 			$this->error($message, 'template-' . $template);
 		}
 
-		craft()->path->setTemplatesPath($oldPath);
+		craft()->templates->setTemplatesPath($oldPath);
 
 		return $renderedTemplate;
 	}
@@ -143,13 +143,13 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	public function doesSiteTemplateExist($template)
 	{
-		$path = craft()->path->getTemplatesPath();
+		$path = craft()->templates->getTemplatesPath();
 
-		craft()->path->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+		craft()->templates->setTemplatesPath(craft()->path->getSiteTemplatesPath());
 
 		$exists = craft()->templates->doesTemplateExist($template);
 
-		craft()->path->setTemplatesPath($path);
+		craft()->templates->setTemplatesPath($path);
 
 		return $exists;
 	}
@@ -389,23 +389,6 @@ class SproutEmailService extends BaseApplicationComponent
 		}
 
 		return false;
-	}
-
-	/**
-	 * Return true if has permission
-	 *
-	 * @return bool
-	 */
-	public function checkPermission()
-	{
-		$user = craft()->userSession->getUser();
-
-		if (!$user->can('editSproutEmailSettings'))
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
