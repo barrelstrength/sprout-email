@@ -31,7 +31,7 @@ class SproutEmail_ExamplesController extends BaseController
 		try
 		{
 			$fileHelper = new \CFileHelper();
-			$path = craft()->path->getSiteTemplatesPath();
+			$path       = craft()->path->getSiteTemplatesPath();
 
 			$dir = @mkdir($path . 'sproutemail');
 
@@ -214,13 +214,13 @@ Email: {email}',
 				$campaign = new SproutEmail_CampaignTypeModel();
 
 				// Assign our email settings
-				$campaign->name = $settings['name'];
-				$campaign->handle = $settings['handle'];
-				$campaign->mailer = $settings['mailer'];
-				$campaign->hasUrls = $settings['hasUrls'];
-				$campaign->urlFormat = $settings['urlFormat'];
+				$campaign->name              = $settings['name'];
+				$campaign->handle            = $settings['handle'];
+				$campaign->mailer            = $settings['mailer'];
+				$campaign->hasUrls           = $settings['hasUrls'];
+				$campaign->urlFormat         = $settings['urlFormat'];
 				$campaign->hasAdvancedTitles = $settings['hasAdvancedTitles'];
-				$campaign->template = $settings['template'];
+				$campaign->template          = $settings['template'];
 				$campaign->templateCopyPaste = $settings['templateCopyPaste'];
 
 				// Create the Email
@@ -236,7 +236,7 @@ Email: {email}',
 				// Do we have a new field that doesn't exist yet?
 				// If so, save it and grab the id.
 
-				$fieldLayout = array();
+				$fieldLayout    = array();
 				$requiredFields = array();
 
 				$tabs = $fieldSettings[$campaign->handle];
@@ -257,11 +257,11 @@ Email: {email}',
 					{
 						if (!$field = craft()->fields->getFieldByHandle($newField['handle']))
 						{
-							$field = new FieldModel();
-							$field->groupId = $sproutEmailFieldGroup->id;
-							$field->name = $newField['name'];
-							$field->handle = $newField['handle'];
-							$field->type = $newField['type'];
+							$field           = new FieldModel();
+							$field->groupId  = $sproutEmailFieldGroup->id;
+							$field->name     = $newField['name'];
+							$field->handle   = $newField['handle'];
+							$field->type     = $newField['type'];
 							$field->required = $newField['required'];
 							$field->settings = $newField['settings'];
 
@@ -303,19 +303,19 @@ Email: {email}',
 				$emailData = $emailExamples[$campaign->handle];
 
 				$_POST['sproutEmail'] = $emailData['sproutEmail'];
-				$_POST['recipient'] = $emailData['recipient'];
-				$_POST['rules'] = $emailData['rules'];
+				$_POST['recipient']   = $emailData['recipient'];
+				$_POST['rules']       = $emailData['rules'];
 
 				unset($emailData['recipient']);
 				unset($emailData['rules']);
 
 				$campaignEmail->setAttributes($emailData);
-				$campaignEmail->campaignId = $campaign->id;
-				$campaignEmail->fromName = craft()->request->getPost('sproutEmail.fromName');
-				$campaignEmail->fromEmail = craft()->request->getPost('sproutEmail.fromEmail');
+				$campaignEmail->campaignId   = $campaign->id;
+				$campaignEmail->fromName     = craft()->request->getPost('sproutEmail.fromName');
+				$campaignEmail->fromEmail    = craft()->request->getPost('sproutEmail.fromEmail');
 				$campaignEmail->replyToEmail = craft()->request->getPost('sproutEmail.replyToEmail');
 
-				$campaignEmail->getContent()->title = $emailData['title'];
+				$campaignEmail->getContent()->title                = $emailData['title'];
 				$campaignEmail->getContent()->exampleHtmlEmailBody = $emailData['htmlBody'];
 				$campaignEmail->getContent()->exampleTextEmailBody = $emailData['textBody'];
 
@@ -335,7 +335,7 @@ Email: {email}',
 		try
 		{
 			$notificationEmails = array(
-				'welcomeEmail'  =>  array(
+				'welcomeEmail' => array(
 					'name'              => 'Welcome Email - User Notification',
 					'handle'            => 'welcomeEmail',
 					'type'              => 'notification',
@@ -346,36 +346,36 @@ Email: {email}',
 					'templateCopyPaste' => null,
 					'eventId'           => 'SproutEmail-users-saveUser',
 					'options'           => array(
-																	'craft' => array(
-																		'saveUser' => array(
-																			'whenNew' => 1,
-											                'whenUpdated' => '',
-											                'userGroupIds' => '*'
-											                ),
-											              'saveCampaignEmail' => array(
-																			'whenNew' => '',
-																			'whenUpdated' => '',
-											                'sectionIds' => '*'
-											               )
-												          )
-																),
-					'title'         => 'Welcome!',
-					'subjectLine'   => 'Welcome!',
-					'recipients'    => $currentUser->email,
-					'fromName'      => craft()->getSiteName(),
-					'fromEmail'     => $currentUser->email,
-					'replyToEmail'  => $currentUser->email,
-					'locale'        => $currentUser->locale,
-					'htmlBody'      => '<p>Thanks for becoming a member.</p>
+						'craft' => array(
+							'saveUser'          => array(
+								'whenNew'      => 1,
+								'whenUpdated'  => '',
+								'userGroupIds' => '*'
+							),
+							'saveCampaignEmail' => array(
+								'whenNew'     => '',
+								'whenUpdated' => '',
+								'sectionIds'  => '*'
+							)
+						)
+					),
+					'title'             => 'Welcome!',
+					'subjectLine'       => 'Welcome!',
+					'recipients'        => $currentUser->email,
+					'fromName'          => craft()->getSiteName(),
+					'fromEmail'         => $currentUser->email,
+					'replyToEmail'      => $currentUser->email,
+					'locale'            => $currentUser->locale,
+					'htmlBody'          => '<p>Thanks for becoming a member.</p>
 															<ul>
 																<li>Username: <strong>{username}</strong></li>
 																<li>Email: <strong>{email}</strong></li>
 															</ul>',
-					'textBody'      => 'Thanks for becoming a member.
+					'textBody'          => 'Thanks for becoming a member.
 Username: {username}
 Email: {email}'
 				),
-				'newUserEmail'  =>  array(
+				'newUserEmail' => array(
 					'name'              => 'New User - Admin Notification',
 					'handle'            => 'welcomeEmail',
 					'type'              => 'notification',
@@ -387,31 +387,31 @@ Email: {email}'
 					'eventId'           => 'SproutEmail-users-saveUser',
 					'options'           => array(
 						'craft' => array(
-							'saveUser' => array(
-								'whenNew' => 1,
-								'whenUpdated' => '',
+							'saveUser'  => array(
+								'whenNew'      => 1,
+								'whenUpdated'  => '',
 								'userGroupIds' => '*'
 							),
 							'saveEntry' => array(
-								'whenNew' => '',
+								'whenNew'     => '',
 								'whenUpdated' => '',
-								'sectionIds' => '*'
+								'sectionIds'  => '*'
 							)
 						)
 					),
-					'title'         => 'New User - Admin Notification',
-					'subjectLine'   => 'New User - Admin Notification',
-					'recipients'    => $currentUser->email,
-					'fromName'      => craft()->getSiteName(),
-					'fromEmail'     => $currentUser->email,
-					'replyToEmail'  => $currentUser->email,
-					'locale'        => $currentUser->locale,
-					'htmlBody'      => '<p>A new user has been created:</p>
+					'title'             => 'New User - Admin Notification',
+					'subjectLine'       => 'New User - Admin Notification',
+					'recipients'        => $currentUser->email,
+					'fromName'          => craft()->getSiteName(),
+					'fromEmail'         => $currentUser->email,
+					'replyToEmail'      => $currentUser->email,
+					'locale'            => $currentUser->locale,
+					'htmlBody'          => '<p>A new user has been created:</p>
 <ul>
 	<li>Username: <strong>{username}</strong></li>
 	<li>Email: <strong>{email}</strong></li>
 </ul>',
-					'textBody'      => 'A new user has been created:
+					'textBody'          => 'A new user has been created:
 
 Username: {username}
 Email: {email}',
@@ -419,7 +419,7 @@ Email: {email}',
 			);
 
 			$fieldSettings = array(
-				'welcomeEmail'      => array(
+				'welcomeEmail' => array(
 					'Content' => array(
 						array(
 							'name'         => 'HTML Email Body',
@@ -448,7 +448,7 @@ Email: {email}',
 						)
 					)
 				),
-				'newUserEmail'      => array(
+				'newUserEmail' => array(
 					'Content' => array(
 						array(
 							'name'         => 'HTML Email Body',
@@ -481,7 +481,7 @@ Email: {email}',
 
 			foreach ($notificationEmails as $handle => $notificationEmail)
 			{
-				$fieldLayout = array();
+				$fieldLayout    = array();
 				$requiredFields = array();
 
 				$tabs = $fieldSettings[$handle];
@@ -502,11 +502,11 @@ Email: {email}',
 					{
 						if (!$field = craft()->fields->getFieldByHandle($newField['handle']))
 						{
-							$field = new FieldModel();
-							$field->groupId = $sproutEmailFieldGroup->id;
-							$field->name = $newField['name'];
-							$field->handle = $newField['handle'];
-							$field->type = $newField['type'];
+							$field           = new FieldModel();
+							$field->groupId  = $sproutEmailFieldGroup->id;
+							$field->name     = $newField['name'];
+							$field->handle   = $newField['handle'];
+							$field->type     = $newField['type'];
 							$field->required = $newField['required'];
 							$field->settings = $newField['settings'];
 
@@ -545,7 +545,6 @@ Email: {email}',
 
 				$notification->getContent()->exampleTextEmailBody = $notificationEmail['textBody'];
 
-
 				// need to pass post request for $event->prepareOptions() in saveNotification
 				$_POST['rules'] = $notificationEmail['options'];
 
@@ -565,7 +564,7 @@ Email: {email}',
 	 */
 	private function _createFieldGroup()
 	{
-		$sproutEmailFieldGroup = new FieldGroupModel();
+		$sproutEmailFieldGroup       = new FieldGroupModel();
 		$sproutEmailFieldGroup->name = "Sprout Email Examples";
 
 		if (craft()->fields->saveGroup($sproutEmailFieldGroup))

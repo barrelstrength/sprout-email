@@ -2,7 +2,6 @@
 
 namespace Craft;
 
-
 class m160308_000000_sproutEmail_renameReplyTo extends BaseMigration
 {
 	/**
@@ -19,6 +18,7 @@ class m160308_000000_sproutEmail_renameReplyTo extends BaseMigration
 				SproutEmailPlugin::log('Updated sproutemail_campaigns_entries table and renamed column `replyTo` to `replyToEmail`', LogLevel::Info, true);
 			}
 		}
+
 		return true;
 	}
 }

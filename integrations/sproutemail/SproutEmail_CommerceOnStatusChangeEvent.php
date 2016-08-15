@@ -42,8 +42,8 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	 */
 	public function prepareParams(Event $event)
 	{
-		$values = array();
-		$values['value']['order'] = $event->params['order'];
+		$values                          = array();
+		$values['value']['order']        = $event->params['order'];
 		$values['value']['orderHistory'] = $event->params['orderHistory'];
 
 		return $values;
@@ -70,10 +70,10 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 
 		if (isset($context['options']['commerceOrderStatuses']))
 		{
-			$oldOptions = $context['options']['commerceOrderStatuses']['old'];
+			$oldOptions               = $context['options']['commerceOrderStatuses']['old'];
 			$context['oldFieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($oldOptions);
 
-			$newOptions = $context['options']['commerceOrderStatuses']['new'];
+			$newOptions               = $context['options']['commerceOrderStatuses']['new'];
 			$context['newFieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($newOptions);
 		}
 
@@ -109,7 +109,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 	public function getAllOrderStatuses()
 	{
 		$statuses = craft()->commerce_orderStatuses->getAllOrderStatuses();
-		$options = array();
+		$options  = array();
 		if (!empty($statuses))
 		{
 			foreach ($statuses as $status)

@@ -130,7 +130,7 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			),
 			'recipientLists' => array(
 				static::HAS_MANY,
-				'SproutEmail_EntryRecipientListRecord',
+				'SproutEmail_RecipientListRelationsRecord',
 				'emailId'
 			)
 		);

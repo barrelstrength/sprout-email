@@ -221,9 +221,9 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $mailerName)));
 		}
 
-		$campaignEmail    = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaign = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
-		$response = new SproutEmail_ResponseModel();
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaign      = sproutEmail()->campaignTypes->getCampaignTypeById($campaignId);
+		$response      = new SproutEmail_ResponseModel();
 
 		if ($campaignEmail && $campaign)
 		{
@@ -322,13 +322,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		{
 			foreach ($lists as $list)
 			{
-				$record = SproutEmail_EntryRecipientListRecord::model()->findByAttributes(
+				$record = SproutEmail_RecipientListRelationsRecord::model()->findByAttributes(
 					array(
 						'emailId' => $campaignEmail->id,
 						'list'    => $list->list
 					)
 				);
-				$record = $record ? $record : new SproutEmail_EntryRecipientListRecord();
+				$record = $record ? $record : new SproutEmail_RecipientListRelationsRecord();
 
 				$record->emailId = $list->emailId;
 				$record->mailer  = $list->mailer;

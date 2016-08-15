@@ -23,7 +23,7 @@ class m160128_090357_sproutEmail_addSentEmails extends BaseMigration
 			// Create the craft_sproutemail_sentemail table
 			craft()->db->createCommand()->createTable($tableName, array(
 				'id'           => array(
-					'column' => 'integer',
+					'column'   => 'integer',
 					'required' => true
 				),
 				'title'        => array(

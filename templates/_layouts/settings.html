@@ -44,15 +44,24 @@
 		<ul>
 			<li><a href="{{ url('sproutemail/settings/general') }}" {% if selectedSidebarItem == 'general'
 				%}class="sel"{% endif %}>General</a></li>
-			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif
-				%}>Mailers</a></li>
+			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif %}>Mailers</a></li>
+
 			<li class="heading"><span>Content</span></li>
 			<li><a href="{{ url('sproutemail/settings/campaigns') }}" {% if selectedSidebarItem == 'campaigns' %}class="sel"{% endif
 				%}>Campaigns</a></li>
 			<li><a href="{{ url('sproutemail/settings/notifications') }}" {% if selectedSidebarItem == 'notifications' %}class="sel"{%
 				endif %}>Notifications</a></li>
+
+			<li class="heading"><span>Examples</span></li>
 			<li><a href="{{ url('sproutemail/settings/examples') }}" {% if selectedSidebarItem == 'examples'
 				%}class="sel"{% endif %}>Examples</a></li>
+
+			<li class="heading"><span>Integrations</span></li>
+			<li><a href="{{ url('sproutemail/settings/forms') }}" {% if selectedSidebarItem == 'forms'
+				%}class="sel"{% endif %}>Forms</a></li>
+			<li><a href="{{ url('sproutemail/settings/seo') }}" {% if selectedSidebarItem == 'seo'
+				%}class="sel"{% endif %}>SEO</a></li>
+
 		</ul>
 	</nav>
 

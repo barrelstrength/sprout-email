@@ -89,7 +89,7 @@ class SproutEmail_DefaultMailerRecipientModel extends BaseElementModel
 		if (is_null($this->recipientListsIds))
 		{
 			$this->recipientListsIds = array();
-			$recipientLists = $this->getRecipientLists();
+			$recipientLists          = $this->getRecipientLists();
 
 			if (count($recipientLists))
 			{

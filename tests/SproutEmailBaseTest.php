@@ -54,11 +54,11 @@ class SproutEmailBaseTest extends BaseTest
 
 		$this->setComponent(craft(), 'config', $this->config);
 
-		$mainService = new SproutEmailService();
-		$campaignService = new SproutEmail_CampaignTypesService();
-		$campaignEntryService = new SproutEmail_CampaignEmailService();
-		$notificationsService = new SproutEmail_NotificationEmailsService();
-		$mailersService = new SproutEmail_MailerService();
+		$mainService           = new SproutEmailService();
+		$campaignService       = new SproutEmail_CampaignTypesService();
+		$campaignEntryService  = new SproutEmail_CampaignEmailService();
+		$notificationsService  = new SproutEmail_NotificationEmailsService();
+		$mailersService        = new SproutEmail_MailerService();
 		$defaultMailersService = new SproutEmail_DefaultMailerService();
 
 		$this->setComponent(craft(), 'sproutEmail_campaign', $campaignService);
@@ -90,22 +90,22 @@ class SproutEmailBaseTest extends BaseTest
 
 	protected function autoload()
 	{
-		$map = array(
-			'\\Craft\\SproutEmailPlugin'                => '../SproutEmailPlugin.php',
-			'\\Craft\\SproutEmailService'               => '../services/SproutEmailService.php',
-			'\\Craft\\SproutEmail_CampaignsService'     => '../services/SproutEmail_CampaignsService.php',
-			'\\Craft\\SproutEmail_CampaignEmailService'       => '../services/SproutEmail_CampaignEmailsService.php',
+		$map             = array(
+			'\\Craft\\SproutEmailPlugin'                     => '../SproutEmailPlugin.php',
+			'\\Craft\\SproutEmailService'                    => '../services/SproutEmailService.php',
+			'\\Craft\\SproutEmail_CampaignsService'          => '../services/SproutEmail_CampaignsService.php',
+			'\\Craft\\SproutEmail_CampaignEmailService'      => '../services/SproutEmail_CampaignEmailsService.php',
 			'\\Craft\\SproutEmail_NotificationEmailsService' => '../services/SproutEmail_NotificationEmailsService.php',
-			'\\Craft\\SproutEmail_MailerService'        => '../services/SproutEmail_MailerService.php',
-			'\\Craft\\SproutEmail_DefaultMailerService' => '../services/SproutEmail_DefaultMailerService.php',
-			'\\Craft\\SproutEmail_SentEmailsService'    => '../services/SproutEmail_SentEmailsService.php',
-			'\\Craft\\SproutEmail_NotificationEmailService'    => '../services/SproutEmail_NotificationEmailService.php',
-			'\\Craft\\SproutEmailVariable'              => '../variables/SproutEmailVariable.php',
-			'\\Craft\\SproutEmailTwigExtension'         => '../twigextensions/SproutEmailTwigExtension.php',
-			'\\Craft\\SproutEmail_CampaignEmailRecord'          => '../records/SproutEmail_CampaignEmailRecord.php',
-			'\\Craft\\SproutEmailBaseEvent'             => '../contracts/SproutEmailBaseEvent.php',
-			'\\Craft\\SproutEmail_SimpleRecipientModel' => '../models/SproutEmail_SimpleRecipientModel.php',
-			'\\Craft\\SproutEmail_NotificationEmailModel' => '../models/SproutEmail_NotificationEmailModel.php',
+			'\\Craft\\SproutEmail_MailerService'             => '../services/SproutEmail_MailerService.php',
+			'\\Craft\\SproutEmail_DefaultMailerService'      => '../services/SproutEmail_DefaultMailerService.php',
+			'\\Craft\\SproutEmail_SentEmailsService'         => '../services/SproutEmail_SentEmailsService.php',
+			'\\Craft\\SproutEmail_NotificationEmailService'  => '../services/SproutEmail_NotificationEmailService.php',
+			'\\Craft\\SproutEmailVariable'                   => '../variables/SproutEmailVariable.php',
+			'\\Craft\\SproutEmailTwigExtension'              => '../twigextensions/SproutEmailTwigExtension.php',
+			'\\Craft\\SproutEmail_CampaignEmailRecord'       => '../records/SproutEmail_CampaignEmailRecord.php',
+			'\\Craft\\SproutEmailBaseEvent'                  => '../contracts/SproutEmailBaseEvent.php',
+			'\\Craft\\SproutEmail_SimpleRecipientModel'      => '../models/SproutEmail_SimpleRecipientModel.php',
+			'\\Craft\\SproutEmail_NotificationEmailModel'    => '../models/SproutEmail_NotificationEmailModel.php',
 		);
 		$integrationPath = '../integrations/sproutemail/';
 

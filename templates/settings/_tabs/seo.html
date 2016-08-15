@@ -1,0 +1,23 @@
+{% requirePermission "editSproutFormsSettings" %}
+
+{% extends "sproutemail/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+{% import 'sproutemail/_includes/sproutcp' as sprout %}
+
+{% includeCssResource "sproutimport/css/sproutcp.css" %}
+
+{% set title = 'Sprout Forms' %}
+
+{% set content %}
+
+	{{ sprout.mediaBox({
+		heading: "Make your emails part of your SEO strategy"|t,
+		body: "Add <a href='#' target='_blank'>Sprout SEO</a> to easily add your Campaign Emails to your sitemap and enhance your email meta data at its permanent location on your website."|t({
+			importLink: "#",
+			seedLink: "#"
+		}),
+		resourceUrl: resourceUrl('sproutemail/icon.svg'),
+		resourceAltText: "Sprout Icon"|t,
+	}) }}
+
+{% endset %}

@@ -41,7 +41,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$this->renderTemplate('sproutemail/settings/notifications/_edit', $variables);
 	}
-	
+
 	public function actionEditNotificationSetting(array $variables = array())
 	{
 		$notificationId = null;
@@ -138,7 +138,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($notification->id);
 
 		$showPreviewBtn = false;
-		$shareUrl = null;
+		$shareUrl       = null;
 
 		if (!craft()->request->isMobileBrowser(true) && sproutEmail()->doesSiteTemplateExist($notification->template))
 		{
@@ -161,7 +161,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			$status = $notification->getStatus();
 
 			$shareParams = array(
-				'notificationId'    => $notification->id,
+				'notificationId' => $notification->id,
 			);
 
 			if ($notification->id && $notification->getUrl())
@@ -215,8 +215,8 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$notification = $this->notification;
 
-		$notification->subjectLine  = craft()->request->getRequiredPost('subjectLine');
-		$notification->slug         = craft()->request->getRequiredPost('slug');
+		$notification->subjectLine = craft()->request->getRequiredPost('subjectLine');
+		$notification->slug        = craft()->request->getRequiredPost('slug');
 
 		if (empty($notification->slug))
 		{
@@ -372,7 +372,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 						'message'  => $errorMessage
 					))
 				);
-
 			}
 			catch (\Exception $e)
 			{

@@ -72,7 +72,6 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return $sources;
 	}
 
-
 	/**
 	 * Returns the attributes that can be selected as table columns
 	 *
@@ -131,7 +130,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			$status = $element->getStatus();
 
 			$shareParams = array(
-				'notificationId'    => $element->id,
+				'notificationId' => $element->id,
 			);
 
 			if ($element->id && $element->getUrl())
@@ -184,10 +183,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'title'          => AttributeType::String
+			'title' => AttributeType::String
 		);
 	}
-
 
 	/**
 	 * Defines which model attributes should be searchable.
@@ -257,29 +255,23 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			)));
 		}
 
-		$eventId = $element->eventId;
+		$event = sproutEmail()->notificationEmails->getEventById($element->eventId);
 
-		$event = sproutEmail()->notificationEmails->getEventById($eventId);
-
-		if ($event)
-		{
-			$object = $event->getMockedParams();
-		}
+		$object = $event ? $event->getMockedParams() : null;
 
 		$vars = array(
-			'email'     => $element,
+			'email'  => $element,
+			'object' => $object,
 
 			// @deprecate in v3 in favor of the `email` variable
-			'entry'     => $element,
+			'entry'  => $element,
 		);
-
-		$variables = array_merge($vars, $object);
 
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $element->template . $extension,
-				'variables' => $variables
+				'variables' => $vars
 			)
 		);
 	}

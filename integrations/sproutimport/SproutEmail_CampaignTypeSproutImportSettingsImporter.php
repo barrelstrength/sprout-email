@@ -27,7 +27,6 @@ class SproutEmail_CampaignTypeSproutImportSettingsImporter extends BaseSproutImp
 		return sproutEmail()->campaignTypes->saveCampaignType($this->model);
 	}
 
-
 	public function getModelByHandle($handle = null)
 	{
 		$types = sproutEmail()->campaignTypes->getCampaignTypesByHandle($handle);

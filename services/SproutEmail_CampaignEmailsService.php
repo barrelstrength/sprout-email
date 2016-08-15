@@ -29,8 +29,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	 * @throws \CDbException
 	 * @throws \Exception
 	 */
-	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel
-	$campaignType)
+	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$isNewEntry          = true;
 		$campaignEmailRecord = new SproutEmail_CampaignEmailRecord();
@@ -88,7 +87,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 					}
 
 					return $campaignEmailRecord;
-
 				}
 			}
 			catch (\Exception $e)
@@ -151,15 +149,15 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 	public function getRecipientListsByEmailId($id)
 	{
-		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $id))))
+		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
 		{
-			return SproutEmail_EntryRecipientListModel::populateModels($lists);
+			return SproutEmail_RecipientListRelationsModel::populateModels($lists);
 		}
 	}
 
 	public function deleteRecipientListsByEmailId($id)
 	{
-		if (($lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $id))))
+		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
 		{
 			foreach ($lists as $list)
 			{

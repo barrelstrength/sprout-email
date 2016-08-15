@@ -117,7 +117,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		sproutEmail()->mailers->includeMailerModalResources();
 
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
-		$sort = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
+		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
@@ -311,13 +311,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			)));
 		}
 
-
 		$vars = array(
-			'email'     => $element,
-			'campaign'  => $campaign,
-		  
-		  // @deprecate in v3 in favor of the `email` variable
-		  'entry'     => $element,
+			'email'    => $element,
+			'campaign' => $campaign,
+
+			// @deprecate in v3 in favor of the `email` variable
+			'entry'    => $element,
 		);
 
 		return array(

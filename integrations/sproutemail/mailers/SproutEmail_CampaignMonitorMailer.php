@@ -69,8 +69,8 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	 */
 	public function getRecipientListsHtml(array $values = null)
 	{
-		$lists = $this->getRecipientLists();
-		$options = array();
+		$lists    = $this->getRecipientLists();
+		$options  = array();
 		$selected = array();
 
 		if (!count($lists))
@@ -122,14 +122,14 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 
 	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
-		$ids = craft()->request->getPost('recipient.recipientLists');
+		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();
 
 		if ($ids)
 		{
 			foreach ($ids as $id)
 			{
-				$model = new SproutEmail_EntryRecipientListModel();
+				$model = new SproutEmail_RecipientListRelationsModel();
 
 				$model->setAttribute('emailId', $campaignEmail->id);
 				$model->setAttribute('mailer', $this->getId());
@@ -153,7 +153,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	{
 		try
 		{
-			$result = $this->getService()->exportEmail($campaignEmail, $campaign);
+			$result            = $this->getService()->exportEmail($campaignEmail, $campaign);
 			$createdCampaignId = $result['id'];
 		}
 		catch (\Exception $e)
@@ -161,10 +161,10 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 			throw $e;
 		}
 
-		$response = new SproutEmail_ResponseModel();
+		$response             = new SproutEmail_ResponseModel();
 		$response->emailModel = $result['emailModel'];
-		$response->success = true;
-		$response->content = craft()->templates->render(
+		$response->success    = true;
+		$response->content    = craft()->templates->render(
 			'sproutemail/settings/_mailers/campaignmonitor/export',
 			array(
 				'entry'             => $campaignEmail,
@@ -184,7 +184,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 		$urls = $this->getService()->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
 
 		// Create an array of all recipient list titles
-		$lists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
+		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
 		$recipientLists = array();
 
 		if (is_array($lists) && count($lists))

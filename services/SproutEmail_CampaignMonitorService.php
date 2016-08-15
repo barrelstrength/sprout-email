@@ -83,9 +83,9 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	{
 		$urls = $this->getCampaignEmailUrls($campaignEmail->id, $campaign->template);
 
-		$lists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id));
+		$lists          = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id));
 		$recipientLists = array();
-		$toEmails = array();
+		$toEmails       = array();
 		foreach ($lists as $list)
 		{
 			array_push($recipientLists, $list->list);
@@ -112,7 +112,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 		try
 		{
-			$auth = $this->getPostParams();
+			$auth   = $this->getPostParams();
 			$params = array(
 				'Subject'   => $campaignEmail->subjectLine,
 				'Name'      => $campaign->name . ': ' . $campaignEmail->subjectLine,
@@ -126,7 +126,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 			// Set up API call to create a draft campaign and assign the response to $response
 			$draftCampaign = new CS_REST_Campaigns(null, $auth);
-			$response = $draftCampaign->create($this->settings['clientId'], $params);
+			$response      = $draftCampaign->create($this->settings['clientId'], $params);
 
 			$email = new EmailModel();
 
@@ -206,10 +206,10 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
-		$type = craft()->request->getPost('contentType', 'html');
-		$ext = strtolower($type) == 'text' ? '.txt' : null;
+		$type   = craft()->request->getPost('contentType', 'html');
+		$ext    = strtolower($type) == 'text' ? '.txt' : null;
 		$params = array('entry' => $campaignEmail, 'campaign' => $campaign);
-		$body = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
+		$body   = sproutEmail()->renderSiteTemplateIfExists($campaign->template . $ext, $params);
 
 		return array('content' => TemplateHelper::getRaw($body));
 	}
@@ -239,7 +239,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 			throw new Exception(Craft::t('API Key cannot be null.'));
 		}
 
-		$csRestSubscribers = new CS_REST_Subscribers($listId, $apiKey);
+		$csRestSubscribers      = new CS_REST_Subscribers($listId, $apiKey);
 		$subscriberCustomFields = array();
 
 		/*
@@ -297,7 +297,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	public function getListStats($listId)
 	{
 		// Get stats belonging to a list with the given ID
-		$list = new CS_REST_Lists($listId, $this->getPostParams());
+		$list     = new CS_REST_Lists($listId, $this->getPostParams());
 		$response = $list->get_stats()->response;
 
 		return $this->tryJsonResponse($response);
@@ -309,7 +309,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	public function getDetails($listId)
 	{
 		// Get stats belonging to a list with the given ID
-		$list = new CS_REST_Lists($listId, $this->getPostParams());
+		$list     = new CS_REST_Lists($listId, $this->getPostParams());
 		$response = $list->get()->response;
 
 		return $this->tryJsonResponse($response);

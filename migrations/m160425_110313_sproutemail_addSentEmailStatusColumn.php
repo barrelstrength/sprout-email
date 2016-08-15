@@ -27,7 +27,7 @@ class m160425_110313_sproutemail_addSentEmailStatusColumn extends BaseMigration
 
 				// Previous status will be set to sent.
 				craft()->db->createCommand()->update('sproutemail_sentemail', array(
-					'status' => SproutEmail_SentEmailModel::SENT
+						'status' => SproutEmail_SentEmailModel::SENT
 					)
 				);
 			}

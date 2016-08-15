@@ -1,0 +1,23 @@
+{% requirePermission "editSproutFormsSettings" %}
+
+{% extends "sproutemail/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+{% import 'sproutemail/_includes/sproutcp' as sprout %}
+
+{% includeCssResource "sproutimport/css/sproutcp.css" %}
+
+{% set title = 'Sprout Forms' %}
+
+{% set content %}
+
+	{{ sprout.mediaBox({
+		heading: "Better form communications"|t,
+		body: "Manage targeted Landing Pages, contact forms, and all your website's form needs. Integrate <a href='#' target='_blank'>Sprout Forms</a> with Sprout Email to trigger personalized, branded, transactional email communications with your audience when your forms are submitted."|t({
+			importLink: "#",
+			seedLink: "#"
+		}),
+		resourceUrl: resourceUrl('sproutemail/icon.svg'),
+		resourceAltText: "Sprout Icon"|t,
+	}) }}
+
+{% endset %}

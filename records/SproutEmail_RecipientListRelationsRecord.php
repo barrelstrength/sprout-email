@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * Class SproutEmail_EntryRecipientListRecord
+ * Class SproutEmail_RecipientListRelationsRecord
  *
  * @package Craft
  * --
@@ -11,7 +11,7 @@ namespace Craft;
  * @property string $list
  * @property string $type
  */
-class SproutEmail_EntryRecipientListRecord extends BaseRecord
+class SproutEmail_RecipientListRelationsRecord extends BaseRecord
 {
 	/**
 	 * @return string
@@ -42,6 +42,13 @@ class SproutEmail_EntryRecipientListRecord extends BaseRecord
 				'required' => true,
 				'onDelete' => static::CASCADE,
 			)
+		);
+	}
+
+	public function defineIndexes()
+	{
+		return array(
+			array('columns' => array('emailId'))
 		);
 	}
 }

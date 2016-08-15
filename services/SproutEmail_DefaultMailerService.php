@@ -87,7 +87,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function getRecipientListsByEmailId($emailId)
 	{
-		if (($record = SproutEmail_EntryRecipientListRecord::model()->with('entry')->findAll('emailId=:emailId', array(':emailId' => $emailId))))
+		if (($record = SproutEmail_RecipientListRelationsRecord::model()->with('entry')->findAll('emailId=:emailId', array(':emailId' => $emailId))))
 		{
 			$recipientLists = array();
 
@@ -453,7 +453,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
 	{
-		$email= new EmailModel();
+		$email = new EmailModel();
 
 		// Allow disabled emails to be tested
 		if (!$notificationEmail->isReady() AND !$useMockData)
@@ -587,7 +587,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$recipients = $validRecipients;
 
-		if (($entryRecipientLists = SproutEmail_EntryRecipientListRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id))))
+		if (($entryRecipientLists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $campaignEmail->id))))
 		{
 			foreach ($entryRecipientLists as $entryRecipientList)
 			{

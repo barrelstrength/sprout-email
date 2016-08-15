@@ -69,12 +69,12 @@ class SproutEmailTwigExtension extends Twig_Extension
 		{
 			while (!$preserve && mb_strlen($piece, craft()->templates->getTwig()->getCharset()) > $length)
 			{
-				$count = count($lines);
+				$count   = count($lines);
 				$lines[] = mb_substr($piece, 0, $length, craft()->templates->getTwig()->getCharset());
 
 				$lastSpacePosition = strrpos($lines[$count], ' ', 0);
-				$finalCharacters = trim(substr($lines[$count], $lastSpacePosition, 60));
-				$lines[$count] = substr($lines[$count], 0, $lastSpacePosition);
+				$finalCharacters   = trim(substr($lines[$count], $lastSpacePosition, 60));
+				$lines[$count]     = substr($lines[$count], 0, $lastSpacePosition);
 
 				$piece = $finalCharacters . $piece;
 				$piece = mb_substr($piece, $length, 2048, craft()->templates->getTwig()->getCharset());

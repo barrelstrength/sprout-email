@@ -72,12 +72,12 @@ class SproutEmail_CampaignTypeRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'fieldLayout'   => array(
+			'fieldLayout'    => array(
 				static::BELONGS_TO,
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL
 			),
-			'campaignEmails'       => array(
+			'campaignEmails' => array(
 				static::HAS_MANY,
 				'SproutEmail_CampaignEmailRecord',
 				'campaignId'
@@ -145,8 +145,8 @@ class SproutEmail_CampaignTypeRecord extends BaseRecord
 	private function getFieldAsNew($field, $value)
 	{
 		$newField = null;
-		$i = 1;
-		$band = true;
+		$i        = 1;
+		$band     = true;
 		do
 		{
 			$newField = $value . $i;
