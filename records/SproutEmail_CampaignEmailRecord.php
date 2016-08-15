@@ -125,6 +125,7 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'campaign'       => array(
 				static::BELONGS_TO,
 				'SproutEmail_CampaignTypeRecord',
+				'campaignTypeId',
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
