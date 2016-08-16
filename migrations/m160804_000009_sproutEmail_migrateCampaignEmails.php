@@ -15,29 +15,27 @@ class m160804_000009_sproutEmail_migrateCampaignEmails extends BaseMigration
 	{
 		SproutEmailPlugin::log('Updating all campaign email element types to SproutEmail_CampaignEmail');
 
-		if (!craft()->db->tableExists('sproutemail_campaignemails'))
+		if (craft()->db->tableExists('sproutemail_campaignemails'))
 		{
-			return false;
-		}
+			$entries = craft()->db->createCommand()
+				->select('id')
+				->from('sproutemail_campaignemails')
+				->queryAll();
 
-		$entries = craft()->db->createCommand()
-			->select('id')
-			->from('sproutemail_campaignemails')
-			->queryAll();
-
-		if (!empty($entries))
-		{
-			foreach ($entries as $entry)
+			if (!empty($entries))
 			{
-				craft()->db->createCommand()->update('elements', array(
-					'type' => 'SproutEmail_CampaignEmail'
-				),
-					'id= :id', array(':id' => $entry['id'])
-				);
+				foreach ($entries as $entry)
+				{
+					craft()->db->createCommand()->update('elements', array(
+						'type' => 'SproutEmail_CampaignEmail'
+					),
+						'id= :id', array(':id' => $entry['id'])
+					);
+				}
 			}
-		}
 
-		SproutEmailPlugin::log('Finished updating all campaign email element types to SproutEmail_CampaignEmail');
+			SproutEmailPlugin::log('Finished updating all campaign email element types to SproutEmail_CampaignEmail');
+		}
 
 		return true;
 	}

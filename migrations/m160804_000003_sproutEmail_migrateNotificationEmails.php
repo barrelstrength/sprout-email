@@ -20,7 +20,7 @@ class m160804_000003_sproutEmail_migrateNotificationEmails extends BaseMigration
 			!craft()->db->tableExists('sproutemail_campaigns_entries')
 		)
 		{
-			return false;
+			return;
 		}
 
 		$entries = craft()->db->createCommand()
