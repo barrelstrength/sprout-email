@@ -25,8 +25,6 @@ class m160804_000006_sproutEmail_migrateCampaignEmails extends BaseMigration
 			// Solve issue on older version of MySQL where we can't rename columns with a FK
 			MigrationHelper::dropAllForeignKeysOnTable($oldTable);
 
-			MigrationHelper::renameColumn($oldTableName, 'campaignId', 'campaignTypeId');
-
 			craft()->db->createCommand()->renameTable($oldTableName, $newTableName);
 		}
 
