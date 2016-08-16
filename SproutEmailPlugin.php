@@ -127,7 +127,7 @@ class SproutEmailPlugin extends BasePlugin
 			),
 
 			// Notification Email Edit Page
-			'sproutemail/notifications/edit/(?P<notificationId>\d+|new)' => array(
+			'sproutemail/notifications/edit/(?P<notificationId>\d+)' => array(
 				'action' => 'sproutEmail/notificationEmails/editNotificationEmailTemplate'
 			),
 

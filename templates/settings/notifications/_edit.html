@@ -13,7 +13,7 @@
 {% if notificationEmail['id'] %}
 	{% set notificationEmailId = notificationEmail['id'] %}
 {% else %}
-	{% set notificationEmailId = 'new' %}
+	{% set notificationEmailId = '{id}' %}
 {% endif %}
 
 {% block saveButton %}
