@@ -28,8 +28,6 @@ class m160804_000006_sproutEmail_migrateCampaignEmails extends BaseMigration
 			MigrationHelper::renameColumn($oldTableName, 'campaignId', 'campaignTypeId');
 
 			craft()->db->createCommand()->renameTable($oldTableName, $newTableName);
-
-			craft()->db->createCommand()->addForeignKey($newTableName, 'campaignTypeId', 'sproutemail_campaigntype', 'id', 'CASCADE');
 		}
 
 		return true;
