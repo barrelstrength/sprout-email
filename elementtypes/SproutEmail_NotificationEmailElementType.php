@@ -317,4 +317,56 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		return SproutEmail_NotificationEmailModel::populateModel($row);
 	}
+
+	/**
+	 * @inheritDoc IElementType::getElementQueryStatusCondition()
+	 *
+	 * @param DbCommand $query
+	 * @param string    $status
+	 *
+	 * @return array|false|string|void
+	 */
+	public function getElementQueryStatusCondition(DbCommand $query, $status)
+	{
+		switch ($status)
+		{
+			case SproutEmail_CampaignEmailModel::DISABLED:
+			{
+				$query->andWhere('elements.enabled = 0');
+
+				break;
+			}
+			case SproutEmail_CampaignEmailModel::PENDING:
+			{
+				$query->andWhere('elements.enabled = 1');
+
+				break;
+			}
+			case SproutEmail_CampaignEmailModel::ARCHIVED:
+			{
+				$query->andWhere('elements.archived = 1');
+				break;
+			}
+			case SproutEmail_CampaignEmailModel::READY:
+			{
+				$query->andWhere(
+					'
+					elements.enabled = 1
+					'
+				);
+
+				break;
+			}
+			case SproutEmail_CampaignEmailModel::ENABLED:
+			{
+				$query->andWhere(
+					'
+					elements.enabled = 1
+					'
+				);
+
+				break;
+			}
+		}
+	}
 }

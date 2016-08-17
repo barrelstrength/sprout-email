@@ -507,7 +507,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$emailId   = craft()->request->getPost('emailId');
 		$saveAsNew = craft()->request->getPost('saveAsNew');
 
-		if ($emailId && !$saveAsNew)
+		if ($emailId && !$saveAsNew && $emailId != 'new')
 		{
 			$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 
