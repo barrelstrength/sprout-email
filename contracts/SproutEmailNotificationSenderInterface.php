@@ -24,5 +24,5 @@ interface SproutEmailNotificationSenderInterface
 	 * In case 3 above, we actually get a string (username) back but we fetch a user model based on that
 	 *
 	 */
-	public function sendNotification($campaign, $object = null);
+	public function sendNotification($model, $object = null);
 }

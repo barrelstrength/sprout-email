@@ -361,7 +361,7 @@ abstract class SproutEmailBaseMailer
 	 * @internal param mixed|null $element
 	 *
 	 */
-	public function sendNotification(SproutEmail_CampaignTypeModel $campaignType, $object)
+	public function sendNotification($model, $object)
 	{
 	}
 }
