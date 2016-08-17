@@ -239,9 +239,40 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 		// Output it into a buffer, in case TasksService wants to close the connection prematurely
 		ob_start();
+
 		echo $output;
+
 
 		// End the request
 		craft()->end();
+	}
+
+	public function outputError()
+	{
+		$errors = sproutEmail()->getError();
+
+		if (!empty($errors))
+		{
+			$oldPath = craft()->path->getTemplatesPath();
+
+			$newPath = craft()->path->getPluginsPath().'sproutemail/templates';
+
+			craft()->path->setTemplatesPath($newPath);
+
+			$output =  craft()->templates->render(
+				'_partials/errors',
+				array(
+					'errors' => $errors
+				)
+			);
+
+			craft()->path->setTemplatesPath($oldPath);
+
+			ob_start();
+
+			echo $output;
+
+			craft()->end();
+		}
 	}
 }
