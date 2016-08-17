@@ -83,6 +83,12 @@ class m160804_000003_sproutEmail_migrateNotificationEmails extends BaseMigration
 					'id= :id', array(':id' => $oldNotification['id'])
 				);
 
+				craft()->db->createCommand()->update('fieldlayouts', array(
+					'type' => 'SproutEmail_NotificationEmail'
+				),
+					'id= :id', array(':id' => $oldNotification['fieldLayoutId'])
+				);
+
 				// Remove old notifications data
 				craft()->db->createCommand()->delete('sproutemail_campaigns_entries', array(
 					'id' => $oldNotification['id']

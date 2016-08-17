@@ -35,6 +35,24 @@ class m160804_000004_sproutEmail_migrateToCampaignTypes extends BaseMigration
 
 			if (!craft()->db->tableExists('sproutemail_campaigntype'))
 			{
+
+				$entries = craft()->db->createCommand()
+					->select('id, fieldLayoutId')
+					->from($tableName)
+					->queryAll();
+
+				if (!empty($entries))
+				{
+					foreach ($entries as $entry)
+					{
+						craft()->db->createCommand()->update('fieldlayouts', array(
+							'type' => 'SproutEmail_CampaignEmail'
+						),
+							'id= :id', array(':id' => $entry['fieldLayoutId'])
+						);
+					}
+				}
+
 				SproutEmailPlugin::log('Rename sproutemail_campaigns table to sproutemail_campaigntype');
 
 				// Solve issue on older version of MySQL where we can't rename columns with a FK
