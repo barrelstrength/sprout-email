@@ -445,13 +445,13 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignTypeModel $campaign
-	 * @param mixed|null                    $object
-	 * @param bool                          $useMockData
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 * @param mixed|null                         $object
+	 * @param bool                               $useMockData
 	 *
 	 * @return bool
 	 */
-	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
+	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
 	{
 		$email = new EmailModel();
 

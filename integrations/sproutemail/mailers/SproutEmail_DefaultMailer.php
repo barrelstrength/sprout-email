@@ -188,14 +188,14 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_CampaignTypeModel         $campaignType
+	 * @param SproutEmail_NotificationEmailModel    $notificationEmail
 	 * @param BaseModel|BaseElementModel|array|null $object
 	 *
 	 * @param bool                                  $useMockData
 	 *
 	 * @return bool
 	 */
-	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
+	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
 	{
 		return $this->getService()->sendNotification($notificationEmail, $object, $useMockData);
 	}

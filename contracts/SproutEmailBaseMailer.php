@@ -352,16 +352,13 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Gives a mailer the responsibility to send notifications if they implement SproutEmailNotificationSenderInterface
+	 * Gives a mailer the responsibility to send notifications
+	 * Must implement SproutEmailNotificationSenderInterface
 	 *
-	 * @param SproutEmail_CampaignTypeModel $campaign
-	 * @param                               $object
-	 *
-	 * @return bool
-	 * @internal param mixed|null $element
-	 *
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 * @param                                    $object
 	 */
-	public function sendNotification($model, $object)
+	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object)
 	{
 	}
 }

@@ -700,9 +700,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
-	public function sendMockNotification(SproutEmail_NotificationEmailModel $notification)
+	public function sendMockNotification(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
-		$event = $this->getEventById($notification->eventId);
+		$event = $this->getEventById($notificationEmail->eventId);
 
 		if ($event)
 		{
@@ -710,7 +710,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			{
 				$mailer = sproutEmail()->mailers->getMailerByName("defaultmailer");
 
-				$sent = $mailer->sendNotification($notification, $event->getMockedParams(), true);
+				$sent = $mailer->sendNotification($notificationEmail, $event->getMockedParams(), true);
 
 				if (!$sent)
 				{

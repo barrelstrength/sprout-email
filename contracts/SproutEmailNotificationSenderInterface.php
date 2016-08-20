@@ -9,7 +9,7 @@ namespace Craft;
 interface SproutEmailNotificationSenderInterface
 {
 	/**
-	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param SproutEmail_NotificationEmail $notificationEmail
 	 * @param null                          $object
 	 *
 	 * @return mixed
@@ -24,5 +24,5 @@ interface SproutEmailNotificationSenderInterface
 	 * In case 3 above, we actually get a string (username) back but we fetch a user model based on that
 	 *
 	 */
-	public function sendNotification($model, $object = null);
+	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object = null);
 }
