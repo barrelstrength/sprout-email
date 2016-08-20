@@ -237,7 +237,6 @@ class SproutEmailPlugin extends BasePlugin
 
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
 		{
-			// @todo Craft 3 - update to use info from config.json
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
 			craft()->templates->includeJs("
 				sproutFormsBrand = new Craft.SproutBrand();

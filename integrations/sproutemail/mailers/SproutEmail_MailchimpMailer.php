@@ -45,17 +45,17 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 	/**
 	 * @return string
 	 */
-	public function getTitle()
+	public function getName()
 	{
-		return 'MailChimp';
+		return 'mailchimp';
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getTitle()
 	{
-		return 'mailchimp';
+		return 'MailChimp';
 	}
 
 	/**
@@ -79,41 +79,13 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 	}
 
 	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaignType
-	 *
-	 * @return string
+	 * @return array
 	 */
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function defineSettings()
 	{
-		if (strpos($campaignEmail->replyToEmail, '{') !== false)
-		{
-			$campaignEmail->replyToEmail = $campaignEmail->fromEmail;
-		}
-
-		// Create an array of all recipient list titles
-		$lists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
-
-		$recipientLists = array();
-
-		if (is_array($lists) && count($lists))
-		{
-			foreach ($lists as $list)
-			{
-				$current = $this->getService()->getRecipientListById($list->list);
-
-				array_push($recipientLists, $current);
-			}
-		}
-
-		return craft()->templates->render(
-			'sproutemail/settings/mailers/mailchimp/prepare',
-			array(
-				'email'    => $campaignEmail,
-				'lists'    => $recipientLists,
-				'mailer'   => $this,
-				'campaign' => $campaignType
-			)
+		return array(
+			'apiKey'    => array(AttributeType::String, 'required' => true),
+			'inlineCss' => array(AttributeType::String, 'default' => true),
 		);
 	}
 
@@ -161,7 +133,6 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 
 					$listUrl = "https://us7.admin.mailchimp.com/lists/members/?id=" . $list['web_id'];
 
-					// @todo Provide a way for info to become a Craft tooltip in the UI
 					$options[] = array(
 						'label' => sprintf('<a target="_blank" href="%s">%s (%s)</a>', $listUrl, $list['name'], $length),
 						'value' => $list['id']
@@ -240,6 +211,45 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
+	 * @return string
+	 */
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	{
+		if (strpos($campaignEmail->replyToEmail, '{') !== false)
+		{
+			$campaignEmail->replyToEmail = $campaignEmail->fromEmail;
+		}
+
+		// Create an array of all recipient list titles
+		$lists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
+
+		$recipientLists = array();
+
+		if (is_array($lists) && count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$current = $this->getService()->getRecipientListById($list->list);
+
+				array_push($recipientLists, $current);
+			}
+		}
+
+		return craft()->templates->render(
+			'sproutemail/settings/mailers/mailchimp/prepare',
+			array(
+				'email'        => $campaignEmail,
+				'lists'        => $recipientLists,
+				'mailer'       => $this,
+				'campaignType' => $campaignType
+			)
+		);
+	}
+
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
+	 *
 	 * @return array|void
 	 */
 	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
@@ -284,16 +294,5 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 	public function includeModalResources()
 	{
 		craft()->templates->includeJsResource('sproutemail/js/mailers/mailchimp.js');
-	}
-
-	/**
-	 * @return array
-	 */
-	public function defineSettings()
-	{
-		return array(
-			'apiKey'    => array(AttributeType::String, 'required' => true),
-			'inlineCss' => array(AttributeType::String, 'default' => true),
-		);
 	}
 }

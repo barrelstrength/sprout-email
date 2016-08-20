@@ -65,7 +65,7 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns whether or not the mailer has been installed and additionally registered with Sprout Email
+	 * Returns whether or not the mailer has been installed and registered with Sprout Email
 	 *
 	 * @return bool
 	 */
@@ -89,9 +89,9 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns the qualified mailer name
+	 * Returns the Mailer name
 	 *
-	 * @example CoreMailer
+	 * @example DefaultMailer
 	 *
 	 * @return string
 	 */
@@ -107,25 +107,22 @@ abstract class SproutEmailBaseMailer
 	abstract public function getTitle();
 
 	/**
-	 * Returns the mailer title optionally wrapped in a link pointing to /sproutemail/mailer
+	 * Returns a short description of this mailer
 	 *
-	 * @note
-	 * We use this to integrate third party plugin routes and UI seamlessly within Sprout Email
+	 * @example The Sprout Email Core Mailer uses the Craft API to send emails
 	 *
-	 * @see       hasCpSection()
-	 *
-	 * @deprecate Deprecated for 0.9.0 in favour of getCpSectionUrl()
-	 *
-	 * @return string|\Twig_Markup
+	 * @return string
 	 */
-	final public function getCpTitle()
-	{
-		if ($this->hasCpSection())
-		{
-			return sproutEmail()->mailers->getMailerCpSectionLink($this);
-		}
+	abstract public function getDescription();
 
-		return $this->getTitle();
+	/**
+	 * Returns whether or not the mailer has registered routes to accomplish tasks within Sprout Email
+	 *
+	 * @return bool
+	 */
+	public function hasCpSection()
+	{
+		return false;
 	}
 
 	/**
@@ -137,24 +134,6 @@ abstract class SproutEmailBaseMailer
 		{
 			return UrlHelper::getCpUrl(sprintf('sproutemail/%s', $this->getId()));
 		}
-	}
-
-	final public function getCpSettingsUrl()
-	{
-		if ($this->hasCpSettings())
-		{
-			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
-		}
-	}
-
-	/**
-	 * Returns whether or not the mailer has registered routes to accomplish tasks within Sprout Email
-	 *
-	 * @return bool
-	 */
-	public function hasCpSection()
-	{
-		return false;
 	}
 
 	/**
@@ -170,13 +149,15 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns a short description of this mailer
-	 *
-	 * @example The Sprout Email Core Mailer uses the Craft API to send emails
-	 *
 	 * @return string
 	 */
-	abstract public function getDescription();
+	final public function getCpSettingsUrl()
+	{
+		if ($this->hasCpSettings())
+		{
+			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
+		}
+	}
 
 	/**
 	 * Returns the settings model for this mailer
@@ -194,28 +175,22 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns the settings and default values that should be stored when first installed
-	 *
-	 * @deprecated Deprecated since version 0.8.2 in favor of defineSettings()
-	 *
-	 * @see        defineSettings()
-	 *
-	 * @return array
-	 */
-	public function getDefaultSettings()
-	{
-		craft()->deprecator->log(__FUNCTION__, 'Deprecated since version 0.8.2 in favor of defineSettings()');
-
-		return array();
-	}
-
-	/**
 	 * Returns a rendered html string to use for capturing settings input
 	 *
 	 * @return string
 	 */
 	public function getSettingsHtml()
 	{
+	}
+
+	/**
+	 * Enables mailers to define their own settings and validation for them
+	 *
+	 * @return array
+	 */
+	public function defineSettings()
+	{
+		return array();
 	}
 
 	/**
@@ -236,68 +211,6 @@ abstract class SproutEmailBaseMailer
 	public function getRecipientListsHtml()
 	{
 		return TemplateHelper::getRaw('<p>' . Craft::t('This mailer does not require recipients.') . '</p>');
-	}
-
-	/**
-	 * Gives a mailer the ability to register an action to post to when a [prepare] modal is launched
-	 *
-	 * @return string
-	 */
-	public function getActionForPrepareModal()
-	{
-		return 'sproutEmail/mailer/getPrepareModal';
-	}
-
-	/**
-	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
-	 *
-	 * @example
-	 * Mailers should be calling the following functions from within their implementation
-	 *
-	 * craft()->templates->includeJs(File|Resource)();
-	 * craft()->templates->includeCss(File|Resource)();
-	 *
-	 * @note
-	 * To register a dynamic action handler, mailers should listen for sproutEmailBeforeRender
-	 * $(document).on('sproutEmailBeforeRender', function(e, content) {});
-	 */
-	public function includeModalResources()
-	{
-	}
-
-	/**
-	 * Enables mailers to define their own settings and validation for them
-	 *
-	 * @return array
-	 */
-	public function defineSettings()
-	{
-		return array();
-	}
-
-	/**
-	 * Returns the value that should be saved to the settings column for this mailer
-	 *
-	 * @example
-	 * return craft()->request->getPost('sproutemail');
-	 *
-	 * @return mixed
-	 */
-	public function prepareSettings()
-	{
-		return craft()->request->getPost($this->getId());
-	}
-
-	/**
-	 * Gives the mailer chance to attach the value to the right field id before outputting it
-	 *
-	 * @param $value
-	 *
-	 * @return mixed
-	 */
-	public function prepareValue($value)
-	{
-		return $value;
 	}
 
 	/**
@@ -326,16 +239,55 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Gives a mailer the responsibility to send Campaign Emails
-	 * if they implement SproutEmailCampaignEmailSenderInterface
+	 * Returns the value that should be saved to the settings column for this mailer
 	 *
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @example
+	 * return craft()->request->getPost('sproutemail');
 	 *
-	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @return mixed
 	 */
-	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function prepareSettings()
 	{
+		return craft()->request->getPost($this->getId());
+	}
+
+	/**
+	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
+	 *
+	 * @example
+	 * Mailers should be calling the following functions from within their implementation
+	 *
+	 * craft()->templates->includeJs(File|Resource)();
+	 * craft()->templates->includeCss(File|Resource)();
+	 *
+	 * @note
+	 * To register a dynamic action handler, mailers should listen for sproutEmailBeforeRender
+	 * $(document).on('sproutEmailBeforeRender', function(e, content) {});
+	 */
+	public function includeModalResources()
+	{
+	}
+
+	/**
+	 * Gives a mailer the ability to register an action to post to when a [prepare] modal is launched
+	 *
+	 * @return string
+	 */
+	public function getActionForPrepareModal()
+	{
+		return 'sproutEmail/mailer/getPrepareModal';
+	}
+
+	/**
+	 * Gives the mailer chance to attach the value to the right field id before outputting it
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	public function prepareValue($value)
+	{
+		return $value;
 	}
 
 	/**
@@ -346,6 +298,19 @@ abstract class SproutEmailBaseMailer
 	 * @param                                    $object
 	 */
 	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object)
+	{
+	}
+
+	/**
+	 * Gives a mailer the responsibility to send Campaign Emails
+	 * if they implement SproutEmailCampaignEmailSenderInterface
+	 *
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 *
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
+	 */
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 	}
 }

@@ -45,9 +45,9 @@
 		<button
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
-			data-action="sproutEmail/campaignEmails/export"
+			data-action="sproutEmail/campaignEmails/sendCampaignEmail"
 			data-email-id="{{ email.id }}"
-			data-campaign-id="{{ campaign.id }}"
+			data-campaign-type-id="{{ campaignType.id }}"
 			class="btn submit actions">
 
 			{{- "Send Campaign"|t -}}

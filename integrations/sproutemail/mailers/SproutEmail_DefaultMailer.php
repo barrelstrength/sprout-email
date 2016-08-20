@@ -46,6 +46,14 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function hasCpSection()
+	{
+		return true;
+	}
+
+	/**
 	 * @param array $context
 	 *
 	 * @return \Twig_Markup
@@ -62,17 +70,22 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		return TemplateHelper::getRaw($html);
 	}
 
-	/**
-	 * @param $recipientListHandle
-	 *
-	 * @return SproutEmail_DefaultMailerRecipientModel[]
-	 */
-	public function getRecipients($recipientListHandle)
+	public function defineSettings()
 	{
-		if (($list = $this->getService()->getRecipientListByHandle($recipientListHandle)))
-		{
-			return SproutEmail_DefaultMailerRecipientModel::populateModels($list->recipients);
-		}
+		return array(
+			'fromName'           => array(AttributeType::String, 'required' => true),
+			'fromEmail'          => array(AttributeType::Email, 'required' => true),
+			'replyToEmail'       => array(AttributeType::Email, 'required' => false),
+			'enableDynamicLists' => array(AttributeType::Bool, 'default' => false),
+		);
+	}
+
+	/**
+	 * @return SproutEmail_DefaultMailerRecipientListModel[]|null
+	 */
+	public function getRecipientLists()
+	{
+		return $this->getService()->getRecipientLists($this->getId());
 	}
 
 	/**
@@ -86,57 +99,16 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @return SproutEmail_DefaultMailerRecipientListModel[]|null
-	 */
-	public function getRecipientLists()
-	{
-		return $this->getService()->getRecipientLists($this->getId());
-	}
-
-	public function defineSettings()
-	{
-		return array(
-			'fromName'           => array(AttributeType::String, 'required' => true),
-			'fromEmail'          => array(AttributeType::Email, 'required' => true),
-			'replyToEmail'       => array(AttributeType::Email, 'required' => false),
-			'enableDynamicLists' => array(AttributeType::Bool, 'default' => false),
-		);
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function hasCpSection()
-	{
-		return true;
-	}
-
-	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param $recipientListHandle
 	 *
-	 * @return array
+	 * @return SproutEmail_DefaultMailerRecipientModel[]
 	 */
-	public function prepareRecipientLists($campaignEmail)
+	public function getRecipients($recipientListHandle)
 	{
-		$ids   = craft()->request->getPost('recipient.recipientLists');
-		$lists = array();
-
-		if ($ids)
+		if (($list = $this->getService()->getRecipientListByHandle($recipientListHandle)))
 		{
-			foreach ($ids as $id)
-			{
-				$model = new SproutEmail_RecipientListRelationsModel();
-
-				$model->setAttribute('emailId', $campaignEmail->id);
-				$model->setAttribute('mailer', $this->getId());
-				$model->setAttribute('list', $id);
-
-				$lists[] = $model;
-			}
+			return SproutEmail_DefaultMailerRecipientModel::populateModels($list->recipients);
 		}
-
-		return $lists;
 	}
 
 	/**
@@ -185,6 +157,62 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		);
 
 		return TemplateHelper::getRaw($html);
+	}
+
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 *
+	 * @return array
+	 */
+	public function prepareRecipientLists($campaignEmail)
+	{
+		$ids   = craft()->request->getPost('recipient.recipientLists');
+		$lists = array();
+
+		if ($ids)
+		{
+			foreach ($ids as $id)
+			{
+				$model = new SproutEmail_RecipientListRelationsModel();
+
+				$model->setAttribute('emailId', $campaignEmail->id);
+				$model->setAttribute('mailer', $this->getId());
+				$model->setAttribute('list', $id);
+
+				$lists[] = $model;
+			}
+		}
+
+		return $lists;
+	}
+
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
+	 *
+	 * @return string
+	 */
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	{
+		// Display the testToEmailAddress if it exists
+		$email = craft()->config->get('testToEmailAddress');
+
+		if (empty($email))
+		{
+			$email = craft()->userSession->getUser()->email;
+		}
+
+		$errors = array();
+
+		$errors = $this->getErrors($campaignEmail, $campaignType, $errors);
+
+		return craft()->templates->render('sproutemail/_modals/prepare', array(
+			'email'     => $campaignEmail,
+			'campaign'  => $campaignType,
+			'recipient' => $email,
+			'errors'    => $errors
+		));
 	}
 
 	/**
@@ -252,37 +280,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				)
 			);
 		}
-	}
-
-	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaignType
-	 *
-	 * @return string
-	 */
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		// Display the testToEmailAddress if it exists
-		$email = craft()->config->get('testToEmailAddress');
-
-		if (empty($email))
-		{
-			$email = craft()->userSession->getUser()->email;
-		}
-
-		$errors = array();
-
-		$errors = $this->getErrors($campaignEmail, $campaignType, $errors);
-
-		return craft()->templates->render(
-			'sproutemail/_modals/prepare',
-			array(
-				'email'     => $campaignEmail,
-				'campaign'  => $campaignType,
-				'recipient' => $email,
-				'errors'    => $errors
-			)
-		);
 	}
 
 	/**

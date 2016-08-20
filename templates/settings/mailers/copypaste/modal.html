@@ -8,8 +8,8 @@
 	<button
 		id="render"
 		data-mailer="copypaste"
-		data-action="sproutEmail/campaignEmails/export"
+		data-action="sproutEmail/campaignEmails/sendCampaignEmail"
 		data-email-id="{{ email.id }}"
-		data-campaign-id="{{ campaign.id }}"
+		data-campaign-type-id="{{ campaignType.id }}"
 		class="btn submit action">{{ "Render"|t }}</button>
 </div>

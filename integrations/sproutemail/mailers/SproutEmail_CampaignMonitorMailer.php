@@ -23,21 +23,33 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		return $this->service;
 	}
 
-	public function getTitle()
-	{
-		return 'Campaign Monitor';
-	}
-
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return 'campaignmonitor';
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return 'Campaign Monitor';
+	}
+
+	/**
+	 * @return null|string
+	 */
 	public function getDescription()
 	{
 		return Craft::t('Send your email campaigns via Campaign Monitor.');
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineSettings()
 	{
 		return array(
@@ -46,6 +58,11 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		);
 	}
 
+	/**
+	 * @param array $context
+	 *
+	 * @return \Twig_Markup
+	 */
 	public function getSettingsHtml(array $context = array())
 	{
 		$context['settings'] = $this->getSettings();
@@ -55,6 +72,9 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		return TemplateHelper::getRaw($html);
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getRecipientLists()
 	{
 		return $this->getService()->getRecipientLists();
@@ -111,15 +131,11 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		return TemplateHelper::getRaw($html);
 	}
 
-	public function getPostParams(array $extra = array())
-	{
-		$params = array(
-			'api_key' => $this->settings['apiKey']
-		);
-
-		return array_merge($params, $extra);
-	}
-
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 *
+	 * @return Craft\SproutEmail_MailerService
+	 */
 	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
@@ -140,6 +156,38 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		}
 
 		return $lists;
+	}
+
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
+	 *
+	 * @return mixed
+	 */
+	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	{
+		// Get entry URLs
+		$urls = $this->getService()->getCampaignEmailUrls($campaignEmail->id, $campaignType->template);
+
+		// Create an array of all recipient list titles
+		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
+		$recipientLists = array();
+
+		if (is_array($lists) && count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				array_push($recipientLists, $this->getService()->getDetails($list->list)->Title);
+			}
+		}
+
+		return craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/prepare', array(
+			'htmlUrl'  => $urls['html'],
+			'textUrl'  => ($urls['hasText']) ? stripslashes($urls['text']) : null,
+			'lists'    => $recipientLists,
+			'entry'    => $campaignEmail,
+			'campaign' => $campaignType
+		));
 	}
 
 	/**
@@ -178,29 +226,19 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		return $response;
 	}
 
-	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	/**
+	 * @todo - confirm if this is in use
+	 *
+	 * @param array $extra
+	 *
+	 * @return array
+	 */
+	public function getPostParams(array $extra = array())
 	{
-		// Get entry URLs
-		$urls = $this->getService()->getCampaignEmailUrls($campaignEmail->id, $campaignType->template);
+		$params = array(
+			'api_key' => $this->settings['apiKey']
+		);
 
-		// Create an array of all recipient list titles
-		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
-		$recipientLists = array();
-
-		if (is_array($lists) && count($lists))
-		{
-			foreach ($lists as $list)
-			{
-				array_push($recipientLists, $this->getService()->getDetails($list->list)->Title);
-			}
-		}
-
-		return craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/prepare', array(
-			'htmlUrl'  => $urls['html'],
-			'textUrl'  => ($urls['hasText']) ? stripslashes($urls['text']) : null,
-			'lists'    => $recipientLists,
-			'entry'    => $campaignEmail,
-			'campaign' => $campaignType
-		));
+		return array_merge($params, $extra);
 	}
 }

@@ -13,7 +13,7 @@ class SproutEmail_MailerController extends BaseController
 	public function actionEditSettingsTemplate(array $variables = array())
 	{
 		$mailerId = isset($variables['mailerId']) ? $variables['mailerId'] : null;
-		$settings = empty($variables['settings']) ? $variables['settings'] : null;
+		$settings = isset($variables['settings']) ? $variables['settings'] : null;
 
 		if (!$mailerId)
 		{

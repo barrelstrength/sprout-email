@@ -265,12 +265,14 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionExport()
+	public function actionSendCampaignEmail()
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById(craft()->request->getPost('emailId'));
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
 		if ($campaignEmail && $campaignType)

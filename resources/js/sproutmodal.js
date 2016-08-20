@@ -21,7 +21,9 @@ SproutModal.prototype.init = function ()
 		e.preventDefault();
 
 		var $t = $(e.target);
+
 		var modalLoader = null;
+
 		if ($t.data('mailer') === 'copypaste')
 		{
 			modalLoader = self.createLoadingModal();

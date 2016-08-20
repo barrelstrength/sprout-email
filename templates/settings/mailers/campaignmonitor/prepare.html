@@ -40,9 +40,9 @@
 		<button id="cancel" class="btn">{{ "Cancel"|t }}</button>
 		<button
 	        data-mailer="campaignmonitor"
-			data-action="sproutEmail/campaignEmails/export"
+			data-action="sproutEmail/campaignEmails/sendCampaignEmail"
 	        data-email-id="{{ email.id }}"
-	        data-campaign-id="{{ campaign.id }}"
+	        data-campaign-type-id="{{ campaignType.id }}"
 	        class="btn submit icon actions send-campaign">{{ "Send Campaign"|t }}</button>
 	</div>
 </div>
