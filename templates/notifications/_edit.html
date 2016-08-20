@@ -63,70 +63,7 @@
 				{% include "_includes/previewbtns" %}
 			{% endif %}
 
-			<div class="pane meta">
 
-					{{ forms.textField({
-						label: "Slug"|t,
-						locale: notificationEmail.locale,
-						id: 'slug',
-						name: 'slug',
-						value: notificationEmail.slug,
-						errors: (notificationEmail ? notificationEmail.getErrors('slug')|merge(notificationEmail.getErrors('uri'))),
-					}) }}
-
-					{% set statusInput %}
-						<div class="left">
-							{{ forms.lightswitch({
-								id: 'enabled',
-								name: 'enabled',
-								on: notificationEmail.enabled
-							}) }}
-						</div>
-
-						{% if notificationEmail.id is not null %}
-								<div class="right">
-									<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}"
-										data-action="sproutEmail/notificationEmails/deleteNotificationEmail"
-										data-confirm="Are you sure you want to delete this notification email and all of it's data?"
-										data-redirect="sproutemail/notifications">
-								</div>
-						{% endif %}
-
-					{% endset %}
-
-					{{ forms.field({
-						label: "Status"|t,
-						id: 'enabled'
-					}, statusInput) }}
-
-			</div>
-
-			<div id="tab-sproutemail-sender" class="pane meta">
-				{{ forms.textField({
-					label: "From Name <span class='info'>The person or business sending the email</span>"|t,
-					name: 'sproutEmail[fromName]',
-					value: (notificationEmail.fromName is not empty ? notificationEmail.fromName : '' ),
-					errors: (notificationEmail is defined ? notificationEmail.getErrors('fromName') : null),
-					required: true
-				}) }}
-
-				{{ forms.textField({
-					name: 'sproutEmail[fromEmail]',
-					value: (notificationEmail.fromEmail is not empty ? notificationEmail.fromEmail : ''),
-					label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
-					errors: (notificationEmail is defined ? notificationEmail.getErrors('fromEmail') : null),
-					required: true
-				}) }}
-
-				{{ forms.textField({
-					name: 'sproutEmail[replyToEmail]',
-					value: (notificationEmail.replyToEmail is not empty ? notificationEmail.replyToEmail : ''),
-					label: "Reply To <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
-					errors: (notificationEmail is defined ? notificationEmail.getErrors('replyToEmail') : null),
-					required: true
-				}) }}
-
-			</div>
 
 			<div id="tab-sproutemail-recipients" class="pane meta">
 
@@ -195,6 +132,67 @@
 					{% endif %}
 
 				</div>
+			</div>
+
+			<div id="tab-sproutemail-sender" class="pane meta">
+
+				{{ forms.textField({
+					label: "From Name <span class='info'>The person or business sending the email</span>"|t,
+					name: 'sproutEmail[fromName]',
+					value: (notificationEmail.fromName is not empty ? notificationEmail.fromName : '' ),
+					errors: (notificationEmail is defined ? notificationEmail.getErrors('fromName') : null),
+					required: true
+				}) }}
+
+				{{ forms.textField({
+					name: 'sproutEmail[fromEmail]',
+					value: (notificationEmail.fromEmail is not empty ? notificationEmail.fromEmail : ''),
+					label: "From Email <span class='info'>The email address of the person or business sending the email</span>"|t,
+					errors: (notificationEmail is defined ? notificationEmail.getErrors('fromEmail') : null),
+					required: true
+				}) }}
+
+				{{ forms.textField({
+					name: 'sproutEmail[replyToEmail]',
+					value: (notificationEmail.replyToEmail is not empty ? notificationEmail.replyToEmail : ''),
+					label: "Reply To <span class='info'>The email address which will be used if any recipients reply to your email</span>"|t,
+					errors: (notificationEmail is defined ? notificationEmail.getErrors('replyToEmail') : null),
+					required: true
+				}) }}
+
+				{{ forms.textField({
+					label: "Slug"|t,
+					id: 'slug',
+					name: 'slug',
+					value: notificationEmail.slug,
+					errors: (notificationEmail ? notificationEmail.getErrors('slug')|merge(notificationEmail.getErrors('uri'))),
+				}) }}
+
+				{% set statusInput %}
+					<div class="left">
+						{{ forms.lightswitch({
+							id: 'enabled',
+							name: 'enabled',
+							on: notificationEmail.enabled
+						}) }}
+					</div>
+
+					{% if notificationEmail.id is not null %}
+						<div class="right">
+							<input type="button" class="btn small formsubmit" value="{{ 'Delete'|t }}"
+								data-action="sproutEmail/notificationEmails/deleteNotificationEmail"
+								data-confirm="Are you sure you want to delete this notification email and all of it's data?"
+								data-redirect="sproutemail/notifications">
+						</div>
+					{% endif %}
+
+				{% endset %}
+
+				{{ forms.field({
+					label: "Status"|t,
+					id: 'enabled'
+				}, statusInput) }}
+
 			</div>
 
 		</div>
