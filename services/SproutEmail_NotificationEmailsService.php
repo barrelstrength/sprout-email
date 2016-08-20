@@ -543,14 +543,14 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	{
 		$mailer = sproutEmail()->mailers->getMailerByName("defaultmailer");
 
-		if (!method_exists($mailer, 'sendNotification'))
+		if (!method_exists($mailer, 'sendNotificationEmail'))
 		{
-			throw new Exception(Craft::t('The {mailer} does not have a sendNotification() method.', array('mailer' => get_class($mailer))));
+			throw new Exception(Craft::t('The {mailer} does not have a sendNotificationEmail() method.', array('mailer' => get_class($mailer))));
 		}
 
 		try
 		{
-			return $mailer->sendNotification($notificationEmail, $object);
+			return $mailer->sendNotificationEmail($notificationEmail, $object);
 		}
 		catch (\Exception $e)
 		{
@@ -674,7 +674,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		try
 		{
-			$response = $this->sendMockNotification($notificationEmail);
+			$response = $this->sendMockNotificationEmail($notificationEmail);
 
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/notifications/_modals/export',
@@ -700,7 +700,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
-	public function sendMockNotification(SproutEmail_NotificationEmailModel $notificationEmail)
+	public function sendMockNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		$event = $this->getEventById($notificationEmail->eventId);
 
@@ -710,7 +710,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			{
 				$mailer = sproutEmail()->mailers->getMailerByName("defaultmailer");
 
-				$sent = $mailer->sendNotification($notificationEmail, $event->getMockedParams(), true);
+				$sent = $mailer->sendNotificationEmail($notificationEmail, $event->getMockedParams(), true);
 
 				if (!$sent)
 				{

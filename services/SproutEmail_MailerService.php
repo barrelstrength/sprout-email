@@ -358,7 +358,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$mailer = $this->getMailerByName($campaignType->mailer);
 
@@ -369,7 +369,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		try
 		{
-			return $mailer->exportEmail($campaignEmail, $campaignType);
+			return $mailer->sendCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{

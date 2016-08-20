@@ -277,7 +277,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			try
 			{
-				$response = sproutEmail()->mailers->exportEmail($campaignEmail, $campaignType);
+				$response = sproutEmail()->mailers->sendCampaignEmail($campaignEmail, $campaignType);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{

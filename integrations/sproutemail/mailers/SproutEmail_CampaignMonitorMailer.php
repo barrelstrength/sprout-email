@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
+class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
 	/**
 	 * @var SproutEmailCampaignMonitorService
@@ -149,11 +149,11 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer
 	 * @return SproutEmail_ResponseModel
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		try
 		{
-			$result            = $this->getService()->exportEmail($campaignEmail, $campaignType);
+			$result            = $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 			$createdCampaignId = $result['id'];
 		}
 		catch (\Exception $e)

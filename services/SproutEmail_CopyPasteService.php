@@ -16,7 +16,7 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 	 *
 	 * @return SproutEmail_ResponseModel
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$params = array(
 			'email'     => $campaignEmail,

@@ -340,25 +340,26 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Gives a mailer the responsibility to send campaigns if they implement SproutEmailCampaignSenderInterface
+	 * Gives a mailer the responsibility to send Campaign Emails
+	 * if they implement SproutEmailCampaignEmailSenderInterface
 	 *
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function sendCampaign(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 	}
 
 	/**
-	 * Gives a mailer the responsibility to send notifications
-	 * Must implement SproutEmailNotificationSenderInterface
+	 * Gives a mailer the responsibility to send Notification Emails
+	 * if they implement SproutEmailNotificationEmailSenderInterface
 	 *
 	 * @param SproutEmail_NotificationEmailModel $notificationEmail
 	 * @param                                    $object
 	 */
-	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object)
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object)
 	{
 	}
 }

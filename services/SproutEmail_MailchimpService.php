@@ -153,7 +153,7 @@ class SproutEmail_MailchimpService extends BaseApplicationComponent
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function export($campaignEmail, $campaignType, $sendOnExport = true)
+	public function sendCampaignEmail($campaignEmail, $campaignType, $sendOnExport = true)
 	{
 		$lists       = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
 		$campaignIds = array();

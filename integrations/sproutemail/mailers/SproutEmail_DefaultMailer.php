@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutEmailNotificationSenderInterface
+class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutEmailNotificationEmailSenderInterface
 {
 	/**
 	 * @var SproutEmail_DefaultMailerService
@@ -195,9 +195,9 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
 	{
-		return $this->getService()->sendNotification($notificationEmail, $object, $useMockData);
+		return $this->getService()->sendNotificationEmail($notificationEmail, $object, $useMockData);
 	}
 
 	/**
@@ -206,7 +206,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 *
 	 * @return array
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$lists          = sproutEmail()->campaignEmails->getRecipientListsByEmailId($campaignEmail->id);
 		$recipientLists = array();
@@ -226,7 +226,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 		try
 		{
-			$response = $this->getService()->exportEmail($campaignEmail, $campaignType);
+			$response = $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/export',
@@ -266,7 +266,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 		try
 		{
-			$this->getService()->exportEmail($campaignEmail, $campaignType);
+			$this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 
 			$success = true;
 		}

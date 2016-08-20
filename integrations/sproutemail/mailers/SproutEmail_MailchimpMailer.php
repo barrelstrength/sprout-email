@@ -8,7 +8,7 @@ namespace Craft;
  *
  * @package Craft
  */
-class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
+class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
 	/**
 	 * @var SproutEmailMailchimpService
@@ -242,14 +242,14 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer
 	 *
 	 * @return array|void
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$sentCampaignIds = array();
 		$response        = new SproutEmail_ResponseModel();
 
 		try
 		{
-			$sentCampaign = $this->getService()->export($campaignEmail, $campaignType);
+			$sentCampaign = $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 
 			$sentCampaignIds = $sentCampaign['ids'];
 

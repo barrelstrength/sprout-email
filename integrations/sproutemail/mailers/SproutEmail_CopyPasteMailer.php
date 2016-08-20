@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
+class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
 	protected $service;
 
@@ -65,12 +65,12 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 	}
 
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$this->includeModalResources();
 		try
 		{
-			return $this->getService()->exportEmail($campaignEmail, $campaignType);
+			return $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{

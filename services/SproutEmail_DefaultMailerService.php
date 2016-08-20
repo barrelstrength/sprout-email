@@ -451,7 +451,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 *
 	 * @return bool
 	 */
-	public function sendNotification(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
 	{
 		$email = new EmailModel();
 
@@ -544,7 +544,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$response = array();
 
