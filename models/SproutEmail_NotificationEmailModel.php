@@ -11,9 +11,9 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	protected $fields;
 	protected $elementType = 'SproutEmail_NotificationEmail';
 
-	const READY    = 'ready';
+	const ENABLED  = 'enabled';
 	const PENDING  = 'pending';
-	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
+	const DISABLED = 'disabled';
 	const ARCHIVED = 'archived';
 
 	public function defineAttributes()
@@ -131,7 +131,7 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	 * Disabled - Email is disabled
 	 * Archived - Email has been manually set to archived
 	 * Pending  - Email is enabled but some requirements are not yet met
-	 * Ready    - Email is enabled and all requirements are met
+	 * Enabled  - Email is enabled and all requirements are met
 	 *
 	 * @return string
 	 */
@@ -154,7 +154,7 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 					return static::PENDING;
 				}
 
-				return static::READY;
+				return static::ENABLED;
 
 				break;
 			}
@@ -169,7 +169,7 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 
 	public function isReady()
 	{
-		return (bool) ($this->getStatus() == static::READY);
+		return (bool) ($this->getStatus() == static::ENABLED);
 	}
 
 	/**

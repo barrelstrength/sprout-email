@@ -48,9 +48,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_CampaignEmailModel::ENABLED  => Craft::t('Enabled'),
-			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
+			SproutEmail_NotificationEmailModel::ENABLED  => Craft::t('Enabled'),
+			SproutEmail_NotificationEmailModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_NotificationEmailModel::DISABLED => Craft::t('Disabled')
 		);
 	}
 
@@ -330,40 +330,22 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		switch ($status)
 		{
-			case SproutEmail_CampaignEmailModel::DISABLED:
-			{
-				$query->andWhere('elements.enabled = 0');
-
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::PENDING:
+			case SproutEmail_NotificationEmailModel::ENABLED:
 			{
 				$query->andWhere('elements.enabled = 1');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ARCHIVED:
+			case SproutEmail_NotificationEmailModel::PENDING:
 			{
-				$query->andWhere('elements.archived = 1');
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::READY:
-			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					'
-				);
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('notificationemail.template = ""');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ENABLED:
+			case SproutEmail_NotificationEmailModel::DISABLED:
 			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					'
-				);
+				$query->andWhere('elements.enabled = 0');
 
 				break;
 			}
