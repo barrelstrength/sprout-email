@@ -236,7 +236,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 		}
 
 		return craft()->templates->render(
-			'sproutemail/settings/mailers/mailchimp/prepare',
+			'sproutemail/settings/mailers/mailchimp/sendEmailPrepare',
 			array(
 				'email'        => $campaignEmail,
 				'lists'        => $recipientLists,
@@ -277,7 +277,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 		}
 
 		$response->content = craft()->templates->render(
-			'sproutemail/settings/mailers/mailchimp/export',
+			'sproutemail/settings/mailers/mailchimp/sendEmailConfirmation',
 			array(
 				'entry'       => $campaignEmail,
 				'campaign'    => $campaignType,

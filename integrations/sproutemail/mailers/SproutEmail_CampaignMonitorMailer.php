@@ -181,7 +181,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 			}
 		}
 
-		return craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/prepare', array(
+		return craft()->templates->render('sproutemail/settings/mailers/campaignmonitor/sendEmailPrepare', array(
 			'htmlUrl'  => $urls['html'],
 			'textUrl'  => ($urls['hasText']) ? stripslashes($urls['text']) : null,
 			'lists'    => $recipientLists,
@@ -213,7 +213,7 @@ class SproutEmail_CampaignMonitorMailer extends SproutEmailBaseMailer implements
 		$response->emailModel = $result['emailModel'];
 		$response->success    = true;
 		$response->content    = craft()->templates->render(
-			'sproutemail/settings/mailers/campaignmonitor/export',
+			'sproutemail/settings/mailers/campaignmonitor/sendEmailConfirmation',
 			array(
 				'entry'             => $campaignEmail,
 				'campaign'          => $campaignType,

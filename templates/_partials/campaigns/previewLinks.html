@@ -4,15 +4,15 @@
 
 	{% if status != 'ready' %}
 		{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaignType.id) %}
-		{% set emailUrlSep = '&'  %}
+		{% set separator = '&' %}
 	{% else %}
 		{% set emailUrl = email.url %}
-		{% set emailUrlSep = '?'  %}
+		{% set separator = '?' %}
 	{% endif %}
 
 	<a href="{{ emailUrl }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
 	&nbsp;/&nbsp;
-	<a href="{{ emailUrl ~ emailUrlSep }}type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+	<a href="{{ emailUrl ~ separator }}type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
 
 {% else %}
 

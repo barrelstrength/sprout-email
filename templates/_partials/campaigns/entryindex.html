@@ -2,7 +2,7 @@
 
 	{% set campaignType = craft.sproutEmail.getCampaignTypeById(email.campaignTypeId) %}
 
-	{% include 'sproutemail/_partials/campaignindex' with {
+	{% include 'sproutemail/_partials/campaigns/campaignindex' with {
 		email : email,
 		campaignType : campaignType
 	} %}

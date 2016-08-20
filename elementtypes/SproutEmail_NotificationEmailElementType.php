@@ -129,7 +129,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		if ($attribute == 'send')
 		{
-			return craft()->templates->render('sproutemail/notifications/_modals/modalLink', array(
+			return craft()->templates->render('sproutemail/_partials/notifications/prepareLink', array(
 				'notification' => $element
 			));
 		}
@@ -147,7 +147,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
 			}
 
-			return craft()->templates->render('sproutemail/notifications/_partials/preview', array(
+			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
 				'email'    => $element,
 				'shareUrl' => $shareUrl
 			));

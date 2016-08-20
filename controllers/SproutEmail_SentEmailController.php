@@ -40,7 +40,7 @@ class SproutEmail_SentEmailController extends BaseController
 		$emailId   = craft()->request->getRequiredPost('emailId');
 		$sentEmail = sproutEmail()->sentEmails->getSentEmailById($emailId);
 
-		$content = craft()->templates->render('sproutemail/_modals/resend', array(
+		$content = craft()->templates->render('sproutemail/_modals/resendEmailPrepare', array(
 			'email' => $sentEmail
 		));
 
@@ -77,7 +77,7 @@ class SproutEmail_SentEmailController extends BaseController
 				$message = Craft::t("Recipient email addresses do not validate: $invalidEmails");
 
 				$response = SproutEmail_ResponseModel::createErrorModalResponse(
-					'sproutemail/_modals/export',
+					'sproutemail/_modals/sendEmailConfirmation',
 					array(
 						'email'   => $sentEmail,
 						'message' => Craft::t($message),
@@ -150,7 +150,7 @@ class SproutEmail_SentEmailController extends BaseController
 					$message = "Email sent successfully.";
 
 					$response = SproutEmail_ResponseModel::createModalResponse(
-						'sproutemail/_modals/export',
+						'sproutemail/_modals/sendEmailConfirmation',
 						array(
 							'email'   => $sentEmail,
 							'message' => Craft::t($message)
@@ -164,7 +164,7 @@ class SproutEmail_SentEmailController extends BaseController
 		catch (\Exception $e)
 		{
 			$response = SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/export',
+				'sproutemail/_modals/sendEmailConfirmation',
 				array(
 					'email'   => $sentEmail,
 					'message' => Craft::t($e->getMessage()),

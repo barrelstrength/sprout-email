@@ -207,7 +207,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 		$errors = $this->getErrors($campaignEmail, $campaignType, $errors);
 
-		return craft()->templates->render('sproutemail/_modals/prepare', array(
+		return craft()->templates->render('sproutemail/_modals/sendEmailPrepare', array(
 			'email'     => $campaignEmail,
 			'campaign'  => $campaignType,
 			'recipient' => $email,
@@ -257,7 +257,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			$response = $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 
 			return SproutEmail_ResponseModel::createModalResponse(
-				'sproutemail/_modals/export',
+				'sproutemail/_modals/sendEmailConfirmation',
 				array(
 					'email'         => $campaignEmail,
 					'campaign'      => $campaignType,
@@ -272,7 +272,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			sproutEmail()->error($e->getMessage());
 
 			return SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/export',
+				'sproutemail/_modals/sendEmailConfirmation',
 				array(
 					'email'    => $campaignEmail,
 					'campaign' => $campaignType,

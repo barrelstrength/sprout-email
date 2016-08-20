@@ -193,7 +193,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
 
 		return craft()->templates->render(
-			'sproutemail/sentemails/_entryindex', array(
+			'sproutemail/_partials/sentemails/entryindex', array(
 				'context'            => $context,
 				'elementType'        => new ElementTypeVariable($this),
 				'disabledElementIds' => $disabledElementIds,

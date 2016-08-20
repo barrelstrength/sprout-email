@@ -605,7 +605,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$errors = $this->getErrors($notificationEmail, $errors);
 
 		return craft()->templates->render(
-			'sproutemail/notifications/_modals/prepare',
+			'sproutemail/_modals/notifications/sendEmailPrepare',
 			array(
 				'notification' => $notificationEmail,
 				'recipient'    => $email,
@@ -677,7 +677,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			$response = $this->sendMockNotificationEmail($notificationEmail);
 
 			return SproutEmail_ResponseModel::createModalResponse(
-				'sproutemail/notifications/_modals/export',
+				'sproutemail/_modals/notifications/sendEmailPrepare',
 				array(
 					'notification'  => $notificationEmail,
 					'emailModel'    => $response['emailModel'],
@@ -691,7 +691,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			sproutEmail()->error($e->getMessage());
 
 			return SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/notifications/_modals/export',
+				'sproutemail/_modals/notifications/sendEmailPrepare',
 				array(
 					'notification' => $notificationEmail,
 					'message'      => Craft::t($e->getMessage()),

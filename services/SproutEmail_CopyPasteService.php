@@ -42,7 +42,7 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 		$response          = new SproutEmail_ResponseModel();
 		$response->success = true;
 
-		$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/prepare', $vars);
+		$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/sendEmailPrepare', $vars);
 
 		return $response;
 	}

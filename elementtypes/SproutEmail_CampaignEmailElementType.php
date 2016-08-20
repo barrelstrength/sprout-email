@@ -122,7 +122,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
-		return craft()->templates->render('sproutemail/campaigns/_entryindex', array(
+		return craft()->templates->render('sproutemail/_partials/campaigns/entryindex', array(
 			'context'            => $context,
 			'elementType'        => new ElementTypeVariable($this),
 			'disabledElementIds' => $disabledElementIds,
