@@ -245,30 +245,4 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		// End the request
 		craft()->end();
 	}
-
-	public function outputError()
-	{
-		$errors = sproutEmail()->getError();
-
-		if (!empty($errors))
-		{
-			$oldPath = craft()->templates->getTemplatesPath();
-
-			$newPath = craft()->path->getPluginsPath() . 'sproutemail/templates';
-
-			craft()->templates->setTemplatesPath($newPath);
-
-			$output = craft()->templates->render('_partials/errors', array(
-				'errors' => $errors
-			));
-
-			craft()->templates->setTemplatesPath($oldPath);
-
-			ob_start();
-
-			echo $output;
-
-			craft()->end();
-		}
-	}
 }

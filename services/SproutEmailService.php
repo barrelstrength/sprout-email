@@ -126,6 +126,7 @@ class SproutEmailService extends BaseApplicationComponent
 				$message = str_replace($template, $template . '.html', $message);
 			}
 
+			// @todo - update error handling
 			$this->error($message, 'template-' . $template);
 		}
 

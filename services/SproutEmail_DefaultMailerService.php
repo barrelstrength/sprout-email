@@ -823,6 +823,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$emailModel->htmlBody = $this->removePlaceholderStyleTags($emailModel->htmlBody, $styleTags);
 
+		// @todo - update error handling
 		$templateError = sproutEmail()->getError('template');
 
 		if (!empty($templateError))

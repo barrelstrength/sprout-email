@@ -761,9 +761,6 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notificationEmail, $object);
 
-		// Display error if found
-		sproutEmail()->campaignEmails->outputError();
-
 		sproutEmail()->campaignEmails->showCampaignEmail($email, $fileExtension);
 	}
 }

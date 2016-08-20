@@ -242,8 +242,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		// Only expose notification emails that have tokens
-		if (!craft()->request->getQuery(craft()->config->get('tokenParam')))
+		// Only expose notification emails that have tokens and allow Live Preview requests
+		if (!craft()->request->getQuery(craft()->config->get('tokenParam')) && !craft()->request->isLivePreview())
 		{
 			throw new HttpException(404);
 		}
