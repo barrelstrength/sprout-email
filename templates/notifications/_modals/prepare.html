@@ -45,7 +45,7 @@
 		<button
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
-			data-action="sproutEmail/notificationEmails/export"
+			data-action="sproutEmail/notificationEmails/sendNotificationEmail"
 			data-notification-id="{{ notification.id }}"
 			class="btn submit actions">
 				{{- "Send Test"|t -}}

@@ -654,7 +654,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $errors;
 	}
 
-	public function exportEmail(SproutEmail_NotificationEmailModel $notificationEmail)
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		$lists          = $this->getRecipientListsByNotificationId($notificationEmail->id);
 		$recipientLists = array();

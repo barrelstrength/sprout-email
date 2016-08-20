@@ -116,7 +116,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionExport()
+	public function actionSendNotificationEmail()
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
@@ -127,7 +127,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		{
 			try
 			{
-				$response = sproutEmail()->notificationEmails->exportEmail($notificationEmail);
+				$response = sproutEmail()->notificationEmails->sendNotificationEmail($notificationEmail);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{
