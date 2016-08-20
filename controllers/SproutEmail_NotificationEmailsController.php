@@ -96,7 +96,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		if (!$notificationEmail)
 		{
-			if ($emailId)
+			if (!$isNewNotificationEmail)
 			{
 				$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($emailId);
 			}
