@@ -258,39 +258,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
-	 * @return array
-	 */
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		$success = false;
-
-		try
-		{
-			$this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
-
-			$success = true;
-		}
-		catch (\Exception $e)
-		{
-			sproutEmail()->error($e->getMessage());
-		}
-
-		$content = craft()->templates->render(
-			'sproutemail/_modals/export',
-			array(
-				'email'    => $campaignEmail,
-				'campaign' => $campaignType,
-				'success'  => $success,
-			)
-		);
-
-		return compact('content');
-	}
-
-	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaignType
-	 *
 	 * @return string
 	 */
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)

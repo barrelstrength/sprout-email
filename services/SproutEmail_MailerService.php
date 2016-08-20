@@ -254,43 +254,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		return $response;
 	}
 
-	/**
-	 * @param $mailerName
-	 * @param $emailId
-	 * @param $campaignTypeId
-	 *
-	 * @return array )
-	 * @throws Exception
-	 */
-	public function getPreviewModal($mailerName, $emailId, $campaignTypeId)
-	{
-		$mailer = $this->getMailerByName($mailerName);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
-		}
-
-		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
-		$response      = new SproutEmail_ResponseModel();
-
-		if ($campaignEmail && $campaignType)
-		{
-			$response->content = $mailer->getPreviewModalHtml($campaignEmail, $campaignType);
-
-			return $response;
-		}
-		else
-		{
-			$name = $mailer->getTitle();
-
-			$response->content = "<h1>$name</h1><br><p>" . Craft::t('No actions available for this campaign entry.') . "</p>";
-		}
-
-		return $response;
-	}
-
 	public function includeMailerModalResources()
 	{
 		craft()->templates->includeCssResource('sproutemail/css/modal.css');
@@ -370,33 +333,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		try
 		{
 			return $mailer->sendCampaignEmail($campaignEmail, $campaignType);
-		}
-		catch (\Exception $e)
-		{
-			throw $e;
-		}
-	}
-
-	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaignType
-	 *
-	 * @return array
-	 * @throws Exception
-	 * @throws \Exception
-	 */
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		$mailer = $this->getMailerByName($campaignType->mailer);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
-		}
-
-		try
-		{
-			return $mailer->previewCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{

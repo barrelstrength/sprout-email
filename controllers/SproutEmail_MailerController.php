@@ -108,25 +108,6 @@ class SproutEmail_MailerController extends BaseController
 	}
 
 	/**
-	 * Provides a way for mailers to render content to perform actions inside a modal window
-	 *
-	 * @throws HttpException
-	 */
-	public function actionGetPreviewModal()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$mailer         = craft()->request->getRequiredPost('mailer');
-		$emailId        = craft()->request->getRequiredPost('emailId');
-		$campaignTypeId = craft()->request->getRequiredPost('campaignTypeId');
-
-		$modal = sproutEmail()->mailers->getPreviewModal($mailer, $emailId, $campaignTypeId);
-
-		$this->returnJson($modal->getAttributes());
-	}
-
-	/**
 	 * Allows Sprout Email to officially register mailers already installed via Craft
 	 *
 	 * @note This is called onAfterInstall() and on sproutemail/settings/mailers [Refresh List]

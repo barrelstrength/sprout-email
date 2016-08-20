@@ -249,20 +249,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Gives a mailer the ability to register an action to post to when a [preview] modal is launched
-	 *
-	 * @deprecated Deprecated since version 0.8.3 in favor of using ElementTypeModel::routeRequestForMatchedElement()
-	 *
-	 * @return string
-	 */
-	public function getActionForPreviewModal()
-	{
-		craft()->deprecator->log(__FUNCTION__, 'Deprecated since version 0.8.3 in favor of using ElementTypeModel::routeRequestForMatchedElement()');
-
-		return 'sproutEmail/mailer/getPreviewModal';
-	}
-
-	/**
 	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
 	 *
 	 * @example

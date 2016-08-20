@@ -346,45 +346,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	}
 
 	/**
-	 * Preview a Campaign Email
-	 *
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function actionPreview()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$emailId = craft()->request->getPost('emailId');
-
-		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
-
-		if ($campaignEmail && $campaignType)
-		{
-			try
-			{
-				$result = sproutEmail()->mailers->previewCampaignEmail($campaignEmail, $campaignType);
-
-				if (craft()->request->isAjaxRequest())
-				{
-					return $result['content'];
-				}
-				craft()->end();
-			}
-			catch (\Exception $e)
-			{
-				sproutEmail()->error($e->getMessage());
-			}
-		}
-		else
-		{
-			throw new Exception(Craft::t('Campaign Email or Campaign Type are missing'));
-		}
-	}
-
-	/**
 	 * Redirects the client to a URL for viewing an entry/draft on the front end.
 	 *
 	 * @param mixed $emailId

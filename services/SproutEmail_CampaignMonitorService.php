@@ -208,19 +208,6 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 		}
 	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		$type   = craft()->request->getPost('contentType', 'html');
-		$ext    = strtolower($type) == 'text' ? '.txt' : null;
-		$params = array(
-			'entry' => $campaignEmail,
-			'campaign' => $campaignType
-		);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . $ext, $params);
-
-		return array('content' => TemplateHelper::getRaw($body));
-	}
-
 	/**
 	 * Adds or updates the user to a subscriber list
 	 *
