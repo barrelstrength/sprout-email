@@ -242,7 +242,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 		echo $output;
 
-
 		// End the request
 		craft()->end();
 	}
@@ -253,20 +252,17 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 		if (!empty($errors))
 		{
-			$oldPath = craft()->path->getTemplatesPath();
+			$oldPath = craft()->templates->getTemplatesPath();
 
-			$newPath = craft()->path->getPluginsPath().'sproutemail/templates';
+			$newPath = craft()->path->getPluginsPath() . 'sproutemail/templates';
 
-			craft()->path->setTemplatesPath($newPath);
+			craft()->templates->setTemplatesPath($newPath);
 
-			$output =  craft()->templates->render(
-				'_partials/errors',
-				array(
-					'errors' => $errors
-				)
-			);
+			$output = craft()->templates->render('_partials/errors', array(
+				'errors' => $errors
+			));
 
-			craft()->path->setTemplatesPath($oldPath);
+			craft()->templates->setTemplatesPath($oldPath);
 
 			ob_start();
 
