@@ -248,19 +248,17 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 		$object = $event ? $event->getMockedParams() : null;
 
-		$vars = array(
-			'email'  => $element,
-			'object' => $object,
-
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'  => $element,
-		);
-
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $element->template . $extension,
-				'variables' => $vars
+				'variables' => array(
+					'email'  => $element,
+					'object' => $object,
+
+					// @deprecate in v3 `entry` in favor of the `email` variable
+					'entry'  => $element,
+				)
 			)
 		);
 	}

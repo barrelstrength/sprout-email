@@ -6,10 +6,10 @@ namespace Craft;
  *
  * @package Craft
  *
- * @property bool   $success Whether or not the request was successful
- * @property string $message The success or error message
- * @property string $content Rendered HTML content of body
- * @property array  $vars    Template variables
+ * @property bool   $success      Whether or not the request was successful
+ * @property string $message      The success or error message
+ * @property string $content      Rendered HTML content of body
+ * @property array  $variables    Template variables
  */
 class SproutEmail_ResponseModel extends BaseModel
 {

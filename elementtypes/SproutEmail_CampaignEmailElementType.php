@@ -302,19 +302,19 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			)));
 		}
 
-		$vars = array(
-			'email'    => $element,
-			'campaign' => $campaignType,
-
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'    => $element,
-		);
-
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $campaignType->template . $extension,
-				'variables' => $vars
+				'variables' => array(
+					'email'        => $element,
+					'campaignType' => $campaignType,
+
+					// @deprecate in v3 `entry` in favor of the `email` variable
+					// @deprecate in v3 `campaign` in favor of the `campaignType` variable
+					'entry'        => $element,
+					'campaign'     => $campaignType,
+				)
 			)
 		);
 	}

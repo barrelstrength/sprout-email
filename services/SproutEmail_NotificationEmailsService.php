@@ -516,19 +516,14 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			$attributes = (array) $element;
 		}
 
-		$vars = array_merge(
-			$attributes,
-			array(
-				'email'        => $notificationEmail,
-				'object'       => $element,
+		return array_merge($attributes, array(
+			'email'        => $notificationEmail,
+			'object'       => $element,
 
-				// @deprecate - in v3 in favor of `email`
-				'entry'        => $notificationEmail,
-				'notification' => $notificationEmail,
-			)
-		);
-
-		return $vars;
+			// @deprecate - in v3 in favor of `email`
+			'entry'        => $notificationEmail,
+			'notification' => $notificationEmail,
+		));
 	}
 
 	/**

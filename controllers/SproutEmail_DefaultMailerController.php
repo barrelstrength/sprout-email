@@ -276,12 +276,13 @@ class SproutEmail_DefaultMailerController extends BaseController
 				throw new Exception(Craft::t('Recipient with id ({id}) was not found.', array('id' => $id)));
 			}
 
-			$vars    = array('recipientId' => $model->id);
 			$deleted = SproutEmail_DefaultMailerRecipientRecord::model()->deleteByPk($model->id);
 
 			if ($deleted)
 			{
-				SproutEmail_DefaultMailerRecipientListRecipientRecord::model()->deleteAllByAttributes($vars);
+				SproutEmail_DefaultMailerRecipientListRecipientRecord::model()->deleteAllByAttributes(array(
+					'recipientId' => $model->id
+				));
 
 				craft()->userSession->setNotice(Craft::t('Recipient deleted successfully.'));
 
@@ -320,18 +321,21 @@ class SproutEmail_DefaultMailerController extends BaseController
 				throw new Exception(Craft::t('Recipient list with id ({id}) was not found.', array('id' => $id)));
 			}
 
-			$vars    = array('recipientListId' => $model->id);
 			$deleted = SproutEmail_DefaultMailerRecipientListRecord::model()->deleteByPk($model->id);
 
 			if ($deleted)
 			{
-				SproutEmail_DefaultMailerRecipientListRecipientRecord::model()->deleteAllByAttributes($vars);
+				SproutEmail_DefaultMailerRecipientListRecipientRecord::model()->deleteAllByAttributes(array(
+					'recipientListId' => $model->id
+				));
 
 				craft()->userSession->setNotice(Craft::t('Recipient list deleted successfully.'));
 
 				if (craft()->request->isAjaxRequest())
 				{
-					$this->returnJson(array('success' => true));
+					$this->returnJson(array(
+						'success' => true
+					));
 				}
 			}
 			else
