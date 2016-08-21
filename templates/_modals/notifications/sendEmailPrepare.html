@@ -7,7 +7,7 @@
 		<tbody>
 		<tr>
 			<td><strong>{{ "Subject"|t }}</strong></td>
-			<td class="title">{{ notification.title }}</td>
+			<td class="title">{{ notificationEmail.title }}</td>
 		</tr>
 
 		<tr>
@@ -22,7 +22,7 @@
 					name: "recipients",
 					class: "code",
 					placeholder: placeholderEmails,
-					value: recipient
+					value: recipients
 				}) }}
 			</td>
 		</tr>
@@ -46,7 +46,7 @@
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
 			data-action="sproutEmail/notificationEmails/sendNotificationEmail"
-			data-notification-id="{{ notification.id }}"
+			data-notification-id="{{ notificationEmail.id }}"
 			class="btn submit actions">
 				{{- "Send Test"|t -}}
 		</button>

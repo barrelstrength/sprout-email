@@ -54,22 +54,8 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param array $context
-	 *
-	 * @return \Twig_Markup
+	 * @return array
 	 */
-	public function getSettingsHtml(array $context = array())
-	{
-		if (!isset($context['settings']) || $context['settings'] === null)
-		{
-			$context['settings'] = $this->getSettings();
-		}
-
-		$html = craft()->templates->render('sproutemail/settings/mailers/sproutemail/settings', $context);
-
-		return TemplateHelper::getRaw($html);
-	}
-
 	public function defineSettings()
 	{
 		return array(
@@ -78,6 +64,22 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			'replyToEmail'       => array(AttributeType::Email, 'required' => false),
 			'enableDynamicLists' => array(AttributeType::Bool, 'default' => false),
 		);
+	}
+
+	/**
+	 * @param array $settings
+	 *
+	 * @return \Twig_Markup
+	 */
+	public function getSettingsHtml(array $settings = array())
+	{
+		$settings = isset($settings['settings']) ? $settings['settings'] : $this->getSettings();
+
+		$html = craft()->templates->render('sproutemail/settings/mailers/sproutemail/settings', array(
+			'settings' => $settings
+		));
+
+		return TemplateHelper::getRaw($html);
 	}
 
 	/**
@@ -196,11 +198,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		// Display the testToEmailAddress if it exists
-		$email = craft()->config->get('testToEmailAddress');
+		$recipients = craft()->config->get('testToEmailAddress');
 
-		if (empty($email))
+		if (empty($recipients))
 		{
-			$email = craft()->userSession->getUser()->email;
+			$recipients = craft()->userSession->getUser()->email;
 		}
 
 		$errors = array();
@@ -208,10 +210,10 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		$errors = $this->getErrors($campaignEmail, $campaignType, $errors);
 
 		return craft()->templates->render('sproutemail/_modals/sendEmailPrepare', array(
-			'email'     => $campaignEmail,
-			'campaign'  => $campaignType,
-			'recipient' => $email,
-			'errors'    => $errors
+			'campaignEmail' => $campaignEmail,
+			'campaignType'  => $campaignType,
+			'recipients'    => $recipients,
+			'errors'        => $errors
 		));
 	}
 

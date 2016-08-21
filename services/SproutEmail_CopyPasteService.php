@@ -18,31 +18,25 @@ class SproutEmail_CopyPasteService extends BaseApplicationComponent
 	 */
 	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$params = array(
-			'email'     => $campaignEmail,
-			'campaign'  => $campaignType,
-			'recipient' => array(
-				'firstName' => 'John',
-				'lastName'  => 'Doe',
-				'email'     => 'john@doe.com'
-			),
+		$variables = array(
+			'email'        => $campaignEmail,
+			'campaignType' => $campaignType,
 
-			// @deprecate - in favor of `email` in v3
-			'entry'     => $campaignEmail
+			// @deprecate - `entry` in favor of `email` in v3
+			// @deprecate - `campaign` in favor of `campaignType` in v3
+			'entry'        => $campaignEmail,
+			'campaign'     => $campaignType
 		);
 
-		$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->templateCopyPaste, $params);
-		$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->templateCopyPaste . '.txt', $params);
-
-		$vars = array(
-			'html' => trim($html),
-			'text' => trim($text),
-		);
+		$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->templateCopyPaste, $variables);
+		$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->templateCopyPaste . '.txt', $variables);
 
 		$response          = new SproutEmail_ResponseModel();
 		$response->success = true;
-
-		$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/sendEmailPrepare', $vars);
+		$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/sendEmailPrepare', array(
+			'html' => trim($html),
+			'text' => trim($text),
+		));
 
 		return $response;
 	}

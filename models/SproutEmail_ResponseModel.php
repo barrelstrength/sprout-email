@@ -15,24 +15,24 @@ class SproutEmail_ResponseModel extends BaseModel
 {
 	/**
 	 * @param string $template
-	 * @param array  $vars
+	 * @param array  $variables
 	 *
 	 * @return SproutEmail_ResponseModel
 	 */
-	public static function createModalResponse($template = '', array $vars = array())
+	public static function createModalResponse($template = '', array $variables = array())
 	{
 		/** @var SproutEmail_ResponseModel $instance */
 		$instance = get_called_class();
 		$instance = new $instance();
 
 		$instance->setAttribute('success', true);
-		$instance->setAttributes($vars);
+		$instance->setAttributes($variables);
 
 		if ($template && craft()->templates->doesTemplateExist($template))
 		{
-			$vars = array_merge($vars, $instance->getAttributes());
+			$variables = array_merge($variables, $instance->getAttributes());
 
-			$instance->content = craft()->templates->render($template, $vars);
+			$instance->content = craft()->templates->render($template, $variables);
 		}
 
 		return $instance;
@@ -40,24 +40,24 @@ class SproutEmail_ResponseModel extends BaseModel
 
 	/**
 	 * @param string $template
-	 * @param array  $vars
+	 * @param array  $variables
 	 *
 	 * @return SproutEmail_ResponseModel
 	 */
-	public static function createErrorModalResponse($template = null, array $vars = array())
+	public static function createErrorModalResponse($template = null, array $variables = array())
 	{
 		/** @var SproutEmail_ResponseModel $instance */
 		$instance = get_called_class();
 		$instance = new $instance();
 
 		$instance->setAttribute('success', false);
-		$instance->setAttributes($vars);
+		$instance->setAttributes($variables);
 
 		if ($template && craft()->templates->doesTemplateExist($template))
 		{
-			$vars = array_merge($vars, $instance->getAttributes());
+			$variables = array_merge($variables, $instance->getAttributes());
 
-			$instance->content = craft()->templates->render($template, $vars);
+			$instance->content = craft()->templates->render($template, $variables);
 		}
 
 		return $instance;

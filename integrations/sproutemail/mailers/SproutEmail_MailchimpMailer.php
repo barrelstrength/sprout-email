@@ -67,15 +67,17 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 	}
 
 	/**
-	 * @param array $context
+	 * @param array $settings
 	 *
 	 * @return string
 	 */
-	public function getSettingsHtml(array $context = array())
+	public function getSettingsHtml(array $settings = array())
 	{
-		$context['settings'] = $this->getSettings();
+		$settings = isset($settings['settings']) ? $settings['settings'] : $this->getSettings();
 
-		return craft()->templates->render('sproutemail/settings/mailers/mailchimp/settings', $context);
+		return craft()->templates->render('sproutemail/settings/mailers/mailchimp/settings', array(
+			'settings' => $settings
+		));
 	}
 
 	/**
@@ -238,10 +240,10 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 		return craft()->templates->render(
 			'sproutemail/settings/mailers/mailchimp/sendEmailPrepare',
 			array(
-				'email'        => $campaignEmail,
-				'lists'        => $recipientLists,
-				'mailer'       => $this,
-				'campaignType' => $campaignType
+				'mailer'         => $this,
+				'campaignEmail'  => $campaignEmail,
+				'campaignType'   => $campaignType,
+				'recipientLists' => $recipientLists,
 			)
 		);
 	}
@@ -266,7 +268,9 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 			$response->emailModel = $sentCampaign['emailModel'];
 
 			$response->success = true;
-			$response->message = Craft::t('Campaign successfully sent to {count} recipient lists.', array('count' => count($sentCampaignIds)));
+			$response->message = Craft::t('Campaign successfully sent to {count} recipient lists.', array(
+				'count' => count($sentCampaignIds)
+			));
 		}
 		catch (\Exception $e)
 		{
@@ -279,12 +283,8 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 		$response->content = craft()->templates->render(
 			'sproutemail/settings/mailers/mailchimp/sendEmailConfirmation',
 			array(
-				'entry'       => $campaignEmail,
-				'campaign'    => $campaignType,
-				'mailer'      => $this,
-				'success'     => $response->success,
-				'message'     => $response->message,
-				'campaignIds' => $sentCampaignIds
+				'success' => $response->success,
+				'message' => $response->message
 			)
 		);
 

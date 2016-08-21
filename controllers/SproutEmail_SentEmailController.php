@@ -20,7 +20,6 @@ class SproutEmail_SentEmailController extends BaseController
 		$htmlBody = (!empty($sentEmail->htmlBody)) ? $sentEmail->htmlBody : null;
 
 		$content = craft()->templates->render('sproutemail/sentemails/_view', array(
-			'email'    => $sentEmail,
 			'body'     => $body,
 			'htmlBody' => $htmlBody
 		));
@@ -41,7 +40,7 @@ class SproutEmail_SentEmailController extends BaseController
 		$sentEmail = sproutEmail()->sentEmails->getSentEmailById($emailId);
 
 		$content = craft()->templates->render('sproutemail/_modals/resendEmailPrepare', array(
-			'email' => $sentEmail
+			'sentEmail' => $sentEmail
 		));
 
 		$response          = new SproutEmail_ResponseModel();

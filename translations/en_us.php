@@ -141,7 +141,7 @@ return array(
 	'Save Campaign'                                                                                                                                                            => 'Save Campaign',
 	'Edit Campaign'                                                                                                                                                            => 'Edit Campaign',
 	'Manage and send your email marketing and notification emails directly from Craft.'                                                                                        => 'Manage and send your email marketing and notification emails directly from Craft.',
-	'Copy &amp; Paste'                                                                                                                                                         => 'Copy &amp; Paste',
+	'Copy & Paste'                                                                                                                                                         => 'Copy & Paste',
 	'Set API Settings Now'                                                                                                                                                     => 'Set API Settings Now',
 	'Save Info'                                                                                                                                                                => 'Save Info',
 	'Save Info &amp; Continue'                                                                                                                                                 => 'Save Info &amp; Continue',

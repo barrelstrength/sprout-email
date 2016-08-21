@@ -1,13 +1,13 @@
 {% import "_includes/forms" as forms %}
 
-<h1>Campaign Monitor</h1>
+<h1>{{ "Campaign Monitor" }}</h1>
 
 {% if success %}
 
 	{% if response.success %}
-		<h2>Your campaign was sent successfully.</h2>
+		<h2>{{ "Your campaign was sent successfully."|t }}</h2>
 	{% else %}
-		<h2>Your campaign failed to send.</h2>
+		<h2>{{ "Your campaign failed to send."|t }}</h2>
 	{% endif %}
 
 	<hr>
@@ -16,7 +16,7 @@
 
 {% else %}
 
-	<h2>An unknown error occurred. Please try again.</h2>
+	<h2>{{ "An unknown error occurred. Please try again."|t }}</h2>
 
 {% endif %}
 

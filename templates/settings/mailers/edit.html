@@ -1,5 +1,4 @@
 {% extends "sproutemail/_layouts/base" %}
-{% import "_includes/forms" as forms %}
 
 {% set crumbs = [
 { label: "Settings"|t, url: url('sproutemail/settings/general') },
@@ -19,7 +18,9 @@
 	<input type="hidden" name="redirect" value="sproutemail/settings/mailers">
 	<input type="hidden" name="mailerId" value="{{ mailer.getId() }}">
 
-	{{ mailer.getSettingsHtml({settings: settings, forms: forms})|raw }}
+	{{ mailer.getSettingsHtml({
+		settings: settings
+	})|raw }}
 
 	<div class="buttons">
 		<input class="btn submit" type="submit" value="{{ 'Save'|t }}">

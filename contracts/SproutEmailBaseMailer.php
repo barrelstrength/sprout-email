@@ -179,7 +179,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return string
 	 */
-	public function getSettingsHtml()
+	public function getSettingsHtml(array $settings = array())
 	{
 	}
 

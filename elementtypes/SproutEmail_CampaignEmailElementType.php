@@ -101,15 +101,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 *
 	 * @return string
 	 */
-	public function getIndexHtml(
-		$criteria,
-		$disabledElementIds,
-		$viewState,
-		$sourceKey,
-		$context,
-		$includeContainer,
-		$showCheckboxes
-	)
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
@@ -140,8 +132,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes = array(
 			'title'       => array('label' => Craft::t('Title')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-
+			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;

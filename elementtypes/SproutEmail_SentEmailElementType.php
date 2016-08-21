@@ -45,6 +45,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		return true;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getStatuses()
 	{
 		return array(
@@ -82,6 +85,11 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		}
 	}
 
+	/**
+	 * @param null $context
+	 *
+	 * @return array
+	 */
 	public function getSources($context = null)
 	{
 
@@ -112,6 +120,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		return $attributes;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineSortableAttributes()
 	{
 		return array(
@@ -153,6 +164,12 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		);
 	}
 
+	/**
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return mixed|string
+	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
 
@@ -166,17 +183,19 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		}
 	}
 
-	public function getIndexHtml(
-		$criteria,
-		$disabledElementIds,
-		$viewState,
-		$sourceKey,
-		$context,
-		$includeContainer,
-		$showCheckboxes
-	)
+	/**
+	 * @param ElementCriteriaModel $criteria
+	 * @param array                $disabledElementIds
+	 * @param array                $viewState
+	 * @param null|string          $sourceKey
+	 * @param null|string          $context
+	 * @param bool                 $includeContainer
+	 * @param bool                 $showCheckboxes
+	 *
+	 * @return string
+	 */
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
-
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
 		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
@@ -197,7 +216,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				'context'            => $context,
 				'elementType'        => new ElementTypeVariable($this),
 				'disabledElementIds' => $disabledElementIds,
-				'elements'           => $criteria->find(),
+				'elements'           => $criteria->find()
 			)
 		);
 	}

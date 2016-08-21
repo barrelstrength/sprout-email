@@ -1,32 +1,32 @@
 {% import "_includes/forms" as forms %}
 
-<h1>Review &amp; Send</h1>
+<h1>{{ "Review & Send"|t }}</h1>
 
 <table class="data fullwidth">
 	<tbody>
 		<tr>
-			<td><strong>Subject</strong></td>
-			<td>{{ email.subjectLine }}</td>
+			<td><strong>{{ "Subject"|t }}</strong></td>
+			<td>{{ campaignEmail.subjectLine }}</td>
 		</tr>
 		<tr>
-			<td><strong>From Name</strong></td>
-			<td>{{ email.fromName }}</td>
+			<td><strong>{{ "From Name"|t }}</strong></td>
+			<td>{{ campaignEmail.fromName }}</td>
 		</tr>
 		<tr>
-			<td><strong>From Email</strong></td>
-			<td>{{ email.fromEmail }}</td>
+			<td><strong>{{ "From Email"|t }}</strong></td>
+			<td>{{ campaignEmail.fromEmail }}</td>
 		</tr>
 		<tr>
-			<td><strong>Reply To</strong></td>
-			<td>{{ email.replyToEmail }}</td>
+			<td><strong>{{ "Reply To"|t }}</strong></td>
+			<td>{{ campaignEmail.replyToEmail }}</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top;">
-				<strong>Recipient Lists</strong>
+				<strong>{{ "Recipient Lists"|t }}</strong>
 			</td>
 			<td>
 				<ul>
-					{% for list in lists %}
+					{% for list in recipientLists %}
 				  	<li>{{ list }}</li>
 					{% endfor %}
 				</ul>
@@ -39,10 +39,10 @@
 	<div class="buttons">
 		<button id="cancel" class="btn">{{ "Cancel"|t }}</button>
 		<button
-	        data-mailer="campaignmonitor"
+			data-mailer="campaignmonitor"
 			data-action="sproutEmail/campaignEmails/sendCampaignEmail"
-	        data-email-id="{{ email.id }}"
-	        data-campaign-type-id="{{ campaignType.id }}"
-	        class="btn submit icon actions send-campaign">{{ "Send Campaign"|t }}</button>
+	    data-email-id="{{ campaignEmail.id }}"
+	    data-campaign-type-id="{{ campaignType.id }}"
+	    class="btn submit icon actions send-campaign">{{ "Send Campaign"|t }}</button>
 	</div>
 </div>

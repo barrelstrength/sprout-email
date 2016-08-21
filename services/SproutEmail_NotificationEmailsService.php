@@ -593,11 +593,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	public function getPrepareModalHtml(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		// Display the testToEmailAddress if it exists
-		$email = craft()->config->get('testToEmailAddress');
+		$recipients = craft()->config->get('testToEmailAddress');
 
-		if (empty($email))
+		if (empty($recipients))
 		{
-			$email = craft()->userSession->getUser()->email;
+			$recipients = craft()->userSession->getUser()->email;
 		}
 
 		$errors = array();
@@ -607,9 +607,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return craft()->templates->render(
 			'sproutemail/_modals/notifications/sendEmailPrepare',
 			array(
-				'notification' => $notificationEmail,
-				'recipient'    => $email,
-				'errors'       => $errors
+				'notificationEmail' => $notificationEmail,
+				'recipients'        => $recipients,
+				'errors'            => $errors
 			)
 		);
 	}

@@ -136,15 +136,11 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 		if ($attribute == 'preview')
 		{
-			$status = $element->getStatus();
-
-			$shareParams = array(
-				'notificationId' => $element->id,
-			);
-
 			if ($element->id && $element->getUrl())
 			{
-				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
+				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', array(
+					'notificationId' => $element->id,
+				));
 			}
 
 			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
@@ -156,15 +152,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
-	public function getIndexHtml(
-		$criteria,
-		$disabledElementIds,
-		$viewState,
-		$sourceKey,
-		$context,
-		$includeContainer,
-		$showCheckboxes
-	)
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
@@ -173,15 +161,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 		craft()->templates->includeCssResource('sproutemail/css/sproutemail.css');
 
-		return parent::getIndexHtml(
-			$criteria,
-			$disabledElementIds,
-			$viewState,
-			$sourceKey,
-			$context,
-			$includeContainer,
-			$showCheckboxes
-		);
+		return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 	}
 
 	/**
