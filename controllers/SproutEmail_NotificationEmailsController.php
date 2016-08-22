@@ -343,7 +343,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
 				'email'    => $notificationEmail,
 				'campaign' => !empty($campaign) ? $campaign : null,
-				'message'  => Craft::t('The campaign email you are trying to send is missing.'),
+				'message'  => Craft::t('The notification email you are trying to send is missing.'),
 			))
 		);
 	}

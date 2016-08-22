@@ -672,12 +672,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			$response = $this->sendMockNotificationEmail($notificationEmail);
 
 			return SproutEmail_ResponseModel::createModalResponse(
-				'sproutemail/_modals/notifications/sendEmailPrepare',
+				'sproutemail/_modals/notifications/sendEmailConfirmation',
 				array(
-					'notification'  => $notificationEmail,
-					'emailModel'    => $response['emailModel'],
-					'recipentLists' => $recipientLists,
-					'message'       => Craft::t('Notification sent successfully.')
+					'notification' => $notificationEmail,
+					'emailModel'        => $response['emailModel'],
+					'recipentLists'     => $recipientLists,
+					'message'           => Craft::t('Notification sent successfully.')
 				)
 			);
 		}
@@ -688,8 +688,8 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			return SproutEmail_ResponseModel::createErrorModalResponse(
 				'sproutemail/_modals/notifications/sendEmailPrepare',
 				array(
-					'notification' => $notificationEmail,
-					'message'      => Craft::t($e->getMessage()),
+					'notificationEmail' => $notificationEmail,
+					'message'           => Craft::t($e->getMessage()),
 				)
 			);
 		}
