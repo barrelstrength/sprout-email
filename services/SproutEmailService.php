@@ -54,16 +54,16 @@ class SproutEmailService extends BaseApplicationComponent
 	/**
 	 * Allows us to render an object template without creating a fatal error
 	 *
-	 * @param string $str
-	 * @param object $obj
+	 * @param string $string
+	 * @param object $object
 	 *
 	 * @return string
 	 */
-	public function renderObjectTemplateSafely($str, $obj)
+	public function renderObjectTemplateSafely($string, $object)
 	{
 		try
 		{
-			return craft()->templates->renderObjectTemplate($str, $obj);
+			return craft()->templates->renderObjectTemplate($string, $object);
 		}
 		catch (\Exception $e)
 		{
@@ -73,9 +73,9 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * @param BaseModel   $model
-	 * @param array|mixed $obj
+	 * @param array|mixed $object
 	 */
-	public function renderObjectContentSafely(&$model, $obj)
+	public function renderObjectContentSafely(&$model, $object)
 	{
 		$content = $model->getContent();
 
@@ -83,7 +83,7 @@ class SproutEmailService extends BaseApplicationComponent
 		{
 			if (is_string($value) && stripos($value, '{') !== false)
 			{
-				$model->getContent()->{$attribute} = $this->renderObjectTemplateSafely($value, $obj);
+				$model->getContent()->{$attribute} = $this->renderObjectTemplateSafely($value, $object);
 			}
 		}
 	}
@@ -126,6 +126,7 @@ class SproutEmailService extends BaseApplicationComponent
 				$message = str_replace($template, $template . '.html', $message);
 			}
 
+			// @todo - update error handling
 			$this->error($message, 'template-' . $template);
 		}
 
@@ -173,50 +174,50 @@ class SproutEmailService extends BaseApplicationComponent
 	/**
 	 * Logs an info message to the plugin logs
 	 *
-	 * @param mixed $msg
-	 * @param array $vars
+	 * @param mixed $message
+	 * @param array $variables
 	 */
-	public function info($msg, array $vars = array())
+	public function info($message, array $variables = array())
 	{
-		if (is_string($msg))
+		if (is_string($message))
 		{
-			$msg = Craft::t($msg, $vars);
+			$message = Craft::t($message, $variables);
 		}
 		else
 		{
-			$msg = print_r($msg, true);
+			$message = print_r($message, true);
 		}
 
-		SproutEmailPlugin::log($msg, LogLevel::Info);
+		SproutEmailPlugin::log($message, LogLevel::Info);
 	}
 
 	/**
 	 * Logs an error in cases where it makes more sense than to throw an exception
 	 *
-	 * @param mixed $msg
-	 * @param array $vars
+	 * @param mixed $message
+	 * @param array $variables
 	 */
-	public function error($msg, $key = '', array $vars = array())
+	public function error($message, $key = '', array $variables = array())
 	{
-		if (is_string($msg))
+		if (is_string($message))
 		{
-			$msg = Craft::t($msg, $vars);
+			$message = Craft::t($message, $variables);
 		}
 		else
 		{
-			$msg = print_r($msg, true);
+			$message = print_r($message, true);
 		}
 
 		if (!empty($key))
 		{
-			$this->error[$key] = $msg;
+			$this->error[$key] = $message;
 		}
 		else
 		{
-			$this->error = $msg;
+			$this->error = $message;
 		}
 
-		SproutEmailPlugin::log($msg, LogLevel::Error);
+		SproutEmailPlugin::log($message, LogLevel::Error);
 	}
 
 	/**
@@ -315,6 +316,7 @@ class SproutEmailService extends BaseApplicationComponent
 		if ($criteria instanceof ElementCriteriaModel)
 		{
 			$assets = $criteria->find();
+
 			if ($assets)
 			{
 				$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
@@ -324,13 +326,13 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * @param mixed $message
-	 * @param array $vars
+	 * @param array $variables
 	 */
-	public function log($message, array $vars = array())
+	public function log($message, array $variables = array())
 	{
 		if (is_string($message))
 		{
-			$message = Craft::t($message, $vars);
+			$message = Craft::t($message, $variables);
 		}
 		else
 		{
@@ -383,6 +385,7 @@ class SproutEmailService extends BaseApplicationComponent
 	public function hasExamples()
 	{
 		$path = craft()->path->getSiteTemplatesPath() . 'sproutemail';
+
 		if (file_exists($path))
 		{
 			return true;
@@ -406,12 +409,14 @@ class SproutEmailService extends BaseApplicationComponent
 		try
 		{
 			$errorMessage = $this->getError();
+
 			if (!empty($errorMessage))
 			{
 				if (is_array($errorMessage))
 				{
 					$errorMessage = implode("\n", $errorMessage);
 				}
+
 				$this->handleOnSendEmailErrorEvent($errorMessage, $emailModel, $variables);
 
 				return false;

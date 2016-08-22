@@ -79,7 +79,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$urls = $this->getCampaignEmailUrls($campaignEmail->id, $campaignType->template);
 
@@ -156,7 +156,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 			{
 				sproutEmail()->info('Successfully created campaign in Campaign Monitor with ID: ' . $response->response);
 
-				$this->sendCampaignEmail($campaignEmail, $response->response, $auth);
+				$this->sendEmailViaService($campaignEmail, $response->response, $auth);
 
 				return array('id' => $response->response, 'emailModel' => $email);
 			}
@@ -172,7 +172,7 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 	/*
 	 * @return true|false according to the success of the request
 	 */
-	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, $campaignTypeId, $auth)
+	public function sendEmailViaService(SproutEmail_CampaignEmailModel $campaignEmail, $campaignTypeId, $auth)
 	{
 		// Access the newly created draft campaign
 		$campaignToSend = new CS_REST_Campaigns($campaignTypeId, $auth);
@@ -206,19 +206,6 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 			throw $e;
 		}
-	}
-
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		$type   = craft()->request->getPost('contentType', 'html');
-		$ext    = strtolower($type) == 'text' ? '.txt' : null;
-		$params = array(
-			'entry' => $campaignEmail,
-			'campaign' => $campaignType
-		);
-		$body   = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . $ext, $params);
-
-		return array('content' => TemplateHelper::getRaw($body));
 	}
 
 	/**

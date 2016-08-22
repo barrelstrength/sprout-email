@@ -26,8 +26,6 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 	}
 
 	/**
-	 * @todo Device a way to store sender info as a relationship if it makes more sense
-	 *
 	 * @return array
 	 */
 	public function defineAttributes()

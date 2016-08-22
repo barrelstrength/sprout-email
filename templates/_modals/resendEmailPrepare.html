@@ -7,7 +7,7 @@
 		<tbody>
 		<tr>
 			<td><strong>{{ "Subject"|t }}</strong></td>
-			<td class="title">{{ email.title }}</td>
+			<td class="title">{{ sentEmail.title }}</td>
 		</tr>
 
 		<tr>
@@ -22,7 +22,7 @@
 					name: "recipients",
 					class: "code",
 					placeholder: placeholderEmails,
-					value: email.toEmail
+					value: sentEmail.toEmail
 				}) }}
 			</td>
 		</tr>
@@ -45,7 +45,7 @@
 		<button
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-action="sproutEmail/sentEmail/resendEmail"
-			data-email-id="{{ email.id }}"
+			data-email-id="{{ sentEmail.id }}"
 			class="btn submit actions">
 			{{ "Resend Email" }}
 		</button>

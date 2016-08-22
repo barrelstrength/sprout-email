@@ -101,15 +101,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 *
 	 * @return string
 	 */
-	public function getIndexHtml(
-		$criteria,
-		$disabledElementIds,
-		$viewState,
-		$sourceKey,
-		$context,
-		$includeContainer,
-		$showCheckboxes
-	)
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
@@ -122,7 +114,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
-		return craft()->templates->render('sproutemail/campaigns/_entryindex', array(
+		return craft()->templates->render('sproutemail/_partials/campaigns/entryindex', array(
 			'context'            => $context,
 			'elementType'        => new ElementTypeVariable($this),
 			'disabledElementIds' => $disabledElementIds,
@@ -140,8 +132,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes = array(
 			'title'       => array('label' => Craft::t('Title')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-
+			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
@@ -311,19 +302,19 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			)));
 		}
 
-		$vars = array(
-			'email'    => $element,
-			'campaign' => $campaignType,
-
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'    => $element,
-		);
-
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $campaignType->template . $extension,
-				'variables' => $vars
+				'variables' => array(
+					'email'        => $element,
+					'campaignType' => $campaignType,
+
+					// @deprecate in v3 `entry` in favor of the `email` variable
+					// @deprecate in v3 `campaign` in favor of the `campaignType` variable
+					'entry'        => $element,
+					'campaign'     => $campaignType,
+				)
 			)
 		);
 	}

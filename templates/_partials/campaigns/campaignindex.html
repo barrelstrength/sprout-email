@@ -27,7 +27,7 @@
 				{{ email.dateCreated|date('m/d/Y') }}
 			</td>
 			<td>
-				{% include "sproutemail/_partials/preview" %}
+				{% include "sproutemail/_partials/campaigns/previewLinks" %}
 			</td>
 			<td class="nowrap">
 				{% if mailer and mailer.isInstalled() %}
@@ -36,7 +36,7 @@
 					data-action="{{ mailer.getActionForPrepareModal() }}"
 					data-mailer="{{ mailer.getId() }}"
 					data-email-id="{{ email.id }}"
-					data-campaign-id="{{ campaignType.id }}"
+					data-campaign-type-id="{{ campaignType.id }}"
 					class="prepare">{{ "Prepare"|t }}</a>
 				{% else %}
 					<span class="light">Prepare</span>

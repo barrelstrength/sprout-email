@@ -180,8 +180,8 @@ class SproutEmailPlugin extends BasePlugin
 		// Sprout Email Contracts
 		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
 		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
-		Craft::import('plugins.sproutemail.contracts.SproutEmailCampaignSenderInterface');
-		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationSenderInterface');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailCampaignEmailSenderInterface');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationEmailSenderInterface');
 
 		// Sprout Email Mailers
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CampaignMonitorMailer');
@@ -237,7 +237,6 @@ class SproutEmailPlugin extends BasePlugin
 
 		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
 		{
-			// @todo Craft 3 - update to use info from config.json
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
 			craft()->templates->includeJs("
 				sproutFormsBrand = new Craft.SproutBrand();

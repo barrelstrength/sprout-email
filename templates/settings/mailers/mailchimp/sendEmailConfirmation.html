@@ -6,8 +6,10 @@
 	<h2>{{ message is defined and message is not empty ? message : "Campaign sent successfully."|t }}</h2>
 {% else %}
 
-	<h2>Unable to send campaign.</h2>
-	{% if message is defined and message is not empty %}<p class="errors">{{ message }}</p>{% endif %}
+	<h2>{{ "Unable to send campaign."|t }}</h2>
+	{% if message is defined and message is not empty %}
+		<p class="errors">{{ message }}</p>
+	{% endif %}
 
 {% endif %}
 

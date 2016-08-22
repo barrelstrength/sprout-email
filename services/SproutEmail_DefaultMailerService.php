@@ -445,13 +445,13 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignTypeModel $campaign
-	 * @param mixed|null                    $object
-	 * @param bool                          $useMockData
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 * @param mixed|null                         $object
+	 * @param bool                               $useMockData
 	 *
 	 * @return bool
 	 */
-	public function sendNotification($notificationEmail, $object = null, $useMockData = false)
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object = null, $useMockData = false)
 	{
 		$email = new EmailModel();
 
@@ -544,7 +544,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaign)
 	{
 		$response = array();
 
@@ -823,6 +823,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 
 		$emailModel->htmlBody = $this->removePlaceholderStyleTags($emailModel->htmlBody, $styleTags);
 
+		// @todo - update error handling
 		$templateError = sproutEmail()->getError('template');
 
 		if (!empty($templateError))

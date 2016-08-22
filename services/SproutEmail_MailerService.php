@@ -172,23 +172,23 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function getMailerCpSectionLink(SproutEmailBaseMailer $mailer)
 	{
-		$vars = array(
-			'name'        => $mailer->getId(),
-			'title'       => $mailer->getTitle(),
-			'sproutemail' => UrlHelper::getCpUrl('sproutemail'),
-		);
-
 		$template = '<a href="{sproutemail}/{name}" title="{title}">{title}</a>';
 
 		try
 		{
-			$link = craft()->templates->renderObjectTemplate($template, $vars);
+			$link = craft()->templates->renderObjectTemplate($template, array(
+				'name'        => $mailer->getId(),
+				'title'       => $mailer->getTitle(),
+				'sproutemail' => UrlHelper::getCpUrl('sproutemail'),
+			));
 
 			return TemplateHelper::getRaw($link);
 		}
 		catch (\Exception $e)
 		{
-			sproutEmail()->error('Unable to create Control Panel Section link for {name}', $vars);
+			sproutEmail()->error('Unable to create Control Panel Section link for {name}', array(
+				'name' => $mailer->getId()
+			));
 
 			return $mailer->getTitle();
 		}
@@ -249,43 +249,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$name              = $mailer->getTitle();
 			$response->success = false;
 			$response->message = "<h1>$name</h1><br><p>" . Craft::t('No actions available for this campaign entry.') . "</p>";
-		}
-
-		return $response;
-	}
-
-	/**
-	 * @param $mailerName
-	 * @param $emailId
-	 * @param $campaignTypeId
-	 *
-	 * @return array )
-	 * @throws Exception
-	 */
-	public function getPreviewModal($mailerName, $emailId, $campaignTypeId)
-	{
-		$mailer = $this->getMailerByName($mailerName);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
-		}
-
-		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
-		$response      = new SproutEmail_ResponseModel();
-
-		if ($campaignEmail && $campaignType)
-		{
-			$response->content = $mailer->getPreviewModalHtml($campaignEmail, $campaignType);
-
-			return $response;
-		}
-		else
-		{
-			$name = $mailer->getTitle();
-
-			$response->content = "<h1>$name</h1><br><p>" . Craft::t('No actions available for this campaign entry.') . "</p>";
 		}
 
 		return $response;
@@ -358,7 +321,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 * @throws Exception
 	 * @throws \Exception
 	 */
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$mailer = $this->getMailerByName($campaignType->mailer);
 
@@ -369,34 +332,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		try
 		{
-			return $mailer->exportEmail($campaignEmail, $campaignType);
-		}
-		catch (\Exception $e)
-		{
-			throw $e;
-		}
-	}
-
-	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaignType
-	 *
-	 * @return array
-	 * @throws Exception
-	 * @throws \Exception
-	 */
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		$mailer = $this->getMailerByName($campaignType->mailer);
-
-		if (!$mailer)
-		{
-			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
-		}
-
-		try
-		{
-			return $mailer->previewCampaignEmail($campaignEmail, $campaignType);
+			return $mailer->sendCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{
@@ -427,17 +363,20 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function installMailer($name)
 	{
-		$vars   = array('name' => $name);
 		$mailer = $this->getMailerByName($name, true);
 
 		if (!$mailer)
 		{
-			throw new Exception(Craft::t('The {name} mailer is not available for installation.', $vars));
+			throw new Exception(Craft::t('The {name} mailer is not available for installation.', array(
+				'name' => $name
+			)));
 		}
 
 		if ($mailer->isInstalled())
 		{
-			sproutEmail()->info('The {name} mailer is already installed.', $vars);
+			sproutEmail()->info(Craft::t('The {name} mailer is already installed.', array(
+				'name' => $name
+			)));
 		}
 		else
 		{
@@ -450,11 +389,11 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 *
 	 * @param $name
 	 *
+	 * @return bool
 	 * @throws Exception
 	 */
 	public function uninstallMailer($name)
 	{
-		$vars   = array('name' => $name);
 		$mailer = $this->getMailerByName($name, true);
 
 		$builtInMailers = array('copypaste', 'campaignmonitor', 'mailchimp');
@@ -467,12 +406,16 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$mailer)
 		{
-			throw new Exception(Craft::t('The {name} mailer was not found.', $vars));
+			throw new Exception(Craft::t('The {name} mailer was not found.', array(
+				'name' => $name
+			)));
 		}
 
 		if (!$mailer->isInstalled())
 		{
-			sproutEmail()->info('The {name} mailer is not installed, no need to uninstall.', $vars);
+			sproutEmail()->info(Craft::t('The {name} mailer is not installed, no need to uninstall.', array(
+				'name' => $name
+			)));
 		}
 		else
 		{
@@ -500,12 +443,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$vars = array(
+			sproutEmail()->error(Craft::t('Unable to install the {name} mailer.{message}', array(
 				'name'    => $mailer->getId(),
 				'message' => PHP_EOL . $e->getMessage(),
-			);
-
-			sproutEmail()->error(Craft::t('Unable to install the {name} mailer.{message}', $vars));
+			)));
 		}
 	}
 
@@ -522,7 +463,9 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$record)
 		{
-			sproutEmail()->error(Craft::t('No {name} mailer record to delete.', array('name' => $name)));
+			sproutEmail()->error(Craft::t('No {name} mailer record to delete.', array(
+				'name' => $name
+			)));
 
 			return false;
 		}
@@ -533,12 +476,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 		catch (\Exception $e)
 		{
-			$vars = array(
+			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', array(
 				'name'    => $name,
 				'message' => PHP_EOL . $e->getMessage(),
-			);
-
-			sproutEmail()->error(Craft::t('Unable to delete the {name} mailer record.{message}', $vars));
+			)));
 		}
 	}
 

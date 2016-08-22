@@ -158,18 +158,4 @@ class SproutEmail_DefaultMailerRecipientElementType extends BaseElementType
 	{
 		return SproutEmail_DefaultMailerRecipientModel::populateModel($row);
 	}
-
-	/**
-	 * Returns the HTML for an editor HUD for the given element.
-	 *
-	 * @param BaseElementModel $element
-	 *
-	 * @return string
-	 */
-	public function getEditorHtml(BaseElementModel $element)
-	{
-		$html = craft()->templates->render('sproutemail_defaultmailer/recipients/_edit', compact('element'));
-
-		return $html . parent::getEditorHtml($element);
-	}
 }

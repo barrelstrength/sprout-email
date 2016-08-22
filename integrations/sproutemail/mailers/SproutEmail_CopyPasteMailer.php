@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
+class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
 	protected $service;
 
@@ -20,21 +20,44 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		return $this->service;
 	}
 
-	public function getTitle()
-	{
-		return 'Copy/Paste';
-	}
-
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return 'copypaste';
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return 'Copy/Paste';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDescription()
 	{
 		return "Copy and paste your email campaigns to better (or worse) places.";
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getActionForPrepareModal()
+	{
+		return 'sproutEmail/campaignEmails/sendCampaignEmail';
+	}
+
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
+	 *
+	 * @return mixed
+	 */
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
@@ -45,44 +68,28 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer
 		));
 	}
 
-	public function getActionForPrepareModal()
-	{
-		return 'sproutEmail/campaignEmails/export';
-	}
-
-	public function getPreviewModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-		return $this->getService()->previewCampaignEmail($campaignEmail, $campaignType);
-	}
-
-	public function getActionForPreview()
-	{
-		return 'sproutEmail/campaignEmails/preview';
-	}
-
+	/**
+	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
+	 */
 	public function includeModalResources()
 	{
 		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
 	}
 
-	public function exportEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	/**
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
 		$this->includeModalResources();
-		try
-		{
-			return $this->getService()->exportEmail($campaignEmail, $campaignType);
-		}
-		catch (\Exception $e)
-		{
-			throw $e;
-		}
-	}
 
-	public function previewCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
 		try
 		{
-			return $this->getService()->previewCampaignEmail($campaignEmail, $campaignType);
+			return $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
 		}
 		catch (\Exception $e)
 		{

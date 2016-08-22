@@ -48,9 +48,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_CampaignEmailModel::ENABLED  => Craft::t('Enabled'),
-			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
+			SproutEmail_NotificationEmailModel::ENABLED  => Craft::t('Enabled'),
+			SproutEmail_NotificationEmailModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_NotificationEmailModel::DISABLED => Craft::t('Disabled')
 		);
 	}
 
@@ -129,25 +129,21 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		if ($attribute == 'send')
 		{
-			return craft()->templates->render('sproutemail/notifications/_modals/modalLink', array(
+			return craft()->templates->render('sproutemail/_partials/notifications/prepareLink', array(
 				'notification' => $element
 			));
 		}
 
 		if ($attribute == 'preview')
 		{
-			$status = $element->getStatus();
-
-			$shareParams = array(
-				'notificationId' => $element->id,
-			);
-
 			if ($element->id && $element->getUrl())
 			{
-				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', $shareParams);
+				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', array(
+					'notificationId' => $element->id,
+				));
 			}
 
-			return craft()->templates->render('sproutemail/notifications/_partials/preview', array(
+			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
 				'email'    => $element,
 				'shareUrl' => $shareUrl
 			));
@@ -156,15 +152,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
-	public function getIndexHtml(
-		$criteria,
-		$disabledElementIds,
-		$viewState,
-		$sourceKey,
-		$context,
-		$includeContainer,
-		$showCheckboxes
-	)
+	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
@@ -173,15 +161,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 		craft()->templates->includeCssResource('sproutemail/css/sproutemail.css');
 
-		return parent::getIndexHtml(
-			$criteria,
-			$disabledElementIds,
-			$viewState,
-			$sourceKey,
-			$context,
-			$includeContainer,
-			$showCheckboxes
-		);
+		return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 	}
 
 	/**
@@ -242,8 +222,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function routeRequestForMatchedElement(BaseElementModel $element)
 	{
-		// Only expose notification emails that have tokens
-		if (!craft()->request->getQuery(craft()->config->get('tokenParam')))
+		// Only expose notification emails that have tokens and allow Live Preview requests
+		if (!craft()->request->getQuery(craft()->config->get('tokenParam')) && !craft()->request->isLivePreview())
 		{
 			throw new HttpException(404);
 		}
@@ -268,19 +248,17 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 		$object = $event ? $event->getMockedParams() : null;
 
-		$vars = array(
-			'email'  => $element,
-			'object' => $object,
-
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'  => $element,
-		);
-
 		return array(
 			'action' => 'templates/render',
 			'params' => array(
 				'template'  => $element->template . $extension,
-				'variables' => $vars
+				'variables' => array(
+					'email'  => $element,
+					'object' => $object,
+
+					// @deprecate in v3 `entry` in favor of the `email` variable
+					'entry'  => $element,
+				)
 			)
 		);
 	}
@@ -330,40 +308,22 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		switch ($status)
 		{
-			case SproutEmail_CampaignEmailModel::DISABLED:
-			{
-				$query->andWhere('elements.enabled = 0');
-
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::PENDING:
+			case SproutEmail_NotificationEmailModel::ENABLED:
 			{
 				$query->andWhere('elements.enabled = 1');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ARCHIVED:
+			case SproutEmail_NotificationEmailModel::PENDING:
 			{
-				$query->andWhere('elements.archived = 1');
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::READY:
-			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					'
-				);
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('notificationemail.template = ""');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ENABLED:
+			case SproutEmail_NotificationEmailModel::DISABLED:
 			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					'
-				);
+				$query->andWhere('elements.enabled = 0');
 
 				break;
 			}
