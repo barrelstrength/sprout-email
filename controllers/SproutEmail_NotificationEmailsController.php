@@ -168,8 +168,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			if ($result !== false)
 			{
 				craft()->userSession->setNotice(Craft::t('Notification saved.'));
-
-				$_POST['redirect'] = str_replace('new', $notificationEmail->id, $_POST['redirect']);
 			}
 			else
 			{

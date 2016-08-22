@@ -21,7 +21,8 @@
 					<ul>
 
 						{% if emailId %}
-						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{{ campaignEmail.id  }}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t
+								}} <span class="shortcut">⌘S</span></a></li>
 						{% else %}
 						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
 						{% endif %}
