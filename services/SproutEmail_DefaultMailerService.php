@@ -87,7 +87,9 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	public function getRecipientListsByEmailId($emailId)
 	{
-		if (($record = SproutEmail_RecipientListRelationsRecord::model()->with('entry')->findAll('emailId=:emailId', array(':emailId' => $emailId))))
+		if (($record = SproutEmail_RecipientListRelationsRecord::model()
+			->with('element')
+			->findAll('emailId=:emailId', array(':emailId' => $emailId))))
 		{
 			$recipientLists = array();
 
