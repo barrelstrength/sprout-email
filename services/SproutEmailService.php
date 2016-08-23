@@ -406,34 +406,21 @@ class SproutEmailService extends BaseApplicationComponent
 
 	public function sendEmail(EmailModel $emailModel, $variables = array())
 	{
-		try
+		$errorMessage = $this->getError();
+
+		if (!empty($errorMessage))
 		{
-			$errorMessage = $this->getError();
-
-			if (!empty($errorMessage))
+			if (is_array($errorMessage))
 			{
-				if (is_array($errorMessage))
-				{
-					$errorMessage = implode("\n", $errorMessage);
-				}
-
-				$this->handleOnSendEmailErrorEvent($errorMessage, $emailModel, $variables);
-
-				return false;
+				$errorMessage = implode("\n", $errorMessage);
 			}
 
-			return craft()->email->sendEmail($emailModel, $variables);
-		}
-		catch (\Exception $e)
-		{
-			$message = $e->getMessage();
-
-			sproutEmail()->error($message);
-
-			$this->handleOnSendEmailErrorEvent($message, $emailModel, $variables);
+			$this->handleOnSendEmailErrorEvent($errorMessage, $emailModel, $variables);
 
 			return false;
 		}
+
+		return craft()->email->sendEmail($emailModel, $variables);
 	}
 
 	public function getValidAndInvalidRecipients($recipients)

@@ -232,6 +232,9 @@ class SproutEmailPlugin extends BasePlugin
 
 		craft()->on('email.onSendEmailError', function (Event $event)
 		{
+			// Add failed status.
+			$event->params['deliveryStatus'] = 'failed';
+
 			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
