@@ -283,6 +283,7 @@ class SproutEmail_MailchimpMailer extends SproutEmailBaseMailer implements Sprou
 		$response->content = craft()->templates->render(
 			'sproutemail/settings/mailers/mailchimp/sendEmailConfirmation',
 			array(
+				'mailer'  => $campaignEmail,
 				'success' => $response->success,
 				'message' => $response->message
 			)
