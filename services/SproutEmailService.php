@@ -100,7 +100,7 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$renderedTemplate = null;
 
-		// @todo - can't explain this
+		// @todo - look into how to explain this
 		// If a blank template is passed in, Craft renders the index template
 		// If a template is set specifically to the value `test` Craft also
 		// appears to render the index template.

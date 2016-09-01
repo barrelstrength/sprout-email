@@ -334,10 +334,8 @@ class SproutEmail_CampaignMonitorService extends BaseApplicationComponent
 
 	public function getCampaignEmailUrls($emailId, $template)
 	{
-		/*
-		 * @TODO: make sure these URLs are getting assigned
-		 * to a live, outside accessible URL
-		 */
+		// @todo: make sure these URLs are getting assigned
+		// to a live, outside accessible URL
 		// Assign html/text URLs for Campaign Monitor to scrape
 		$urls = array(
 			'html' => craft()->siteUrl . 'index.php/admin/actions/sproutEmail/campaignEmails/shareCampaignEmail?emailId=' . $emailId . '&template=html'

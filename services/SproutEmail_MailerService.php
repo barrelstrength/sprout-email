@@ -162,38 +162,10 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Returns a link to the control panel section for the mailer passed in
+	 * @param $mailer
 	 *
-	 * @param SproutEmailBaseMailer $mailer
-	 *
-	 * @deprecate Deprecated for 0.9.0 in favour of BaseMailer API
-	 *
-	 * @return string|\Twig_Markup
+	 * @return array|bool
 	 */
-	public function getMailerCpSectionLink(SproutEmailBaseMailer $mailer)
-	{
-		$template = '<a href="{sproutemail}/{name}" title="{title}">{title}</a>';
-
-		try
-		{
-			$link = craft()->templates->renderObjectTemplate($template, array(
-				'name'        => $mailer->getId(),
-				'title'       => $mailer->getTitle(),
-				'sproutemail' => UrlHelper::getCpUrl('sproutemail'),
-			));
-
-			return TemplateHelper::getRaw($link);
-		}
-		catch (\Exception $e)
-		{
-			sproutEmail()->error('Unable to create Control Panel Section link for {name}', array(
-				'name' => $mailer->getId()
-			));
-
-			return $mailer->getTitle();
-		}
-	}
-
 	public function getRecipientLists($mailer)
 	{
 		$mailer = $this->getMailerByName($mailer);
