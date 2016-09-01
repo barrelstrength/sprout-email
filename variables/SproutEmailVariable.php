@@ -37,6 +37,16 @@ class SproutEmailVariable
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getSettings()
+	{
+		$plugin = craft()->plugins->getPlugin('sproutemail');
+
+		return $plugin->getSettings();
+	}
+
+	/**
 	 * Returns a list of available mailers
 	 *
 	 * @return SproutEmailBaseMailer[]
@@ -253,6 +263,11 @@ class SproutEmailVariable
 
 	public function getMailerBySentEmailId($id)
 	{
-		return SproutEmail()->sentEmails->getMailerBySentEmailId($id);
+		return sproutEmail()->sentEmails->getMailerBySentEmailId($id);
+	}
+
+	public function getFirstAvailableTab()
+	{
+		return sproutEmail()->getFirstAvailableTab();
 	}
 }
