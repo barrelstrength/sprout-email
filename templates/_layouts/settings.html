@@ -1,23 +1,42 @@
 {% extends "_layouts/cp" %}
 
-{% set subnav = {
-	campaigns: {
-		label: "Campaigns"|t,
-		url: url('sproutemail/campaigns')
-	},
-	notfications: {
-		label: "Notifications"|t,
-		url: url('sproutemail/notifications')
-	},
-	sentemails: {
-		label: "Sent Email"|t,
-		url: url('sproutemail/sentemails')
-	},
-	recipients: {
-		label: "Recipients"|t,
-		url: url('sproutemail/recipients')
-	}
-} %}
+{% set subnav = {} %}
+
+{% if settings.enableCampaignEmails %}
+	{% set subnav = subnav|merge({
+		campaigns: {
+			label: "Campaigns"|t,
+			url: url('sproutemail/campaigns')
+		}
+	}) %}
+{% endif %}
+
+{% if settings.enableNotificationEmails %}
+	{% set subnav = subnav|merge({
+		notifications: {
+			label: "Notifications"|t,
+			url: url('sproutemail/notifications')
+		}
+	}) %}
+{% endif %}
+
+{% if settings.enableSentEmails %}
+	{% set subnav = subnav|merge({
+		sentemails: {
+			label: "Sent Email"|t,
+			url: url('sproutemail/sentemails')
+		}
+	}) %}
+{% endif %}
+
+{% if settings.enableRecipientLists %}
+	{% set subnav = subnav|merge({
+		recipients: {
+			label: "Recipients"|t,
+			url: url('sproutemail/recipients')
+		}
+	}) %}
+{% endif %}
 
 {% if currentUser.can('editSproutEmailSettings') %}
 	{% set subnav = subnav|merge({
@@ -42,9 +61,11 @@
 			<li><a href="{{ url('sproutemail/settings/general') }}" {% if selectedSidebarItem == 'general'
 				%}class="sel"{% endif %}>General</a></li>
 
+			{% if settings.enableCampaignEmails %}
 			<li class="heading"><span>Email</span></li>
 			<li><a href="{{ url('sproutemail/settings/campaigntypes') }}" {% if selectedSidebarItem == 'campaigntypes' %}class="sel"{% endif %}>Campaign Types</a></li>
 			<li><a href="{{ url('sproutemail/settings/mailers') }}" {% if selectedSidebarItem == 'mailers' %}class="sel"{% endif %}>Mailers</a></li>
+			{% endif %}
 
 			<li class="heading"><span>Examples</span></li>
 			<li><a href="{{ url('sproutemail/settings/examples') }}" {% if selectedSidebarItem == 'examples'

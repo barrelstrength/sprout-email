@@ -1,25 +1,61 @@
 {% extends "_layouts/elementindex" %}
 
 {% set bodyClass = craft.request.getSegments()|slice(0, 3)|join(' ') %}
+{% set settings = craft.sproutEmail.getSettings() %}
 
-{% set subnav = {
-	campaigns: {
-		label: "Campaigns"|t,
-		url: url('sproutemail/campaigns')
-	},
-	notifications: {
-		label: "Notifications"|t,
-		url: url('sproutemail/notifications')
-	},
-	sentemails: {
-		label: "Sent Email"|t,
-		url: url('sproutemail/sentemails')
-	},
-	recipients: {
-		label: "Recipients"|t,
-		url: url('sproutemail/recipients')
-	}
-} %}
+{% if craft.request.getSegment(2) == 'campaigns' and not settings.enableCampaignEmails %}
+	{% exit 403 %}
+{% endif %}
+
+{% if craft.request.getSegment(2) == 'notifications' and not settings.enableNotificationEmails %}
+	{% exit 403 %}
+{% endif %}
+
+{% if craft.request.getSegment(2) == 'sentemails' and not settings.enableSentEmails %}
+	{% exit 403 %}
+{% endif %}
+
+{% if craft.request.getSegment(2) == 'recipients' and not settings.enableRecipientLists %}
+	{% exit 403 %}
+{% endif %}
+
+{% set subnav = {} %}
+
+{% if settings.enableCampaignEmails %}
+	{% set subnav = subnav|merge({
+		campaigns: {
+			label: "Campaigns"|t,
+			url: url('sproutemail/campaigns')
+		}
+	}) %}
+{% endif %}
+
+{% if settings.enableNotificationEmails %}
+	{% set subnav = subnav|merge({
+		notifications: {
+			label: "Notifications"|t,
+			url: url('sproutemail/notifications')
+		}
+	}) %}
+{% endif %}
+
+{% if settings.enableSentEmails %}
+	{% set subnav = subnav|merge({
+		sentemails: {
+			label: "Sent Email"|t,
+			url: url('sproutemail/sentemails')
+		}
+	}) %}
+{% endif %}
+
+{% if settings.enableRecipientLists %}
+	{% set subnav = subnav|merge({
+		recipients: {
+			label: "Recipients"|t,
+			url: url('sproutemail/recipients')
+		}
+	}) %}
+{% endif %}
 
 {% if currentUser.can('editSproutEmailSettings') %}
 	{% set subnav = subnav|merge({

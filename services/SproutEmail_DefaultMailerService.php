@@ -89,7 +89,8 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	{
 		if (($record = SproutEmail_RecipientListRelationsRecord::model()
 			->with('element')
-			->findAll('emailId=:emailId', array(':emailId' => $emailId))))
+			->findAll('emailId=:emailId', array(':emailId' => $emailId)))
+		)
 		{
 			$recipientLists = array();
 
@@ -759,7 +760,17 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 	 */
 	protected function getListRecipients($email)
 	{
-		$listIds        = array();
+		$listIds = array();
+
+		// Make sure Lists are enabled
+		// -----------------------------------------------------------
+		$settings = craft()->plugins->getPlugin('sproutemail')->getSettings();
+
+		if (!$settings->enableRecipientLists)
+		{
+			return $listIds;
+		}
+
 		$recipientLists = $this->getRecipientListsByEmailId($email->id);
 
 		if ($recipientLists && count($recipientLists))

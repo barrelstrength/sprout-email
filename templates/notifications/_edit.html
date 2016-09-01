@@ -17,6 +17,8 @@
 {% set fullPageForm = true %}
 {% set saveShortcutRedirect = url('sproutemail/notifications/edit/' ~ notificationId) %}
 
+{% set settings = craft.sproutEmail.getSettings() %}
+
 {% block saveButton %}
 
 	<div class="buttons">
@@ -65,7 +67,7 @@
 
 
 
-			<div id="tab-sproutemail-recipients" class="pane meta">
+			<div class="pane meta">
 
 				{{ forms.textField({
 					label: "Recipients <span class='info'>A comma separated list of email addresses.</span>"|t,
@@ -76,6 +78,7 @@
 					errors: notificationEmail is defined ? notificationEmail.getErrors('recipients')
 				}) }}
 
+				{% if settings.enableRecipientLists %}
 				<div class="field mailing-lists">
 					<div class="heading">
 						Lists
@@ -84,8 +87,9 @@
 						{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
 					</div>
 				</div>
+				{% endif %}
 
-				<div id="tab-sproutemail-rules" class="pane meta">
+
 
 					{% set events = craft.sproutEmail.getAvailableEvents() %}
 
@@ -131,10 +135,10 @@
 
 					{% endif %}
 
-				</div>
+
 			</div>
 
-			<div id="tab-sproutemail-sender" class="pane meta">
+			<div class="pane meta">
 
 				{{ forms.textField({
 					label: "From Name <span class='info'>The person or business sending the email</span>"|t,
