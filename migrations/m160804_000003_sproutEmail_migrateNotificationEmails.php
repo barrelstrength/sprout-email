@@ -45,7 +45,7 @@ class m160804_000003_sproutEmail_migrateNotificationEmails extends BaseMigration
 		{
 			foreach ($oldNotifications as $oldNotification)
 			{
-				$insertData = array(
+				$newNotification = array(
 					'id'                    => $oldNotification['id'],
 					'name'                  => $oldNotification['name'],
 					'template'              => $oldNotification['template'],
@@ -63,18 +63,18 @@ class m160804_000003_sproutEmail_migrateNotificationEmails extends BaseMigration
 
 				if (craft()->db->tableExists('sproutemail_notificationemails'))
 				{
-					$existNotification = craft()->db->createCommand()
+					$notificationEmail = craft()->db->createCommand()
 						->select('id')
 						->from('sproutemail_notificationemails')
 						->where(array('id' => $oldNotification['id']))
 						->queryAll();
 
-					if (!empty($existNotification))
+					if (!empty($notificationEmail))
 					{
 						continue;
 					}
 
-					craft()->db->createCommand()->insert('sproutemail_notificationemails', $insertData);
+					craft()->db->createCommand()->insert('sproutemail_notificationemails', $newNotification);
 				}
 
 				craft()->db->createCommand()->update('elements', array(
@@ -97,6 +97,16 @@ class m160804_000003_sproutEmail_migrateNotificationEmails extends BaseMigration
 				craft()->db->createCommand()->delete('sproutemail_campaigns', array(
 					'type' => 'notification'
 				));
+
+				// Grab and resave the Element to Update the URI on the Element table
+				$criteria                 = craft()->elements->getCriteria('SproutEmail_NotificationEmail');
+				$criteria->id             = $newNotification['id'];
+				$notificationEmailElement = $criteria->first();
+
+				if ($notificationEmailElement)
+				{
+					craft()->elements->updateElementSlugAndUri($notificationEmailElement, false, false);
+				}
 			}
 		}
 
