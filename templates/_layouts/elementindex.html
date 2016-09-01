@@ -1,27 +1,27 @@
 {% extends "_layouts/elementindex" %}
 
 {% set bodyClass = craft.request.getSegments()|slice(0, 3)|join(' ') %}
-{% set settings = craft.sproutEmail.getSettings() %}
+{% set pluginSettings = craft.sproutEmail.getSettings() %}
 
-{% if craft.request.getSegment(2) == 'campaigns' and not settings.enableCampaignEmails %}
+{% if craft.request.getSegment(2) == 'campaigns' and not pluginSettings.enableCampaignEmails %}
 	{% exit 403 %}
 {% endif %}
 
-{% if craft.request.getSegment(2) == 'notifications' and not settings.enableNotificationEmails %}
+{% if craft.request.getSegment(2) == 'notifications' and not pluginSettings.enableNotificationEmails %}
 	{% exit 403 %}
 {% endif %}
 
-{% if craft.request.getSegment(2) == 'sentemails' and not settings.enableSentEmails %}
+{% if craft.request.getSegment(2) == 'sentemails' and not pluginSettings.enableSentEmails %}
 	{% exit 403 %}
 {% endif %}
 
-{% if craft.request.getSegment(2) == 'recipients' and not settings.enableRecipientLists %}
+{% if craft.request.getSegment(2) == 'recipients' and not pluginSettings.enableRecipientLists %}
 	{% exit 403 %}
 {% endif %}
 
 {% set subnav = {} %}
 
-{% if settings.enableCampaignEmails %}
+{% if pluginSettings.enableCampaignEmails %}
 	{% set subnav = subnav|merge({
 		campaigns: {
 			label: "Campaigns"|t,
@@ -30,7 +30,7 @@
 	}) %}
 {% endif %}
 
-{% if settings.enableNotificationEmails %}
+{% if pluginSettings.enableNotificationEmails %}
 	{% set subnav = subnav|merge({
 		notifications: {
 			label: "Notifications"|t,
@@ -39,7 +39,7 @@
 	}) %}
 {% endif %}
 
-{% if settings.enableSentEmails %}
+{% if pluginSettings.enableSentEmails %}
 	{% set subnav = subnav|merge({
 		sentemails: {
 			label: "Sent Email"|t,
@@ -48,7 +48,7 @@
 	}) %}
 {% endif %}
 
-{% if settings.enableRecipientLists %}
+{% if pluginSettings.enableRecipientLists %}
 	{% set subnav = subnav|merge({
 		recipients: {
 			label: "Recipients"|t,
