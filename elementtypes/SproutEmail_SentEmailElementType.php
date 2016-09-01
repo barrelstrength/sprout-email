@@ -245,6 +245,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				$criteria->order = str_replace('dateUpdated', 'sentemail.dateUpdated', $criteria->order);
 			}
 		}
+
 		if ($criteria->toEmail)
 		{
 			$query->andWhere(DbHelper::parseParam('sentemail.toEmail', $criteria->toEmail, $query->params));
