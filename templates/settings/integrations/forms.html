@@ -10,14 +10,17 @@
 
 {% set content %}
 
+	{% set boxBody %}
+	    <p>{{ "Manage targeted landing pages, contact forms, and all your website's form needs. Integrate <a href='{url}' target='_blank'>Sprout Forms</a> with Sprout Email to trigger real-time, personalized, branded, transactional email communications with your audience when your forms are submitted."|t({
+			    url: "https://sprout.barrelstrengthdesign.com/craft-plugins/forms"
+		    })|raw }}</p>
+	{% endset %}
+
 	{{ sprout.mediaBox({
 		heading: "Better form communications"|t,
-		body: "Manage targeted Landing Pages, contact forms, and all your website's form needs. Integrate <a href='#' target='_blank'>Sprout Forms</a> with Sprout Email to trigger personalized, branded, transactional email communications with your audience when your forms are submitted."|t({
-			importLink: "#",
-			seedLink: "#"
-		}),
-		resourceUrl: resourceUrl('sproutemail/icon.svg'),
-		resourceAltText: "Sprout Icon"|t,
+		body: boxBody,
+		resourceUrl: resourceUrl('sproutemail/icons/sproutforms-icon.svg'),
+		resourceAltText: "Sprout Forms Icon"|t,
 	}) }}
 
 {% endset %}

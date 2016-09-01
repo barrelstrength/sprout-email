@@ -6,18 +6,21 @@
 
 {% includeCssResource "sproutimport/css/sproutcp.css" %}
 
-{% set title = 'Sprout Forms' %}
+{% set title = 'Sprout SEO Integration' %}
 
 {% set content %}
 
+	{% set boxBody %}
+	    <p>{{ "Add <a href='{url}' target='_blank'>Sprout SEO</a> to easily add your Campaign Emails to your sitemap and enhance your email meta data at its permanent location on your website."|t({
+			    url: "https://sprout.barrelstrengthdesign.com/craft-plugins/seo"
+		    })|raw }}</p>
+	{% endset %}
+
 	{{ sprout.mediaBox({
 		heading: "Make your emails part of your SEO strategy"|t,
-		body: "Add <a href='#' target='_blank'>Sprout SEO</a> to easily add your Campaign Emails to your sitemap and enhance your email meta data at its permanent location on your website."|t({
-			importLink: "#",
-			seedLink: "#"
-		}),
-		resourceUrl: resourceUrl('sproutemail/icon.svg'),
-		resourceAltText: "Sprout Icon"|t,
+		body: boxBody,
+		resourceUrl: resourceUrl('sproutemail/icons/sproutseo-icon.svg'),
+		resourceAltText: "Sprout SEO Icon"|t,
 	}) }}
 
 {% endset %}
