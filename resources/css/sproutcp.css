@@ -13,8 +13,8 @@
  * For better consistency, use along with the sproutcp.html macro library.
  *
  * To use:
- * {% import 'sproutimport/_includes/sproutcp' as sprout %}
- * {% includeCssResource "sproutimport/css/sproutcp.css" %}
+ * {% import 'pluginname/_includes/sproutcp' as sprout %}
+ * {% includeCssResource "pluginname/css/sproutcp.css" %}
  */
 
 /*
