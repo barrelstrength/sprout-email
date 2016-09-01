@@ -625,4 +625,27 @@ class SproutEmailService extends BaseApplicationComponent
 
 		return array();
 	}
+
+	public function getFirstAvailableTab()
+	{
+		$settings = craft()->plugins->getPlugin('sproutemail')->getSettings();
+
+		switch (true)
+		{
+			case $settings->enableCampaignEmails:
+				return 'sproutemail/campaigns';
+
+			case $settings->enableNotificationEmails:
+				return 'sproutemail/notifications';
+
+			case $settings->enableSentEmails:
+				return 'sproutemail/sentemails';
+
+			case $settings->enableRecipientLists:
+				return 'sproutemail/recipients';
+
+			default:
+				return 'sproutemail/settings';
+		}
+	}
 }

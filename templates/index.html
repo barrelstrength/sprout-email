@@ -1,4 +1,6 @@
-{% redirect 'sproutemail/campaigns' %}
+{% set redirectUrl = craft.sproutEmail.getFirstAvailableTab() %}
+
+{% redirect redirectUrl %}
 
 
 
