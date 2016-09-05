@@ -106,6 +106,15 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 */
 	public function saveSentEmail($emailModel, SproutEmail_SentEmailInfoTableModel $infoTable)
 	{
+		// Make sure we should be saving Sent Emails
+		// -----------------------------------------------------------
+		$settings = craft()->plugins->getPlugin('sproutemail')->getSettings();
+
+		if (!$settings->enableSentEmails)
+		{
+			return false;
+		}
+
 		// decode subject if it is encoded
 		$isEncoded = preg_match("/=\?UTF-8\?B\?(.*)\?=/", $emailModel->subject, $matches);
 		if ($isEncoded)

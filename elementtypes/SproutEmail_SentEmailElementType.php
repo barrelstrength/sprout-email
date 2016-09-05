@@ -245,6 +245,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				$criteria->order = str_replace('dateUpdated', 'sentemail.dateUpdated', $criteria->order);
 			}
 		}
+
 		if ($criteria->toEmail)
 		{
 			$query->andWhere(DbHelper::parseParam('sentemail.toEmail', $criteria->toEmail, $query->params));
@@ -254,6 +255,25 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineSearchableAttributes()
 	{
 		return array('title', 'toEmail');
+	}
+
+	/**
+	 * @inheritDoc IElementType::getAvailableActions()
+	 *
+	 * @param string|null $source
+	 *
+	 * @return array|null
+	 */
+	public function getAvailableActions($source = null)
+	{
+		$deleteAction = craft()->elements->getAction('SproutEmail_SentEmailDelete');
+
+		$deleteAction->setParams(array(
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
+			'successMessage'      => Craft::t('Emails deleted.'),
+		));
+
+		return array($deleteAction);
 	}
 
 	/**

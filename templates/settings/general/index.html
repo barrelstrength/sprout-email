@@ -21,6 +21,73 @@
 		errors: ''
 	}) }}
 
+	{% set advancedInput %}
+		<table class="data" style="width: auto;">
+			<thead>
+			<tr>
+				<th scope="col">{{ "Feature"|t }}</th>
+				<th scope="col">{{ "Enabled?"|t }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td><label for="enableCampaignEmails">{{ "Enable Campaigns?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableCampaignEmails',
+							on: settings.enableCampaignEmails,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="enableNotificationEmails">{{ "Enable Notifications?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableNotificationEmails',
+							on: settings.enableNotificationEmails,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="enableSentEmails">{{ "Enable Sent Email tracking?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableSentEmails',
+							on: settings.enableSentEmails,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="enableRecipientLists">{{ "Enable Recipient Lists?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableRecipientLists',
+							on: settings.enableRecipientLists,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+
+	{% endset %}
+
+	{{ forms.field({
+		label: "Choose which features to enable"|t,
+		instructions: "Disabled items will be removed from the sidebar navigation and no longer accessible in the Control Panel."|t
+	}, advancedInput) }}
+
 	{% endnamespace %}
 
 	<div class="buttons">

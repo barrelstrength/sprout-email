@@ -2,60 +2,56 @@
 {% import "_includes/forms" as forms %}
 {% import 'sproutemail/_includes/sproutcp' as sprout %}
 
-{% includeCssResource "sproutimport/css/sproutcp.css" %}
+{% includeCssResource "sproutemail/css/sproutcp.css" %}
 
 {% set title = "Examples"|t %}
 
 {% set content %}
 
-	{{ sprout.mediaBox({
-		heading: "Example emails and templates"|t,
-		body: "Get started with example notification and campaign emails and commented templates. Examples include a new user welcome email, an admin notification email, and a monthly newsletter."|t({
-			importLink: "#",
-			seedLink: "#"
-		}),
-		resourceUrl: resourceUrl('sproutemail/icon.svg'),
-		resourceAltText: "Sprout Icon"|t,
-	}) }}
+	{% set warnings = {} %}
 
-	<hr>
+	{% if craft.sproutEmail.hasExamples() %}
+		{% set warnings = warnings|merge({
+			examplesInstalled: "Example templates are already installed. Select Install Examples again to install fresh example templates."|t
+		}) %}
+	{% endif %}
 
-		<input type="hidden" name="action" value="sproutEmail/examples/install">
+	{% if not craft.sproutEmail.canCreateExamples() %}
+		{% set path = craft.sproutEmail.getTemplatePath() %}
+		{% set warnings = warnings|merge({
+			permissions: "Your templates directory does not have the correct permissions: {filepath}"|t({
+				filepath: path
+			}),
+		}) %}
+	{% endif %}
+
+	{% set boxBody %}
 
 		{{ getCsrfInput() }}
+		<input type="hidden" name="action" value="sproutEmail/examples/install">
 
-		{% if craft.sproutEmail.hasExamples() %}
-			<div class="pane first field">
-				<span class="warning" style="font-size:1em;">
-					{{ "Example templates and entries are already installed."|t }}
-				</span>
-			</div>
+    <p>{{ "Get started with example notification and campaign emails and commented templates. Examples include a new user welcome email, an admin notification email, and a monthly newsletter. Example templates will be created in the <code>craft/templates/sproutemail</code> folder."|t|raw }}</p>
+
+		{% if warnings|length %}
+			<ul class="bullets warning">
+				{% for warning in warnings %}
+				<li>{{ warning }}</li>
+				{% endfor %}
+			</ul>
 		{% endif %}
-
-		{% if not craft.sproutEmail.canCreateExamples() %}
-
-			<div class="pane first">
-
-				{% set path = craft.sproutEmail.getTemplatePath() %}
-
-				<p class="field">
-					<span class="warning" style="font-size:1em;">
-						{{ "Your templates directory does not have the correct permissions:"|t }}<br>
-
-						<code>{{ path }}</code>
-					</span>
-				</p>
-
-				<p>{{ "Sprout Email will not be able to install the example templates until your <a href='http://buildwithcraft.com/docs/installing#step-2-set-the-permissions' target='_blank'>templates directory is writeable</a>: "}}</p>
-
-			</div>
-
-		{% endif %}
-
-		<p class="first">{{ "The example templates will be created and placed in the `<code>craft/templates/sproutemail</code>` folder."|t|raw }}</p>
 
 		<div class="buttons">
-			<input class="btn submit" type="submit" value="{{ 'Install Example Entries'|t }}" />
+			<input class="btn submit" type="submit" value="{{ 'Install Examples'|t }}" />
 		</div>
+
+	{% endset %}
+
+	{{ sprout.mediaBox({
+		heading: "Example emails and templates"|t,
+		body: boxBody,
+		resourceUrl: resourceUrl('sproutemail/icon.svg'),
+		resourceAltText: "Sprout Icon"|t,
+		alignItems: 'flex-start'
+	}) }}
 
 {% endset %}

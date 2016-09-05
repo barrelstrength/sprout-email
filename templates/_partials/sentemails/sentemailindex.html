@@ -4,6 +4,7 @@
 	<div class="tableview">
 	<table id="sproutemail-sentemails" class="data fullwidth">
 		<thead>
+			<th></th>
 			<th>{{ "Date Sent"|t }}</th>
 			<th>{{ "Recipient"|t }}</th>
 			<th>{{ "Subject"|t }}</th>
@@ -17,6 +18,9 @@
 {% endif %}
 
 			<tr class="infoRow" data-id="{{ email.id }}">
+				<td class="thin checkbox-cell" data-checkboxcell="">
+					<div class="checkbox" title="Select"></div>
+				</td>
 				<td>
 					<span class="status {{ email.status }}"></span> {{ email.dateCreated|date('M j, Y g:ia') }}
 				</td>

@@ -136,6 +136,16 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 	}
 
 	/**
+	 * @return array
+	 */
+	public function defineIndexes()
+	{
+		return array(
+			array('columns' => array('campaignTypeId'))
+		);
+	}
+
+	/**
 	 * Create a sequential string for the "name" and "handle" fields if they are already taken
 	 *
 	 * @param $field

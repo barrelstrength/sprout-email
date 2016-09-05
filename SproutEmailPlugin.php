@@ -31,7 +31,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.3.0';
+		return '2.4.0';
 	}
 
 	/**
@@ -39,7 +39,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getSchemaVersion()
 	{
-		return '2.3.1';
+		return '2.4.0';
 	}
 
 	/**
@@ -88,7 +88,11 @@ class SproutEmailPlugin extends BasePlugin
 	protected function defineSettings()
 	{
 		return array(
-			'pluginNameOverride' => AttributeType::String
+			'pluginNameOverride'       => AttributeType::String,
+			'enableCampaignEmails'     => array(AttributeType::Bool, 'default' => true),
+			'enableNotificationEmails' => array(AttributeType::Bool, 'default' => true),
+			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false),
+			'enableRecipientLists'     => array(AttributeType::Bool, 'default' => false)
 		);
 	}
 
@@ -205,7 +209,10 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
 
-		sproutEmail()->notificationEmails->registerDynamicEventHandler();
+		if ($this->getSettings()->enableNotificationEmails)
+		{
+			sproutEmail()->notificationEmails->registerDynamicEventHandler();
+		}
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
 

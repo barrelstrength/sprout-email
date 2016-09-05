@@ -216,8 +216,6 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
 	 *
-	 * @todo     Revise if this responsibility should fall on the mailer or the mailer service
-	 *
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
@@ -230,9 +228,7 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * @todo Decide how this should be standardised across mailers
-	 *
-	 * @param SproutEmail_CampaignTypeModel $campaign
+	 * @param SproutEmail_CampaignTypeModel $campaignType
 	 */
 	public function saveRecipientList(SproutEmail_CampaignTypeModel $campaignType)
 	{
