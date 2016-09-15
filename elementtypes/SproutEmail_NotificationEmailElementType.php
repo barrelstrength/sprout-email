@@ -136,6 +136,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 		if ($attribute == 'preview')
 		{
+			$shareUrl = null;
+
 			if ($element->id && $element->getUrl())
 			{
 				$shareUrl = UrlHelper::getActionUrl('sproutEmail/notificationEmails/shareNotificationEmail', array(
