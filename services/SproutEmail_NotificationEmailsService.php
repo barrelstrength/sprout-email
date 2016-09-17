@@ -151,9 +151,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			$notificationEmail->setAttribute('options', $options);
 		}
 
-		if (!empty($notificationEmail->getAttributes()))
+		$notificationAttributes = $notificationEmail->getAttributes();
+
+		if (!empty($notificationAttributes))
 		{
-			foreach ($notificationEmail->getAttributes() as $handle => $value)
+			foreach ($notificationAttributes as $handle => $value)
 			{
 				$notificationEmailRecord->setAttribute($handle, $value);
 			}
