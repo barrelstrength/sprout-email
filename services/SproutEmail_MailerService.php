@@ -84,7 +84,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			}
 		}
 
-		asort($this->mailers, SORT_NATURAL);
+		natsort($this->mailers);
 
 		return $this->mailers;
 	}

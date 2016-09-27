@@ -8,7 +8,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Email Campaign Email');
+		return Craft::t('Sprout Email Campaign Emails');
 	}
 
 	/**

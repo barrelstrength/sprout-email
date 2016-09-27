@@ -8,7 +8,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Notification Email');
+		return Craft::t('Sprout Email Notification Emails');
 	}
 
 	/**

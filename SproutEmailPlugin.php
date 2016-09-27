@@ -31,7 +31,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.4.0';
+		return '2.4.2';
 	}
 
 	/**
@@ -123,20 +123,20 @@ class SproutEmailPlugin extends BasePlugin
 	{
 		return array(
 			// Campaign Email Edit Page
-			'sproutemail/campaigns/(?P<campaignTypeId>\d+)/new' => array(
+			'sproutemail/campaigns/(?P<campaignTypeId>\d+)/new'                                          => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
-			'sproutemail/campaigns/edit/(?P<emailId>\d+)' => array(
+			'sproutemail/campaigns/edit/(?P<emailId>\d+)'                                                => array(
 				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
 
 			// Notification Email Edit Page
-			'sproutemail/notifications/edit/(?P<notificationId>\d+)' => array(
+			'sproutemail/notifications/edit/(?P<notificationId>\d+)'                                     => array(
 				'action' => 'sproutEmail/notificationEmails/editNotificationEmailTemplate'
 			),
 
 			// Notification Email Settings
-			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<emailId>\d+|new)' => array(
+			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<emailId>\d+|new)'         => array(
 				'action' => 'sproutEmail/notificationEmails/editNotificationEmailSettingsTemplate'
 			),
 
@@ -146,34 +146,34 @@ class SproutEmailPlugin extends BasePlugin
 			),
 
 			// Mailer Settings Route
-			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)' => array(
+			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)'                    => array(
 				'action' => 'sproutEmail/mailer/editSettingsTemplate'
 			),
 
 			// Redirects to `general` settings
-			'sproutemail/settings' => array(
+			'sproutemail/settings'                                                                       => array(
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
 			// Settings templates such as `general` and `mailers`
-			'sproutemail/settings/(?P<settingsTemplate>.*)' => array(
-					'action' => 'sproutEmail/settingsIndexTemplate'
+			'sproutemail/settings/(?P<settingsTemplate>.*)'                                              => array(
+				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
 			// Recipient Lists
-			'sproutemail/recipients' => array(
+			'sproutemail/recipients'                                                                     => array(
 				'action' => 'sproutEmail/defaultMailer/showRecipientIndexTemplate'
 			),
-			'sproutemail/recipients/edit/(?P<id>[\d]+)' => array(
+			'sproutemail/recipients/edit/(?P<id>[\d]+)'                                                  => array(
 				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
 			),
-			'sproutemail/recipients/new' => array(
+			'sproutemail/recipients/new'                                                                 => array(
 				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
 			),
 
 			// Examples
-			'sproutemail/settings/examples' =>
-			'sproutemail/settings/_tabs/examples',
+			'sproutemail/settings/examples'                                                              =>
+				'sproutemail/settings/_tabs/examples',
 		);
 	}
 
@@ -371,12 +371,13 @@ class SproutEmailPlugin extends BasePlugin
 	public function registerSproutSeoSitemap()
 	{
 		return array(
-			'sproutemail_entry' => array(
-				'name'           => 'Email Campaigns',
-				'elementType'    => 'SproutEmail_CampaignEmail',
-				'elementGroupId' => 'campaignTypeId',
-				'service'        => 'sproutEmail_campaigns',
-				'method'         => 'getCampaignTypes'
+			'sproutemail_campaignemails' => array(
+				'name'                   => 'Email Campaigns',
+				'elementType'            => 'SproutEmail_CampaignEmail',
+				'elementGroupId'         => 'campaignTypeId',
+				'service'                => 'sproutEmail_campaignTypes',
+				'method'                 => 'getCampaignTypes',
+				'matchedElementVariable' => 'email'
 			)
 		);
 	}
