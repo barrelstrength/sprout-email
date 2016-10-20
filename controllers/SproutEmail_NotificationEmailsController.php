@@ -136,24 +136,11 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$this->notification = $notificationEmail;
 
-		$objects = array();
-		if (!empty(sproutEmail()->notificationEmails->getEventById($fields['eventId'])))
-		{
-			$event = sproutEmail()->notificationEmails->getEventById($fields['eventId']);
+		$this->validateAttribute('fromName', 'From Name', $fields['fromName']);
 
-			$attributes = craft()->request->getPost();
+		$this->validateAttribute('fromEmail', 'From Email', $fields['fromEmail']);
 
-			$rules = $attributes['rules'];
-
-			$objects = $event->validateObjects($rules);
-
-		}
-
-		$this->validateAttribute('fromName', 'From Name', $fields['fromName'], false);
-
-		$this->validateAttribute('fromEmail', 'From Email', $fields['fromEmail'], true, $objects);
-
-		$this->validateAttribute('replyToEmail', 'Reply To', $fields['replyToEmail'], true, $objects);
+		$this->validateAttribute('replyToEmail', 'Reply To', $fields['replyToEmail']);
 
 		$notificationEmail = $this->notification;
 
@@ -448,7 +435,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 	 * @param      $value
 	 * @param bool $email
 	 */
-	private function validateAttribute($attribute, $label, $value, $email = true, $objects = array())
+	private function validateAttribute($attribute, $label, $value, $email = false)
 	{
 		// Fix the &#8203 bug to test try the @asdf emails
 		$value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
@@ -456,18 +443,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		if (empty($value))
 		{
 			$this->notification->addError($attribute, Craft::t("$label cannot be blank."));
-		}
-		if ($email == true && !empty($objects))
-		{
-			if (preg_match('/{(.*)}/', $value, $matches))
-			{
-				$value = $matches[1];
-
-				if (in_array($value, $objects))
-				{
-					return true;
-				}
-			}
 		}
 
 		if ($email == true && filter_var($value, FILTER_VALIDATE_EMAIL) === false)
