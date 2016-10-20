@@ -614,7 +614,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	public function getErrors($notificationEmail, $errors)
 	{
 		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/notifications/edit/' . $notificationEmail->id);
-		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/notifications/setting/' . $notificationEmail->id);
+		$notificationEditSettingsUrl = UrlHelper::getCpUrl('sproutemail/settings/notifications/edit/' . $notificationEmail->id);
 
 		$event = $this->getEventById($notificationEmail->eventId);
 
