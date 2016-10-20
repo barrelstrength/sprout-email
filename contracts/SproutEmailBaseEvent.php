@@ -202,8 +202,8 @@ class SproutEmailBaseEvent
 		return array();
 	}
 
-	public function validateObjects($attributes = array())
+	public function validateObjects($rules = array())
 	{
-		return $attributes;
+		return array();
 	}
 }
