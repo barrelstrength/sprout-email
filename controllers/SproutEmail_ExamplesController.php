@@ -87,7 +87,7 @@ class SproutEmail_ExamplesController extends BaseController
 								'configFile'  => '',
 								'cleanupHtml' => '1',
 								'purifyHtml'  => '',
-								'columnType'  => 'text'
+								'columnType'  => 'mediumtext'
 							)
 						),
 						array(
@@ -431,7 +431,7 @@ Email: {email}',
 								'configFile'  => '',
 								'cleanupHtml' => '1',
 								'purifyHtml'  => '',
-								'columnType'  => 'text'
+								'columnType'  => 'mediumtext'
 							)
 						),
 						array(
@@ -460,7 +460,7 @@ Email: {email}',
 								'configFile'  => '',
 								'cleanupHtml' => '1',
 								'purifyHtml'  => '',
-								'columnType'  => 'text'
+								'columnType'  => 'mediumtext'
 							)
 						),
 						array(
