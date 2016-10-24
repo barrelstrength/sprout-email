@@ -72,7 +72,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		{
 			if (!in_array($entry->getSection()->id, $options['craft']['saveEntry']['sectionIds']))
 			{
-				SproutEmailPlugin::log(Craft::t('Saved entry not in any selected Section.'));
+				SproutEmailPlugin::log(Craft::t('Saved entry not in any selected Section.'), LogLevel::Warning);
 
 				return false;
 			}
@@ -81,7 +81,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		if (!$whenNew && !$whenUpdated)
 		{
 			SproutEmailPlugin::log(Craft::t("No settings have been selected. Please select 'When an entry is created' or 'When
-			an entry is updated' from the options on the Rules tab."));
+			an entry is updated' from the options on the Rules tab."), LogLevel::Warning);
 
 			return false;
 		}
@@ -90,7 +90,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		if (($whenNew && !$isNewEntry) && !$whenUpdated)
 		{
 			SproutEmailPlugin::log(Craft::t("No match. 'When an entry is created' is selected but the entry is being updated
-			."));
+			."), LogLevel::Warning);
 
 			return false;
 		}
@@ -98,7 +98,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 		// Make sure updated entries are not new
 		if (($whenUpdated && $isNewEntry) && !$whenNew)
 		{
-			SproutEmailPlugin::log(Craft::t("No match. 'When an entry is updated' is selected but the entry is new."));
+			SproutEmailPlugin::log(Craft::t("No match. 'When an entry is updated' is selected but the entry is new."), LogLevel::Warning);
 
 			return false;
 		}

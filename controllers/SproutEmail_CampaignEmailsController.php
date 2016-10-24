@@ -191,7 +191,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		else
 		{
 			// @TODO - return errors
-			SproutEmailPlugin::log(json_encode($campaignEmail->getErrors()));
+			SproutEmailPlugin::log(json_encode($campaignEmail->getErrors()), LogLevel::Error);
 		}
 	}
 

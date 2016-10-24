@@ -226,7 +226,7 @@ Email: {email}',
 				// Create the Email
 				if (!$campaignType = sproutEmail()->campaignTypes->saveCampaignType($campaignType))
 				{
-					SproutEmailPlugin::log('Campaign NOT CREATED');
+					SproutEmailPlugin::log('Campaign NOT CREATED', LogLevel::Error);
 
 					return false;
 				}

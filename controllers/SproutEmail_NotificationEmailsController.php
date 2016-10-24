@@ -270,7 +270,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			else
 			{
 				// @TODO - return errors
-				SproutEmailPlugin::log(json_encode($notificationEmail->getErrors()));
+				SproutEmailPlugin::log(json_encode($notificationEmail->getErrors()), LogLevel::Error);
 			}
 		}
 	}
