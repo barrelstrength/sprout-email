@@ -91,7 +91,7 @@ class SproutEmail_CampaignTypeController extends BaseController
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
 
-		$campaignTypeId = craft()->request->getRequiredPost('campaignTypeId');
+		$campaignTypeId = craft()->request->getRequiredPost('id');
 
 		if ($result = sproutEmail()->campaignTypes->deleteCampaignType($campaignTypeId))
 		{
