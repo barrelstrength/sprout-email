@@ -24,7 +24,10 @@ class m160804_000007_sproutEmail_updateCampaignEmailForeignKeys extends BaseMigr
 			// Drop the FK again, since renameTable restores fks
 			MigrationHelper::dropAllForeignKeysOnTable($table);
 
-			MigrationHelper::renameColumn($tableName, 'campaignId', 'campaignTypeId');
+			if (craft()->db->columnExists($tableName, 'campaignId'))
+			{
+				MigrationHelper::renameColumn($tableName, 'campaignId', 'campaignTypeId');
+			}
 
 			craft()->db->createCommand()->addForeignKey($tableName, 'id', 'elements', 'id', 'CASCADE');
 			craft()->db->createCommand()->addForeignKey($tableName, 'campaignTypeId', 'sproutemail_campaigntype', 'id', 'CASCADE');
