@@ -215,7 +215,8 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$infoTable->source        = $plugin->getName();
 		$infoTable->sourceVersion = $plugin->getName() . ' ' . $plugin->getVersion();
 
-		$craftVersion            = 'Craft ' . craft()->getEditionName() . ' ' . craft()->getVersion() . '.' . craft()->getBuild();
+		$craftVersion = $this->_getCraftVersion();
+
 		$infoTable->craftVersion = $craftVersion;
 
 		return $infoTable;
@@ -229,7 +230,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 	 */
 	public function updateInfoTableWithCraftInfo($emailKey, $infoTable)
 	{
-		$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . craft()->getVersion() . '.' . craft()->getBuild();
+		$craftVersion = $this->_getCraftVersion();
 
 		$infoTable->emailType     = Craft::t('Craft CMS Email');
 		$infoTable->source        = 'Craft CMS';
@@ -268,5 +269,22 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		$emailModel->body     = $renderedTextBody;
 
 		return $emailModel;
+	}
+
+	private function _getCraftVersion()
+	{
+		$version      = craft()->getVersion();
+		$craftVersion = '';
+
+		if (version_compare($version, '2.6.2951', '>='))
+		{
+			$craftVersion = 'Craft ' . craft()->getEditionName() .' '. $version;
+		}
+		else
+		{
+			$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . craft()->getVersion() . '.' . craft()->getBuild();
+		}
+
+		return $craftVersion;
 	}
 }
