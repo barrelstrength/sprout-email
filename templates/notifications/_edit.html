@@ -147,13 +147,9 @@
 						{% if craft.plugins.getPlugin('sproutlists') is defined %}
 							{{ craft.sproutlists.getListsHtml(notificationId) }}
 						{% endif %}
-
-						{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
 					</div>
 				</div>
 				{% endif %}
-
-
 
 					{% set events = craft.sproutEmail.getAvailableEvents() %}
 

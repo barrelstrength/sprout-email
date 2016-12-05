@@ -29,15 +29,6 @@
 	}) %}
 {% endif %}
 
-{% if settings.enableRecipientLists %}
-	{% set subnav = subnav|merge({
-		recipients: {
-			label: "Recipients"|t,
-			url: url('sproutemail/recipients')
-		}
-	}) %}
-{% endif %}
-
 {% if currentUser.can('editSproutEmailSettings') %}
 	{% set subnav = subnav|merge({
 		settings: {
