@@ -19,6 +19,12 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	 */
 	protected $elementType = 'SproutEmail_SentEmail';
 
+	public function __toString()
+	{
+
+		return $this->dateCreated->nice();
+	}
+
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *

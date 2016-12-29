@@ -110,25 +110,14 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'emailSubject'           => array('label' => Craft::t('Subject')),
-			'fromEmail'              => array('label' => Craft::t('From Email')),
-			'campaignNotificationId' => array('label' => Craft::t('Notification Type')),
-			'dateCreated'            => array('label' => Craft::t('Date Created')),
-			'dateUpdated'            => array('label' => Craft::t('Date Updated'))
+			'dateSent'      => array('label' => Craft::t('Date Sent')),
+			'toEmail'       => array('label' => Craft::t('Recipient')),
+			'emailSubject'  => array('label' => Craft::t('Subject')),
+			'preview'       => array('label' => Craft::t('Preview')),
+		  'resend'        => array('label' => Craft::t('Resend'))
 		);
 
 		return $attributes;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function defineSortableAttributes()
-	{
-		return array(
-			'emailSubject' => Craft::t('Subject'),
-			'dateCreated'  => Craft::t('Date Sent')
-		);
 	}
 
 	/**
@@ -140,13 +129,25 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	{
 		$attributes = array();
 
-		$attributes[] = 'emailSubject';
-		$attributes[] = 'fromEmail';
+		$attributes[] = 'dateSent';
 		$attributes[] = 'toEmail';
-		$attributes[] = 'dateCreated';
-		$attributes[] = 'dateUpdated';
+		$attributes[] = 'emailSubject';
+		$attributes[] = 'preview';
+		$attributes[] = 'resend';
 
 		return $attributes;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function defineSortableAttributes()
+	{
+		return array(
+			'emailSubject' => Craft::t('Subject'),
+			'dateCreated'  => Craft::t('Date Sent')
+		);
 	}
 
 	/**
@@ -175,6 +176,17 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 		switch ($attribute)
 		{
+			case "preview":
+					return '<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal"' .
+					'data-email-id="' . $element->id .	'"' .
+					'href="' .  UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
+					Craft::t("View Content") .
+					'</a>';
+				break;
+
+			case "resend":
+				return '';
+				break;
 
 			default:
 			{
@@ -199,7 +211,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
 		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
-		$criteria->limit = null;
+		//$criteria->limit = 5;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
 		// Add this to prevent search error
@@ -211,14 +223,12 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
 
-		return craft()->templates->render(
-			'sproutemail/_partials/sentemails/entryindex', array(
-				'context'            => $context,
-				'elementType'        => new ElementTypeVariable($this),
-				'disabledElementIds' => $disabledElementIds,
-				'elements'           => $criteria->find()
-			)
-		);
+		$html = parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer,
+			$showCheckboxes);
+
+		$modal = craft()->templates->render('sproutemail/_modals/box');
+
+		return $html . $modal;
 	}
 
 	/**
