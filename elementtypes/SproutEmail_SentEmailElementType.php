@@ -114,7 +114,8 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			'toEmail'       => array('label' => Craft::t('Recipient')),
 			'emailSubject'  => array('label' => Craft::t('Subject')),
 			'preview'       => array('label' => Craft::t('Preview')),
-		  'resend'        => array('label' => Craft::t('Resend'))
+		  'resend'        => array('label' => Craft::t('Resend')),
+		  'info'          => array('label' => Craft::t(''))
 		);
 
 		return $attributes;
@@ -134,6 +135,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$attributes[] = 'emailSubject';
 		$attributes[] = 'preview';
 		$attributes[] = 'resend';
+		$attributes[] = 'info';
 
 		return $attributes;
 	}
@@ -185,7 +187,16 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				break;
 
 			case "resend":
-				return '';
+				return '<a class="prepare" 
+								data-action="sproutEmail/sentEmail/getResendModal" 
+								data-email-id="' . $element->id . '" 
+								href="' .	UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
+								Craft::t("Prepare") .
+								'</a>';
+				break;
+
+			case "info":
+				return '<span class="tableRowInfo" data-icon="info"></span>';
 				break;
 
 			default:
