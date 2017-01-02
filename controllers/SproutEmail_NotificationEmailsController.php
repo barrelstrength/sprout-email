@@ -153,14 +153,14 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			$notificationEmail->slug = ElementHelper::createSlug($notificationEmail->subjectLine);
 		}
 
+		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
+		$notificationEmail->setContentFromPost($fieldsLocation);
+		$notificationEmail->setContentPostLocation($fieldsLocation);
+
 		// Do not clear errors to add additional validation
 		if ($notificationEmail->validate(null, false) && $notificationEmail->hasErrors() == false)
 		{
-			$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
-
-			$notificationEmail->setContentFromPost($fieldsLocation);
-			$notificationEmail->setContentPostLocation($fieldsLocation);
-
 			$notificationEmail->getContent()->title = $notificationEmail->subjectLine;
 
 			$result = sproutEmail()->notificationEmails->saveNotification($notificationEmail);
