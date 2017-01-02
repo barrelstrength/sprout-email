@@ -751,6 +751,15 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		{
 			$object = $event->getMockedParams();
 		}
+		else
+		{
+			ob_start();
+
+			echo Craft::t("No notification event is selected.");
+
+			// End the request
+			craft()->end();
+		}
 
 		$email         = new EmailModel();
 		$template      = $notificationEmail->template;
