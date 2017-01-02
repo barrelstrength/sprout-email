@@ -21,8 +21,14 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 
 	public function __toString()
 	{
+		return $this->getLocaleNiceDateTime();
+	}
 
-		return $this->dateCreated->nice();
+	public function getLocaleNiceDateTime()
+	{
+		$date = date_create($this->dateCreated->localeDate());
+
+		return date_format($date,"M j, Y") . ' ' . $this->dateCreated->localeTime();
 	}
 
 	/**
