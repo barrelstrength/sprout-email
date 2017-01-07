@@ -110,12 +110,12 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'dateSent'      => array('label' => Craft::t('Date Sent')),
-			'toEmail'       => array('label' => Craft::t('Recipient')),
-			'emailSubject'  => array('label' => Craft::t('Subject')),
-			'preview'       => array('label' => Craft::t('Preview')),
-		  'resend'        => array('label' => Craft::t('Resend')),
-		  'info'          => array('label' => Craft::t(''))
+			'dateSent'     => array('label' => Craft::t('Date Sent')),
+			'toEmail'      => array('label' => Craft::t('Recipient')),
+			'emailSubject' => array('label' => Craft::t('Subject')),
+			'preview'      => array('label' => Craft::t('Preview')),
+			'resend'       => array('label' => Craft::t('Resend')),
+			'info'         => array('label' => Craft::t(''))
 		);
 
 		return $attributes;
@@ -139,7 +139,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 		return $attributes;
 	}
-
 
 	/**
 	 * @return array
@@ -179,9 +178,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		switch ($attribute)
 		{
 			case "preview":
-					return '<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal"' .
-					'data-email-id="' . $element->id .	'"' .
-					'href="' .  UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
+				return '<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal"' .
+					'data-email-id="' . $element->id . '"' .
+					'href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
 					Craft::t("View Content") .
 					'</a>';
 				break;
@@ -190,9 +189,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				return '<a class="prepare" 
 								data-action="sproutEmail/sentEmail/getResendModal" 
 								data-email-id="' . $element->id . '" 
-								href="' .	UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
-								Craft::t("Prepare") .
-								'</a>';
+								href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
+					Craft::t("Prepare") .
+					'</a>';
 				break;
 
 			case "info":
@@ -222,7 +221,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$order = isset($viewState['order']) ? $viewState['order'] : 'dateCreated';
 		$sort  = isset($viewState['sort']) ? $viewState['sort'] : 'desc';
 
-		//$criteria->limit = 5;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
 		// Add this to prevent search error
@@ -234,8 +232,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
 		craft()->templates->includeJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
 
-		$html = parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer,
-			$showCheckboxes);
+		$html = parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 
 		$modal = craft()->templates->render('sproutemail/_modals/box');
 
