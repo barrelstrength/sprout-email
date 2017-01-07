@@ -206,7 +206,7 @@ Craft.SproutEmail.SentEmailEntriesTableView = Craft.TableElementIndexView.extend
 
 	initializeInfoIcons: function()
 	{
-		var $infoIcons = $('#sproutemail-sentemails');
+		var $infoIcons = $('.elements');
 
 		this.addListener($infoIcons, 'click', '.tableRowInfo', 'showHud');
 	},
@@ -214,7 +214,7 @@ Craft.SproutEmail.SentEmailEntriesTableView = Craft.TableElementIndexView.extend
 	showHud: function(event)
 	{
 		this.$icon = $(event.target);
-		this.sentEmailId = this.$icon.closest('.infoRow').data('id');
+		this.sentEmailId = this.$icon.closest('tr').data('id');
 
 		var $hudbody = $("<div/>");
 
