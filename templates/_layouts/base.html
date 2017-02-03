@@ -14,10 +14,6 @@
 	{% exit 403 %}
 {% endif %}
 
-{% if craft.request.getSegment(2) == 'recipients' and not pluginSettings.enableRecipientLists %}
-	{% exit 403 %}
-{% endif %}
-
 {% set subnav = {} %}
 
 {% if pluginSettings.enableCampaignEmails %}
@@ -43,15 +39,6 @@
 		sentemails: {
 			label: "Sent Email"|t,
 			url: url('sproutemail/sentemails')
-		}
-	}) %}
-{% endif %}
-
-{% if pluginSettings.enableRecipientLists %}
-	{% set subnav = subnav|merge({
-		recipients: {
-			label: "Recipients"|t,
-			url: url('sproutemail/recipients')
 		}
 	}) %}
 {% endif %}

@@ -160,17 +160,6 @@ class SproutEmailPlugin extends BasePlugin
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
-			// Recipient Lists
-			'sproutemail/recipients'                                                                     => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientIndexTemplate'
-			),
-			'sproutemail/recipients/edit/(?P<id>[\d]+)'                                                  => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
-			),
-			'sproutemail/recipients/new'                                                                 => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
-			),
-
 			// Examples
 			'sproutemail/settings/examples'                                                              =>
 				'sproutemail/settings/_tabs/examples',
