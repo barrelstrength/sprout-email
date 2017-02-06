@@ -177,10 +177,8 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationEmailSenderInterface');
 
 		// Sprout Email Mailers
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CampaignMonitorMailer');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CopyPasteMailer');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_DefaultMailer');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_MailchimpMailer');
 
 		// Sprout Email Events
 		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnOrderCompleteEvent');
@@ -307,9 +305,7 @@ class SproutEmailPlugin extends BasePlugin
 		$mailers['defaultmailer'] = new SproutEmail_DefaultMailer();
 
 		$pluginMailers = array(
-			'mailchimp'       => 'SproutEmail_MailchimpMailer',
 			'copypaste'       => 'SproutEmail_CopyPasteMailer',
-			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
 		);
 
 		foreach ($pluginMailers as $handle => $class)

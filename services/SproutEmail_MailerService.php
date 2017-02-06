@@ -368,7 +368,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	{
 		$mailer = $this->getMailerByName($name, true);
 
-		$builtInMailers = array('copypaste', 'campaignmonitor', 'mailchimp');
+		$builtInMailers = array('copypaste');
 
 		// Do not remove builtin mailers settings
 		if (in_array($name, $builtInMailers))
