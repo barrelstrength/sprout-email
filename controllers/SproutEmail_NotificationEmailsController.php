@@ -167,6 +167,13 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 			if ($result !== false)
 			{
+				if (craft()->plugins->getPlugin('sproutlists') != null)
+				{
+					$sproutLists = craft()->request->getPost('sproutlists');
+
+					sproutLists()->addSyncElement($sproutLists, $notificationEmail->id);
+				}
+
 				craft()->userSession->setNotice(Craft::t('Notification saved.'));
 			}
 			else

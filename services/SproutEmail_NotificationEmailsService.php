@@ -755,7 +755,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		{
 			ob_start();
 
-			echo Craft::t("No notification event is selected.");
+			echo Craft::t("Notification Email cannot display. The Event setting must be set.");
 
 			// End the request
 			craft()->end();

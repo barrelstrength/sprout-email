@@ -31,7 +31,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.4.6';
+		return '2.4.7';
 	}
 
 	/**
@@ -160,17 +160,6 @@ class SproutEmailPlugin extends BasePlugin
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
-			// Recipient Lists
-			'sproutemail/recipients'                                                                     => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientIndexTemplate'
-			),
-			'sproutemail/recipients/edit/(?P<id>[\d]+)'                                                  => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
-			),
-			'sproutemail/recipients/new'                                                                 => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
-			),
-
 			// Examples
 			'sproutemail/settings/examples'                                                              =>
 				'sproutemail/settings/_tabs/examples',
@@ -188,10 +177,8 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationEmailSenderInterface');
 
 		// Sprout Email Mailers
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CampaignMonitorMailer');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CopyPasteMailer');
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_DefaultMailer');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_MailchimpMailer');
 
 		// Sprout Email Events
 		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnOrderCompleteEvent');
@@ -318,9 +305,7 @@ class SproutEmailPlugin extends BasePlugin
 		$mailers['defaultmailer'] = new SproutEmail_DefaultMailer();
 
 		$pluginMailers = array(
-			'mailchimp'       => 'SproutEmail_MailchimpMailer',
 			'copypaste'       => 'SproutEmail_CopyPasteMailer',
-			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
 		);
 
 		foreach ($pluginMailers as $handle => $class)

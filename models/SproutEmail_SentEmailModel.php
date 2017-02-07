@@ -19,6 +19,18 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	 */
 	protected $elementType = 'SproutEmail_SentEmail';
 
+	public function __toString()
+	{
+		return $this->getLocaleNiceDateTime();
+	}
+
+	public function getLocaleNiceDateTime()
+	{
+		$date = date_create($this->dateCreated->localeDate());
+
+		return date_format($date,"M j, Y") . ' ' . $this->dateCreated->localeTime();
+	}
+
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *
