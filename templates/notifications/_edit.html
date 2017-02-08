@@ -144,7 +144,7 @@
 					</div>
 					<div class="input">
 
-						{% if craft.plugins.getPlugin('sproutlists') is defined %}
+						{% if craft.plugins.getPlugin('sproutlists') is not null %}
 							{{ craft.sproutlists.getListsHtml(notificationId) }}
 						{% endif %}
 					</div>
