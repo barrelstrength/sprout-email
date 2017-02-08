@@ -27,11 +27,6 @@ class SproutEmail_MailerController extends BaseController
 			throw new HttpException(404, Craft::t('No mailer was found with that id'));
 		}
 
-		if (!$mailer->hasCpSettings())
-		{
-			throw new HttpException(404, Craft::t('No settings found for this mailer'));
-		}
-
 		if (!$settings)
 		{
 			$settings = $mailer->getSettings();

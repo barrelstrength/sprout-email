@@ -753,7 +753,7 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 		if (craft()->plugins->getPlugin('sproutlists') != null)
 		{
 			$ids = array($email->id);
-
+			Craft::dd($ids);
 			$sproutListsRecipients = sproutLists()->getAllRecipientsByElementIds($ids);
 
 			$recipients = array_merge($recipients, $sproutListsRecipients);

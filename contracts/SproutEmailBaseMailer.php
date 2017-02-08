@@ -137,26 +137,11 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns whether or not the mailer has settings to display
-	 *
-	 * @return bool
-	 */
-	final public function hasCpSettings()
-	{
-		$settings = $this->defineSettings();
-
-		return is_array($settings) && count($settings);
-	}
-
-	/**
 	 * @return string
 	 */
-	final public function getCpSettingsUrl()
+	public function getCpSettingsUrl()
 	{
-		if ($this->hasCpSettings())
-		{
-			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
-		}
+		return null;
 	}
 
 	/**

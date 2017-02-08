@@ -37,7 +37,7 @@
 						{{ mailer.getTitle() }}
 					</td>
 					<td>
-						{% if mailer.hasCpSettings() %}
+						{% if mailer.getCpSettingsUrl() != null %}
 							<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
 						{% endif %}
 					</td>
