@@ -5,7 +5,7 @@
 	{ label: "Email"|t, url: url('sproutemail/campaigns') },
 ] %}
 
-{% set title  = campaignEmail is defined and campaignEmail.title is not empty ? campaignType.name : 'Create a new Email' %}
+{% set title  = campaignEmail is defined and campaignEmail.title is not empty ? campaignEmail.title : 'Create a new Email' %}
 {% set mailer = craft.sproutEmail.getMailer(campaignType.mailer) %}
 
 {% set fullPageForm = true %}
