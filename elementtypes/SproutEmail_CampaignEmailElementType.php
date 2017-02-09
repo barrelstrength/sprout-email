@@ -130,9 +130,10 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'title'       => array('label' => Craft::t('Title')),
-			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated'))
+			'title'        => array('label' => Craft::t('Title')),
+			'dateCreated'  => array('label' => Craft::t('Date Created')),
+			'lastDateSent' => array('label' => Craft::t('Last Date Sent')),
+			'dateUpdated'  => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
@@ -148,6 +149,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'title';
+		$attributes[] = 'lastDateSent';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 
@@ -253,6 +255,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.fromEmail as fromEmail,
 				 campaigns.replyToEmail as replyToEmail,
 				 campaigns.sent as sent,
+				 campaigns.lastDateSent as lastDateSent,
 				 campaigns.enableFileAttachments as enableFileAttachments'
 			)
 			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')

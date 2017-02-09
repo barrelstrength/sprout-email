@@ -6,6 +6,7 @@
 		<thead>
 		<th></th>
 		<th>{{ "Subject Line"|t }}</th>
+		<th>{{ "Last Date Sent"|t }}</th>
 		<th>{{ "Date Created"|t }}</th>
 		<th>{{ "Preview"|t }}</th>
 		<th>{{ "Send"|t }}</th>
@@ -22,6 +23,13 @@
 			<td data-titlecell>
 				<span class="status {{ email.status == 'ready' ? 'enabled' : email.status }}"></span>
 				<a href="{{ url('sproutemail/campaigns/edit/' ~ email.id) }}">{{ email.title ? email.title : 'New Email'|t }}</a>
+			</td>
+			<td>
+				{% if email.lastDateSent is not null %}
+					{{ email.lastDateSent|date("M j, Y H:i:s") }}
+				{% else %}
+					---
+				{% endif %}
 			</td>
 			<td>
 				{{ email.dateCreated|date('m/d/Y') }}

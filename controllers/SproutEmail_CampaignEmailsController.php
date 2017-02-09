@@ -293,9 +293,9 @@ class SproutEmail_CampaignEmailsController extends BaseController
 							$emailModel = $response->emailModel;
 
 							$event = new Event($this, array(
-								'entryModel' => $campaignEmail,
-								'emailModel' => $emailModel,
-								'campaign'   => $campaignType
+								'campaignEmail' => $campaignEmail,
+								'emailModel'    => $emailModel,
+								'campaign'      => $campaignType
 							));
 
 							sproutEmail()->onSendSproutEmail($event);

@@ -63,6 +63,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
+			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
 
 			// @related
 			'recipientLists'        => Attributetype::Mixed,

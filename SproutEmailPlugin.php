@@ -39,7 +39,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getSchemaVersion()
 	{
-		return '2.4.0';
+		return '2.4.1';
 	}
 
 	/**
@@ -212,6 +212,8 @@ class SproutEmailPlugin extends BasePlugin
 		craft()->on('sproutEmail.onSendSproutEmail', function (Event $event)
 		{
 			sproutEmail()->sentEmails->logSentEmailCampaign($event);
+
+			sproutEmail()->campaignEmails->updateLastDateSent($event);
 		});
 
 		craft()->on('email.onSendEmail', function (Event $event)
