@@ -103,35 +103,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			}
 		}
 
-		$tabs = array();
-		$campaignEmailTabs = $campaignEmail->getFieldLayout()->getTabs();
-
-		if (!empty($campaignEmailTabs))
-		{
-			foreach ($campaignEmailTabs as $index => $tab)
-			{
-				// Do any of the fields on this tab have errors?
-				$hasErrors = false;
-
-				if ($campaignEmail->hasErrors())
-				{
-					foreach ($tab->getFields() as $field)
-					{
-						if ($campaignEmail->getErrors($field->getField()->handle))
-						{
-							$hasErrors = true;
-							break;
-						}
-					}
-				}
-
-				$tabs[] = array(
-					'label' => Craft::t($tab->name),
-					'url'   => '#tab'.($index+1),
-					'class' => ($hasErrors ? 'error' : null)
-				);
-			}
-		}
+		$tabs = sproutEmail()->getModelTabs($campaignEmail);
 
 		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($emailId);
 

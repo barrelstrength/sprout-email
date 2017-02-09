@@ -64,12 +64,15 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			}
 		}
 
+		$tabs = sproutEmail()->getModelTabs($notificationEmail);
+
 		$this->renderTemplate('sproutemail/notifications/_edit', array(
 			'notificationEmail' => $notificationEmail,
 			'recipientLists'    => $recipientLists,
 			'mailer'            => $mailer,
 			'showPreviewBtn'    => $showPreviewBtn,
-			'shareUrl'          => $shareUrl
+			'shareUrl'          => $shareUrl,
+			'tabs'              => $tabs
 		));
 	}
 

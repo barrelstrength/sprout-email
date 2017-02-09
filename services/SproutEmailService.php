@@ -648,4 +648,48 @@ class SproutEmailService extends BaseApplicationComponent
 				return 'sproutemail/settings';
 		}
 	}
+
+	/**
+	 * Use for populating template "_includes/tabs"
+	 *
+	 * @param BaseModel $model
+	 * @param           $model
+	 *
+	 * @return array
+	 */
+	public function getModelTabs(BaseModel $model)
+	{
+		$tabs = array();
+
+		$campaignEmailTabs = $model->getFieldLayout()->getTabs();
+
+		if (!empty($campaignEmailTabs))
+		{
+			foreach ($campaignEmailTabs as $index => $tab)
+			{
+				// Do any of the fields on this tab have errors?
+				$hasErrors = false;
+
+				if ($model->hasErrors())
+				{
+					foreach ($tab->getFields() as $field)
+					{
+						if ($model->getErrors($field->getField()->handle))
+						{
+							$hasErrors = true;
+							break;
+						}
+					}
+				}
+
+				$tabs[] = array(
+					'label' => Craft::t($tab->name),
+					'url'   => '#tab'.($index+1),
+					'class' => ($hasErrors ? 'error' : null)
+				);
+			}
+		}
+
+		return $tabs;
+	}
 }
