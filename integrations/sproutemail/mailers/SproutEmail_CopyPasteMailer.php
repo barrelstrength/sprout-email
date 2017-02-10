@@ -44,6 +44,21 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 		return "Copy and paste your email campaigns to better (or worse) places.";
 	}
 
+	public function getRecipientLists()
+	{
+		return array();
+	}
+
+	public function getRecipientListsHtml()
+	{
+		return TemplateHelper::getRaw('<p>' . Craft::t('This mailer does not require recipients.') . '</p>');
+	}
+
+	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
+	{
+		return new SproutEmail_CampaignEmailModel();
+	}
+
 	/**
 	 * @return string
 	 */
@@ -60,12 +75,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 	 */
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
-
-		return craft()->templates->render('sproutemail/_modal', array(
-			'entry'    => $campaignEmail,
-			'campaign' => $campaignType
-		));
+		return '';
 	}
 
 	/**

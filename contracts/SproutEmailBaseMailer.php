@@ -166,6 +166,7 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function getSettingsHtml(array $settings = array())
 	{
+		return '';
 	}
 
 	/**
@@ -183,20 +184,14 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return array
 	 */
-	public function getRecipientLists()
-	{
-		return array();
-	}
+	abstract public function getRecipientLists();
 
 	/**
 	 * Returns a rendered string with inputs to select a recipient lists if available/required by this mailer
 	 *
 	 * @return \Twig_Markup
 	 */
-	public function getRecipientListsHtml()
-	{
-		return TemplateHelper::getRaw('<p>' . Craft::t('This mailer does not require recipients.') . '</p>');
-	}
+	abstract public function getRecipientListsHtml();
 
 	/**
 	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
@@ -207,17 +202,7 @@ abstract class SproutEmailBaseMailer
 	 * @return SproutEmail_CampaignEmailModel
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
-	{
-		return new SproutEmail_CampaignEmailModel();
-	}
-
-	/**
-	 * @param SproutEmail_CampaignTypeModel $campaignType
-	 */
-	public function saveRecipientList(SproutEmail_CampaignTypeModel $campaignType)
-	{
-	}
+	abstract public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail);
 
 	/**
 	 * Returns the value that should be saved to the settings column for this mailer
@@ -282,6 +267,9 @@ abstract class SproutEmailBaseMailer
 	{
 	}
 
+	abstract public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail,
+	                                             SproutEmail_CampaignTypeModel $campaignType);
+
 	/**
 	 * Gives a mailer the responsibility to send Campaign Emails
 	 * if they implement SproutEmailCampaignEmailSenderInterface
@@ -291,7 +279,6 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
-	{
-	}
+	abstract public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail,
+	                                          SproutEmail_CampaignTypeModel $campaignType);
 }
