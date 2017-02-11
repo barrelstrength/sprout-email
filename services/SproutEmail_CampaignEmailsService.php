@@ -96,7 +96,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 				{
 					$transaction->rollback();
 				}
-				Craft::dd($e->getMessage());
+
 				throw $e;
 			}
 		}
