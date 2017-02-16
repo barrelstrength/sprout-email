@@ -105,8 +105,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$tabs = sproutEmail()->getModelTabs($campaignEmail);
 
-		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($emailId);
-
 		$this->renderTemplate('sproutemail/campaigns/_edit', array(
 			'emailId'        => $emailId,
 			'campaignEmail'  => $campaignEmail,
@@ -114,7 +112,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			'campaignType'   => $campaignType,
 			'showPreviewBtn' => $showPreviewBtn,
 			'shareUrl'       => $shareUrl,
-			'recipientLists' => $recipientLists,
 			'tabs'           => $tabs
 		));
 	}

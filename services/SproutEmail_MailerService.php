@@ -242,50 +242,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @param SproutEmail_CampaignTypeModel  $campaign
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 *
-	 * @return bool
-	 * @throws Exception
-	 * @throws \Exception
-	 */
-	public function saveRecipientLists($mailer = 'defaultmailer', $campaignEmail)
-	{
-		sproutEmail()->campaignEmails->deleteRecipientListsByEmailId($campaignEmail->id);
-
-		$lists = $mailer->prepareRecipientLists($campaignEmail);
-
-		if ($lists && is_array($lists) && count($lists))
-		{
-			foreach ($lists as $list)
-			{
-				$record = SproutEmail_RecipientListRelationsRecord::model()->findByAttributes(
-					array(
-						'emailId' => $campaignEmail->id,
-						'list'    => $list->list
-					)
-				);
-				$record = $record ? $record : new SproutEmail_RecipientListRelationsRecord();
-
-				$record->emailId = $list->emailId;
-				$record->mailer  = $list->mailer;
-				$record->list    = $list->list;
-
-				try
-				{
-					$record->save();
-				}
-				catch (\Exception $e)
-				{
-					throw $e;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *

@@ -180,48 +180,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns a list of recipients from the mailer to be used primarily by getRecipientListsHtml()
-	 *
-	 * @return array
-	 */
-	abstract public function getRecipientLists();
-
-	/**
-	 * Returns a rendered string with inputs to select a recipient lists if available/required by this mailer
-	 *
-	 * @return \Twig_Markup
-	 */
-	abstract public function getRecipientListsHtml();
-
-	/**
-	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
-	 *
-	 * @param $campaignEmail
-	 *
-	 */
-	public function prepareRecipientLists($campaignEmail)
-	{
-		$ids   = craft()->request->getPost('recipient.recipientLists');
-		$lists = array();
-
-		if ($ids)
-		{
-			foreach ($ids as $id)
-			{
-				$model = new SproutEmail_RecipientListRelationsModel();
-
-				$model->setAttribute('emailId', $campaignEmail->id);
-				$model->setAttribute('mailer', $this->getId());
-				$model->setAttribute('list', $id);
-
-				$lists[] = $model;
-			}
-		}
-
-		return $lists;
-	}
-
-	/**
 	 * Returns the value that should be saved to the settings column for this mailer
 	 *
 	 * @example
@@ -232,6 +190,11 @@ abstract class SproutEmailBaseMailer
 	public function prepareSettings()
 	{
 		return craft()->request->getPost($this->getId());
+	}
+
+	public function prepListSettings($lists)
+	{
+		return $lists;
 	}
 
 	/**

@@ -236,11 +236,6 @@ class SproutEmailVariable
 		));
 	}
 
-	public function getRecipientLists($mailer)
-	{
-		return sproutEmail()->mailers->getRecipientLists($mailer);
-	}
-
 	public function doesSiteTemplateExist($template)
 	{
 		return sproutEmail()->doesSiteTemplateExist($template);

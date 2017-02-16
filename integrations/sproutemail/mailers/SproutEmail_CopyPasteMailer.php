@@ -44,21 +44,6 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 		return "Copy and paste your email campaigns to better (or worse) places.";
 	}
 
-	public function getRecipientLists()
-	{
-		return array();
-	}
-
-	public function getRecipientListsHtml()
-	{
-		return TemplateHelper::getRaw('<p>' . Craft::t('This mailer does not require recipients.') . '</p>');
-	}
-
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
-	{
-		return new SproutEmail_CampaignEmailModel();
-	}
-
 	/**
 	 * @return string
 	 */

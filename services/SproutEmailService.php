@@ -641,9 +641,6 @@ class SproutEmailService extends BaseApplicationComponent
 			case $settings->enableSentEmails:
 				return 'sproutemail/sentemails';
 
-			case $settings->enableRecipientLists:
-				return 'sproutemail/recipients';
-
 			default:
 				return 'sproutemail/settings';
 		}
