@@ -203,12 +203,6 @@ class SproutEmailPlugin extends BasePlugin
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
 
-		if (sproutEmail()->defaultmailer->enableDynamicLists())
-		{
-			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
-			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
-		}
-
 		craft()->on('sproutEmail.onSendSproutEmail', function (Event $event)
 		{
 			sproutEmail()->sentEmails->logSentEmailCampaign($event);
