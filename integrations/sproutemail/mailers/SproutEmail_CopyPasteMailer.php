@@ -3,23 +3,6 @@ namespace Craft;
 
 class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
-	protected $service;
-
-	/**
-	 * @return SproutEmailCopyPasteService
-	 */
-	public function getService()
-	{
-		if (null === $this->service)
-		{
-			$this->service = Craft::app()->getComponent('sproutEmail_copyPaste');
-
-			$this->service->setSettings($this->getSettings());
-		}
-
-		return $this->service;
-	}
-
 	/**
 	 * @return string
 	 */
@@ -84,7 +67,27 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 
 		try
 		{
-			return $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
+			$variables = array(
+				'email'        => $campaignEmail,
+				'campaignType' => $campaignType,
+
+				// @deprecate - `entry` in favor of `email` in v3
+				// @deprecate - `campaign` in favor of `campaignType` in v3
+				'entry'        => $campaignEmail,
+				'campaign'     => $campaignType
+			);
+
+			$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $variables);
+			$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $variables);
+
+			$response          = new SproutEmail_ResponseModel();
+			$response->success = true;
+			$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/sendEmailPrepare', array(
+				'html' => trim($html),
+				'text' => trim($text),
+			));
+
+			return $response;
 		}
 		catch (\Exception $e)
 		{

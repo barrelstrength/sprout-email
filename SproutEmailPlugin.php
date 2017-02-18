@@ -91,8 +91,7 @@ class SproutEmailPlugin extends BasePlugin
 			'pluginNameOverride'       => AttributeType::String,
 			'enableCampaignEmails'     => array(AttributeType::Bool, 'default' => true),
 			'enableNotificationEmails' => array(AttributeType::Bool, 'default' => true),
-			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false),
-			'enableRecipientLists'     => array(AttributeType::Bool, 'default' => false)
+			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false)
 		);
 	}
 

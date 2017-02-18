@@ -8,7 +8,6 @@ namespace Craft;
  * --
  * @property int    $id
  * @property int    $campaignTypeId
- * @property int    $recipientListId
  * @property string $subjectLine
  * @property string $fromName
  * @property string $fromEmail
@@ -39,7 +38,9 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null)
+			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
+
+			'listSettings'        => Attributetype::Mixed,
 		);
 	}
 
@@ -127,11 +128,6 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 				'campaignTypeId',
 				'required' => true,
 				'onDelete' => static::CASCADE
-			),
-			'recipientLists' => array(
-				static::HAS_MANY,
-				'SproutEmail_RecipientListRelationsRecord',
-				'emailId'
 			)
 		);
 	}

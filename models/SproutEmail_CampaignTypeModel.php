@@ -108,4 +108,9 @@ class SproutEmail_CampaignTypeModel extends BaseModel
 	{
 		$this->fields = $fields;
 	}
+
+	public function getMailer()
+	{
+		return sproutEmail()->mailers->getMailerByName($this->mailer);
+	}
 }

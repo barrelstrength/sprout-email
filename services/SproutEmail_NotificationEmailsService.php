@@ -623,7 +623,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$template      = $notificationEmail->template;
 		$fileExtension = ($type != null && $type == 'text') ? 'txt' : 'html';
 
-		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $notificationEmail, $object);
+		$email = sproutEmail()->renderEmailTemplates($email, $template, $notificationEmail, $object);
 
 		sproutEmail()->campaignEmails->showCampaignEmail($email, $fileExtension);
 	}
@@ -643,7 +643,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 			$emailModel = new EmailModel();
 
-			sproutEmail()->defaultmailer->renderEmailTemplates($emailModel, $template, $notificationEmail, $object);
+			sproutEmail()->renderEmailTemplates($emailModel, $template, $notificationEmail, $object);
 
 			$templateErrors = sproutEmail()->getError();
 

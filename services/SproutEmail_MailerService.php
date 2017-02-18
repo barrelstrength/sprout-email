@@ -11,11 +11,11 @@ namespace Craft;
 class SproutEmail_MailerService extends BaseApplicationComponent
 {
 	/**
-	 * Sprout Email file configs
+	 * Sprout Email general.php config overrides
 	 *
 	 * @var array
 	 */
-	protected $configs;
+	protected $configOverrides;
 
 	/**
 	 * @var SproutEmailBaseMailer[]
@@ -134,29 +134,29 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	{
 		$settings = null;
 
-		if (is_null($this->configs))
+		if (is_null($this->configOverrides))
 		{
-			$this->configs = craft()->config->get('sproutEmail');
+			$this->configOverrides = craft()->config->get('sproutEmail');
 		}
 
-		if (isset($this->configs['apiSettings'][$name]))
+		// @todo - update and document the syntax for mailer setting overrides in the general config file
+		// these should probably be namespaced by mailer handle. Are there any other settings folks can override?
+		if (isset($this->configOverrides[$name]))
 		{
-			$configs = $this->configs['apiSettings'][$name];
+			$configOverrides = $this->configOverrides[$name];
 		}
 
-		if (($mailer = $this->getMailerByName($name, true)))
+		$mailer = $this->getMailerByName($name, true);
+
+		if (!$mailer OR empty($mailer->defineSettings()))
 		{
-			$settings = new Model($mailer->defineSettings());
+			return $settings;
 		}
 
-		if ($mailer)
-		{
-			$record           = $this->getMailerRecordByName($name);
-			$settingsFromDb   = isset($record->settings) ? $record->settings : array();
-			$settingsFromFile = isset($configs) ? $configs : array();
+		$settingsFromDb   = $mailer->getSettings()->getAttributes();
+		$settingsFromFile = isset($configOverrides) ? $configOverrides : array();
 
-			$settings->setAttributes(array_merge($settingsFromDb, $settingsFromFile));
-		}
+		$settings = array_merge($settingsFromDb, $settingsFromFile);
 
 		return $settings;
 	}
@@ -166,13 +166,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 *
 	 * @return array|bool
 	 */
-	public function getRecipientLists($mailer)
+	public function getLists($mailer)
 	{
 		$mailer = $this->getMailerByName($mailer);
 
 		if ($mailer)
 		{
-			return $mailer->getRecipientLists();
+			return $mailer->getLists();
 		}
 
 		return false;
@@ -251,7 +251,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$mailer = $this->getMailerByName($campaignType->mailer);
+		$mailer = $campaignType->getMailer();
 
 		if (!$mailer || !$mailer->isInstalled())
 		{

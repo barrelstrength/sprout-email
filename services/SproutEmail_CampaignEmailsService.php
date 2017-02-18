@@ -51,6 +51,14 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
 		$campaignEmailRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
 
+		$mailer = $campaignType->getMailer();
+
+		// Give the Mailer a chance to prep the settings from post
+		$preppedSettings = $mailer->prepListSettings($campaignEmail->listSettings);
+
+		// Set the prepped settings on the FieldRecord, FieldModel, and the field type
+		$campaignEmailRecord->listSettings = $preppedSettings;
+
 		$campaignEmailRecord->validate();
 
 		if ($campaignEmail->saveAsNew)
@@ -77,10 +85,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 					}
 
 					$campaignEmailRecord->save(false);
-
-					$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
-
-					sproutEmail()->mailers->saveRecipientLists($mailer, $campaignEmail);
 
 					if ($transaction && $transaction->active)
 					{

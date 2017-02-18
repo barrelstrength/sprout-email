@@ -10,7 +10,7 @@ namespace Craft;
  * @property SproutEmail_CampaignTypesService      $campaignTypes
  * @property SproutEmail_CampaignEmailsService     $campaignEmails
  * @property SproutEmail_NotificationEmailsService $notificationEmails
- * @property SproutEmail_DefaultMailerService      $defaultmailer
+ * @property SproutEmail_DefaultMailerService      $defaultMailer
  * @property SproutEmail_SentEmailsService         $sentEmails
  */
 class SproutEmailService extends BaseApplicationComponent
@@ -19,7 +19,7 @@ class SproutEmailService extends BaseApplicationComponent
 	public $campaignTypes;
 	public $campaignEmails;
 	public $notificationEmails;
-	public $defaultmailer;
+	public $defaultMailer;
 	public $sentEmails;
 
 	private $error = '';
@@ -29,7 +29,7 @@ class SproutEmailService extends BaseApplicationComponent
 		parent::init();
 
 		$this->mailers            = Craft::app()->getComponent('sproutEmail_mailer');
-		$this->defaultmailer      = Craft::app()->getComponent('sproutEmail_defaultMailer');
+		$this->defaultMailer      = Craft::app()->getComponent('sproutEmail_defaultMailer');
 		$this->campaignEmails     = Craft::app()->getComponent('sproutEmail_campaignEmails');
 		$this->campaignTypes      = Craft::app()->getComponent('sproutEmail_campaignTypes');
 		$this->notificationEmails = Craft::app()->getComponent('sproutEmail_notificationEmails');
@@ -423,6 +423,127 @@ class SproutEmailService extends BaseApplicationComponent
 		return craft()->email->sendEmail($emailModel, $variables);
 	}
 
+	/**
+	 * @param EmailModel $emailModel
+	 * @param            $campaign
+	 * @param            $email
+	 * @param            $object
+	 *
+	 * @return bool|EmailModel
+	 */
+	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $notification, $object)
+	{
+		// Render Email Entry fields that have dynamic values
+		$emailModel->subject   = sproutEmail()->renderObjectTemplateSafely($notification->subjectLine, $object);
+		$emailModel->fromName  = sproutEmail()->renderObjectTemplateSafely($notification->fromName, $object);
+		$emailModel->fromEmail = sproutEmail()->renderObjectTemplateSafely($notification->fromEmail, $object);
+		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($notification->replyToEmail, $object);
+
+		// Render the email templates
+		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
+			'email'        => $notification,
+			'object'       => $object,
+
+			// @deprecate in v3 in favor of the `email` variable
+			'entry'        => $notification,
+			'notification' => $notification
+		));
+		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
+			'email'        => $notification,
+			'object'       => $object,
+
+			// @deprecate in v3 in favor of the `email` variable
+			'entry'        => $notification,
+			'notification' => $notification
+		));
+
+		$styleTags = array();
+
+		$htmlBody = $this->addPlaceholderStyleTags($emailModel->htmlBody, $styleTags);
+
+		// Some Twig code in our email fields may need us to decode
+		// entities so our email doesn't throw errors when we try to
+		// render the field objects. Example: {variable|date("Y/m/d")}
+		$emailModel->body = HtmlHelper::decode($emailModel->body);
+		$htmlBody         = HtmlHelper::decode($htmlBody);
+
+		// Process the results of the template s once more, to render any dynamic objects used in fields
+		$emailModel->body     = sproutEmail()->renderObjectTemplateSafely($emailModel->body, $object);
+		$emailModel->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
+
+		$emailModel->htmlBody = $this->removePlaceholderStyleTags($emailModel->htmlBody, $styleTags);
+
+		// @todo - update error handling
+		$templateError = sproutEmail()->getError('template');
+
+		if (!empty($templateError))
+		{
+			$emailModel->htmlBody = $templateError;
+		}
+
+		return $emailModel;
+	}
+
+	/**
+	 * Add placeholder style tags to avoid CSS brackets conflicting with Craft object syntax shorthand i.e. {title}
+	 *
+	 * @param $htmlBody
+	 * @param $styleTags
+	 *
+	 * @return mixed
+	 */
+	public function addPlaceholderStyleTags($htmlBody, &$styleTags)
+	{
+		// Get the style tag
+		preg_match_all("/<style\\b[^>]*>(.*?)<\\/style>/s", $htmlBody, $matches);
+
+		$results = array();
+
+		if (!empty($matches))
+		{
+			$tags = $matches[0];
+
+			// Temporarily replace with style tags with a random string
+			if (!empty($tags))
+			{
+				$i = 0;
+				foreach ($tags as $tag)
+				{
+					$key = "<!-- %style$i% -->";
+
+					$styleTags[$key] = $tag;
+
+					$htmlBody = str_replace($tag, $key, $htmlBody);
+
+					$i++;
+				}
+			}
+		}
+
+		return $htmlBody;
+	}
+
+	/**
+	 * Put back the style tag after object is rendered if style tag is found
+	 *
+	 * @param $htmlBody
+	 * @param $styleTags
+	 *
+	 * @return mixed
+	 */
+	public function removePlaceholderStyleTags($htmlBody, $styleTags)
+	{
+		if (!empty($styleTags))
+		{
+			foreach ($styleTags as $key => $tag)
+			{
+				$htmlBody = str_replace($key, $tag, $htmlBody);
+			}
+		}
+
+		return $htmlBody;
+	}
+
 	public function getValidAndInvalidRecipients($recipients)
 	{
 		$invalidRecipients = array();
@@ -681,7 +802,7 @@ class SproutEmailService extends BaseApplicationComponent
 
 				$tabs[] = array(
 					'label' => Craft::t($tab->name),
-					'url'   => '#tab'.($index+1),
+					'url'   => '#tab' . ($index + 1),
 					'class' => ($hasErrors ? 'error' : null)
 				);
 			}
