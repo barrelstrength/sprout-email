@@ -26,12 +26,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 
 	public function getLocaleNiceDateTime()
 	{
-		// date_create method throws an error for forward slash d/m/YY format
-		$dateFix = str_replace('/', '-', $this->dateCreated->localeDate());
-
-		$date = date_create($dateFix);
-
-		return date_format($date,"M j, Y") . ' ' . $this->dateCreated->localeTime();
+		return $this->dateCreated->format("M j, Y H:i A");
 	}
 
 	/**
