@@ -196,13 +196,30 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
 	 *
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param $campaignEmail
 	 *
-	 * @return SproutEmail_CampaignEmailModel
-	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	abstract public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail);
+	public function prepareRecipientLists($campaignEmail)
+	{
+		$ids   = craft()->request->getPost('recipient.recipientLists');
+		$lists = array();
+
+		if ($ids)
+		{
+			foreach ($ids as $id)
+			{
+				$model = new SproutEmail_RecipientListRelationsModel();
+
+				$model->setAttribute('emailId', $campaignEmail->id);
+				$model->setAttribute('mailer', $this->getId());
+				$model->setAttribute('list', $id);
+
+				$lists[] = $model;
+			}
+		}
+
+		return $lists;
+	}
 
 	/**
 	 * Returns the value that should be saved to the settings column for this mailer
