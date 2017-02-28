@@ -525,7 +525,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		// @TODO - add support back for Recipient Lists here
-		$recipientLists = array();
+		$lists = array();
 
 		try
 		{
@@ -534,10 +534,10 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			return SproutEmail_ResponseModel::createModalResponse(
 				'sproutemail/_modals/notifications/sendEmailConfirmation',
 				array(
-					'notification'  => $notificationEmail,
-					'emailModel'    => $response['emailModel'],
-					'recipentLists' => $recipientLists,
-					'message'       => Craft::t('Notification sent successfully.')
+					'notification' => $notificationEmail,
+					'emailModel'   => $response['emailModel'],
+					'lists'        => $lists,
+					'message'      => Craft::t('Notification sent successfully.')
 				)
 			);
 		}

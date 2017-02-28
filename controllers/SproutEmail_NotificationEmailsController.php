@@ -28,9 +28,8 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
 		}
 
-		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
-
-		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($notificationEmail->id);
+		// @todo - add back Recipient List support
+		$lists = array();
 
 		$showPreviewBtn = false;
 		$shareUrl       = null;
