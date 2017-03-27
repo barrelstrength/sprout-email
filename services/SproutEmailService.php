@@ -269,38 +269,39 @@ class SproutEmailService extends BaseApplicationComponent
 		$variables = $event->params['variables'];
 
 		// Make sure this is a Sprout Email Event
-		if (!isset($variables['sproutEmailEntry']))
+		if (!isset($variables['email']) ||
+			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel'))
 		{
 			return true;
 		}
 
-		$notificationEmail     = $variables['sproutEmailEntry'];
+		$notificationEmail     = $variables['email'];
 		$enableFileAttachments = $notificationEmail->enableFileAttachments;
 
-		if (isset($variables['elementEntry']) && $enableFileAttachments)
+		if (isset($variables['object']) && $enableFileAttachments)
 		{
-			$notificationEmail = $variables['elementEntry'];
+			$eventObject = $variables['object'];
 
 			/**
 			 * @var $field FieldModel
 			 */
-			if (method_exists($notificationEmail->getFieldLayout(), 'getFields'))
+			if (method_exists($eventObject->getFieldLayout(), 'getFields'))
 			{
-				foreach ($notificationEmail->getFieldLayout()->getFields() as $fieldLayoutField)
+				foreach ($eventObject->getFieldLayout()->getFields() as $fieldLayoutField)
 				{
 					$field = $fieldLayoutField->getField();
 					$type  = $field->getFieldType();
 
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
-						$this->attachAsset($notificationEmail, $field, $event);
+						$this->attachAsset($eventObject, $field, $event);
 					}
 					// @todo validate assets within MatrixFieldType
 				}
 			}
 		}
 
-		if (isset($variables['elementEntry']) && !$enableFileAttachments)
+		if (isset($variables['object']) && !$enableFileAttachments)
 		{
 			$this->log('File attachments are currently not enabled for Sprout Email.');
 		}
@@ -351,6 +352,7 @@ class SproutEmailService extends BaseApplicationComponent
 		foreach ($assets as $asset)
 		{
 			$name = $asset->filename;
+
 			$path = $this->getAssetFilePath($asset);
 
 			$email->addAttachment($path, $name);
@@ -364,7 +366,9 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	protected function getAssetFilePath(AssetFileModel $asset)
 	{
-		return $asset->getSource()->getSourceType()->getBasePath() . $asset->getFolder()->path . $asset->filename;
+		$imageSourcePath = $asset->getSource()->getSourceType()->getImageSourcePath($asset);
+
+		return $imageSourcePath;
 	}
 
 	/**
