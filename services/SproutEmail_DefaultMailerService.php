@@ -471,9 +471,6 @@ class SproutEmail_DefaultMailerService extends BaseApplicationComponent
 			sproutEmail()->error(Craft::t('No recipients found.'));
 		}
 
-		// Pass this variable for logging sent error
-		$emailModel = $email;
-
 		$template = $notificationEmail->template;
 
 		$email = $this->renderEmailTemplates($email, $template, $notificationEmail, $object);
