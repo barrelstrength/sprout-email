@@ -565,6 +565,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			{
 				$mailer = sproutEmail()->mailers->getMailerByName("defaultmailer");
 
+				// Must pass email options for getMockedParams methods to use $this->options
+				$event->setOptions($notificationEmail->options);
+
 				$sent = $mailer->sendNotificationEmail($notificationEmail, $event->getMockedParams(), true);
 
 				if (!$sent)
