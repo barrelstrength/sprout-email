@@ -211,6 +211,26 @@ class SproutEmailPlugin extends BasePlugin
 
 		craft()->on('email.onSendEmail', function (Event $event)
 		{
+			$action = craft()->request->getActionSegments();
+			// Adds support for contact form plugin :(.
+			if(isset($action[0]) && $action[0] == "contactForm")
+			{
+				$emailModel = $event->params['emailModel'];
+				$variables = $event->params['variables'];
+
+				if (isset($variables['emailSubject']) && isset($variables['emailBody']))
+				{
+					$emailModel->subject  = $variables['emailSubject'];
+					$emailModel->body     = $variables['emailBody'];
+					$emailModel->htmlBody = Craft::t('No value provided by Contact Form plugin');
+					$event->params['emailModel'] = $emailModel;
+				}
+				else
+				{
+					return false;
+				}
+			}
+
 			sproutEmail()->sentEmails->logSentEmail($event);
 		});
 
