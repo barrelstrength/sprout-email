@@ -51,6 +51,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			'replyToEmail' => array(AttributeType::Email, 'required' => false)
 		);
 	}
+
+	public function isSettingBuiltIn()
+	{
+		return true;
+	}
 	
 	/**
 	 * @param array $settings
@@ -92,9 +97,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		{
 			sproutEmail()->error(Craft::t('No recipients found.'));
 		}
-
-		// Pass this variable for logging sent error
-		$emailModel = $email;
 
 		$template = $notificationEmail->template;
 

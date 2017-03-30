@@ -31,21 +31,17 @@
 				</thead>
 			{% endif %}
 
-			{% if mailer.isInstalled() %}
-				<tr>
-					<td>
-						{{ mailer.getTitle() }}
-					</td>
-					<td>
-						{% if mailer.getCpSettingsUrl() != null %}
-							<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
-						{% endif %}
-					</td>
-					<td>{{ mailer.getDescription()|md }}</td>
-				</tr>
-			{% else %}
-				{% set shouldRefresh = true %}
-			{% endif %}
+			<tr>
+				<td>
+					{{ mailer.getTitle() }}
+				</td>
+				<td>
+					{% if mailer.getCpSettingsUrl() != null %}
+						<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
+					{% endif %}
+				</td>
+				<td>{{ mailer.getDescription()|md }}</td>
+			</tr>
 
 			{% if loop.last %}
 				</table>

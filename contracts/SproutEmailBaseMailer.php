@@ -139,6 +139,11 @@ abstract class SproutEmailBaseMailer
 		}
 	}
 
+	public function isSettingBuiltIn()
+	{
+		return false;
+	}
+
 	/**
 	 * Returns whether or not the mailer has settings to display
 	 *
