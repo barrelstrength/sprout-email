@@ -306,18 +306,7 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
 
 		$mailers['defaultmailer'] = new SproutEmail_DefaultMailer();
-/*
-		$pluginMailers = array(
-			'copypaste'       => 'SproutEmail_CopyPasteMailer',
-		);
-
-		foreach ($pluginMailers as $handle => $class)
-		{
-			$namespace   = "Craft\\" . $class;
-			$mailerClass = new $namespace();
-
-			$mailers[$handle] = $mailerClass;
-		}*/
+		$mailers['copypaste']     = new SproutEmail_CopyPasteMailer();
 
 		return $mailers;
 	}

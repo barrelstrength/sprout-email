@@ -274,7 +274,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function installMailers()
 	{
-
 		if ($this->mailers && count($this->mailers))
 		{
 			foreach ($this->mailers as $mailer)
@@ -308,7 +307,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 				'name' => $name
 			)));
 		}
-		else
+		elseif ($mailer->isSettingBuiltIn())
 		{
 			$this->createMailerRecord($mailer);
 		}
@@ -362,13 +361,12 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	protected function createMailerRecord(SproutEmailBaseMailer $mailer)
 	{
-		$record = new SproutEmail_MailerRecord();
-
-		$record->setAttribute('name', $mailer->getId());
-		$record->setAttribute('settings', $mailer->getSettings());
-
 		try
 		{
+			$record = new SproutEmail_MailerRecord();
+			$record->setAttribute('name', $mailer->getId());
+			$record->setAttribute('settings', $mailer->getSettings()->getAttributes());
+
 			return $record->save();
 		}
 		catch (\Exception $e)
