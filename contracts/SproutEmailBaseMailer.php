@@ -130,9 +130,25 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * @return string
 	 */
+
 	public function getCpSettingsUrl()
 	{
-		return null;
+		if ($this->hasCpSettings())
+		{
+			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
+		}
+	}
+
+	/**
+	 * Returns whether or not the mailer has settings to display
+	 *
+	 * @return bool
+	 */
+	public function hasCpSettings()
+	{
+		$settings = $this->defineSettings();
+
+		return is_array($settings) && count($settings);
 	}
 
 	/**
@@ -165,12 +181,15 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function getSettings()
 	{
-		if (!$this->isInitialized())
-		{
-			$this->init();
-		}
+		$record = sproutEmail()->mailers->getMailerRecordByName($this->getId());
 
-		return $this->settings;
+		$settingsFromDb = isset($record->settings) ? $record->settings : array();
+
+		$model = new Model($this->defineSettings());
+
+		$model->setAttributes($settingsFromDb);
+
+		return $model;
 	}
 
 	/**

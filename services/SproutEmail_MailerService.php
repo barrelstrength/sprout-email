@@ -154,6 +154,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 
 		$settingsFromDb   = $mailer->getSettings()->getAttributes();
+
 		$settingsFromFile = isset($configOverrides) ? $configOverrides : array();
 
 		$settings = array_merge($settingsFromDb, $settingsFromFile);
@@ -273,6 +274,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	public function installMailers()
 	{
+
 		if ($this->mailers && count($this->mailers))
 		{
 			foreach ($this->mailers as $mailer)

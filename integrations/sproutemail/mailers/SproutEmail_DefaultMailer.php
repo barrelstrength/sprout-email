@@ -51,7 +51,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			'replyToEmail' => array(AttributeType::Email, 'required' => false)
 		);
 	}
-
+	
 	/**
 	 * @param array $settings
 	 *
