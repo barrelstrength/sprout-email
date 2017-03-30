@@ -154,7 +154,9 @@
 									Lists
 								</div>
 								<div class="input">
-								{{ mailer.getRecipientListsHtml(recipientLists)|raw }}
+									{% namespace 'lists' %}
+									{{ mailer.getListsHtml(campaignEmail.listSettings)|raw }}
+									{% endnamespace %}
 								</div>
 							</div>
 

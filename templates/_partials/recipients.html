@@ -1,10 +1,10 @@
 
-{% if recipientLists is defined and recipientLists|length %}
+{% if lists is defined and lists|length %}
 	<tr>
-		<td><strong>{{ "Recipient Lists"|t }}</strong></td>
+		<td><strong>{{ "Lists"|t }}</strong></td>
 		<td>
 			<ul>
-				{% for list in recipientLists %}
+				{% for list in lists %}
 					<li>
 						<strong>{{ list.name }}</strong>  <strong>({{ list.recipients|length }})</strong>
 					</li>

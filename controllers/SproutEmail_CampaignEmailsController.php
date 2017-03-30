@@ -105,8 +105,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$tabs = sproutEmail()->getModelTabs($campaignEmail);
 
-		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($emailId);
-
 		$this->renderTemplate('sproutemail/campaigns/_edit', array(
 			'emailId'        => $emailId,
 			'campaignEmail'  => $campaignEmail,
@@ -114,7 +112,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			'campaignType'   => $campaignType,
 			'showPreviewBtn' => $showPreviewBtn,
 			'shareUrl'       => $shareUrl,
-			'recipientLists' => $recipientLists,
 			'tabs'           => $tabs
 		));
 	}
@@ -408,7 +405,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$template  = $campaignType->template;
 			$extension = ($type != null && $type == 'text') ? 'txt' : 'html';
 
-			$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
+			$email = sproutEmail()->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
 			sproutEmail()->campaignEmails->showCampaignEmail($email, $extension);
 		}
@@ -457,7 +454,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$object   = null;
 		$template = $campaignType->template;
 
-		$email = sproutEmail()->defaultmailer->renderEmailTemplates($email, $template, $campaignEmail, $object);
+		$email = sproutEmail()->renderEmailTemplates($email, $template, $campaignEmail, $object);
 
 		sproutEmail()->campaignEmails->showCampaignEmail($email);
 	}
@@ -522,6 +519,8 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$campaignEmail->setContentFromPost($fieldsLocation);
 		$campaignEmail->setContentPostLocation($fieldsLocation);
+
+		$campaignEmail->listSettings = craft()->request->getPost('lists');
 
 		return $campaignEmail;
 	}

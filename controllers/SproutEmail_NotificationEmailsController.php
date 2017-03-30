@@ -28,9 +28,8 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
 		}
 
-		$mailer = sproutEmail()->mailers->getMailerByName('defaultmailer');
-
-		$recipientLists = sproutEmail()->campaignEmails->getRecipientListsByEmailId($notificationEmail->id);
+		// @todo - add back Recipient List support
+		$lists = array();
 
 		$showPreviewBtn = false;
 		$shareUrl       = null;
@@ -68,8 +67,8 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$this->renderTemplate('sproutemail/notifications/_edit', array(
 			'notificationEmail' => $notificationEmail,
-			'recipientLists'    => $recipientLists,
-			'mailer'            => $mailer,
+			'lists'             => $lists,
+			'mailer'            => $notificationEmail->getMailer(),
 			'showPreviewBtn'    => $showPreviewBtn,
 			'shareUrl'          => $shareUrl,
 			'tabs'              => $tabs
@@ -147,9 +146,10 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$notificationEmail = $this->notification;
 
-		$notificationEmail->subjectLine = craft()->request->getRequiredPost('subjectLine');
-		$notificationEmail->slug        = craft()->request->getRequiredPost('slug');
-		$notificationEmail->enabled     = craft()->request->getRequiredPost('enabled');
+		$notificationEmail->subjectLine  = craft()->request->getRequiredPost('subjectLine');
+		$notificationEmail->slug         = craft()->request->getRequiredPost('slug');
+		$notificationEmail->enabled      = craft()->request->getRequiredPost('enabled');
+		$notificationEmail->listSettings = craft()->request->getPost('lists');
 
 		if (empty($notificationEmail->slug))
 		{
@@ -166,18 +166,11 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		{
 			$notificationEmail->getContent()->title = $notificationEmail->subjectLine;
 
-			$result = sproutEmail()->notificationEmails->saveNotification($notificationEmail);
-
-			if ($result !== false)
+			if (sproutEmail()->notificationEmails->saveNotification($notificationEmail))
 			{
-				if (craft()->plugins->getPlugin('sproutlists') != null)
-				{
-					$sproutLists = craft()->request->getPost('sproutlists');
-
-					sproutLists()->addSyncElement($sproutLists, $notificationEmail->id);
-				}
-
 				craft()->userSession->setNotice(Craft::t('Notification saved.'));
+
+				$this->redirectToPostedUrl();
 			}
 			else
 			{
@@ -185,8 +178,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 				sproutEmail()->log($notificationEmail->getErrors());
 			}
-
-			$this->redirectToPostedUrl();
 		}
 		else
 		{

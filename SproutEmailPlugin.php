@@ -91,8 +91,7 @@ class SproutEmailPlugin extends BasePlugin
 			'pluginNameOverride'       => AttributeType::String,
 			'enableCampaignEmails'     => array(AttributeType::Bool, 'default' => true),
 			'enableNotificationEmails' => array(AttributeType::Bool, 'default' => true),
-			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false),
-			'enableRecipientLists'     => array(AttributeType::Bool, 'default' => false)
+			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false)
 		);
 	}
 
@@ -202,12 +201,6 @@ class SproutEmailPlugin extends BasePlugin
 		}
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
-
-		if (sproutEmail()->defaultmailer->enableDynamicLists())
-		{
-			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
-			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
-		}
 
 		craft()->on('sproutEmail.onSendSproutEmail', function (Event $event)
 		{

@@ -65,8 +65,8 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
 
-			// @related
-			'recipientLists'        => Attributetype::Mixed,
+			// @todo - integrate with Lists integration and delete old columns
+			'listSettings'        => Attributetype::Mixed,
 		);
 
 		return array_merge($defaults, $attributes);
@@ -242,5 +242,12 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	public function isReady()
 	{
 		return (bool) ($this->getStatus() == static::READY);
+	}
+
+	public function getMailer()
+	{
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
+
+		return $campaignType->getMailer();
 	}
 }

@@ -200,20 +200,6 @@ class SproutEmailVariable
 		return $mailer->getSubscriberList();
 	}
 
-	/**
-	 * Get campaign list for specified provider
-	 *
-	 * @param string $mailer
-	 *
-	 * @return array
-	 */
-	public function getCampaignList($mailer)
-	{
-		$mailer = sproutEmail()->mailers->getMailerByName(strtolower($mailer));
-
-		return $mailer->getCampaignList();
-	}
-
 	public function getGeneralSettingsTemplate($emailProvider = null)
 	{
 		$customTemplate       = 'sproutemail/_providers/' . $emailProvider . '/generalCampaignSettings';
@@ -234,11 +220,6 @@ class SproutEmailVariable
 			'emailId'        => $emailId,
 			'campaignTypeId' => $campaignTypeId
 		));
-	}
-
-	public function getRecipientLists($mailer)
-	{
-		return sproutEmail()->mailers->getRecipientLists($mailer);
 	}
 
 	public function doesSiteTemplateExist($template)

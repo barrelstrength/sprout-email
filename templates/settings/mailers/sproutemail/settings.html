@@ -31,17 +31,5 @@
 		errors: settings.getErrors('replyToEmail') is defined ? settings.getErrors('replyToEmail') : null
 	}) }}
 
-	{% if craft.config.sproutEmail['enableDynamicLists'] is defined and craft.config.sproutEmail['enableDynamicLists'] %}
-	<hr>
-	<div class="field">
-		{{ forms.lightswitchField({
-			label: "Enable Dynamic Lists?"|t,
-			name: "defaultmailer[enableDynamicLists]",
-			instructions: "Dynamically create email lists based on Sprout Commerce events."|t,
-			on:   settings.enableDynamicLists
-		}) }}
-	</div>
-	{% endif %}
-
 </div>
 

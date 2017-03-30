@@ -51,6 +51,14 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
 		$campaignEmailRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
 
+		$mailer = $campaignType->getMailer();
+
+		// Give the Mailer a chance to prep the settings from post
+		$preppedSettings = $mailer->prepListSettings($campaignEmail->listSettings);
+
+		// Set the prepped settings on the FieldRecord, FieldModel, and the field type
+		$campaignEmailRecord->listSettings = $preppedSettings;
+
 		$campaignEmailRecord->validate();
 
 		if ($campaignEmail->saveAsNew)
@@ -78,10 +86,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 					$campaignEmailRecord->save(false);
 
-					$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
-
-					sproutEmail()->mailers->saveRecipientLists($mailer, $campaignEmail);
-
 					if ($transaction && $transaction->active)
 					{
 						$transaction->commit();
@@ -96,7 +100,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 				{
 					$transaction->rollback();
 				}
-				Craft::dd($e->getMessage());
+
 				throw $e;
 			}
 		}
@@ -146,25 +150,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	public function getCampaignEmailById($emailId)
 	{
 		return craft()->elements->getElementById($emailId, 'SproutEmail_CampaignEmail');
-	}
-
-	public function getRecipientListsByEmailId($id)
-	{
-		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
-		{
-			return SproutEmail_RecipientListRelationsModel::populateModels($lists);
-		}
-	}
-
-	public function deleteRecipientListsByEmailId($id)
-	{
-		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
-		{
-			foreach ($lists as $list)
-			{
-				$list->delete();
-			}
-		}
 	}
 
 	/**

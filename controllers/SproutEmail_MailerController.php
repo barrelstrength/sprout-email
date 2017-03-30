@@ -60,7 +60,7 @@ class SproutEmail_MailerController extends BaseController
 			{
 				$settings = sproutEmail()->mailers->getSettingsByMailerName($mailer->getId());
 
-				$settings->setAttributes($mailer->prepareSettings());
+				$settings->setAttributes($mailer->prepSettings());
 
 				if ($settings->validate())
 				{

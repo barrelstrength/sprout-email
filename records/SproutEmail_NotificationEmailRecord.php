@@ -33,6 +33,7 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
+			'listSettings'          => AttributeType::Mixed,
 			'dateCreated'           => AttributeType::DateTime,
 			'dateUpdated'           => AttributeType::DateTime,
 			// @related
@@ -57,11 +58,6 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 				static::BELONGS_TO,
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL
-			),
-			'recipientLists' => array(
-				static::HAS_MANY,
-				'SproutEmail_RecipientListRelationsRecord',
-				'emailId'
 			)
 		);
 	}

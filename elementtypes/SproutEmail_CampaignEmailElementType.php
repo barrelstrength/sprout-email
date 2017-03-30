@@ -256,6 +256,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.replyToEmail as replyToEmail,
 				 campaigns.sent as sent,
 				 campaigns.lastDateSent as lastDateSent,
+				 campaigns.listSettings as listSettings,
 				 campaigns.enableFileAttachments as enableFileAttachments'
 			)
 			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')

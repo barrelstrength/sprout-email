@@ -89,15 +89,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns the Mailer name
-	 *
-	 * @example DefaultMailer
-	 *
-	 * @return string
-	 */
-	abstract public function getName();
-
-	/**
 	 * Returns the mailer title to use when displaying a label or similar use case
 	 *
 	 * @example Sprout Email Service
@@ -145,6 +136,29 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
+	 * Enables mailers to define their own settings and validation for them
+	 *
+	 * @return array
+	 */
+	public function defineSettings()
+	{
+		return array();
+	}
+
+	/**
+	 * Returns the value that should be saved to the settings column for this mailer
+	 *
+	 * @example
+	 * return craft()->request->getPost('sproutemail');
+	 *
+	 * @return mixed
+	 */
+	public function prepSettings()
+	{
+		return craft()->request->getPost($this->getId());
+	}
+
+	/**
 	 * Returns the settings model for this mailer
 	 *
 	 * @return Model
@@ -170,69 +184,27 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Enables mailers to define their own settings and validation for them
+	 * Gives a mailer the responsibility to send Notification Emails
+	 * if they implement SproutEmailNotificationEmailSenderInterface
 	 *
-	 * @return array
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 * @param                                    $object
 	 */
-	public function defineSettings()
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object)
 	{
-		return array();
 	}
 
 	/**
-	 * Returns a list of recipients from the mailer to be used primarily by getRecipientListsHtml()
+	 * Gives a mailer the responsibility to send Campaign Emails
+	 * if they implement SproutEmailCampaignEmailSenderInterface
 	 *
-	 * @return array
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 *
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	abstract public function getRecipientLists();
-
-	/**
-	 * Returns a rendered string with inputs to select a recipient lists if available/required by this mailer
-	 *
-	 * @return \Twig_Markup
-	 */
-	abstract public function getRecipientListsHtml();
-
-	/**
-	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
-	 *
-	 * @param $campaignEmail
-	 *
-	 */
-	public function prepareRecipientLists($campaignEmail)
-	{
-		$ids   = craft()->request->getPost('recipient.recipientLists');
-		$lists = array();
-
-		if ($ids)
-		{
-			foreach ($ids as $id)
-			{
-				$model = new SproutEmail_RecipientListRelationsModel();
-
-				$model->setAttribute('emailId', $campaignEmail->id);
-				$model->setAttribute('mailer', $this->getId());
-				$model->setAttribute('list', $id);
-
-				$lists[] = $model;
-			}
-		}
-
-		return $lists;
-	}
-
-	/**
-	 * Returns the value that should be saved to the settings column for this mailer
-	 *
-	 * @example
-	 * return craft()->request->getPost('sproutemail');
-	 *
-	 * @return mixed
-	 */
-	public function prepareSettings()
-	{
-		return craft()->request->getPost($this->getId());
-	}
+	abstract public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail,
+	                                           SproutEmail_CampaignTypeModel $campaignType);
 
 	/**
 	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
@@ -262,40 +234,41 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Gives the mailer chance to attach the value to the right field id before outputting it
-	 *
-	 * @param $value
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return mixed
 	 */
-	public function prepareValue($value)
-	{
-		return $value;
-	}
-
-	/**
-	 * Gives a mailer the responsibility to send Notification Emails
-	 * if they implement SproutEmailNotificationEmailSenderInterface
-	 *
-	 * @param SproutEmail_NotificationEmailModel $notificationEmail
-	 * @param                                    $object
-	 */
-	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object)
-	{
-	}
-
 	abstract public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail,
 	                                             SproutEmail_CampaignTypeModel $campaignType);
 
 	/**
-	 * Gives a mailer the responsibility to send Campaign Emails
-	 * if they implement SproutEmailCampaignEmailSenderInterface
-	 *
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
-	 *
-	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
+	 * Returns the Lists available to this Mailer
 	 */
-	abstract public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail,
-	                                          SproutEmail_CampaignTypeModel $campaignType);
+	public function getLists()
+	{
+		return array();
+	}
+
+	/**
+	 * Get the HTML for our List Settings on the Campaign and Notification Email edit page
+	 *
+	 * @param array $values
+	 */
+	public function getListsHtml($values = array())
+	{
+		return null;
+	}
+
+	/**
+	 * Prepare the list data before we save it in the database
+	 *
+	 * @param $lists
+	 *
+	 * @return mixed
+	 */
+	public function prepListSettings($lists)
+	{
+		return $lists;
+	}
 }

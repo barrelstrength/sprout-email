@@ -138,63 +138,62 @@
 					errors: notificationEmail is defined ? notificationEmail.getErrors('recipients')
 				}) }}
 
-				{% if settings.enableRecipientLists %}
+				{% if mailer.getListsHtml()|length %}
 				<div class="field mailing-lists">
 					<div class="heading">
 						Lists
 					</div>
 					<div class="input">
-
-						{% if craft.plugins.getPlugin('sproutlists') is not null %}
-							{{ craft.sproutlists.getListsHtml(notificationId) }}
-						{% endif %}
+						{% namespace 'lists' %}
+						{{ mailer.getListsHtml(notificationEmail.listSettings)|raw }}
+						{% endnamespace %}
 					</div>
 				</div>
 				{% endif %}
 
-					{% set events = craft.sproutEmail.getAvailableEvents() %}
+				{% set events = craft.sproutEmail.getAvailableEvents() %}
 
-					{% if events|length %}
+				{% if events|length %}
 
-						{{ forms.selectField({
-							id: "notificationEvent",
-							name: "sproutEmail[eventId]",
-							label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
-							options: [{label: "Select event..."|t, value: null}]|merge(events),
-							value: notificationEmail.eventId is defined ? notificationEmail.eventId : null,
-						}) }}
+					{{ forms.selectField({
+						id: "notificationEvent",
+						name: "sproutEmail[eventId]",
+						label: "Event <span class='info'>The event that will trigger your notification.</span>"|t,
+						options: [{label: "Select event..."|t, value: null}]|merge(events),
+						value: notificationEmail.eventId is defined ? notificationEmail.eventId : null,
+					}) }}
 
-						{% for id, event in events %}
-							{% if event.getEventAction is defined and event.getOptionsHtml is defined %}
+					{% for id, event in events %}
+						{% if event.getEventAction is defined and event.getOptionsHtml is defined %}
 
-								{# Avoid jquery get object error. #}
-								<div class="field event-options {{ event.getEventId() }}">
-									<div class="heading">
-										Settings
-									</div>
-									<div class="input">
-										{% set options = craft.sproutEmail.getEventSelectedOptions(event, notificationEmail) %}
-
-										{{ event.getOptionsHtml({
-											forms: forms,
-											options: options
-										})|raw }}
-									</div>
+							{# Avoid jquery get object error. #}
+							<div class="field event-options {{ event.getEventId() }}">
+								<div class="heading">
+									Settings
 								</div>
-							{% endif %}
-						{% endfor %}
+								<div class="input">
+									{% set options = craft.sproutEmail.getEventSelectedOptions(event, notificationEmail) %}
 
-						{{ forms.lightswitchField({
-							first: true,
-							label: "Attach Files <span class='info'>All files submitted with your entries will be attached to the notification email</span>"|t,
-							id: 'sproutEmail[enableFileAttachments]',
-							name: 'sproutEmail[enableFileAttachments]',
-							on: notificationEmail.enableFileAttachments,
-							onLabel: "Enable"|t,
-							offLabel: "Disable"|t
-						}) }}
+									{{ event.getOptionsHtml({
+										forms: forms,
+										options: options
+									})|raw }}
+								</div>
+							</div>
+						{% endif %}
+					{% endfor %}
 
-					{% endif %}
+					{{ forms.lightswitchField({
+						first: true,
+						label: "Attach Files <span class='info'>All files submitted with your entries will be attached to the notification email</span>"|t,
+						id: 'sproutEmail[enableFileAttachments]',
+						name: 'sproutEmail[enableFileAttachments]',
+						on: notificationEmail.enableFileAttachments,
+						onLabel: "Enable"|t,
+						offLabel: "Disable"|t
+					}) }}
+
+				{% endif %}
 
 			</div>
 

@@ -163,6 +163,7 @@ class SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, $eventData, array $params = array())
 	{
+		return true;
 	}
 
 	/**

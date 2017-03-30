@@ -28,8 +28,7 @@ class m170209_084541_sproutemail_lastSentDateCampaignEmail extends BaseMigration
 			}
 			else
 			{
-				Craft::log('Tried to add a `lastDateSent` column to the `sproutemail_campaignemails` table, but there is already
-				one there.', LogLevel::Warning);
+				Craft::log('Tried to add a `lastDateSent` column to the `sproutemail_campaignemails` table, but there is already one there.', LogLevel::Warning);
 			}
 		}
 		return true;
