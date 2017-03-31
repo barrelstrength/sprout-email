@@ -93,7 +93,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$emailId                = isset($variables['emailId']) ? $variables['emailId'] : null;
 		$notificationEmail      = isset($variables['notificationEmail']) ? $variables['notificationEmail'] : null;
-		$isMailerInstalled      = (bool) sproutEmail()->mailers->isInstalled('defaultmailer');
 		$isNewNotificationEmail = isset($emailId) && $emailId == 'new' ? true : false;
 
 		if (!$notificationEmail)
@@ -111,7 +110,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$this->renderTemplate('sproutemail/settings/notifications/_edit', array(
 			'emailId'                => $emailId,
 			'notificationEmail'      => $notificationEmail,
-			'isMailerInstalled'      => $isMailerInstalled,
 			'isNewNotificationEmail' => $isNewNotificationEmail
 		));
 	}

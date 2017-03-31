@@ -38,8 +38,6 @@ abstract class SproutEmailBaseMailer
 	{
 		if (!$this->initialized)
 		{
-			$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-			$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
 			$this->initialized = true;
 		}
 	}
@@ -62,18 +60,6 @@ abstract class SproutEmailBaseMailer
 	public function isInitialized()
 	{
 		return $this->initialized;
-	}
-
-	/**
-	 * Returns whether or not the mailer has been installed and registered with Sprout Email
-	 *
-	 * @return bool
-	 */
-	public function isInstalled()
-	{
-		$this->init();
-
-		return $this->installed;
 	}
 
 	/**

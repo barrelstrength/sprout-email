@@ -54,6 +54,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	public function defineAttributes()
 	{
 		$defaults   = parent::defineAttributes();
+
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),

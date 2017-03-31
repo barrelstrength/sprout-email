@@ -31,20 +31,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Returns whether or not the mailer is installed
-	 *
-	 * @param $name
-	 *
-	 * @return bool
-	 */
-	public function isInstalled($name)
-	{
-		$record = $this->getMailerRecordByName($name);
-
-		return ($record && $record->name == $name);
-	}
-
-	/**
 	 * Returns all the available email services that sprout email can use
 	 *
 	 * @param bool $installedOnly
@@ -66,7 +52,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 					{
 						foreach ($mailers as $name => $mailer)
 						{
-							if (!$installedOnly || $mailer->isInstalled())
+							if (!$installedOnly)
 							{
 								// Prioritize built in mailers
 								$mailers = $this->mailers;
@@ -75,6 +61,8 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 								{
 									continue;
 								}
+
+								//$mailer->init();
 
 								$this->mailers[$mailer->getId()] = $mailer;
 							}
@@ -254,7 +242,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	{
 		$mailer = $campaignType->getMailer();
 
-		if (!$mailer || !$mailer->isInstalled())
+		if (!$mailer)
 		{
 			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
 		}
@@ -301,13 +289,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			)));
 		}
 
-		if ($mailer->isInstalled())
-		{
-			sproutEmail()->info(Craft::t('The {name} mailer is already installed.', array(
-				'name' => $name
-			)));
-		}
-		elseif ($mailer->isSettingBuiltIn())
+		if ($mailer->isSettingBuiltIn())
 		{
 			$this->createMailerRecord($mailer);
 		}
@@ -340,16 +322,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			)));
 		}
 
-		if (!$mailer->isInstalled())
-		{
-			sproutEmail()->info(Craft::t('The {name} mailer is not installed, no need to uninstall.', array(
-				'name' => $name
-			)));
-		}
-		else
-		{
-			$this->deleteMailerRecord($mailer->getId());
-		}
+		$this->deleteMailerRecord($mailer->getId());
 	}
 
 	/**
