@@ -279,7 +279,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionSendNotificationEmail()
+	public function actionSendTestNotificationEmail()
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
@@ -287,11 +287,39 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$notificationId    = craft()->request->getPost('notificationId');
 		$notificationEmail = craft()->elements->getElementById($notificationId);
 
+		$errorMsg = '';
+
+		$recipients = craft()->request->getPost('recipients');
+
+		if ($recipients == null)
+		{
+			$errorMsg = Craft::t('Empty recipients.');
+		}
+
+		$recipientErrors = sproutEmail()->validateCommaSeparatedEmail($recipients);
+
+		if (!empty($recipientErrors))
+		{
+			$errorMsg = Craft::t('Invalid recipient(s) ' . implode(', ', $recipientErrors));
+		}
+
+		if (!empty($errorMsg))
+		{
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+					'email'   => $notificationEmail,
+					'message' => $errorMsg
+				))
+			);
+		}
+
+		$notificationEmail->recipients = $recipients;
+
 		if ($notificationEmail)
 		{
 			try
 			{
-				$response = sproutEmail()->notificationEmails->sendNotificationEmail($notificationEmail);
+				$response = sproutEmail()->notificationEmails->sendTestNotificationEmail($notificationEmail);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{

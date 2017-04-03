@@ -148,14 +148,14 @@
 					</div>
 
 					<div class="pane meta">
-						{% if mailer.hasDynamicRecipients() %}
+						{% if mailer.hasInlineRecipients() %}
 							{{ forms.textField({
 								label: "Recipients <span class='info'>A comma separated list of email addresses.</span>"|t,
 								placeholder: "user@domain.com, other@domain.com"|t,
 								name: "sproutEmail[recipients]",
 								class: "code",
-								value: notificationEmail is defined ? notificationEmail.recipients : "",
-								errors: notificationEmail is defined ? notificationEmail.getErrors('recipients')
+								value: campaignEmail is defined ? campaignEmail.recipients : "",
+								errors: campaignEmail is defined ? campaignEmail.getErrors('recipients')
 							}) }}
 						{% endif %}
 						{% if mailer.getListsHtml()|length %}

@@ -274,7 +274,7 @@ abstract class SproutEmailBaseMailer
 	 * Return true to allow and show mailer dynamic recipients
 	 * @return bool
 	 */
-	public function hasDynamicRecipients()
+	public function hasInlineRecipients()
 	{
 		return false;
 	}

@@ -64,7 +64,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
+			'lastDateSent'          => array(AttributeType::Mixed, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
 			'listSettings'        => Attributetype::Mixed,

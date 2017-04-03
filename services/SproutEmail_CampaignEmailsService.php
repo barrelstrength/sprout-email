@@ -49,7 +49,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		$campaignEmailRecord->subjectLine    = $campaignEmail->subjectLine;
 
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
-		$campaignEmailRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
 
 		$mailer = $campaignType->getMailer();
 
@@ -150,14 +149,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	public function getCampaignEmailById($emailId)
 	{
 		return craft()->elements->getElementById($emailId, 'SproutEmail_CampaignEmail');
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function getOnTheFlyRecipients()
-	{
-		return craft()->request->getPost('recipient.onTheFlyRecipients');
 	}
 
 	/**

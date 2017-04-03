@@ -181,7 +181,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 			$params = array(
 				'email'    => $campaignEmail,
-				'campaign' => $campaign,
+				'campaign' => $campaignType,
 
 				// @deprecate - in favor of `email` in v3
 				'entry'    => $campaignEmail
@@ -225,8 +225,8 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				try
 				{
 					$params['recipient'] = $recipient;
-					$email->body         = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params);
-					$email->htmlBody     = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
+					$email->body         = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $params);
+					$email->htmlBody     = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params);
 
 					$email->setAttribute('toEmail', $recipient->email);
 					$email->setAttribute('toFirstName', $recipient->firstName);
@@ -276,8 +276,10 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 */
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		// Display the testToEmailAddress if it exists
-		$recipients = craft()->config->get('testToEmailAddress');
+		if (!empty($campaignEmail->recipients))
+		{
+			$recipients = $campaignEmail->recipients;
+		}
 
 		if (empty($recipients))
 		{
@@ -358,7 +360,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		));
 	}
 
-	public function hasDynamicRecipients()
+	public function hasInlineRecipients()
 	{
 		return true;
 	}

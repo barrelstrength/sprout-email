@@ -812,4 +812,31 @@ class SproutEmailService extends BaseApplicationComponent
 
 		return $tabs;
 	}
+
+	public function validateCommaSeparatedEmail($emails)
+	{
+		$value = false;
+
+		if (!empty($emails))
+		{
+			$value = explode(',',  trim($emails));
+		}
+
+		$errors = array();
+
+		if (is_array($value) && !empty($value))
+		{
+			foreach ($value as $recipient)
+			{
+				$recipient = trim($recipient);
+
+				if (!filter_var($recipient, FILTER_VALIDATE_EMAIL))
+				{
+					$errors[] = $recipient;
+				}
+			}
+		}
+
+		return $errors;
+	}
 }

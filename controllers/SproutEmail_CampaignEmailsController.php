@@ -505,6 +505,11 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail->replyToEmail   = craft()->request->getPost('sproutEmail.replyToEmail');
 		$campaignEmail->subjectLine    = craft()->request->getRequiredPost('subjectLine');
 
+		if (craft()->request->getPost('sproutEmail.recipients') != null)
+		{
+			$campaignEmail->recipients = craft()->request->getPost('sproutEmail.recipients');
+		}
+
 		$enableFileAttachments                = craft()->request->getPost('sproutEmail.enableFileAttachments');
 		$campaignEmail->enableFileAttachments = $enableFileAttachments ? $enableFileAttachments : false;
 
