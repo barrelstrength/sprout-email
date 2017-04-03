@@ -271,6 +271,15 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
+	 * Return true to allow and show mailer dynamic recipients
+	 * @return bool
+	 */
+	public function hasDynamicRecipients()
+	{
+		return false;
+	}
+
+	/**
 	 * Prepare the list data before we save it in the database
 	 *
 	 * @param $lists

@@ -336,6 +336,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				);
 			}
 		}
+		else
+		{
+			// Do not display lists if sprout plugin is disabled
+			return '';
+		}
 
 		$listIds = isset($values['listIds']) ? $values['listIds'] : null;
 
@@ -347,10 +352,15 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			}
 		}
 
-		return craft()->templates->render('sproutemail/notifications/_lists', array(
+		return craft()->templates->render('sproutemail/_integrations/mailer/defaultmailer/lists', array(
 			'options' => $options,
 			'values'  => $selected,
 		));
+	}
+
+	public function hasDynamicRecipients()
+	{
+		return true;
 	}
 
 	/**
