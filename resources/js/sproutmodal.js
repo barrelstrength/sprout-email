@@ -186,7 +186,7 @@ SproutModal.prototype.createErrorModal = function(error)
 {
 	var $content = $('#sproutmodalcontent').clone();
 
-	$('.innercontent', $content).text(error);
+	$('.innercontent', $content).html(error);
 
 	var modal = new SproutModal();
 

@@ -296,11 +296,17 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			$errorMsg = Craft::t('Empty recipients.');
 		}
 
-		$recipientErrors = sproutEmail()->validateCommaSeparatedEmail($recipients);
+		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
 
-		if (!empty($recipientErrors))
+		$invalidRecipients = $result['invalid'];
+
+		if (!empty($invalidRecipients))
 		{
-			$errorMsg = Craft::t('Invalid recipient(s) ' . implode(', ', $recipientErrors));
+			$invalidEmails = implode("<br />", $invalidRecipients);
+
+			$errorMsg = Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				'invalidEmails' => $invalidEmails
+			));
 		}
 
 		if (!empty($errorMsg))

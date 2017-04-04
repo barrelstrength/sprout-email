@@ -198,9 +198,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				$email['replyToEmail'] = $campaignEmail->replyToEmail;
 			}
 
-			$recipients = array();
-
 			$recipients = craft()->request->getPost('recipients');
+
+			if ($recipients == null)
+			{
+				throw new Exception(Craft::t('Empty recipients.'));
+			}
 
 			$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
 

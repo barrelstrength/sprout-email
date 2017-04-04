@@ -302,7 +302,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 					$this->returnJson($response);
 				}
 
-				$errorMessage = Craft::t('Mailer did not return a valid response model after Campaign Email export.');
+				$errorMessage = Craft::t('Mailer did not return a valid response model after sending Campaign Email.');
 
 				if (!$response)
 				{
