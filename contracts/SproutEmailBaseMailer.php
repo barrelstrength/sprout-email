@@ -290,4 +290,16 @@ abstract class SproutEmailBaseMailer
 	{
 		return $lists;
 	}
+
+	/**
+	 * Allow modification of campaignType model before it is saved.
+	 *
+	 * @param SproutEmail_CampaignTypeModel $model
+	 *
+	 * @return SproutEmail_CampaignTypeModel
+	 */
+	public function prepareSave(SproutEmail_CampaignTypeModel $model)
+	{
+		return $model;
+	}
 }

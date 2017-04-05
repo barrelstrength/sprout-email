@@ -168,11 +168,10 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
-	 * @return array
+	 * @return SproutEmail_ResponseModel
 	 */
 	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		// @todo - add back support for Recipient Lists
 		$lists = array();
 
 		try
@@ -412,15 +411,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		// @todo - clarify what entryRecipents and $dynamicRecipients are
 		$entryRecipients   = $this->getRecipientsFromCampaignEmailModel($email, $object);
 		$dynamicRecipients = sproutEmail()->notificationEmails->getDynamicRecipientsFromElement($object);
-		//$listRecipients    = $this->getListRecipients($email);
 
 		$recipients = array_merge(
-		//$listRecipients,
 			$entryRecipients,
 			$dynamicRecipients
 		);
 
-		// @todo - GET ALL SUBSCRIBERS THAT RELATE TO THE SELECTED LISTS AND MAKE AN ARRAY
 		if (craft()->plugins->getPlugin('sproutlists') != null)
 		{
 			$listType = sproutLists()->lists->getListType('subscriber');
@@ -432,7 +428,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			$sproutListsRecipients = SproutEmail_SimpleRecipientModel::populateModels($sproutListsRecipients);
 
 			$recipients = array_merge($recipients, $sproutListsRecipients);
-
 		}
 
 		return $recipients;

@@ -54,6 +54,10 @@ class SproutEmail_CampaignTypeController extends BaseController
 			$_POST['redirect']       = 'sproutemail/settings/campaigntypes/edit/{id}';
 		}
 
+		$mailer = $campaignType->getMailer();
+
+		$mailer->prepareSave($campaignType);
+
 		if (craft()->request->getPost('fieldLayout'))
 		{
 			// Set the field layout
