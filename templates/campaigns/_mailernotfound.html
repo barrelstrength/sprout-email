@@ -1,0 +1,15 @@
+{% extends "sproutemail/_layouts/base" %}
+
+{% set title  = mailerName ~ ' unavailable.' %}
+
+{% block main %}
+<div class="grid first" data-max-cols="1">
+  <div class="item">
+    <div class="pane meta">
+      <div class="field">
+          <h2>Mailer {{ mailerName }} {{ "plugin is not installed."|t }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

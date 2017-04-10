@@ -62,8 +62,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 									continue;
 								}
 
-								//$mailer->init();
-
 								$this->mailers[$mailer->getId()] = $mailer;
 							}
 						}

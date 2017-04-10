@@ -105,15 +105,28 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$tabs = sproutEmail()->getModelTabs($campaignEmail);
 
-		$this->renderTemplate('sproutemail/campaigns/_edit', array(
-			'emailId'        => $emailId,
-			'campaignEmail'  => $campaignEmail,
-			'campaignTypeId' => $campaignTypeId,
-			'campaignType'   => $campaignType,
-			'showPreviewBtn' => $showPreviewBtn,
-			'shareUrl'       => $shareUrl,
-			'tabs'           => $tabs
-		));
+		$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
+
+		if ($mailer == null)
+		{
+			$mailerName = ucwords($campaignType->mailer);
+
+			$this->renderTemplate('sproutemail/campaigns/_mailernotfound', array(
+				'mailerName' => $mailerName
+			));
+		}
+		else
+		{
+			$this->renderTemplate('sproutemail/campaigns/_edit', array(
+				'emailId'        => $emailId,
+				'campaignEmail'  => $campaignEmail,
+				'campaignTypeId' => $campaignTypeId,
+				'campaignType'   => $campaignType,
+				'showPreviewBtn' => $showPreviewBtn,
+				'shareUrl'       => $shareUrl,
+				'tabs'           => $tabs
+			));
+		}
 	}
 
 	/**
