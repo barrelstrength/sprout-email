@@ -34,7 +34,7 @@
 	<input type="hidden" name="redirect" value="sproutemail/settings/campaigntypes">
 	<input type="hidden" name="campaignTypeId" value="{{ campaignTypeId }}">
 
-	{% set mailers = craft.sproutEmail.getCampaignMailers() %}
+	{% set mailers = craft.sproutEmail.getCampaignMailers('defaultmailer') %}
 
 	{% if mailers %}
 
