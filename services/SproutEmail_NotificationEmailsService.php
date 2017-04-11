@@ -288,7 +288,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
-	public function prepareRecipientLists(SproutEmail_NotificationEmailModel $notificationEmail)
+	public function prepareRecipientLists(BaseElementModel $notificationEmail)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();

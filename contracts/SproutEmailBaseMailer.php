@@ -199,10 +199,10 @@ abstract class SproutEmailBaseMailer
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
-	 * @return SproutEmail_CampaignEmailModel
+	 * @return BaseElementModel
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	abstract public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail);
+	abstract public function prepareRecipientLists(BaseElementModel $campaignEmail);
 
 	/**
 	 * Returns the value that should be saved to the settings column for this mailer

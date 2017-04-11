@@ -1,0 +1,12 @@
+{% if mailer and mailer.isInstalled() %}
+	{% if email.isReady() %}
+    <a href="#"
+      data-action="{{ mailer.getActionForPrepareModal() }}"
+      data-mailer="{{ mailer.getId() }}"
+      data-email-id="{{ email.id }}"
+      data-campaign-type-id="{{ campaignType.id }}"
+      class="prepare">{{ "Prepare"|t }}</a>
+	{% else %}
+    <span class="light">Prepare</span>
+	{% endif %}
+{% endif %}

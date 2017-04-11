@@ -1,9 +1,10 @@
 {% extends "sproutemail/_layouts/elementindex" %}
 
-{% set title = "Campaign Emails"|t %}
-{% set elementType = 'SproutEmail_CampaignEmail' %}
+{% set title       = "Campaigns"|t %}
+{% set elementType = "SproutEmail_CampaignEmail" %}
 
 {% set extraPageHeaderHtml %}
+
 	{% set campaignTypes = craft.sproutEmail.getCampaignTypes() %}
 
 	<div class="buttons">
@@ -22,10 +23,13 @@
 			</div>
 		</div>
 	</div>
+
 {% endset %}
 
-{% block content %}
+{% block sidebar %}
+
+	{% set customizableSources = false %}
+
 	{{ parent() }}
 
-	{% include "sproutemail/_modals/box" %}
 {% endblock %}

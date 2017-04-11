@@ -299,7 +299,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	 *
 	 * @param array $row
 	 *
-	 * @return array
+	 * @return BaseModel
 	 */
 	public function populateElementModel($row)
 	{

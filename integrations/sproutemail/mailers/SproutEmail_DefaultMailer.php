@@ -162,12 +162,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	}
 
 	/**
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param BaseElementModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaign
 	 *
 	 * @return array
 	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
+	public function prepareRecipientLists(BaseElementModel $campaignEmail)
 	{
 		$ids   = craft()->request->getPost('recipient.recipientLists');
 		$lists = array();

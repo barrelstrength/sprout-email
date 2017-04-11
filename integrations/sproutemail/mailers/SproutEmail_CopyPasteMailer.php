@@ -54,7 +54,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 		return TemplateHelper::getRaw('<p>' . Craft::t('This mailer does not require recipients.') . '</p>');
 	}
 
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
+	public function prepareRecipientLists(BaseElementModel $campaignEmail)
 	{
 		return new SproutEmail_CampaignEmailModel();
 	}
