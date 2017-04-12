@@ -159,7 +159,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 					return static::PENDING;
 				}
 
-				return static::READY;
+				return static::ENABLED;
 
 				break;
 			}

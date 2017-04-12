@@ -191,7 +191,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return \Twig_Markup
 	 */
-	abstract public function getRecipientListsHtml();
+	public function getRecipientListsHtml() {}
 
 	/**
 	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
@@ -202,7 +202,7 @@ abstract class SproutEmailBaseMailer
 	 * @return BaseElementModel
 	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
 	 */
-	abstract public function prepareRecipientLists(BaseElementModel $campaignEmail);
+	public function prepareRecipientLists(BaseElementModel $campaignEmail) {}
 
 	/**
 	 * Returns the value that should be saved to the settings column for this mailer
