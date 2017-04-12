@@ -159,11 +159,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$attributes = array(
 			'title'        => array('label' => Craft::t('Title')),
+			'subjectLine'  => array('label' => Craft::t('Subject')),
 			'dateCreated'  => array('label' => Craft::t('Date Created')),
 			'lastDateSent' => array('label' => Craft::t('Last Date Sent')),
 			'dateUpdated'  => array('label' => Craft::t('Date Updated')),
-			'preview'     => array('label' => Craft::t('Preview')),
-			'send'        => array('label' => Craft::t('Send'))
+			'preview'      => array('label' => Craft::t('Preview')),
+			'send'         => array('label' => Craft::t('Send'))
 		);
 
 		return $attributes;
@@ -389,7 +390,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 *
 	 * @param array $row
 	 *
-	 * @return array
+	 * @return BaseModel
 	 */
 	public function populateElementModel($row)
 	{
