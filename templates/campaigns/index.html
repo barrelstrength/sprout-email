@@ -1,7 +1,7 @@
 {% extends "sproutemail/_layouts/elementindex" %}
 
-{% set title       = "Campaigns"|t %}
-{% set elementType = "SproutEmail_CampaignEmail" %}
+{% set title = "Campaign Emails"|t %}
+{% set elementType = 'SproutEmail_CampaignEmail' %}
 
 {% set extraPageHeaderHtml %}
 
@@ -28,8 +28,9 @@
 
 {% block sidebar %}
 
-	{% set customizableSources = false %}
-
 	{{ parent() }}
 
+	{% include "sproutemail/_modals/box" %}
+
 {% endblock %}
+{% includeCssResource 'sproutemail/css/sproutemail.css' %}
