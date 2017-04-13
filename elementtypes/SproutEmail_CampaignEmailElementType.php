@@ -193,7 +193,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 	public function defineSortableAttributes()
 	{
-		$attributes['title']       = Craft::t('Subject Line');
+		$attributes['title']       = Craft::t('Title');
 		$attributes['dateCreated'] = Craft::t('Date Created');
 		$attributes['dateUpdated'] = Craft::t('Date Updated');
 
