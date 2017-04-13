@@ -241,6 +241,6 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 	public function isReady()
 	{
-		return (bool) ($this->getStatus() == static::READY);
+		return (bool) ($this->getStatus() == static::ENABLED);
 	}
 }

@@ -1,4 +1,4 @@
-{% if mailer and mailer.isInstalled() %}
+{% if mailer %}
 	{% if email.isReady() %}
     <a href="#"
       data-action="{{ mailer.getActionForPrepareModal() }}"

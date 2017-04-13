@@ -71,9 +71,8 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function isInstalled()
 	{
-		$this->init();
-
-		return $this->installed;
+		// @todo this temporary for this version
+		return true;
 	}
 
 	/**
@@ -184,7 +183,7 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return array
 	 */
-	abstract public function getRecipientLists();
+	public function getRecipientLists() {}
 
 	/**
 	 * Returns a rendered string with inputs to select a recipient lists if available/required by this mailer
