@@ -334,8 +334,19 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		{
 			foreach ($lists as $list)
 			{
+				$listName = $list->name;
+
+				if (count($list->total))
+				{
+					$listName .= ' (' . $list->total . ')';
+				}
+				else
+				{
+					$listName .= ' (0)';
+				}
+
 				$options[] = array(
-					'label' => $list->name . ' (' . $list->total . ')',
+					'label' => $listName,
 					'value' => $list->id
 				);
 			}
