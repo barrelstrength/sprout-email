@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -25,7 +26,7 @@ class m170418_000001_sproutEmail_migrateRecpientListsToSproutLists extends BaseM
 		// If both true, then
 		if ($sproutLists && $sproutLists->isInstalled && count($recipientLists))
 		{
-			$count = 0;
+			$count      = 0;
 			$listsByKey = array();
 
 			// Migrate Recipient Lists to craft_sproutlists_lists
@@ -37,7 +38,7 @@ class m170418_000001_sproutEmail_migrateRecpientListsToSproutLists extends BaseM
 
 				sproutLists()->lists->saveList($list);
 
-				$listsByKey[$recipientList['id']] = $recipientList;
+				$listsByKey[$recipientList['id']]                 = $recipientList;
 				$listsByKey[$recipientList['id']]['newElementId'] = $list->id;
 
 				$count++;
@@ -55,7 +56,7 @@ class m170418_000001_sproutEmail_migrateRecpientListsToSproutLists extends BaseM
 				->from('sproutemail_defaultmailer_recipientlistrecipients')
 				->queryAll();
 
-			$count = 0;
+			$count            = 0;
 			$subscribersByKey = array();
 
 			// Migrate Recipients to craft_sproutlists_subscriptions
@@ -68,7 +69,7 @@ class m170418_000001_sproutEmail_migrateRecpientListsToSproutLists extends BaseM
 
 				sproutLists()->subscribers->saveSubscriber($subscriberModel);
 
-				$subscribersByKey[$subscriber['id']] = $subscriber;
+				$subscribersByKey[$subscriber['id']]                 = $subscriber;
 				$subscribersByKey[$subscriber['id']]['newElementId'] = $subscriberModel->id;
 
 				$count++;
@@ -77,15 +78,47 @@ class m170418_000001_sproutEmail_migrateRecpientListsToSproutLists extends BaseM
 			// Migrate Subscriptions to craft_sproutlists_subscriptions
 			foreach ($subscriptions as $subscription)
 			{
-				$subscriptionModel = new SproutLists_SubscriptionModel();
-				$subscriptionModel->listId = $listsByKey[$subscription['recipientListId']]['newElementId'];
-				$subscriptionModel->subscriberId = $subscribersByKey[$subscription['recipientId']]['newElementId'];
+				$subscriptionModel                  = new SproutLists_SubscriberModel();
+				$subscriptionModel->id              = $subscribersByKey[$subscription['recipientId']]['newElementId'];
+				$subscriptionModel->subscriberLists = array(
+					0 => $listsByKey[$subscription['recipientListId']]['newElementId']
+				);
 
 				sproutLists()->subscriptions->saveSubscriptions($subscriptionModel);
 			}
 
-			// Check craft_sproutemail_campaigns_entries_recipientlists
+			// Check sproutemail_campaigns_entries_recipientlists
 			// and update 'emailId' to reference listId in the 'list' column for listSettings
+			$notificationEmails = craft()->db->createCommand()
+				->select('*')
+				->from('sproutemail_notificationemails')
+				->queryAll();
+
+			foreach ($notificationEmails as $notificationEmail)
+			{
+				$oldListIds = JsonHelper::decode($notificationEmail['listSettings']);
+				$newListIds = array();
+
+				if (count($oldListIds))
+				{
+					foreach ($oldListIds as $oldListId)
+					{
+						if (isset($listsByKey[$oldListId]['newElementId']))
+						{
+							$newListIds[] = $listsByKey[$oldListId]['newElementId'];
+						}
+					}
+
+					craft()->db->createCommand()->update('sproutemail_notificationemails', array(
+						'listSettings' => JsonHelper::encode($newListIds)
+					),
+						'id= :id', array(':id' => $notificationEmail['id'])
+					);
+				}
+			}
+
+			//{"listIds":["865", "866"]}
+
 		}
 	}
 }
