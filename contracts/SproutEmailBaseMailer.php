@@ -71,9 +71,8 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function isInstalled()
 	{
-		$this->init();
-
-		return $this->installed;
+		// @todo this temporary for this version
+		return true;
 	}
 
 	/**
