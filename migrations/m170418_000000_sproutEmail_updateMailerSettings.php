@@ -34,8 +34,6 @@ class m170418_000000_sproutEmail_updateMailerSettings extends BaseMigration
 			),
 				'class= :class', array(':class' => 'SproutCampaignMonitor')
 			);
-
-			Craft::dd($settings);
 		}
 	}
 
@@ -56,8 +54,6 @@ class m170418_000000_sproutEmail_updateMailerSettings extends BaseMigration
 			),
 				'class= :class', array(':class' => 'SproutMailChimp')
 			);
-
-			Craft::dd($settings);
 		}
 	}
 }
