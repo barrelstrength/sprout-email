@@ -63,6 +63,8 @@
 				%}class="sel"{% endif %}>Examples</a></li>
 
 			<li class="heading"><span>Integrations</span></li>
+			<li><a href="{{ url('sproutemail/settings/integrations/lists') }}" {% if selectedSidebarItem == 'lists'
+				%}class="sel"{% endif %}>Lists</a></li>
 			<li><a href="{{ url('sproutemail/settings/integrations/forms') }}" {% if selectedSidebarItem == 'forms'
 				%}class="sel"{% endif %}>Forms</a></li>
 			<li><a href="{{ url('sproutemail/settings/integrations/seo') }}" {% if selectedSidebarItem == 'seo'
