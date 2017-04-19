@@ -87,10 +87,12 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				sproutLists()->subscriptions->saveSubscriptions($subscriptionModel);
 			}
 
+			// Update our Subscriber counts
 			sproutLists()->subscribers->updateTotalSubscribersCount();
 
-			// Check sproutemail_campaigns_entries_recipientlists
-			// and update 'emailId' to reference listId in the 'list' column for listSettings
+			// Since we already migrated listIds from sproutemail_campaigns_entries_recipientlists
+			// We will grab the old ids from the listSettings column and update those reference
+			// to the new elementIds
 			$notificationEmails = craft()->db->createCommand()
 				->select('*')
 				->from('sproutemail_notificationemails')
@@ -101,9 +103,9 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				$oldListIds = JsonHelper::decode($notificationEmail['listSettings']);
 				$newListIds = array();
 
-				if (isset($oldListIds) and count($oldListIds))
+				if (isset($oldListIds['listIds']) and count($oldListIds['listIds']))
 				{
-					foreach ($oldListIds as $oldListId)
+					foreach ($oldListIds['listIds'] as $oldListId)
 					{
 						if (isset($listsByKey[$oldListId]['newElementId']))
 						{
@@ -122,9 +124,28 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 					);
 				}
 			}
+		}
 
-			//{"listIds":["865", "866"]}
+		// Clean up and remove old tables
+		if (craft()->db->tableExists('sproutemail_defaultmailer_recipientlistrecipients'))
+		{
+			SproutEmailPlugin::log('Removing sproutemail_defaultmailer_recipientlistrecipients table');
 
+			craft()->db->createCommand()->dropTable('sproutemail_defaultmailer_recipientlistrecipients');
+		}
+
+		if (craft()->db->tableExists('sproutemail_defaultmailer_recipients'))
+		{
+			SproutEmailPlugin::log('Removing sproutemail_defaultmailer_recipients table');
+
+			craft()->db->createCommand()->dropTable('sproutemail_defaultmailer_recipients');
+		}
+
+		if (craft()->db->tableExists('sproutemail_defaultmailer_recipientlists'))
+		{
+			SproutEmailPlugin::log('Removing sproutemail_defaultmailer_recipientlists table');
+
+			craft()->db->createCommand()->dropTable('sproutemail_defaultmailer_recipientlists');
 		}
 	}
 }
