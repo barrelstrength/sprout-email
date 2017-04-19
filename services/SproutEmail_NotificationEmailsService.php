@@ -522,7 +522,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		);
 	}
 
-	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
+	public function sendTestNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		// @TODO - add support back for Recipient Lists here
 		$lists = array();
@@ -568,7 +568,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 				// Must pass email options for getMockedParams methods to use $this->options
 				$event->setOptions($notificationEmail->options);
 
-				$sent = $mailer->sendNotificationEmail($notificationEmail, $event->getMockedParams(), true);
+				$sent = $mailer->sendNotificationEmail($notificationEmail, $event->getMockedParams());
 
 				if (!$sent)
 				{

@@ -31,20 +31,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Returns whether or not the mailer is installed
-	 *
-	 * @param $name
-	 *
-	 * @return bool
-	 */
-	public function isInstalled($name)
-	{
-		$record = $this->getMailerRecordByName($name);
-
-		return ($record && $record->name == $name);
-	}
-
-	/**
 	 * Returns all the available email services that sprout email can use
 	 *
 	 * @param bool $installedOnly
@@ -66,7 +52,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 					{
 						foreach ($mailers as $name => $mailer)
 						{
-							if (!$installedOnly || $mailer->isInstalled())
+							if (!$installedOnly)
 							{
 								// Prioritize built in mailers
 								$mailers = $this->mailers;
@@ -154,6 +140,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 		}
 
 		$settingsFromDb   = $mailer->getSettings()->getAttributes();
+
 		$settingsFromFile = isset($configOverrides) ? $configOverrides : array();
 
 		$settings = array_merge($settingsFromDb, $settingsFromFile);
@@ -253,7 +240,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	{
 		$mailer = $campaignType->getMailer();
 
-		if (!$mailer || !$mailer->isInstalled())
+		if (!$mailer)
 		{
 			throw new Exception(Craft::t('No mailer with id {id} was found.', array('id' => $campaignType->mailer)));
 		}
@@ -300,13 +287,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			)));
 		}
 
-		if ($mailer->isInstalled())
-		{
-			sproutEmail()->info(Craft::t('The {name} mailer is already installed.', array(
-				'name' => $name
-			)));
-		}
-		else
+		if ($mailer->isSettingBuiltIn())
 		{
 			$this->createMailerRecord($mailer);
 		}
@@ -339,16 +320,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			)));
 		}
 
-		if (!$mailer->isInstalled())
-		{
-			sproutEmail()->info(Craft::t('The {name} mailer is not installed, no need to uninstall.', array(
-				'name' => $name
-			)));
-		}
-		else
-		{
-			$this->deleteMailerRecord($mailer->getId());
-		}
+		$this->deleteMailerRecord($mailer->getId());
 	}
 
 	/**
@@ -360,13 +332,12 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 	 */
 	protected function createMailerRecord(SproutEmailBaseMailer $mailer)
 	{
-		$record = new SproutEmail_MailerRecord();
-
-		$record->setAttribute('name', $mailer->getId());
-		$record->setAttribute('settings', $mailer->getSettings());
-
 		try
 		{
+			$record = new SproutEmail_MailerRecord();
+			$record->setAttribute('name', $mailer->getId());
+			$record->setAttribute('settings', $mailer->getSettings()->getAttributes());
+
 			return $record->save();
 		}
 		catch (\Exception $e)

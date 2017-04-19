@@ -191,6 +191,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		return $attributes;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function defineSortableAttributes()
 	{
 		$attributes['title']       = Craft::t('Title');
@@ -265,6 +268,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 					AND campaigntype.template IS NOT NULL
 					AND campaigntype.mailer IS NOT NULL'
 				);
+
 				$query->andWhere('elements.archived = 0');
 				break;
 			}
@@ -317,7 +321,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		{
 			$query->orWhere('elements.archived = 1');
 		}
-
 
 		if ($criteria->campaignTypeId)
 		{

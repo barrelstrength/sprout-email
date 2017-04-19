@@ -50,8 +50,6 @@
 
 {% set content %}
 
-	{% if isMailerInstalled %}
-
 		<input type="hidden" name="action" value="sproutEmail/notificationEmails/saveNotificationEmailSettings">
 		<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
 
@@ -98,15 +96,7 @@
 		{% include "_includes/fieldlayoutdesigner" with {
 			fieldLayout: notificationEmail.getFieldLayout()
 		} only %}
-
-	{% else %}
-
-		<h2>{{ "Sprout Mailer Required"|t }}</h2>
-		<p>{{ "Before you can create notifications, please install our mailer."|t }}</p>
-
 	</form>
-
-	{% endif %}
 
 {% endset %}
 

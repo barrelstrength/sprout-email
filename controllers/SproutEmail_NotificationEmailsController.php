@@ -28,7 +28,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
 		}
 
-		// @todo - add back Recipient List support
 		$lists = array();
 
 		$showPreviewBtn = false;
@@ -93,7 +92,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 		$emailId                = isset($variables['emailId']) ? $variables['emailId'] : null;
 		$notificationEmail      = isset($variables['notificationEmail']) ? $variables['notificationEmail'] : null;
-		$isMailerInstalled      = (bool) sproutEmail()->mailers->isInstalled('defaultmailer');
 		$isNewNotificationEmail = isset($emailId) && $emailId == 'new' ? true : false;
 
 		if (!$notificationEmail)
@@ -111,7 +109,6 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$this->renderTemplate('sproutemail/settings/notifications/_edit', array(
 			'emailId'                => $emailId,
 			'notificationEmail'      => $notificationEmail,
-			'isMailerInstalled'      => $isMailerInstalled,
 			'isNewNotificationEmail' => $isNewNotificationEmail
 		));
 	}
@@ -281,7 +278,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 	 *
 	 * @throws HttpException
 	 */
-	public function actionSendNotificationEmail()
+	public function actionSendTestNotificationEmail()
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
@@ -289,11 +286,45 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		$notificationId    = craft()->request->getPost('notificationId');
 		$notificationEmail = craft()->elements->getElementById($notificationId);
 
+		$errorMsg = '';
+
+		$recipients = craft()->request->getPost('recipients');
+
+		if ($recipients == null)
+		{
+			$errorMsg = Craft::t('Empty recipients.');
+		}
+
+		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
+
+		$invalidRecipients = $result['invalid'];
+
+		if (!empty($invalidRecipients))
+		{
+			$invalidEmails = implode("<br />", $invalidRecipients);
+
+			$errorMsg = Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				'invalidEmails' => $invalidEmails
+			));
+		}
+
+		if (!empty($errorMsg))
+		{
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+					'email'   => $notificationEmail,
+					'message' => $errorMsg
+				))
+			);
+		}
+
+		$notificationEmail->recipients = $recipients;
+
 		if ($notificationEmail)
 		{
 			try
 			{
-				$response = sproutEmail()->notificationEmails->sendNotificationEmail($notificationEmail);
+				$response = sproutEmail()->notificationEmails->sendTestNotificationEmail($notificationEmail);
 
 				if ($response instanceof SproutEmail_ResponseModel)
 				{

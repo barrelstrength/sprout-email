@@ -52,6 +52,11 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		);
 	}
 
+	public function isSettingBuiltIn()
+	{
+		return true;
+	}
+	
 	/**
 	 * @param array $settings
 	 *
@@ -92,9 +97,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		{
 			sproutEmail()->error(Craft::t('No recipients found.'));
 		}
-
-		// Pass this variable for logging sent error
-		$emailModel = $email;
 
 		$template = $notificationEmail->template;
 
@@ -166,11 +168,10 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
 	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
-	 * @return array
+	 * @return SproutEmail_ResponseModel
 	 */
 	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		// @todo - add back support for Recipient Lists
 		$lists = array();
 
 		try
@@ -179,7 +180,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 			$params = array(
 				'email'    => $campaignEmail,
-				'campaign' => $campaign,
+				'campaign' => $campaignType,
 
 				// @deprecate - in favor of `email` in v3
 				'entry'    => $campaignEmail
@@ -196,9 +197,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				$email['replyToEmail'] = $campaignEmail->replyToEmail;
 			}
 
-			$recipients = array();
-
 			$recipients = craft()->request->getPost('recipients');
+
+			if ($recipients == null)
+			{
+				throw new Exception(Craft::t('Empty recipients.'));
+			}
 
 			$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
 
@@ -223,8 +227,8 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				try
 				{
 					$params['recipient'] = $recipient;
-					$email->body         = sproutEmail()->renderSiteTemplateIfExists($campaign->template . '.txt', $params);
-					$email->htmlBody     = sproutEmail()->renderSiteTemplateIfExists($campaign->template, $params);
+					$email->body         = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $params);
+					$email->htmlBody     = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params);
 
 					$email->setAttribute('toEmail', $recipient->email);
 					$email->setAttribute('toFirstName', $recipient->firstName);
@@ -274,8 +278,10 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	 */
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		// Display the testToEmailAddress if it exists
-		$recipients = craft()->config->get('testToEmailAddress');
+		if (!empty($campaignEmail->recipients))
+		{
+			$recipients = $campaignEmail->recipients;
+		}
 
 		if (empty($recipients))
 		{
@@ -328,11 +334,27 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		{
 			foreach ($lists as $list)
 			{
+				$listName = $list->name;
+
+				if (count($list->total))
+				{
+					$listName .= ' (' . $list->total . ')';
+				}
+				else
+				{
+					$listName .= ' (0)';
+				}
+
 				$options[] = array(
-					'label' => $list->name . ' (' . $list->total . ')',
+					'label' => $listName,
 					'value' => $list->id
 				);
 			}
+		}
+		else
+		{
+			// Do not display lists if sprout plugin is disabled
+			return '';
 		}
 
 		$listIds = isset($values['listIds']) ? $values['listIds'] : null;
@@ -345,10 +367,15 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			}
 		}
 
-		return craft()->templates->render('sproutemail/notifications/_lists', array(
+		return craft()->templates->render('sproutemail/_integrations/mailer/defaultmailer/lists', array(
 			'options' => $options,
 			'values'  => $selected,
 		));
+	}
+
+	public function hasInlineRecipients()
+	{
+		return true;
 	}
 
 	/**
@@ -395,15 +422,12 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		// @todo - clarify what entryRecipents and $dynamicRecipients are
 		$entryRecipients   = $this->getRecipientsFromCampaignEmailModel($email, $object);
 		$dynamicRecipients = sproutEmail()->notificationEmails->getDynamicRecipientsFromElement($object);
-		//$listRecipients    = $this->getListRecipients($email);
 
 		$recipients = array_merge(
-		//$listRecipients,
 			$entryRecipients,
 			$dynamicRecipients
 		);
 
-		// @todo - GET ALL SUBSCRIBERS THAT RELATE TO THE SELECTED LISTS AND MAKE AN ARRAY
 		if (craft()->plugins->getPlugin('sproutlists') != null)
 		{
 			$listType = sproutLists()->lists->getListType('subscriber');
@@ -415,7 +439,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			$sproutListsRecipients = SproutEmail_SimpleRecipientModel::populateModels($sproutListsRecipients);
 
 			$recipients = array_merge($recipients, $sproutListsRecipients);
-
 		}
 
 		return $recipients;

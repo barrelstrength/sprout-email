@@ -28,12 +28,12 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 			'options'               => AttributeType::Mixed,
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
+			'listSettings'          => AttributeType::Mixed,
 			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
 			'fromEmail'             => array(AttributeType::String, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'listSettings'          => AttributeType::Mixed,
 			'dateCreated'           => AttributeType::DateTime,
 			'dateUpdated'           => AttributeType::DateTime,
 			// @related

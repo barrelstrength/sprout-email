@@ -58,19 +58,15 @@ class SproutEmail_MailerController extends BaseController
 
 			if ($record)
 			{
-				$settings = sproutEmail()->mailers->getSettingsByMailerName($mailer->getId());
+				$record->setAttribute('settings', $mailer->prepSettings());
 
-				$settings->setAttributes($mailer->prepSettings());
-
-				if ($settings->validate())
+				if ($record->validate())
 				{
-					$record->setAttribute('settings', $settings->getAttributes());
-
 					if ($record->save(false))
 					{
 						craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
 
-						$this->redirectToPostedUrl($settings);
+						$this->redirectToPostedUrl($record);
 					}
 				}
 			}

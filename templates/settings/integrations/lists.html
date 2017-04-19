@@ -1,0 +1,26 @@
+{% requirePermission "editSproutFormsSettings" %}
+
+{% extends "sproutemail/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+{% import 'sproutemail/_includes/sproutcp' as sprout %}
+
+{% includeCssResource "sproutemail/css/sproutcp.css" %}
+
+{% set title = 'Sprout Lists Integration' %}
+
+{% set content %}
+
+	{% set boxBody %}
+	    <p>{{ "<a href='{url}' target='_blank'>Sprout Lists</a> enables you to manage mailing lists for your campaigns or allow users to subscribe to lists to get notified when events are triggered."|t({
+			    url: "https://sprout.barrelstrengthdesign.com/craft-plugins/lists"
+		    })|raw }}</p>
+	{% endset %}
+
+	{{ sprout.mediaBox({
+		heading: "Manage mailing lists and notify users"|t,
+		body: boxBody,
+		resourceUrl: resourceUrl('sproutemail/icons/sprout-icon.svg'),
+		resourceAltText: "Sprout SEO Icon"|t,
+	}) }}
+
+{% endset %}

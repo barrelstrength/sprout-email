@@ -51,16 +51,4 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 
 		return array_merge($defaults, $attributes);
 	}
-
-	/**
-	 * Returns the element's CP edit URL.
-	 *
-	 * @return string|false
-	 */
-	public function getCpEditUrl()
-	{
-		$url = UrlHelper::getCpUrl('sproutemail/sentemail/edit/' . $this->id);
-
-		return $url;
-	}
 }
