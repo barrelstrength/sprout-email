@@ -38,8 +38,6 @@ abstract class SproutEmailBaseMailer
 	{
 		if (!$this->initialized)
 		{
-			$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-			$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
 			$this->initialized = true;
 		}
 	}
@@ -62,18 +60,6 @@ abstract class SproutEmailBaseMailer
 	public function isInitialized()
 	{
 		return $this->initialized;
-	}
-
-	/**
-	 * Returns whether or not the mailer has been installed and registered with Sprout Email
-	 *
-	 * @return bool
-	 */
-	public function isInstalled()
-	{
-		$this->init();
-
-		return $this->installed;
 	}
 
 	/**
@@ -130,9 +116,30 @@ abstract class SproutEmailBaseMailer
 	/**
 	 * @return string
 	 */
+
 	public function getCpSettingsUrl()
 	{
-		return null;
+		if ($this->hasCpSettings())
+		{
+			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
+		}
+	}
+
+	public function isSettingBuiltIn()
+	{
+		return false;
+	}
+
+	/**
+	 * Returns whether or not the mailer has settings to display
+	 *
+	 * @return bool
+	 */
+	public function hasCpSettings()
+	{
+		$settings = $this->defineSettings();
+
+		return is_array($settings) && count($settings);
 	}
 
 	/**
@@ -165,12 +172,15 @@ abstract class SproutEmailBaseMailer
 	 */
 	public function getSettings()
 	{
-		if (!$this->isInitialized())
-		{
-			$this->init();
-		}
+		$record = sproutEmail()->mailers->getMailerRecordByName($this->getId());
 
-		return $this->settings;
+		$settingsFromDb = isset($record->settings) ? $record->settings : array();
+
+		$model = new Model($this->defineSettings());
+
+		$model->setAttributes($settingsFromDb);
+
+		return $model;
 	}
 
 	/**
@@ -261,6 +271,15 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
+	 * Return true to allow and show mailer dynamic recipients
+	 * @return bool
+	 */
+	public function hasInlineRecipients()
+	{
+		return false;
+	}
+
+	/**
 	 * Prepare the list data before we save it in the database
 	 *
 	 * @param $lists
@@ -270,5 +289,17 @@ abstract class SproutEmailBaseMailer
 	public function prepListSettings($lists)
 	{
 		return $lists;
+	}
+
+	/**
+	 * Allow modification of campaignType model before it is saved.
+	 *
+	 * @param SproutEmail_CampaignTypeModel $model
+	 *
+	 * @return SproutEmail_CampaignTypeModel
+	 */
+	public function prepareSave(SproutEmail_CampaignTypeModel $model)
+	{
+		return $model;
 	}
 }

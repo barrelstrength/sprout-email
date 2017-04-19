@@ -49,6 +49,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		return array(
 			SproutEmail_CampaignEmailModel::ENABLED  => Craft::t('Enabled'),
+			SproutEmail_CampaignEmailModel::ARCHIVED => Craft::t('Sent'),
 			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
 			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
 		);
@@ -114,12 +115,41 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
-		return craft()->templates->render('sproutemail/_partials/campaigns/entryindex', array(
-			'context'            => $context,
-			'elementType'        => new ElementTypeVariable($this),
-			'disabledElementIds' => $disabledElementIds,
-			'elements'           => $criteria->find(),
-		));
+		return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
+	}
+
+	/**
+	 * @inheritDoc IElementType::getTableAttributeHtml()
+	 *
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return string
+	 */
+	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
+	{
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignTypeId);
+
+		if ($attribute == 'send')
+		{
+			$mailer       = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
+
+			return craft()->templates->render('sproutemail/_partials/campaigns/prepareLink', array(
+				'email'        => $element,
+				'campaignType' => $campaignType,
+				'mailer'       => $mailer
+			));
+		}
+
+		if ($attribute == 'preview')
+		{
+			return craft()->templates->render('sproutemail/_partials/campaigns/previewLinks', array(
+				'email'        => $element,
+				'campaignType' => $campaignType
+			));
+		}
+
+		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
 	/**
@@ -131,9 +161,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$attributes = array(
 			'title'        => array('label' => Craft::t('Title')),
+			'subjectLine'  => array('label' => Craft::t('Subject')),
 			'dateCreated'  => array('label' => Craft::t('Date Created')),
 			'lastDateSent' => array('label' => Craft::t('Last Date Sent')),
-			'dateUpdated'  => array('label' => Craft::t('Date Updated'))
+			'dateUpdated'  => array('label' => Craft::t('Date Updated')),
+			'preview'      => array('label' => Craft::t('Preview')),
+			'send'         => array('label' => Craft::t('Send'))
 		);
 
 		return $attributes;
@@ -152,6 +185,20 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes[] = 'lastDateSent';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
+		$attributes[] = 'preview';
+		$attributes[] = 'send';
+
+		return $attributes;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function defineSortableAttributes()
+	{
+		$attributes['title']       = Craft::t('Title');
+		$attributes['dateCreated'] = Craft::t('Date Created');
+		$attributes['dateUpdated'] = Craft::t('Date Updated');
 
 		return $attributes;
 	}
@@ -198,6 +245,8 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			case SproutEmail_CampaignEmailModel::ARCHIVED:
 			{
 				$query->andWhere('elements.archived = 1');
+
+
 				break;
 			}
 			case SproutEmail_CampaignEmailModel::READY:
@@ -220,6 +269,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 					AND campaigntype.mailer IS NOT NULL'
 				);
 
+				$query->andWhere('elements.archived = 0');
 				break;
 			}
 		}
@@ -261,6 +311,16 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			)
 			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')
 			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignTypeId');
+
+		// This condition will allow archive status to be displayed initially and able to filter with proper entries
+		if ($criteria->status == SproutEmail_CampaignEmailModel::ARCHIVED)
+		{
+			$query->where('elements.archived = 1');
+		}
+		elseif ($criteria->status == null)
+		{
+			$query->orWhere('elements.archived = 1');
+		}
 
 		if ($criteria->campaignTypeId)
 		{
@@ -349,7 +409,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 *
 	 * @param array $row
 	 *
-	 * @return array
+	 * @return BaseModel
 	 */
 	public function populateElementModel($row)
 	{

@@ -61,12 +61,14 @@ class SproutEmailVariable
 	 *
 	 * @return SproutEmailBaseMailer[]
 	 */
-	public function getCampaignMailers()
+	public function getCampaignMailers($exclude = null)
 	{
 		$mailers = $this->getMailers();
 
-		// Hide defaultmailer for now.
-		unset($mailers['defaultmailer']);
+		if ($exclude != null)
+		{
+			unset($mailers[$exclude]);
+		}
 
 		return $mailers;
 	}

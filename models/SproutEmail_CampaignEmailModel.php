@@ -54,6 +54,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	public function defineAttributes()
 	{
 		$defaults   = parent::defineAttributes();
+
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
@@ -63,7 +64,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
+			'lastDateSent'          => array(AttributeType::Mixed, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
 			'listSettings'        => Attributetype::Mixed,
@@ -159,7 +160,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 					return static::PENDING;
 				}
 
-				return static::READY;
+				return static::ENABLED;
 
 				break;
 			}
@@ -241,7 +242,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 	public function isReady()
 	{
-		return (bool) ($this->getStatus() == static::READY);
+		return (bool) ($this->getStatus() == static::ENABLED);
 	}
 
 	public function getMailer()

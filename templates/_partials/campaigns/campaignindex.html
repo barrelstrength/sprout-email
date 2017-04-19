@@ -39,7 +39,7 @@
 				{% include "sproutemail/_partials/campaigns/previewLinks" %}
 			</td>
 			<td class="nowrap">
-				{% if mailer and mailer.isInstalled() %}
+				{% if mailer %}
 				{% if email.isReady() %}
 				<a href="#"
 					data-action="{{ mailer.getActionForPrepareModal() }}"

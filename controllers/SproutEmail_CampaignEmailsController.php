@@ -105,7 +105,10 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$tabs = sproutEmail()->getModelTabs($campaignEmail);
 
+		$mailerPlugin = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
+
 		$this->renderTemplate('sproutemail/campaigns/_edit', array(
+			'mailerPlugin'   => $mailerPlugin,
 			'emailId'        => $emailId,
 			'campaignEmail'  => $campaignEmail,
 			'campaignTypeId' => $campaignTypeId,
@@ -302,7 +305,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 					$this->returnJson($response);
 				}
 
-				$errorMessage = Craft::t('Mailer did not return a valid response model after Campaign Email export.');
+				$errorMessage = Craft::t('Mailer did not return a valid response model after sending Campaign Email.');
 
 				if (!$response)
 				{
@@ -504,6 +507,11 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail->fromEmail      = craft()->request->getPost('sproutEmail.fromEmail');
 		$campaignEmail->replyToEmail   = craft()->request->getPost('sproutEmail.replyToEmail');
 		$campaignEmail->subjectLine    = craft()->request->getRequiredPost('subjectLine');
+
+		if (craft()->request->getPost('sproutEmail.recipients') != null)
+		{
+			$campaignEmail->recipients = craft()->request->getPost('sproutEmail.recipients');
+		}
 
 		$enableFileAttachments                = craft()->request->getPost('sproutEmail.enableFileAttachments');
 		$campaignEmail->enableFileAttachments = $enableFileAttachments ? $enableFileAttachments : false;

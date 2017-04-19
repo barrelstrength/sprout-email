@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m170209_084541_sproutemail_lastSentDateCampaignEmail extends BaseMigration
+class m170209_084541_sproutEmail_lastSentDateCampaignEmail extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.

@@ -38,7 +38,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 	{
 		$defaults   = parent::defineAttributes();
 		$attributes = array(
-			'title'        => array(AttributeType::String, 'required' => false),
+			'title'        => array(AttributeType::Mixed, 'required' => false),
 			'emailSubject' => array(AttributeType::Mixed, 'required' => false),
 			'fromEmail'    => array(AttributeType::Mixed, 'required' => false),
 			'fromName'     => array(AttributeType::Mixed, 'required' => false),
