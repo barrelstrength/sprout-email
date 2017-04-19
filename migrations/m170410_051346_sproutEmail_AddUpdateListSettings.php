@@ -15,7 +15,7 @@ class m170410_051346_sproutEmail_AddUpdateListSettings extends BaseMigration
 	{
 		$this->addListSettings();
 
-		$this->updateListSettings();
+		$this->updateListSettings('sproutemail_campaignemails');
 		$this->updateListSettings('sproutemail_notificationemails');
 
 		$this->deleteEntryRecipientTable();
@@ -62,7 +62,7 @@ class m170410_051346_sproutEmail_AddUpdateListSettings extends BaseMigration
 		}
 	}
 
-	private function updateListSettings($table = 'sproutemail_campaignemails')
+	private function updateListSettings($table)
 	{
 		$entries = craft()->db->createCommand()
 			->select('*')

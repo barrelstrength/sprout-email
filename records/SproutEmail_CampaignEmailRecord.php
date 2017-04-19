@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -33,14 +34,13 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
+			'listSettings'          => array(Attributetype::Mixed),
 			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
 			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
+			'sent'                  => array(AttributeType::Bool),
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::Mixed, 'default' => null),
-
-			'listSettings'        => Attributetype::Mixed,
+			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null)
 		);
 	}
 
@@ -115,14 +115,14 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'element'        => array(
+			'element'  => array(
 				static::BELONGS_TO,
 				'ElementRecord',
 				'id',
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
-			'campaign'       => array(
+			'campaign' => array(
 				static::BELONGS_TO,
 				'SproutEmail_CampaignTypeRecord',
 				'campaignTypeId',
