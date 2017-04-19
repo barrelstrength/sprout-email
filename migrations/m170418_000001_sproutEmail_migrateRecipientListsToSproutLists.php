@@ -87,6 +87,8 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				sproutLists()->subscriptions->saveSubscriptions($subscriptionModel);
 			}
 
+			sproutLists()->subscribers->updateTotalSubscribersCount();
+
 			// Check sproutemail_campaigns_entries_recipientlists
 			// and update 'emailId' to reference listId in the 'list' column for listSettings
 			$notificationEmails = craft()->db->createCommand()
@@ -99,9 +101,9 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				$oldListIds = JsonHelper::decode($notificationEmail['listSettings']);
 				$newListIds = array();
 
-				if (count($oldListIds))
+				if (isset($oldListIds['listIds']) and count($oldListIds['listIds']))
 				{
-					foreach ($oldListIds as $oldListId)
+					foreach ($oldListIds['listIds'] as $oldListId)
 					{
 						if (isset($listsByKey[$oldListId]['newElementId']))
 						{
@@ -109,8 +111,12 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 						}
 					}
 
+					$listSettings = array(
+						'listIds' => $newListIds
+					);
+
 					craft()->db->createCommand()->update('sproutemail_notificationemails', array(
-						'listSettings' => JsonHelper::encode($newListIds)
+						'listSettings' => JsonHelper::encode($listSettings)
 					),
 						'id= :id', array(':id' => $notificationEmail['id'])
 					);
