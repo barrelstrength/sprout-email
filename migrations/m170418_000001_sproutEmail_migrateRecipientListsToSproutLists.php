@@ -101,9 +101,9 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				$oldListIds = JsonHelper::decode($notificationEmail['listSettings']);
 				$newListIds = array();
 
-				if (isset($oldListIds['listIds']) and count($oldListIds['listIds']))
+				if (isset($oldListIds) and count($oldListIds))
 				{
-					foreach ($oldListIds['listIds'] as $oldListId)
+					foreach ($oldListIds as $oldListId)
 					{
 						if (isset($listsByKey[$oldListId]['newElementId']))
 						{
