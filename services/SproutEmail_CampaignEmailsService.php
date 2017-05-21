@@ -48,6 +48,13 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		$campaignEmailRecord->campaignTypeId = $campaignEmail->campaignTypeId;
 		$campaignEmailRecord->subjectLine    = $campaignEmail->subjectLine;
 
+		if ($campaignType->titleFormat)
+		{
+			$title = craft()->templates->renderObjectTemplate($campaignType->titleFormat, $campaignEmail);
+
+			$campaignEmail->getContent()->title = $title;
+		}
+
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
 
 		$mailer = $campaignType->getMailer();
@@ -75,6 +82,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 			try
 			{
+
 				if (craft()->elements->saveElement($campaignEmail))
 				{
 					// Now that we have an element ID, save it on the other stuff

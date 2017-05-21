@@ -149,13 +149,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$campaignEmail->id        = null;
 		}
 
-		if ($titleFormat = $this->campaignType->titleFormat)
-		{
-			$title = craft()->templates->renderObjectTemplate($titleFormat, $campaignEmail);
-
-			$campaignEmail->getContent()->title = $title;
-		}
-
 		if (sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $this->campaignType))
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign Email saved.'));
