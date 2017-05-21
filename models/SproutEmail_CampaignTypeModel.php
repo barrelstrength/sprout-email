@@ -37,8 +37,8 @@ class SproutEmail_CampaignTypeModel extends BaseModel
 			'name'              => AttributeType::String,
 			'handle'            => AttributeType::String,
 			'mailer'            => AttributeType::String,
-			'titleFormat'       => AttributeType::String,
-			'urlFormat'         => AttributeType::String,
+			'titleFormat'       => array(AttributeType::String, 'default' => null),
+			'urlFormat'         => array(AttributeType::String, 'default' => null),
 			'hasUrls'           => array(
 				AttributeType::Bool,
 				'default' => false,

@@ -130,6 +130,11 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 			}
 		}
 
+		if (!$campaignType->hasAdvancedTitles)
+		{
+			$campaignType->titleFormat = null;
+		}
+
 		// Set common attributes
 		$campaignTypeRecord->fieldLayoutId     = $campaignType->fieldLayoutId;
 		$campaignTypeRecord->name              = $campaignType->name;

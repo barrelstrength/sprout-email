@@ -5,13 +5,14 @@
 	{ label: "Email"|t, url: url('sproutemail/campaigns') },
 ] %}
 
-{% set title  = campaignEmail is defined and campaignEmail.title is not empty ? campaignEmail.title : 'Create a new Email' %}
+{% set title  = campaignEmail is defined and campaignEmail.title is not empty ? campaignEmail.title : 'Create a new Campaign Email'|t %}
 {% set mailer = craft.sproutEmail.getMailer(campaignType.mailer) %}
 
 {% set fullPageForm = true %}
 {% set saveShortcutRedirect = url('sproutemail/campaigns/edit/{id}') %}
 
 {% block saveButton %}
+
 	<section class="buttons">
 		<div class="btngroup submit">
 			<input type="submit" class="btn submit" value="{{ 'Save'|t }}">
@@ -21,14 +22,14 @@
 					<ul>
 
 						{% if emailId %}
-						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t
-								}} <span class="shortcut">⌘S</span></a></li>
+							<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t
+									}} <span class="shortcut">⌘S</span></a></li>
 						{% else %}
-						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
+							<li><a class="formsubmit" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save and continue editing"|t }} <span class="shortcut">⌘S</span></a></li>
 						{% endif %}
 
+							<li><a class="formsubmit" data-redirect="sproutemail/campaigns/{{ campaignType.id }}/new">{{ "Save and add another"|t }}</a></li>
 
-						<li><a class="formsubmit" data-redirect="sproutemail/campaigns/{{ campaignType.id }}/new">{{ "Save and add another"|t }}</a></li>
 						{% if emailId %}
 							<li><a class="formsubmit" data-param='saveAsNew' data-value="true" data-redirect="sproutemail/campaigns/edit/{id}">{{ "Save as a new email"|t }}</a></li>
 						{% endif %}
@@ -37,11 +38,13 @@
 				</div>
 		</div>
 	</section>
+
 {% endblock %}
 
 {% block main %}
 
 {% if mailerPlugin == null %}
+
 	<div class="grid first" data-max-cols="1">
 		<div class="item">
 			<div class="pane meta">
@@ -51,7 +54,9 @@
 			</div>
 		</div>
 	</div>
+
 {% else %}
+
 	<input type="hidden" name="action" value="sproutEmail/campaignEmails/saveCampaignEmail">
 	<input type="hidden" name="redirect" value="sproutemail/campaigns">
 
@@ -188,6 +193,7 @@
 		</div>
 
 	</div>
+
 {% endif %}
 {% endblock %}
 
