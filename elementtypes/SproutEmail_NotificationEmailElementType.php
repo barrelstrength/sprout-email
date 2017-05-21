@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_NotificationEmailElementType extends BaseElementType
@@ -81,6 +82,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	{
 		$attributes = array(
 			'title'       => array('label' => Craft::t('Subject Line')),
+			'name'        => array('label' => Craft::t('Notification Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
 			'preview'     => array('label' => Craft::t('Preview')),
@@ -100,6 +102,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'title';
+		$attributes[] = 'name';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 		$attributes[] = 'preview';
@@ -111,6 +114,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	public function defineSortableAttributes()
 	{
 		$attributes['title']       = Craft::t('Subject Line');
+		$attributes['name']        = Craft::t('Notification Name');
 		$attributes['dateCreated'] = Craft::t('Date Created');
 		$attributes['dateUpdated'] = Craft::t('Date Updated');
 
