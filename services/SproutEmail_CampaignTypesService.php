@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CampaignTypesService extends BaseApplicationComponent
@@ -47,13 +48,13 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 	 */
 	public function saveCampaignType(SproutEmail_CampaignTypeModel $campaignType)
 	{
-		$campaignTypeRecord  = new SproutEmail_CampaignTypeRecord();
-		$oldCampaignType = null;
+		$campaignTypeRecord = new SproutEmail_CampaignTypeRecord();
+		$oldCampaignType    = null;
 
 		if (is_numeric($campaignType->id) && !$campaignType->saveAsNew)
 		{
-			$campaignTypeRecord  = SproutEmail_CampaignTypeRecord::model()->findById($campaignType->id);
-			$oldCampaignType = SproutEmail_CampaignTypeModel::populateModel($campaignTypeRecord);
+			$campaignTypeRecord = SproutEmail_CampaignTypeRecord::model()->findById($campaignType->id);
+			$oldCampaignType    = SproutEmail_CampaignTypeModel::populateModel($campaignTypeRecord);
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
@@ -69,7 +70,7 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 
 		// Assign our new layout id info to our
 		// form model and records
-		$campaignType->fieldLayoutId   = $fieldLayout->id;
+		$campaignType->fieldLayoutId       = $fieldLayout->id;
 		$campaignTypeRecord->fieldLayoutId = $fieldLayout->id;
 
 		$campaignTypeRecord = $this->saveCampaignTypeInfo($campaignType);
@@ -85,31 +86,16 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 		}
 		else
 		{
-			// Updates element i18n slug and uri
 			$criteria                 = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
 			$criteria->campaignTypeId = $campaignType->id;
+			$criteria->localeEnabled  = null;
+			$criteria->status         = null;
+			$criteria->limit          = null;
 
-			$emailIds = $criteria->ids();
-
-			if ($emailIds != null)
-			{
-				foreach ($emailIds as $emailId)
-				{
-					craft()->config->maxPowerCaptain();
-
-					$criteria         = craft()->elements->getCriteria('SproutEmail_CampaignEmail');
-					$criteria->id     = $emailId;
-					$criteria->locale = "en_us";
-					$criteria->status = null;
-					$updateEntry      = $criteria->first();
-
-					// @todo replace the getContent()->id check with 'strictLocale' param once it's added
-					if ($updateEntry && $updateEntry->getContent()->id)
-					{
-						craft()->elements->updateElementSlugAndUri($updateEntry, false, false);
-					}
-				}
-			}
+			craft()->tasks->createTask('ResaveElements', Craft::t('Re-saving Campaign Emails'), array(
+				'elementType' => 'SproutEmail_CampaignEmail',
+				'criteria'    => $criteria->getAttributes()
+			));
 		}
 
 		if ($transaction)
@@ -125,8 +111,8 @@ class SproutEmail_CampaignTypesService extends BaseApplicationComponent
 
 	protected function saveCampaignTypeInfo(SproutEmail_CampaignTypeModel &$campaignType)
 	{
-		$oldCampaignMailer = null;
-		$campaignTypeRecord    = new SproutEmail_CampaignTypeRecord();
+		$oldCampaignMailer  = null;
+		$campaignTypeRecord = new SproutEmail_CampaignTypeRecord();
 
 		if (isset($campaignType->id) && is_numeric($campaignType->id) && !$campaignType->saveAsNew)
 		{
