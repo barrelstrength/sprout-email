@@ -24,14 +24,14 @@
 
 			{% if notificationEmail['id'] is defined %}
 
+				{% set dataSaveEditRedirect = cpUrl('sproutemail/notifications/edit/' ~ notificationEmailId) %}
+
 				<div class="btn submit menubtn"></div>
 				<div class="menu">
 					<ul>
-
-						{% set dataSaveEditRedirect = cpUrl('sproutemail/notifications/edit/' ~ notificationEmailId) %}
-
-						<li><a class="formsubmit" data-redirect="{{ dataSaveEditRedirect }}" title="{{ "Save and edit notification email"|t }}">{{ "Save and edit notification email"|t }}</a></li>
-						<li><a class="formsubmit" data-redirect="{{ cpUrl('sproutemail/settings/notifications/edit/new') }}">{{ "Save and add another"|t }}</a></li>
+						<li><a class="formsubmit" data-redirect="{{ craft.request.url }}" title="{{ 'Save and continue editing'|t }}">{{ 'Save and continue editing'|t }}</a></li>
+						<li><a class="formsubmit" data-redirect="{{ dataSaveEditRedirect }}" title="{{ 'Save and edit notification email'|t }}">{{ 'Save and edit notification email'|t }}</a></li>
+						<li><a class="formsubmit" data-redirect="{{ cpUrl('sproutemail/settings/notifications/edit/new') }}">{{ 'Save and add another'|t }}</a></li>
 					</ul>
 				</div>
 
@@ -51,7 +51,7 @@
 {% set content %}
 
 		<input type="hidden" name="action" value="sproutEmail/notificationEmails/saveNotificationEmailSettings">
-		<input type="hidden" name="redirect" value="sproutemail/settings/notifications/edit/{id}">
+		<input type="hidden" name="redirect" value="sproutemail/settings/notifications">
 
 		<input type="hidden" name="emailId" value="{{ emailId }}">
 		<input type="hidden" name="mailer" value="defaultmailer">
