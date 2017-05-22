@@ -24,12 +24,14 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 	public function performAction(ElementCriteriaModel $criteria)
 	{
 		$status   = $this->getParams()->status;
-		$archived = 0;
-		$enable   = 0;
+		$sent   = 0;
+		$enable = 0;
+
+		$elementIds = $criteria->ids();
 
 		switch ($status)
 		{
-			case SproutEmail_CampaignEmailModel::ENABLED:
+			case SproutEmail_CampaignEmailModel::READY:
 			{
 				$enable = 1;
 				break;
@@ -39,23 +41,29 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 				$enable = 0;
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ARCHIVED:
+			case SproutEmail_CampaignEmailModel::SENT:
 			{
-				$archived = 1;
+				$sent   = 1;
+				$enable = 1;
 				break;
 			}
 		}
 
-		$elementIds = $criteria->ids();
+		// Update the sent statuses
+		craft()->db->createCommand()->update(
+			'sproutemail_campaignemails',
+			array('sent' => $sent),
+			array('in', 'id', $elementIds)
+		);
 
 		// Update their statuses
 		craft()->db->createCommand()->update(
 			'elements',
-			array('enabled' => $enable, 'archived' => $archived),
+			array('enabled' => $enable),
 			array('in', 'id', $elementIds)
 		);
 
-		if ($status == SproutEmail_CampaignEmailModel::ENABLED)
+		if ($status == SproutEmail_CampaignEmailModel::READY)
 		{
 			// Enable their locale as well
 			craft()->db->createCommand()->update(
@@ -92,9 +100,9 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 			'status' => array(
 				AttributeType::Enum,
 				'values'   => array(
-					BaseElementModel::ENABLED,
+					SproutEmail_CampaignEmailModel::READY,
 					BaseElementModel::DISABLED,
-					SproutEmail_CampaignEmailModel::ARCHIVED
+					SproutEmail_CampaignEmailModel::SENT
 				),
 				'required' => true
 			)
