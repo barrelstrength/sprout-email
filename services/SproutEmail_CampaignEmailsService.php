@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
@@ -46,7 +47,21 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		}
 
 		$campaignEmailRecord->campaignTypeId = $campaignEmail->campaignTypeId;
-		$campaignEmailRecord->subjectLine    = $campaignEmail->subjectLine;
+
+		if ($campaignType->titleFormat)
+		{
+			$renderedSubject = craft()->templates->renderObjectTemplate($campaignType->titleFormat, $campaignEmail);
+
+			$campaignEmail->getContent()->title = $renderedSubject;
+			$campaignEmail->subjectLine         = $renderedSubject;
+			$campaignEmailRecord->subjectLine   = $renderedSubject;
+		}
+		else
+		{
+
+			$campaignEmail->getContent()->title = $campaignEmail->subjectLine;
+			$campaignEmailRecord->subjectLine   = $campaignEmail->subjectLine;
+		}
 
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
 
@@ -75,6 +90,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 			try
 			{
+
 				if (craft()->elements->saveElement($campaignEmail))
 				{
 					// Now that we have an element ID, save it on the other stuff
@@ -224,6 +240,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 	/**
 	 * Update lastDateSent Column every time campaign email is sent
+	 *
 	 * @param Event $event
 	 */
 	public function updateLastDateSent(Event $event)

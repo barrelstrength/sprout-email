@@ -309,9 +309,9 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	{
 		if ($this->lists === null)
 		{
-			$sproutLists = craft()->plugins->getPlugin('sproutLists');
+			$listType = sproutLists()->lists->getListType('subscriber');
 
-			$this->lists = $sproutLists ? sproutLists()->lists->getLists() : array();
+			$this->lists = $listType ? $listType->getLists() : array();
 		}
 
 		return $this->lists;

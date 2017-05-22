@@ -149,13 +149,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$campaignEmail->id        = null;
 		}
 
-		if ($titleFormat = $this->campaignType->titleFormat)
-		{
-			$title = craft()->templates->renderObjectTemplate($titleFormat, $campaignEmail);
-
-			$campaignEmail->getContent()->title = $title;
-		}
-
 		if (sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $this->campaignType))
 		{
 			craft()->userSession->setNotice(Craft::t('Campaign Email saved.'));
@@ -442,6 +435,9 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			$campaignEmail->campaignTypeId = $campaignTypeId;
 		}
 
+		/**
+		 * @todo - make sure this works with the updated titleFormat behavior
+		 */
 		$campaignEmail->subjectLine         = craft()->request->getPost('subjectLine', $campaignEmail->subjectLine);
 		$campaignEmail->getContent()->title = $campaignEmail->subjectLine;
 
@@ -506,7 +502,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail->fromName       = craft()->request->getPost('sproutEmail.fromName');
 		$campaignEmail->fromEmail      = craft()->request->getPost('sproutEmail.fromEmail');
 		$campaignEmail->replyToEmail   = craft()->request->getPost('sproutEmail.replyToEmail');
-		$campaignEmail->subjectLine    = craft()->request->getRequiredPost('subjectLine');
+		$campaignEmail->subjectLine    = craft()->request->getPost('subjectLine');
 
 		if (craft()->request->getPost('sproutEmail.recipients') != null)
 		{

@@ -207,7 +207,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 
 			$notificationEmail->getContent()->title = $fields['subjectLine'];
 
-			$fields['subjectLine'] = $fields['name'];
+			$fields['subjectLine'] = $fields['subjectLine'];
 			$fields['slug']        = ElementHelper::createSlug($fields['name']);
 		}
 

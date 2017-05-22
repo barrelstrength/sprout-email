@@ -246,7 +246,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			{
 				$query->andWhere('elements.archived = 1');
 
-
 				break;
 			}
 			case SproutEmail_CampaignEmailModel::READY:

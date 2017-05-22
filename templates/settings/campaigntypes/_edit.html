@@ -42,7 +42,7 @@
 			label: "Campaign Name"|t,
 			id: 'name',
 			name: 'sproutEmail[name]',
-			instructions: "Human readable name for this type of Email"|t,
+			instructions: "Human readable name for this type of email"|t,
 			value: (campaignType is defined ? campaignType.name : null),
 			autofocus: true,
 			required: true,
@@ -61,7 +61,7 @@
 		}) }}
 
 		{{ forms.selectField({
-			label: "How would you like to send this email"|t,
+			label: "How you would like to send this email"|t,
 			instructions: 'Select the Mailer you will use to send Email Campaigns. <a href="' ~ url('sproutemail/settings/mailers') ~ '">Edit Mailer settings</a>.'|t,
 			id: 'mailer',
 			name: 'sproutEmail[mailer]',
@@ -75,7 +75,7 @@
 			label: "Email Template"|t,
 			id: 'template',
 			name: 'sproutEmail[template]',
-			instructions: "The template to use when an Email's URL is requested.  The text version of the Email will use the same template name and append .txt"|t,
+			instructions: "The template to use when a Campaign Email's URL is requested.  The text version of the Campaign Email will use the same template name and append .txt"|t,
 			placeholder: '_emails/emailtemplate',
 			value: (campaignType is defined ? campaignType.template : null),
 			errors: (campaignType is defined ? campaignType.getErrors('template') : null)
@@ -94,7 +94,7 @@
 		<hr>
 
 		{{ forms.checkboxField({
-			label: "Entries of this type have their own URLs"|t,
+			label: "Campaign Emails of this type have their own URLs"|t,
 			id: 'hasUrls',
 			name: 'sproutEmail[hasUrls]',
 			checked: (campaignType is defined ? campaignType.hasUrls : 0),
@@ -105,7 +105,7 @@
 
 			{{ forms.textField({
 				label: "Email URL Format"|t,
-				instructions: 'What the online version of the Email URLs should look like. You can include tags that output email properties, such as {slug} or {postDate|date("Y")}.'|t,
+				instructions: 'What the online version of the Campaign Email URLs should look like. You can include tags that output email properties, such as {slug} or {postDate|date("Y")}.'|t,
 				placeholder: 'email/{slug}',
 				name: 'sproutEmail[urlFormat]',
 				value: (campaignType is defined ? campaignType.urlFormat : null),
@@ -117,7 +117,7 @@
 		<hr>
 
 		{{ forms.checkboxField({
-			label: "Add a custom format to the Title field?"|t,
+			label: "Add a custom format to the Subject field?"|t,
 			id: 'hasAdvancedTitles',
 			name: 'sproutEmail[hasAdvancedTitles]',
 			checked: (campaignType is defined ? campaignType.hasAdvancedTitles : 0),
@@ -127,8 +127,8 @@
 		<div id="advancedtitle-settings" class="nested-fields{% if not campaignType.hasAdvancedTitles %} hidden{% endif %}">
 
 			{{ forms.textField({
-				label: "Title Format"|t,
-				instructions: "What the auto-generated Email titles should look like. You can include tags that output email properties, such as {ex}."|t({ ex: '<code>{myCustomField}</code>' }),
+				label: 'Subject Format'|t,
+				instructions: 'What the auto-generated email Subject should look like. You can include tags that output email properties, such as {code}.'|t({ code: '<code>{myCustomField}</code>' }),
 				id: 'titleFormat',
 				name: 'sproutEmail[titleFormat]',
 				value: (campaignType is defined ? campaignType.titleFormat : null),
