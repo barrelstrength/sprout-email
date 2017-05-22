@@ -8,7 +8,6 @@ namespace Craft;
  */
 class SproutEmail_CampaignEmailDeleteElementAction extends DeleteElementAction
 {
-
 	/**
 	 * @param ElementCriteriaModel $criteria
 	 *
