@@ -28,14 +28,13 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 * Disabled - Campaign isn't setup properly
 	 * Pending -  Campaign is setup but Entry is disabled
 	 * Ready -    Campaign is setup and is enabled
-	 * Archived - has been sent, or exported and manually marked archived
 	 *
 	 * @todo - needs some testing
 	 */
 	const READY    = 'ready';
 	const PENDING  = 'pending';
 	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
-	const ARCHIVED = 'archived';
+	const SENT     = 'sent';
 
 	/**
 	 * @param mixed|null $element
@@ -64,7 +63,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::Mixed, 'default' => null),
+			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
 			'listSettings'        => Attributetype::Mixed,
@@ -122,14 +121,12 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 * Pending -  has all required attributes and is disabled or
 	 *              does not have all required attributes
 	 * Ready -    has all required attributes, and is enabled
-	 * Archived - has been sent, or exported and manually marked archived
 	 */
 
 	/**
 	 * Returns the entry status based on actual values and dynamic checking
 	 *
 	 * Disabled - Entry is disabled
-	 * Archived - Entry has been manually set to archived
 	 * Pending  - Entry is enabled but some requirements are not yet met
 	 * Ready    - Entry is enabled and all requirements are met
 	 *
@@ -152,7 +149,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			{
 				if ($this->sent)
 				{
-					return static::ARCHIVED;
+					return static::SENT;
 				}
 
 				if (empty($campaignType->mailer) || empty($campaignType->template))
@@ -164,9 +161,9 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 				break;
 			}
-			case BaseElementModel::ARCHIVED:
+			case SproutEmail_CampaignEmailModel::SENT:
 			{
-				return static::ARCHIVED;
+				return static::SENT;
 
 				break;
 			}
