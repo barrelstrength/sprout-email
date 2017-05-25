@@ -430,13 +430,26 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 		if (craft()->plugins->getPlugin('sproutlists') != null)
 		{
-			$listType = sproutLists()->lists->getListType('subscriber');
+			// Get all subscribers by list IDs from the SproutLists_SubscriberListType
+			$listRecords = SproutLists_ListRecord::model()->findAllByPk($email->listSettings['listIds']);
 
-			$sproutListsRecipients = $listType->getSubscribers(array(
-				'ids' =>  $email->listSettings['listIds']
-			));
+			$sproutListsRecipientsInfo = array();
+			if ($listRecords != null)
+			{
+				foreach ($listRecords as $listRecord)
+				{
+					if (!empty($listRecord->subscribers))
+					{
+						foreach ($listRecord->subscribers as $subscriber)
+						{
+							// Assign email as key to not repeat subscriber
+							$sproutListsRecipientsInfo[$subscriber->email] = $subscriber->getAttributes();
+						}
+					}
+				}
+			}
 
-			$sproutListsRecipients = SproutEmail_SimpleRecipientModel::populateModels($sproutListsRecipients);
+			$sproutListsRecipients = SproutEmail_SimpleRecipientModel::populateModels($sproutListsRecipientsInfo);
 
 			$recipients = array_merge($recipients, $sproutListsRecipients);
 		}
