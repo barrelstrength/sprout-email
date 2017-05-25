@@ -102,6 +102,14 @@
 					errors: (campaignEmail ? campaignEmail.getErrors('slug')|merge(campaignEmail.getErrors('uri'))),
 				}) }}
 
+				{{ forms.dateTimeField({
+					label: "Send Date"|t,
+					id: 'sendDate',
+					name: 'sendDate',
+					value: campaignEmail.sendDate,
+					errors: (campaignEmail ? campaignEmail.getErrors('sendDate')),
+				}) }}
+
 				{% set statusInput %}
 					<div class="left">
 						{{ forms.lightswitch({

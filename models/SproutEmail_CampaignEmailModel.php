@@ -13,6 +13,7 @@ namespace Craft;
  * @property string      $fromEmail
  * @property string      $replyToEmail
  * @property bool        $sent
+ * @property datetime    $sendDate
  * --
  * @property string|null $uri
  * @property string      $slug
@@ -64,6 +65,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
+			'sendDate'              => array(AttributeType::DateTime, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
 			'listSettings'        => Attributetype::Mixed,

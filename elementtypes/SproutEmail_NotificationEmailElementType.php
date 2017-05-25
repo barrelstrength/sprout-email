@@ -295,7 +295,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 *
 	 * @param array $row
 	 *
-	 * @return array
+	 * @return BaseModel
 	 */
 	public function populateElementModel($row)
 	{

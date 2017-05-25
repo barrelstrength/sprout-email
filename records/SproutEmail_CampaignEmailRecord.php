@@ -40,7 +40,8 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
 			'sent'                  => array(AttributeType::Bool),
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null)
+			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
+			'sendDate'              => array(AttributeType::DateTime, 'default' => null)
 		);
 	}
 

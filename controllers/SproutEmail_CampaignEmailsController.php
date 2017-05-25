@@ -46,7 +46,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			if (is_numeric($emailId))
 			{
-				$campaignEmail = craft()->elements->getElementById($emailId);
+				$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 			}
 			else
 			{
@@ -503,6 +503,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail->fromEmail      = craft()->request->getPost('sproutEmail.fromEmail');
 		$campaignEmail->replyToEmail   = craft()->request->getPost('sproutEmail.replyToEmail');
 		$campaignEmail->subjectLine    = craft()->request->getPost('subjectLine');
+		$campaignEmail->sendDate       = craft()->request->getPost('sendDate');
 
 		if (craft()->request->getPost('sproutEmail.recipients') != null)
 		{
