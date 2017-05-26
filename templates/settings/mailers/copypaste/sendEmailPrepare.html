@@ -6,9 +6,17 @@
 
 	<hr>
 
+	{% set sendDate = craft.sproutEmail.getDisplaySendDate(email) %}
+	{% if sendDate is not empty %}
+		<div style="float:left; margin-bottom: 20px;">
+			<strong>{{ "Send Date"|t }}:</strong> {{ sendDate|date("F jS Y \\a\\t g:ia") }}
+		</div>
+		<div style="clear: both"></div>
+	{% endif %}
+
 	<div style="position:relative;">
 		<div style="float:left;"><strong>{{ "HTML Content"|t }}</strong></div>
-	
+
 		<div style="float:right"><a href="#" class="btnSelectAll btn small formsubmit" data-subject="#html" title="{{ 'Select HTML Content'|t }}">{{ "Select HTML"|t }}</a></div>
 	</div>
 

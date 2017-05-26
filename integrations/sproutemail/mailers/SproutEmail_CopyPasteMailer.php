@@ -83,6 +83,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 			$response          = new SproutEmail_ResponseModel();
 			$response->success = true;
 			$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/sendEmailPrepare', array(
+				'email' => $campaignEmail,
 				'html' => trim($html),
 				'text' => trim($text),
 			));
