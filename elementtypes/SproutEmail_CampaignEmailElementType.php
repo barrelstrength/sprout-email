@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CampaignEmailElementType extends BaseElementType
@@ -45,10 +46,13 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		return true;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_CampaignEmailModel::READY  => Craft::t('Ready'),
+			SproutEmail_CampaignEmailModel::READY    => Craft::t('Ready'),
 			SproutEmail_CampaignEmailModel::SENT     => Craft::t('Sent'),
 			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
 			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
@@ -132,7 +136,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 		if ($attribute == 'send')
 		{
-			$mailer       = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
+			$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
 
 			return craft()->templates->render('sproutemail/_partials/campaigns/prepareLink', array(
 				'email'        => $element,
@@ -159,15 +163,19 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function defineAvailableTableAttributes()
 	{
-		$attributes = array(
-			'title'        => array('label' => Craft::t('Title')),
-			'subjectLine'  => array('label' => Craft::t('Subject')),
-			'dateCreated'  => array('label' => Craft::t('Date Created')),
-			'lastDateSent' => array('label' => Craft::t('Last Date Sent')),
-			'dateUpdated'  => array('label' => Craft::t('Date Updated')),
-			'preview'      => array('label' => Craft::t('Preview')),
-			'send'         => array('label' => Craft::t('Send'))
-		);
+		$attributes['title']        = array('label' => Craft::t('Title'));
+		$attributes['subjectLine']  = array('label' => Craft::t('Subject'));
+
+		if (sproutEmail()->getConfig('displaySendDate', false))
+		{
+			$attributes['sendDate']     = array('label' => Craft::t('Send Date'));
+		}
+
+		$attributes['lastDateSent'] = array('label' => Craft::t('Last Date Sent'));
+		$attributes['dateCreated']  = array('label' => Craft::t('Date Created'));
+		$attributes['dateUpdated']  = array('label' => Craft::t('Date Updated'));
+		$attributes['preview']      = array('label' => Craft::t('Preview'));
+		$attributes['send']         = array('label' => Craft::t('Send'));
 
 		return $attributes;
 	}
@@ -196,9 +204,16 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function defineSortableAttributes()
 	{
-		$attributes['title']       = Craft::t('Title');
-		$attributes['dateCreated'] = Craft::t('Date Created');
-		$attributes['dateUpdated'] = Craft::t('Date Updated');
+		$attributes['title']        = Craft::t('Title');
+
+		if (sproutEmail()->getConfig('displaySendDate', false))
+		{
+			$attributes['sendDate']     = Craft::t('Send Date');
+		}
+
+		$attributes['lastDateSent'] = Craft::t('Last Date Sent');
+		$attributes['dateCreated']  = Craft::t('Date Created');
+		$attributes['dateUpdated']  = Craft::t('Date Updated');
 
 		return $attributes;
 	}

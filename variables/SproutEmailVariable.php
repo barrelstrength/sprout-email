@@ -254,28 +254,13 @@ class SproutEmailVariable
 		return sproutEmail()->getFirstAvailableTab();
 	}
 
-	public function isDisplaySendDate()
+	/**
+	 * Returns the value of the displaySendDate general config setting
+	 *
+	 * @return bool
+	 */
+	public function getDisplaySendDate()
 	{
-		$result = false;
-
-		$general = craft()->config->get('sproutEmail');
-
-		if ($general != null && !empty($general['displaySendDate']))
-		{
-			$result = true;
-		}
-
-		return $result;
-	}
-
-	public function getDisplaySendDate(SproutEmail_CampaignEmailModel $campaignEmail)
-	{
-		$sendDate = '';
-		if ($this->isDisplaySendDate())
-		{
-			$sendDate = $campaignEmail->sendDate;
-		}
-
-		return $sendDate;
+		return sproutEmail()->getConfig('displaySendDate', false);
 	}
 }
