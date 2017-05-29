@@ -1,10 +1,8 @@
 {% import "_includes/forms" as forms %}
 
-<section class="copypaste">
+<div class="body">
 
 	<h1>{{ "Copy & Paste"|t }}</h1>
-
-	<hr>
 
 	{% set sendDate = craft.sproutEmail.getDisplaySendDate(email) %}
 	{% if sendDate is not empty %}
@@ -47,16 +45,22 @@
 	}) }}
 	</div>
 
-	<hr>
+</div>
 
-	<div class="buttons right">
-		<button id="close" class="btn">{{ "Close"|t }}</button>
+<div class="footer">
+
+	<div class="buttons left">
+		<button id="close" class="btn">{{ "Cancel"|t }}</button>
 	</div>
-</section>
+	<div class="buttons right">
+		<button class="btn submit">{{ "Mark as Sent"|t }}</button>
+	</div>
 
-<style type="text/css">
+</div>
+
+{% includecss %}
 	textarea {
 		overflow: hidden!important;
 		margin-top:10px;
 	}
-</style>
+{% endincludecss %}

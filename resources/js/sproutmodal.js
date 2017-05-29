@@ -48,7 +48,6 @@ SproutModal.prototype.init = function ()
 				modalLoader.destroy();
 			}
 
-
 			self.create(response.content);
 		});
 	});
@@ -107,7 +106,7 @@ SproutModal.prototype.create = function (content)
 
 	// Modal setup
 	var $modal   = $("#sproutmodal").clone();
-	var $content = $("#content", $modal).html(content);
+	var $content = $modal.html(content);
 	var $spinner = $(".spinner", $modal);
 	var $actions = $(".actions", $modal);
 
@@ -184,7 +183,7 @@ SproutModal.prototype.create = function (content)
 
 SproutModal.prototype.createErrorModal = function(error)
 {
-	var $content = $('#sproutmodalcontent').clone();
+	var $content = $('#sproutmodal-error').clone();
 
 	$('.innercontent', $content).html(error);
 
@@ -195,7 +194,7 @@ SproutModal.prototype.createErrorModal = function(error)
 
 SproutModal.prototype.createLoadingModal = function()
 {
-	var $content = $('#sproutmodalloading').clone();
+	var $content = $('#sproutmodal-loading').clone();
 
 	$('.innercontent', $content);
 

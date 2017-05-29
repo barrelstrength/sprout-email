@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -53,7 +54,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function defineAttributes()
 	{
-		$defaults   = parent::defineAttributes();
+		$defaults = parent::defineAttributes();
 
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
@@ -68,7 +69,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'sendDate'              => array(AttributeType::DateTime, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
-			'listSettings'        => Attributetype::Mixed,
+			'listSettings'          => Attributetype::Mixed,
 		);
 
 		return array_merge($defaults, $attributes);
@@ -136,7 +137,20 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getStatus()
 	{
-		$status   = parent::getStatus();
+		//if ($this->archived)
+		//{
+		//	return static::ARCHIVED;
+		//}
+		//else if (!$this->enabled || !$this->localeEnabled)
+		//{
+		//	return static::DISABLED;
+		//}
+		//else
+		//{
+		//	return static::ENABLED;
+		//}
+		$status = parent::getStatus();
+
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
 		switch ($status)
@@ -147,6 +161,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 				break;
 			}
+
 			case BaseElementModel::ENABLED:
 			{
 				if ($this->sent)
@@ -163,6 +178,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 				break;
 			}
+
 			case SproutEmail_CampaignEmailModel::SENT:
 			{
 				return static::SENT;

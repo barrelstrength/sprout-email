@@ -147,6 +147,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			$campaignEmail->saveAsNew = true;
 			$campaignEmail->id        = null;
+
 		}
 
 		if (sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $this->campaignType))
@@ -254,6 +255,48 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 			$this->returnJson($response);
 		}
+	}
+
+	public function actionSendTestCampaignEmail()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$html = craft()->templates->render('sproutemail/_modals/sendTestEmail', array(
+			'campaignEmail' => $campaignEmail,
+		  'campaignType' => $campaignType
+		));
+
+		$this->returnJson(array(
+			'success' => true,
+			'content' => $html
+		));
+	}
+
+	public function actionScheduleCampaignEmail()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$html = craft()->templates->render('sproutemail/_modals/scheduleEmail', array(
+			'campaignEmail' => $campaignEmail,
+			'campaignType' => $campaignType
+		));
+
+		$this->returnJson(array(
+			'success' => true,
+			'content' => $html
+		));
 	}
 
 	/**
