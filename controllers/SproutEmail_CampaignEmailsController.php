@@ -278,6 +278,55 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		));
 	}
 
+	public function actionSendTestEmail()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$errorMsg = '';
+
+		$recipients = craft()->request->getPost('recipients');
+
+		if ($recipients == null)
+		{
+			$errorMsg = Craft::t('Empty recipients.');
+		}
+
+		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
+
+		$invalidRecipients = $result['invalid'];
+
+		if (!empty($invalidRecipients))
+		{
+			$invalidEmails = implode("<br />", $invalidRecipients);
+
+			$errorMsg = Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				'invalidEmails' => $invalidEmails
+			));
+		}
+
+		if (!empty($errorMsg))
+		{
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+					'email'   => $campaignEmail,
+					'message' => $errorMsg
+				))
+			);
+		}
+
+		$campaignEmail->recipients = $recipients;
+
+		$mailer = $campaignEmail->getMailer();
+
+		$mailer->sendTestEmail($campaignEmail, $campaignType);
+	}
+
 	public function actionScheduleCampaignEmail()
 	{
 		$this->requirePostRequest();

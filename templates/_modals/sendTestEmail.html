@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-<div class="body">
+<div class="body ">
 	<h1>{{ 'Send Test Email'|t }}</h1>
 
 	<table class="data fullwidth">
@@ -18,11 +18,11 @@
 				{% set placeholderEmails = 'email@' ~ baseUrl ~ ', email2@' ~ baseUrl %}
 
 				{{ forms.textarea({
-					name: 'recipients',
 					id:   "recipients",
+					name: "recipients",
 					class: "code",
-					placeholder: placeholderEmails,
-					value: ''
+					placeholder: placeholderEmails
+
 				}) }}
 
 			</td>
@@ -35,7 +35,9 @@
 
 <div class="footer">
 	<div class="buttons right">
-		<button class="btn submit">{{ "Send Test"|t }}</button>
+		<button class="btn submit actions"
+						data-email-id="{{ campaignEmail.id }}"
+						data-action="sproutEmail/campaignEmails/sendTestEmail">{{ "Send Test"|t }}</button>
 	</div>
 	<div class="buttons left secondary-buttons">
 		<button id="close" class="btn">{{ "Cancel"|t }}</button>
