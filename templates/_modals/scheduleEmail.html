@@ -7,7 +7,7 @@
 		<tbody>
 			<tr>
 				<td><strong>{{ "Subject"|t }}</strong></td>
-				<td class="title">{{ "Title" }}</td>
+				<td class="title">{{ campaignEmail.title }}</td>
 			</tr>
 			<tr>
 				<td><strong>{{ "Delivery"|t }}</strong></td>
@@ -21,7 +21,11 @@
 
 <div class="footer">
 	<div class="buttons right">
-		<button class="btn submit">{{ "Send Email Now"|t }}</button>
+		<button
+			class="btn submit actions"
+			data-email-id="{{ campaignEmail.id }}"
+			data-action="sproutEmail/campaignEmails/sendCampaignEmail"
+		>{{ "Send Email Now"|t }}</button>
 	</div>
 	<div class="buttons left secondary-buttons">
 		<button id="close" class="btn">{{ "Cancel"|t }}</button>

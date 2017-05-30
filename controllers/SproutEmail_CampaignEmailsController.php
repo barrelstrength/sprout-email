@@ -257,7 +257,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		}
 	}
 
-	public function actionSendTestCampaignEmail()
+	public function actionSendTestEmailModal()
 	{
 		$this->requirePostRequest();
 		$this->requireAjaxRequest();
@@ -300,6 +300,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
 
 		$invalidRecipients = $result['invalid'];
+		$emails            = $result['emails'];
 
 		if (!empty($invalidRecipients))
 		{
@@ -320,11 +321,64 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			);
 		}
 
-		$campaignEmail->recipients = $recipients;
+		try
+		{
+			$mailer = $campaignEmail->getMailer();
 
-		$mailer = $campaignEmail->getMailer();
+			$response = $mailer->sendTestEmail($campaignEmail, $campaignType, $emails);
 
-		$mailer->sendTestEmail($campaignEmail, $campaignType);
+			if ($response instanceof SproutEmail_ResponseModel)
+			{
+				if ($response->success == true)
+				{
+					if ($response->emailModel != null)
+					{
+						$emailModel = $response->emailModel;
+
+						$event = new Event($this, array(
+							'campaignEmail' => $campaignEmail,
+							'emailModel'    => $emailModel,
+							'campaign'      => $campaignType
+						));
+
+						sproutEmail()->onSendSproutEmail($event);
+					}
+				}
+
+				$this->returnJson($response);
+			}
+
+			$errorMessage = Craft::t('Mailer did not return a valid response model after sending Campaign Email.');
+
+			if (!$response)
+			{
+				$errorMessage = Craft::t('Unable to send email.');
+			}
+
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse(
+					'sproutemail/_modals/sendEmailConfirmation',
+					array(
+						'email'    => $campaignEmail,
+						'campaign' => $campaignType,
+						'message'  => Craft::t($errorMessage),
+					)
+				)
+			);
+		}
+		catch (\Exception $e)
+		{
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse(
+					'sproutemail/_modals/sendEmailConfirmation',
+					array(
+						'email'    => $campaignEmail,
+						'campaign' => $campaignType,
+						'message'  => Craft::t($e->getMessage()),
+					)
+				)
+			);
+		}
 	}
 
 	public function actionScheduleCampaignEmail()
