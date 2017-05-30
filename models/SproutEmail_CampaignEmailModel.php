@@ -34,6 +34,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 * @todo - needs some testing
 	 */
 	const READY    = 'ready';
+	const ERROR    = 'error';
 	const PENDING  = 'pending';
 	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
 	const SENT     = 'sent';

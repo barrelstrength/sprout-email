@@ -52,9 +52,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_CampaignEmailModel::READY    => Craft::t('Ready'),
 			SproutEmail_CampaignEmailModel::SENT     => Craft::t('Sent'),
 			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_CampaignEmailModel::ERROR    => Craft::t('Errors'),
 			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
 		);
 	}

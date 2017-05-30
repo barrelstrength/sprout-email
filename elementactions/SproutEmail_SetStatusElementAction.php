@@ -100,9 +100,8 @@ class SproutEmail_SetStatusElementAction extends BaseElementAction
 			'status' => array(
 				AttributeType::Enum,
 				'values'   => array(
-					SproutEmail_CampaignEmailModel::READY,
 					BaseElementModel::DISABLED,
-					SproutEmail_CampaignEmailModel::SENT
+					BaseElementModel::ENABLED
 				),
 				'required' => true
 			)
