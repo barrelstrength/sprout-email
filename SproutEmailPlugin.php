@@ -182,7 +182,9 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			sproutEmail()->sentEmails->logSentEmailCampaign($event);
 
-			sproutEmail()->campaignEmails->updateLastDateSent($event);
+			$campaignEmail = $event->params['campaignEmail'];
+
+			sproutEmail()->campaignEmails->updateLastDateSent($campaignEmail);
 		});
 
 		craft()->on('email.onSendEmail', function (Event $event)

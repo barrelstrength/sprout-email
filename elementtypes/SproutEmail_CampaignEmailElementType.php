@@ -186,6 +186,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes['dateUpdated']  = array('label' => Craft::t('Date Updated'));
 		$attributes['previewHtml']  = array('label' => Craft::t('HTML'));
 		$attributes['previewText']  = array('label' => Craft::t('Text'));
+		$attributes['template']     = array('label' => Craft::t('Template'));
 		$attributes['send']         = array('label' => Craft::t('Send'));
 
 		return $attributes;
@@ -207,6 +208,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes[] = 'previewHtml';
 		$attributes[] = 'previewText';
 		$attributes[] = 'send';
+		$attributes[] = 'template';
 
 		return $attributes;
 	}
@@ -262,19 +264,26 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::PENDING:
+			case SproutEmail_CampaignEmailModel::ERROR:
 			{
 				$query->andWhere('elements.enabled = 1');
-				$query->andWhere('campaigntype.template = "" OR campaigntype.mailer = ""');
+				$query->andWhere('campaigns.error = 1');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::READY:
+			case SproutEmail_CampaignEmailModel::PENDING:
+			{
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('campaigns.lastDateSent IS NULL');
+
+				break;
+			}
+			case SproutEmail_CampaignEmailModel::SENT:
 			{
 				$query->andWhere(
 					'
 					elements.enabled = 1
-					AND campaigns.sent = 0
+					AND campaigns.lastDateSent IS NOT NULL
 					AND campaigntype.template != ""
 					AND campaigntype.mailer != ""'
 				);
@@ -289,16 +298,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 					elements.enabled = 1					
 					AND campaigntype.template IS NOT NULL
 					AND campaigntype.mailer IS NOT NULL'
-				);
-
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::SENT:
-			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					AND campaigns.sent = 1'
 				);
 
 				break;
@@ -338,8 +337,10 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.sent as sent,
 				 campaigns.lastDateSent as lastDateSent,
 				 campaigns.sendDate as sendDate,
+				 campaigns.error as error,
 				 campaigns.listSettings as listSettings,
-				 campaigns.enableFileAttachments as enableFileAttachments'
+				 campaigns.enableFileAttachments as enableFileAttachments,
+				 campaigntype.template as template'
 			)
 			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')
 			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignTypeId');
@@ -422,8 +423,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		));
 
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+		$markSentAction = craft()->elements->getAction('SproutEmail_MarkSent');
 
-		return array($deleteAction, $setStatusAction);
+		return array($deleteAction, $setStatusAction, $markSentAction);
 	}
 
 	/**

@@ -243,10 +243,8 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	 *
 	 * @param Event $event
 	 */
-	public function updateLastDateSent(Event $event)
+	public function updateLastDateSent($campaignEmail)
 	{
-		$campaignEmail = $event->params['campaignEmail'];
-
 		if ($campaignEmail->id != null)
 		{
 			$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findById($campaignEmail->id);

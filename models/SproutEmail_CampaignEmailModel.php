@@ -68,6 +68,8 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
 			'sendDate'              => array(AttributeType::DateTime, 'default' => null),
+			'error'                 => array(AttributeType::Bool),
+			'template'              => array(AttributeType::String, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
 			'listSettings'          => Attributetype::Mixed,
@@ -138,18 +140,6 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getStatus()
 	{
-		//if ($this->archived)
-		//{
-		//	return static::ARCHIVED;
-		//}
-		//else if (!$this->enabled || !$this->localeEnabled)
-		//{
-		//	return static::DISABLED;
-		//}
-		//else
-		//{
-		//	return static::ENABLED;
-		//}
 		$status = parent::getStatus();
 
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
@@ -165,24 +155,24 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 			case BaseElementModel::ENABLED:
 			{
-				if ($this->sent)
+				if ($this->error)
 				{
-					return static::SENT;
+					return static::ERROR;
 				}
-
-				if (empty($campaignType->mailer) || empty($campaignType->template))
+				else
 				{
-					return static::PENDING;
+					if (empty($campaignType->mailer) || $this->lastDateSent == null)
+					{
+						return static::PENDING;
+					}
+
+					if (!empty($campaignType->mailer) || $this->lastDateSent != null)
+					{
+						return static::SENT;
+					}
 				}
 
 				return static::ENABLED;
-
-				break;
-			}
-
-			case SproutEmail_CampaignEmailModel::SENT:
-			{
-				return static::SENT;
 
 				break;
 			}
@@ -266,5 +256,36 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
 		return $campaignType->getMailer();
+	}
+
+	public function isContentReady()
+	{
+		$result = true;
+
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
+
+		$params = array(
+			'email'     => $this,
+			'campaign'  => $campaignType,
+			'recipient' => array(
+				'firstName' => 'First',
+				'lastName'  => 'Last',
+				'email'     => 'user@domain.com'
+			),
+
+			// @deprecate - in favor of `email` in v3
+			'entry'     => $this
+		);
+
+		$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params);
+
+		$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $params);
+
+		if ($html == null || $text == null)
+		{
+			$result = false;
+		}
+
+		return $result;
 	}
 }

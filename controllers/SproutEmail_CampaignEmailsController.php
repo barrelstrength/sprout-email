@@ -143,6 +143,13 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail = $this->getCampaignEmailModel();
 		$campaignEmail = $this->populateCampaignEmailModel($campaignEmail);
 
+		$campaignEmail->error = false;
+
+		if (!$campaignEmail->isContentReady())
+		{
+			$campaignEmail->error = true;
+		}
+
 		if (craft()->request->getPost('saveAsNew'))
 		{
 			$campaignEmail->saveAsNew = true;
