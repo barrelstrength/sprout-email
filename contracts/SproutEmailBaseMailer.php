@@ -10,6 +10,8 @@ namespace Craft;
  */
 abstract class SproutEmailBaseMailer
 {
+	public $hasList = true;
+
 	/**
 	 * The settings for this mailer stored in the sproutemail_mailers table
 	 *

@@ -145,7 +145,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$campaignEmail->error = false;
 
-		if (!$campaignEmail->isContentReady())
+		if (!$campaignEmail->isContentReady() || !$campaignEmail->isListReady())
 		{
 			$campaignEmail->error = true;
 		}

@@ -415,17 +415,10 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
-
-		$deleteAction->setParams(array(
-			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
-			'successMessage'      => Craft::t('Emails deleted.'),
-		));
-
 		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
-		$markSentAction = craft()->elements->getAction('SproutEmail_MarkSent');
+		$markSentDeleteAction = craft()->elements->getAction('SproutEmail_MarkSentDelete');
 
-		return array($deleteAction, $setStatusAction, $markSentAction);
+		return array($setStatusAction, $markSentDeleteAction);
 	}
 
 	/**

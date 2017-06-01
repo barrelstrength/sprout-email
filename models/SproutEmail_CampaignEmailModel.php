@@ -288,4 +288,21 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 		return $result;
 	}
+
+	public function isListReady()
+	{
+		$result = true;
+
+		$mailer = $this->getMailer();
+
+		if ($mailer->hasList)
+		{
+			if (empty($this->listSettings['listIds']))
+			{
+				$result = false;
+			}
+		}
+
+		return $result;
+	}
 }
