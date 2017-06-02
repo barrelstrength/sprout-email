@@ -52,10 +52,10 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_CampaignEmailModel::SENT     => Craft::t('Sent'),
-			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_CampaignEmailModel::ERROR    => Craft::t('Errors'),
-			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
+			SproutEmail_CampaignEmailModel::SENT       => Craft::t('Sent'),
+			SproutEmail_CampaignEmailModel::PENDING    => Craft::t('Pending'),
+			SproutEmail_CampaignEmailModel::INCOMPLETE => Craft::t('Incomplete'),
+			SproutEmail_CampaignEmailModel::DISABLED   => Craft::t('Disabled')
 		);
 	}
 
@@ -264,7 +264,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ERROR:
+			case SproutEmail_CampaignEmailModel::INCOMPLETE:
 			{
 				$query->andWhere('elements.enabled = 1');
 				$query->andWhere('campaigns.error = 1');
@@ -415,10 +415,24 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
-		$markSentDeleteAction = craft()->elements->getAction('SproutEmail_MarkSentDelete');
+		$setStatusAction              = craft()->elements->getAction('SetStatus');
+		$setStatusAction->onSetStatus = function (Event $event)
+		{
+			if ($event->params['status'] == BaseElementModel::ENABLED)
+			{
+				// Update Date Updated value as well
+				craft()->db->createCommand()->update(
+					'sproutemail_campaignemails',
+					array('dateUpdated' => DateTimeHelper::currentTimeForDb()),
+					array('and', array('in', 'id', $event->params['elementIds']))
+				);
+			}
+		};
 
-		return array($setStatusAction, $markSentDeleteAction);
+		$markSentAction = craft()->elements->getAction('SproutEmail_MarkSent');
+		$deleteAction   = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
+
+		return array($setStatusAction, $markSentAction, $deleteAction);
 	}
 
 	/**

@@ -285,7 +285,19 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'successMessage'      => Craft::t('Emails deleted.'),
 		));
 
-		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+		$setStatusAction = craft()->elements->getAction('SetStatus');
+		$setStatusAction->onSetStatus = function(Event $event)
+		{
+			if ($event->params['status'] == BaseElementModel::ENABLED)
+			{
+				// Set a Date Updated as well
+				craft()->db->createCommand()->update(
+					'sproutemail_notificationemails',
+					array('dateUpdated' => DateTimeHelper::currentTimeForDb()),
+					array('and', array('in', 'id', $event->params['elementIds']))
+				);
+			}
+		};
 
 		return array($deleteAction, $setStatusAction);
 	}

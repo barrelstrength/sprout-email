@@ -18,6 +18,6 @@
 	background-color: #27AE60;
 }
 
-.status.failed, .status.error  {
+.status.failed, .status.incomplete  {
 	background-color: #D0021B;
 }

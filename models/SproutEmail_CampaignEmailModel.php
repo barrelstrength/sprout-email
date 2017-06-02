@@ -33,11 +33,11 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 *
 	 * @todo - needs some testing
 	 */
-	const READY    = 'ready';
-	const ERROR    = 'error';
-	const PENDING  = 'pending';
-	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
-	const SENT     = 'sent';
+	const READY      = 'ready';
+	const INCOMPLETE = 'incomplete';
+	const PENDING    = 'pending';
+	const DISABLED   = 'disabled'; // this doesn't behave properly when named 'disabled'
+	const SENT       = 'sent';
 
 	/**
 	 * @param mixed|null $element
@@ -157,7 +157,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			{
 				if ($this->error)
 				{
-					return static::ERROR;
+					return static::INCOMPLETE;
 				}
 				else
 				{
