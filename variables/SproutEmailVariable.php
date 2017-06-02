@@ -59,6 +59,8 @@ class SproutEmailVariable
 	/**
 	 * Returns a list of mailers that can send campaigns
 	 *
+	 * @todo - update this and remove the $exclude variable in favor of handling exceptions on the Mailer Class
+	 *
 	 * @return SproutEmailBaseMailer[]
 	 */
 	public function getCampaignMailers($exclude = null)

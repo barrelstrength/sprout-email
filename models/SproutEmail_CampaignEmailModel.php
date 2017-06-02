@@ -155,13 +155,13 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 			case BaseElementModel::ENABLED:
 			{
-				if ($this->error)
+				if ($this->error OR empty($campaignType->getMailer()))
 				{
 					return static::INCOMPLETE;
 				}
 				else
 				{
-					if (empty($campaignType->mailer) || $this->lastDateSent == null)
+					if ($this->lastDateSent == null)
 					{
 						return static::PENDING;
 					}
