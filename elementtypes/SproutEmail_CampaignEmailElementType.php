@@ -429,10 +429,11 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			}
 		};
 
-		$markSentAction = craft()->elements->getAction('SproutEmail_MarkSent');
-		$deleteAction   = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
+		$markSentAction   = craft()->elements->getAction('SproutEmail_MarkSent');
+		$markUnsentAction = craft()->elements->getAction('SproutEmail_MarkUnsent');
+		$deleteAction     = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
 
-		return array($setStatusAction, $markSentAction, $deleteAction);
+		return array($setStatusAction, $markSentAction, $markUnsentAction, $deleteAction);
 	}
 
 	/**
