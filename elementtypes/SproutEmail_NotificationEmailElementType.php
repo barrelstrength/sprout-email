@@ -85,7 +85,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'name'        => array('label' => Craft::t('Notification Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'preview'     => array('label' => Craft::t('Preview')),
+			'previewHtml' => array('label' => Craft::t('HTML')),
+			'previewText' => array('label' => Craft::t('Text')),
 			'send'        => array('label' => Craft::t('Send'))
 		);
 
@@ -105,7 +106,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'name';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-		$attributes[] = 'preview';
+		$attributes[] = 'previewHtml';
+		$attributes[] = 'previewText';
 		$attributes[] = 'send';
 
 		return $attributes;
@@ -138,7 +140,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			));
 		}
 
-		if ($attribute == 'preview')
+		if ($attribute == 'previewHtml' or $attribute == 'previewText')
 		{
 			$shareUrl = null;
 
@@ -150,8 +152,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			}
 
 			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
-				'email'    => $element,
-				'shareUrl' => $shareUrl
+				'email'        => $element,
+				'shareUrl'     => $shareUrl,
+				'type'         => $attribute
 			));
 		}
 
@@ -285,8 +288,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'successMessage'      => Craft::t('Emails deleted.'),
 		));
 
-		$setStatusAction = craft()->elements->getAction('SetStatus');
-		$setStatusAction->onSetStatus = function(Event $event)
+		$setStatusAction              = craft()->elements->getAction('SetStatus');
+		$setStatusAction->onSetStatus = function (Event $event)
 		{
 			if ($event->params['status'] == BaseElementModel::ENABLED)
 			{

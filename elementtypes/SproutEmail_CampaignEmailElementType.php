@@ -223,7 +223,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes[] = 'contentCheck';
 		$attributes[] = 'recipientsCheck';
 		$attributes[] = 'previewHtml';
-		$attributes[] = 'previewHtml';
 		$attributes[] = 'previewText';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'lastDateSent';

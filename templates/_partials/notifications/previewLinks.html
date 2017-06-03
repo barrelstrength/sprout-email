@@ -1,7 +1,13 @@
 {% if email.getUrl() %}
 
-	<a href="{{ shareUrl }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
-	&nbsp;/&nbsp;
-	<a href="{{ shareUrl }}&type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+	{% if type == 'previewHtml' %}
+		<a href="{{ shareUrl }}" title="{{ email.title }}" onclick="window.open('{{ shareUrl }}', 'newwindow',
+			'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
+	{% endif %}
+
+	{% if type == 'previewText' %}
+		<a href="{{ shareUrl }}&type=text" title="{{ email.subjectLine }}" onclick="window.open('{{ shareUrl }}', 'newwindow',
+			'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
+	{% endif %}
 
 {% endif %}
