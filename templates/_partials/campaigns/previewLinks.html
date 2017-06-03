@@ -1,18 +1,23 @@
+
 {% set status = email.getStatus() %}
 
-{% if email.getUrl() %}
+{% if status != 'sent' or not email.getUrl() %}
+	{# Draft Email or Email without URLs #}
+	{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaignType.id) %}
+	{% set separator = '&' %}
+{% else %}
+	{# Live Email with URLs #}
+	{% set emailUrl = email.getUrl() %}
+	{% set separator = '?' %}
+{% endif %}
 
-	{% if status != 'ready' %}
-		{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaignType.id) %}
-		{% set separator = '&' %}
-	{% else %}
-		{% set emailUrl = email.url %}
-		{% set separator = '?' %}
-	{% endif %}
+{% if emailUrl %}
 
 	{% if type == 'html' %}
-	<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
+
+		<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
 		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
+
 	{% endif %}
 
 	{% if type == 'text' %}
