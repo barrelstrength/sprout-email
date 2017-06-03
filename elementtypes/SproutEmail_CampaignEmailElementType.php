@@ -147,9 +147,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
 
 			return craft()->templates->render('sproutemail/_partials/campaigns/prepareLink', array(
-				'email'        => $element,
-				'campaignType' => $campaignType,
-				'mailer'       => $mailer
+				'campaignEmail' => $element,
+				'campaignType'  => $campaignType,
+				'mailer'        => $mailer
 			));
 		}
 
@@ -188,7 +188,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 		if ($attribute == 'dateScheduled' && $element->dateScheduled)
 		{
-			return '<span title="' . $element->dateScheduled->format('l, d F Y, h:ia') . '">' . $element->dateScheduled->uiTimestamp() .	'</span>';
+			return '<span title="' . $element->dateScheduled->format('l, d F Y, h:ia') . '">' . $element->dateScheduled->uiTimestamp() . '</span>';
 		}
 
 		if ($attribute == 'dateSent' && $element->dateSent)

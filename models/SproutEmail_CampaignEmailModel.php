@@ -242,13 +242,23 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	}
 
 	/**
-	 * Determine if this Campaign Email is able to be sent
+	 * Determine if this Campaign Email is ready to be sent
 	 *
 	 * @return bool
 	 */
-	public function isReady()
+	public function isReadyToSend()
 	{
 		return (bool) ($this->getMailer() && $this->isContentReady() && $this->isListReady());
+	}
+
+	/**
+	 * Determine if this Campaign Email is ready enough to be tested (a campaign can be tested before we assign a list)
+	 *
+	 * @return bool
+	 */
+	public function isReadyToTest()
+	{
+		return (bool) ($this->getMailer() && $this->isContentReady());
 	}
 
 	/**

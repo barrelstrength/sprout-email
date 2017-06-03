@@ -1,10 +1,14 @@
-{% if email.isReady() %}
+{%- if campaignEmail.isReadyToSend() or campaignEmail.isReadyToTest() -%}
+
   <a href="#"
     data-action="{{ mailer.getActionForPrepareModal() }}"
     data-mailer="{{ mailer.getId() }}"
-    data-email-id="{{ email.id }}"
+    data-email-id="{{ campaignEmail.id }}"
     data-campaign-type-id="{{ campaignType.id }}"
     class="prepare">{{ "Prepare"|t }}</a>
-{% else %}
+
+{%- else -%}
+
   <span class="light">Prepare</span>
-{% endif %}
+
+{%- endif -%}
