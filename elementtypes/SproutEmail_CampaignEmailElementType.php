@@ -133,8 +133,8 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignTypeId);
 
-		$passHtml = '<span class="success" title="{{ \'Passed\'|t }}" data-icon="check"></span>';
-		$failHtml = '<span class="error" title="{{ \'Failed\'|t }}" data-icon="error"></span>';
+		$passHtml = '<span class="success" title="' . Craft::t('Passed') . '" data-icon="check"></span>';
+		$failHtml = '<span class="error" title="' . Craft::t('Failed') . '" data-icon="error"></span>';
 
 		if ($attribute == 'send')
 		{
