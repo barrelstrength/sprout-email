@@ -1,6 +1,7 @@
 {% import "_includes/forms" as forms %}
 
 <div class="body">
+
 	<h1>{{ "Test Notification"|t }}</h1>
 
 	<div class="sproutemail-preparemodalbody">
@@ -40,30 +41,21 @@
 			</p>
 		{% endif %}
 
-		<div class="buttons right">
-			<button id="close" class="btn">{{ "Cancel"|t }}</button>
-
-			<button
-				{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
-				data-mailer="defaultmailer"
-				data-action="sproutEmail/notificationEmails/sendTestNotificationEmail"
-				data-notification-id="{{ notificationEmail.id }}"
-				class="btn submit actions">
-					{{- "Send Test"|t -}}
-			</button>
-		</div>
 	</div>
 </div>
 
-<style>
-	.sproutemail-preparemodalbody table.data tbody tr:first-child td.title {
-		padding-left: 22px;
-	}
-	.sproutemail-preparemodalbody .buttons {
-		margin-bottom: 0;
-	}
-	.sproutemail-preparemodalbody .error a {
-		color: inherit;
-		text-decoration: underline;
-	}
-</style>
+<div class="footer">
+	<div class="buttons left">
+		<button id="close" class="btn">{{ "Cancel"|t }}</button>
+	</div>
+	<div class="buttons right">
+		<button
+			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
+			data-mailer="defaultmailer"
+			data-action="sproutEmail/notificationEmails/sendTestNotificationEmail"
+			data-notification-id="{{ notificationEmail.id }}"
+			class="btn submit actions">
+			{{- "Send Test"|t -}}
+		</button>
+	</div>
+</div>

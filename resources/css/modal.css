@@ -63,3 +63,15 @@
 	font-style: normal;
 	padding: .1em;
 }
+
+/* Notifications */
+.sproutemail-preparemodalbody table.data tbody tr:first-child td.title {
+	padding-left: 22px;
+}
+.sproutemail-preparemodalbody .buttons {
+	margin-bottom: 0;
+}
+.sproutemail-preparemodalbody .error a {
+	color: inherit;
+	text-decoration: underline;
+}
