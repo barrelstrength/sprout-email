@@ -5,6 +5,7 @@
 	<h1>{{ "Copy & Paste"|t }}</h1>
 
 	{% set sendDate = craft.sproutEmail.getDisplaySendDate(email) %}
+
 	{% if sendDate is not empty %}
 		<div style="float:left; margin-bottom: 20px;">
 			<strong>{{ "Send Date"|t }}:</strong> {{ sendDate|date("F jS Y \\a\\t g:ia") }}
@@ -52,8 +53,13 @@
 	<div class="buttons left">
 		<button id="close" class="btn">{{ "Cancel"|t }}</button>
 	</div>
-	<div class="buttons right">
-		<button class="btn submit">{{ "Mark as Sent"|t }}</button>
+	<div class="buttons right actions">
+		<button
+			data-action="sproutEmail/copyPaste/markSent"
+			data-email-id="{{ email.id }}"
+			class="btn submit">
+			{{ "Mark as Sent"|t }}
+		</button>
 	</div>
 
 </div>
