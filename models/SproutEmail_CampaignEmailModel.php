@@ -34,7 +34,6 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 * @todo - needs some testing
 	 */
 	const READY      = 'ready';
-	const INCOMPLETE = 'incomplete';
 	const PENDING    = 'pending';
 	const DISABLED   = 'disabled'; // this doesn't behave properly when named 'disabled'
 	const SENT       = 'sent';
@@ -144,39 +143,20 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
-		switch ($status)
+		if ($status == BaseElementModel::ENABLED)
 		{
-			case BaseElementModel::DISABLED:
+			if ($this->lastDateSent == null)
 			{
-				return static::DISABLED;
-
-				break;
+				return static::PENDING;
 			}
 
-			case BaseElementModel::ENABLED:
+			if ($this->lastDateSent != null)
 			{
-				if ($this->error OR empty($campaignType->getMailer()))
-				{
-					return static::INCOMPLETE;
-				}
-				else
-				{
-					if ($this->lastDateSent == null)
-					{
-						return static::PENDING;
-					}
-
-					if (!empty($campaignType->mailer) || $this->lastDateSent != null)
-					{
-						return static::SENT;
-					}
-				}
-
-				return static::ENABLED;
-
-				break;
+				return static::SENT;
 			}
 		}
+
+		return $status;
 	}
 
 	/**
@@ -246,11 +226,11 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 		}
 	}
 
-	public function isReady()
-	{
-		return (bool) ($this->getStatus() == static::SENT OR $this->getStatus() == static::PENDING);
-	}
-
+	/**
+	 * Gets the Mailer associated with this Campaign Email
+	 *
+	 * @return SproutEmailBaseMailer|null
+	 */
 	public function getMailer()
 	{
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
@@ -258,10 +238,25 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 		return $campaignType->getMailer();
 	}
 
+	/**
+	 * Determine if this Campaign Email is able to be sent
+	 *
+	 * @return bool
+	 */
+	public function isReady()
+	{
+		return (bool) ($this->getStatus() == static::SENT OR $this->getStatus() == static::PENDING);
+	}
+
+	/**
+	 * Determine if the content of this email is ready to be sent
+	 *
+	 * @todo - is this necessary with proper validation? An entry shouldn't save if it has invalid fields...
+	 *
+	 * @return bool
+	 */
 	public function isContentReady()
 	{
-		$result = true;
-
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
 		$params = array(
@@ -283,26 +278,29 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 
 		if ($html == null || $text == null)
 		{
-			$result = false;
+			return false;
 		}
 
-		return $result;
+		return true;
 	}
 
+	/**
+	 * Determine if this Campaign Email has lists that it will be sent to
+	 *
+	 * @return bool
+	 */
 	public function isListReady()
 	{
-		$result = true;
-
 		$mailer = $this->getMailer();
 
 		if ($mailer->hasList)
 		{
 			if (empty($this->listSettings['listIds']))
 			{
-				$result = false;
+				return false;
 			}
 		}
 
-		return $result;
+		return true;
 	}
 }

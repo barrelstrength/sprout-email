@@ -52,10 +52,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	public function getStatuses()
 	{
 		return array(
-			SproutEmail_CampaignEmailModel::SENT       => Craft::t('Sent'),
-			SproutEmail_CampaignEmailModel::PENDING    => Craft::t('Pending'),
-			SproutEmail_CampaignEmailModel::INCOMPLETE => Craft::t('Incomplete'),
-			SproutEmail_CampaignEmailModel::DISABLED   => Craft::t('Disabled')
+			SproutEmail_CampaignEmailModel::SENT     => Craft::t('Sent'),
+			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
+			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
 		);
 	}
 
@@ -134,6 +133,9 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignTypeId);
 
+		$passHtml = '<span class="success" title="{{ \'Passed\'|t }}" data-icon="check"></span>';
+		$failHtml = '<span class="error" title="{{ \'Failed\'|t }}" data-icon="error"></span>';
+
 		if ($attribute == 'send')
 		{
 			$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
@@ -163,6 +165,21 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			));
 		}
 
+		if ($attribute == 'template')
+		{
+			return '<code>' . $element->template . '</code>';
+		}
+
+		if ($attribute == 'contentCheck')
+		{
+			return $element->isContentReady() ? $passHtml : $failHtml;
+		}
+
+		if ($attribute == 'recipientsCheck')
+		{
+			return $element->isListReady() ? $passHtml : $failHtml;
+		}
+
 		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
@@ -173,20 +190,22 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function defineAvailableTableAttributes()
 	{
-		$attributes['title']       = array('label' => Craft::t('Subject'));
+		$attributes['title'] = array('label' => Craft::t('Subject'));
 
 		if (sproutEmail()->getConfig('displaySendDate', false))
 		{
 			$attributes['sendDate'] = array('label' => Craft::t('Send Date'));
 		}
 
-		$attributes['lastDateSent'] = array('label' => Craft::t('Last Date Sent'));
-		$attributes['dateCreated']  = array('label' => Craft::t('Date Created'));
-		$attributes['dateUpdated']  = array('label' => Craft::t('Date Updated'));
-		$attributes['previewHtml']  = array('label' => Craft::t('HTML'));
-		$attributes['previewText']  = array('label' => Craft::t('Text'));
-		$attributes['template']     = array('label' => Craft::t('Template'));
-		$attributes['send']         = array('label' => Craft::t('Send'));
+		$attributes['lastDateSent']    = array('label' => Craft::t('Last Date Sent'));
+		$attributes['contentCheck']    = array('label' => Craft::t('Content'));
+		$attributes['recipientsCheck'] = array('label' => Craft::t('Recipients'));
+		$attributes['dateCreated']     = array('label' => Craft::t('Date Created'));
+		$attributes['dateUpdated']     = array('label' => Craft::t('Date Updated'));
+		$attributes['previewHtml']     = array('label' => Craft::t('HTML'));
+		$attributes['previewText']     = array('label' => Craft::t('Text'));
+		$attributes['template']        = array('label' => Craft::t('Template'));
+		$attributes['send']            = array('label' => Craft::t('Send'));
 
 		return $attributes;
 	}
@@ -201,13 +220,14 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'title';
-		$attributes[] = 'lastDateSent';
-		$attributes[] = 'dateCreated';
-		$attributes[] = 'dateUpdated';
+		$attributes[] = 'contentCheck';
+		$attributes[] = 'recipientsCheck';
+		$attributes[] = 'previewHtml';
 		$attributes[] = 'previewHtml';
 		$attributes[] = 'previewText';
+		$attributes[] = 'dateCreated';
+		$attributes[] = 'lastDateSent';
 		$attributes[] = 'send';
-		$attributes[] = 'template';
 
 		return $attributes;
 	}
@@ -260,13 +280,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			case SproutEmail_CampaignEmailModel::DISABLED:
 			{
 				$query->andWhere('elements.enabled = 0');
-
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::INCOMPLETE:
-			{
-				$query->andWhere('elements.enabled = 1');
-				$query->andWhere('campaigns.error = 1');
 
 				break;
 			}
@@ -336,7 +349,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.sent as sent,
 				 campaigns.lastDateSent as lastDateSent,
 				 campaigns.sendDate as sendDate,
-				 campaigns.error as error,
 				 campaigns.listSettings as listSettings,
 				 campaigns.enableFileAttachments as enableFileAttachments,
 				 campaigntype.template as template'
