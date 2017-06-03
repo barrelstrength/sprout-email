@@ -24,10 +24,10 @@ class SproutEmail_MarkUnsentElementAction extends BaseElementAction
 	 */
 	public function performAction(ElementCriteriaModel $criteria)
 	{
-		// Update lastDateSent to null
+		// Update Date Sent to null
 		craft()->db->createCommand()->update(
 			'sproutemail_campaignemails',
-			array('lastDateSent' => null),
+			array('dateSent' => null),
 			array('in', 'id', $criteria->ids())
 		);
 

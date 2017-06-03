@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -147,7 +148,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			$campaignEmail->saveAsNew = true;
 			$campaignEmail->id        = null;
-
 		}
 
 		if (sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $this->campaignType))
@@ -269,7 +269,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$html = craft()->templates->render('sproutemail/_modals/sendTestEmail', array(
 			'campaignEmail' => $campaignEmail,
-		  'campaignType' => $campaignType
+			'campaignType'  => $campaignType
 		));
 
 		$this->returnJson(array(
@@ -393,7 +393,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$html = craft()->templates->render('sproutemail/_modals/scheduleEmail', array(
 			'campaignEmail' => $campaignEmail,
-			'campaignType' => $campaignType
+			'campaignType'  => $campaignType
 		));
 
 		$this->returnJson(array(
@@ -649,7 +649,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail->fromEmail      = craft()->request->getPost('sproutEmail.fromEmail');
 		$campaignEmail->replyToEmail   = craft()->request->getPost('sproutEmail.replyToEmail');
 		$campaignEmail->subjectLine    = craft()->request->getPost('subjectLine');
-		$campaignEmail->sendDate       = craft()->request->getPost('sendDate');
+		$campaignEmail->dateScheduled  = craft()->request->getPost('dateScheduled');
 
 		if (craft()->request->getPost('sproutEmail.recipients') != null)
 		{

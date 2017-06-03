@@ -106,13 +106,13 @@
 					errors: (campaignEmail ? campaignEmail.getErrors('slug')|merge(campaignEmail.getErrors('uri'))),
 				}) }}
 
-				{% if craft.sproutEmail.displaySendDate() %}
+				{% if craft.sproutEmail.displayDateScheduled() %}
 					{{ forms.dateTimeField({
-						label: "Send Date"|t,
-						id: 'sendDate',
-						name: 'sendDate',
-						value: campaignEmail.sendDate,
-						errors: (campaignEmail ? campaignEmail.getErrors('sendDate')),
+						label: "Schedule <span class='info'>The date and time to send this email.</span>"|t,
+						id: 'dateScheduled',
+						name: 'dateScheduled',
+						value: campaignEmail.dateScheduled,
+						errors: (campaignEmail ? campaignEmail.getErrors('dateScheduled')),
 					}) }}
 				{% endif %}
 

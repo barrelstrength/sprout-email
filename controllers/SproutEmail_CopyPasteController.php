@@ -14,7 +14,7 @@ class SproutEmail_CopyPasteController extends BaseController
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
-		$campaignEmail->lastDateSent = DateTimeHelper::currentTimeForDb();
+		$campaignEmail->dateSent = DateTimeHelper::currentTimeForDb();
 
 		if (sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaignType))
 		{

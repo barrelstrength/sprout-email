@@ -51,11 +51,17 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function getStatuses()
 	{
-		return array(
-			SproutEmail_CampaignEmailModel::SENT     => Craft::t('Sent'),
-			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
-		);
+		$statuses[SproutEmail_CampaignEmailModel::SENT] = Craft::t('Sent');
+
+		if (sproutEmail()->getConfig('displayDateScheduled', false))
+		{
+			$statuses[SproutEmail_CampaignEmailModel::SCHEDULED] = Craft::t('Scheduled');
+		}
+
+		$statuses[SproutEmail_CampaignEmailModel::PENDING]  = Craft::t('Pending');
+		$statuses[SproutEmail_CampaignEmailModel::DISABLED] = Craft::t('Disabled');
+
+		return $statuses;
 	}
 
 	/**
@@ -180,6 +186,16 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			return $element->isListReady() ? $passHtml : $failHtml;
 		}
 
+		if ($attribute == 'dateScheduled' && $element->dateScheduled)
+		{
+			return '<span title="' . $element->dateScheduled->format('l, d F Y, h:ia') . '">' . $element->dateScheduled->uiTimestamp() .	'</span>';
+		}
+
+		if ($attribute == 'dateSent' && $element->dateSent)
+		{
+			return '<span title="' . $element->dateSent->format('l, d F Y, h:ia') . '">' . $element->dateSent->uiTimestamp() . '</span>';
+		}
+
 		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
@@ -192,12 +208,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$attributes['title'] = array('label' => Craft::t('Subject'));
 
-		if (sproutEmail()->getConfig('displaySendDate', false))
+		if (sproutEmail()->getConfig('displayDateScheduled', false))
 		{
-			$attributes['sendDate'] = array('label' => Craft::t('Send Date'));
+			$attributes['dateScheduled'] = array('label' => Craft::t('Date Scheduled'));
 		}
 
-		$attributes['lastDateSent']    = array('label' => Craft::t('Last Date Sent'));
+		$attributes['dateSent']        = array('label' => Craft::t('Date Sent'));
 		$attributes['contentCheck']    = array('label' => Craft::t('Content'));
 		$attributes['recipientsCheck'] = array('label' => Craft::t('Recipients'));
 		$attributes['dateCreated']     = array('label' => Craft::t('Date Created'));
@@ -225,7 +241,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes[] = 'previewHtml';
 		$attributes[] = 'previewText';
 		$attributes[] = 'dateCreated';
-		$attributes[] = 'lastDateSent';
+		$attributes[] = 'dateSent';
 		$attributes[] = 'send';
 
 		return $attributes;
@@ -238,14 +254,14 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		$attributes['title'] = Craft::t('Subject');
 
-		if (sproutEmail()->getConfig('displaySendDate', false))
+		if (sproutEmail()->getConfig('displayDateScheduled', false))
 		{
-			$attributes['sendDate'] = Craft::t('Send Date');
+			$attributes['dateScheduled'] = Craft::t('Date Scheduled');
 		}
 
-		$attributes['lastDateSent'] = Craft::t('Last Date Sent');
-		$attributes['dateCreated']  = Craft::t('Date Created');
-		$attributes['dateUpdated']  = Craft::t('Date Updated');
+		$attributes['dateSent']    = Craft::t('Date Sent');
+		$attributes['dateCreated'] = Craft::t('Date Created');
+		$attributes['dateUpdated'] = Craft::t('Date Updated');
 
 		return $attributes;
 	}
@@ -276,6 +292,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		switch ($status)
 		{
+			case SproutEmail_CampaignEmailModel::ENABLED:
+			{
+				$query->andWhere('elements.enabled = 1');
+
+				break;
+			}
 			case SproutEmail_CampaignEmailModel::DISABLED:
 			{
 				$query->andWhere('elements.enabled = 0');
@@ -285,31 +307,23 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			case SproutEmail_CampaignEmailModel::PENDING:
 			{
 				$query->andWhere('elements.enabled = 1');
-				$query->andWhere('campaigns.lastDateSent IS NULL');
+				$query->andWhere('campaigns.dateSent IS NULL');
+				$query->andWhere('campaigns.dateScheduled IS NULL');
+
+				break;
+			}
+			case SproutEmail_CampaignEmailModel::SCHEDULED:
+			{
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('campaigns.dateSent IS NULL');
+				$query->andWhere('campaigns.dateScheduled IS NOT NULL');
 
 				break;
 			}
 			case SproutEmail_CampaignEmailModel::SENT:
 			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					AND campaigns.lastDateSent IS NOT NULL
-					AND campaigntype.template != ""
-					AND campaigntype.mailer != ""'
-				);
-
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::ENABLED:
-			{
-
-				$query->andWhere(
-					'
-					elements.enabled = 1					
-					AND campaigntype.template IS NOT NULL
-					AND campaigntype.mailer IS NOT NULL'
-				);
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('campaigns.dateSent IS NOT NULL');
 
 				break;
 			}
@@ -346,8 +360,8 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.fromEmail as fromEmail,
 				 campaigns.replyToEmail as replyToEmail,
 				 campaigns.sent as sent,
-				 campaigns.lastDateSent as lastDateSent,
-				 campaigns.sendDate as sendDate,
+				 campaigns.dateSent as dateSent,
+				 campaigns.dateScheduled as dateScheduled,
 				 campaigns.listSettings as listSettings,
 				 campaigns.enableFileAttachments as enableFileAttachments,
 				 campaigntype.template as template'

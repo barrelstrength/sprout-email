@@ -257,12 +257,12 @@ class SproutEmailVariable
 	}
 
 	/**
-	 * Returns the value of the displaySendDate general config setting
+	 * Returns the value of the displayDateScheduled general config setting
 	 *
 	 * @return bool
 	 */
-	public function getDisplaySendDate()
+	public function getDisplayDateScheduled()
 	{
-		return sproutEmail()->getConfig('displaySendDate', false);
+		return sproutEmail()->getConfig('displayDateScheduled', false);
 	}
 }

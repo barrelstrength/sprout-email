@@ -4,11 +4,11 @@
 
 	<h1>{{ "Copy & Paste"|t }}</h1>
 
-	{% set sendDate = craft.sproutEmail.getDisplaySendDate(email) %}
+	{% set dateScheduled = craft.sproutEmail.getDisplayDateScheduled(email) %}
 
-	{% if sendDate is not empty %}
+	{% if dateScheduled is not empty %}
 		<div style="float:left; margin-bottom: 20px;">
-			<strong>{{ "Send Date"|t }}:</strong> {{ sendDate|date("F jS Y \\a\\t g:ia") }}
+			<strong>{{ "Date Scheduled"|t }}:</strong> {{ dateScheduled|date("F jS Y \\a\\t g:ia") }}
 		</div>
 		<div style="clear: both"></div>
 	{% endif %}

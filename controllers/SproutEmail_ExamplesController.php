@@ -136,7 +136,6 @@ class SproutEmail_ExamplesController extends BaseController
 					'archived'       => '0',
 					'locale'         => $currentUser->locale,
 					'localeEnabled'  => '1',
-					'sent'           => '0',
 					'htmlBody'       => '<p>Thanks for becoming a member.</p>
 <ul>
 	<li>Username: <strong>{username}</strong></li>
@@ -174,7 +173,6 @@ Email: {email}',
 					'archived'       => '0',
 					'locale'         => $currentUser->locale,
 					'localeEnabled'  => '1',
-					'sent'           => '0',
 					'htmlBody'       => '<p>A new user has been created:</p>
 <ul>
 	<li>Username: <strong>{username}</strong></li>
@@ -202,7 +200,6 @@ Email: {email}',
 					'archived'       => '0',
 					'locale'         => $currentUser->locale,
 					'localeEnabled'  => '1',
-					'sent'           => '0',
 					'htmlBody'       => '<p>Say something interesting!</p>',
 					'textBody'       => 'Say something interesting!',
 				)

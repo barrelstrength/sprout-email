@@ -239,11 +239,11 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Update lastDateSent Column every time campaign email is sent
+	 * Update Date Sent column every time campaign email is sent
 	 *
 	 * @param Event $event
 	 */
-	public function updateLastDateSent($campaignEmail)
+	public function updateDateSent($campaignEmail)
 	{
 		if ($campaignEmail->id != null)
 		{
@@ -253,7 +253,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 			{
 				$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-				$campaignEmailRecord->lastDateSent = DateTimeHelper::currentTimeForDb();
+				$campaignEmailRecord->dateSent = DateTimeHelper::currentTimeForDb();
 
 				if ($campaignEmailRecord->save(false))
 				{

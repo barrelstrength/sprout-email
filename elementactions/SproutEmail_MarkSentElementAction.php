@@ -24,10 +24,10 @@ class SproutEmail_MarkSentElementAction extends BaseElementAction
 	 */
 	public function performAction(ElementCriteriaModel $criteria)
 	{
-		// Update lastDateSent with current DateTime
+		// Update Date Sent with current DateTime
 		craft()->db->createCommand()->update(
 			'sproutemail_campaignemails',
-			array('lastDateSent' => DateTimeHelper::currentTimeForDb()),
+			array('dateSent' => DateTimeHelper::currentTimeForDb()),
 			array('in', 'id', $criteria->ids())
 		);
 

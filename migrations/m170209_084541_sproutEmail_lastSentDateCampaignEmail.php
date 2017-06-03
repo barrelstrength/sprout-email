@@ -15,7 +15,7 @@ class m170209_084541_sproutEmail_lastSentDateCampaignEmail extends BaseMigration
 	{
 		if (($table = $this->dbConnection->schema->getTable('{{sproutemail_campaignemails}}')))
 		{
-			if (($column = $table->getColumn('lastDateSent')) == null)
+			if (($column = $table->getColumn('dateSent')) == null)
 			{
 				$definition = array(
 					AttributeType::Mixed,
@@ -24,11 +24,12 @@ class m170209_084541_sproutEmail_lastSentDateCampaignEmail extends BaseMigration
 					'required' => false
 				);
 
-				$this->addColumnBefore('sproutemail_campaignemails', 'lastDateSent', $definition, 'dateCreated');
+				$this->addColumnBefore('sproutemail_campaignemails', 'dateSent', $definition, 'dateCreated');
 			}
 			else
 			{
-				Craft::log('Tried to add a `lastDateSent` column to the `sproutemail_campaignemails` table, but there is already one there.', LogLevel::Warning);
+				Craft::log('The `dateSent` column already exists in the `sproutemail_campaignemails` table.',
+					LogLevel::Warning);
 			}
 		}
 		return true;

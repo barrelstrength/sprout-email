@@ -14,7 +14,7 @@ namespace Craft;
  * @property string      $fromEmail
  * @property string      $replyToEmail
  * @property bool        $sent
- * @property datetime    $sendDate
+ * @property datetime    $dateScheduled
  * --
  * @property string|null $uri
  * @property string      $slug
@@ -27,16 +27,18 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	protected $elementType = 'SproutEmail_CampaignEmail';
 
 	/**
-	 * Disabled - Campaign isn't setup properly
-	 * Pending -  Campaign is setup but Entry is disabled
-	 * Ready -    Campaign is setup and is enabled
+	 * Ready     - Campaign is setup and is enabled
+	 * Disabled  - Campaign should not be sendable or displayed to public
+	 * Pending   - Campaign is setup but Entry is disabled
+	 * Scheduled - Campaign has a scheduled date in the future
+	 * Sent      - Campaign has a sent date in the past
 	 *
-	 * @todo - needs some testing
 	 */
-	const READY      = 'ready';
-	const PENDING    = 'pending';
-	const DISABLED   = 'disabled'; // this doesn't behave properly when named 'disabled'
-	const SENT       = 'sent';
+	const READY     = 'ready';
+	const DISABLED  = 'disabled';
+	const PENDING   = 'pending';
+	const SCHEDULED = 'scheduled';
+	const SENT      = 'sent';
 
 	/**
 	 * @param mixed|null $element
@@ -63,11 +65,9 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
-			'sendDate'              => array(AttributeType::DateTime, 'default' => null),
-			'error'                 => array(AttributeType::Bool),
+			'dateScheduled'         => array(AttributeType::DateTime, 'default' => null),
+			'dateSent'              => array(AttributeType::DateTime, 'default' => null),
 			'template'              => array(AttributeType::String, 'default' => null),
 
 			// @todo - integrate with Lists integration and delete old columns
@@ -141,19 +141,22 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	{
 		$status = parent::getStatus();
 
-		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
-
 		if ($status == BaseElementModel::ENABLED)
 		{
-			if ($this->lastDateSent == null)
-			{
-				return static::PENDING;
-			}
+			$currentTime   = DateTimeHelper::currentTimeStamp();
+			$dateScheduled = $this->dateScheduled->getTimestamp();
 
-			if ($this->lastDateSent != null)
+			if ($this->dateSent != null)
 			{
 				return static::SENT;
 			}
+
+			if ($this->dateScheduled != null && $dateScheduled > $currentTime && $this->dateSent == null)
+			{
+				return static::SCHEDULED;
+			}
+
+			return static::PENDING;
 		}
 
 		return $status;
@@ -245,7 +248,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function isReady()
 	{
-		return (bool) ($this->getStatus() == static::SENT OR $this->getStatus() == static::PENDING);
+		return (bool) ($this->getMailer() && $this->isContentReady() && $this->isListReady());
 	}
 
 	/**
