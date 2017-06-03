@@ -120,12 +120,16 @@ SproutModal.prototype.create = function (content)
 
 	$("#close", $modal).on("click", function ()
 	{
+		Craft.elementIndex.updateElements();
+
 		modal.hide();
 		modal.destroy();
 	});
 
 	$("#cancel", $modal).on("click", function ()
 	{
+		Craft.elementIndex.updateElements();
+
 		modal.hide();
 		modal.destroy();
 	});
