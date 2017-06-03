@@ -173,8 +173,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function defineAvailableTableAttributes()
 	{
-		$attributes['title']       = array('label' => Craft::t('Title'));
-		$attributes['subjectLine'] = array('label' => Craft::t('Subject'));
+		$attributes['title']       = array('label' => Craft::t('Subject'));
 
 		if (sproutEmail()->getConfig('displaySendDate', false))
 		{
@@ -218,7 +217,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function defineSortableAttributes()
 	{
-		$attributes['title'] = Craft::t('Title');
+		$attributes['title'] = Craft::t('Subject');
 
 		if (sproutEmail()->getConfig('displaySendDate', false))
 		{
