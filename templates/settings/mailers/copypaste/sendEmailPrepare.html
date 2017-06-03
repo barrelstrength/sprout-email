@@ -16,12 +16,17 @@
 	<div style="position:relative;">
 		<div style="float:left;"><strong>{{ "HTML Content"|t }}</strong></div>
 
-		<div style="float:right"><a href="#" class="btnSelectAll btn small formsubmit" data-subject="#html" title="{{ 'Select HTML Content'|t }}">{{ "Select HTML"|t }}</a></div>
+		<div style="float:right;margin:-2px 0 5px;">
+			<a href="#" class="btnSelectAll btn small formsubmit" data-clipboard-target-id="html-content"
+				data-success-message="{{ 'HTML content copied to your clipboard.'|t }}" title="{{ 'Select HTML Content'|t }}">
+				{{ "Select HTML"|t }}
+			</a>
+		</div>
 	</div>
 
 	<div>
 	{{ forms.textarea({
-		id: "html",
+		id: "html-content",
 		name: "html",
 		value: html,
 		rows: 5,
@@ -33,12 +38,17 @@
 	<div style="position:relative;margin-top:30px;">
 		<div style="float:left;"><strong>{{ "Text Content"|t }}</strong></div>
 	
-		<div style="float:right"><a href="#" class="btnSelectAll btn small formsubmit" data-subject="#text" title="{{ 'Select Text Content'|t }}">{{ "Select Text"|t }}</a></div>
+		<div style="float:right;margin:-2px 0 5px;">
+			<a href="#" class="btnSelectAll btn small formsubmit" data-clipboard-target-id="text-content"
+				data-success-message="{{ 'HTML content copied to your clipboard.'|t }}" title="{{ 'Select Text Content'|t }}">
+				{{ "Select Text"|t }}
+			</a>
+		</div>
 	</div>
 
 	<div>
 	{{ forms.textarea({
-		id: "text",
+		id: "text-content",
 		name: "text",
 		value: text,
 		rows: 5,
