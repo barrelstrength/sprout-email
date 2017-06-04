@@ -16,6 +16,8 @@ SproutModal.prototype.init = function ()
 {
 	var self = this;
 
+	self.initEmailPreview();
+
 	$(".prepare").on("click", function (e)
 	{
 		e.preventDefault();
@@ -118,6 +120,8 @@ SproutModal.prototype.create = function (content)
 	// Instantiate and show
 	var modal = new Garnish.Modal($modal);
 
+	self.initEmailPreview();
+
 	$("#close", $modal).on("click", function ()
 	{
 		Craft.elementIndex.updateElements();
@@ -207,3 +211,18 @@ SproutModal.prototype.createLoadingModal = function()
 	return modal.create($content.html());
 
 };
+
+SproutModal.prototype.initEmailPreview = function()
+{
+	$('.email-preview').on('click', function(e) {
+
+		e.preventDefault();
+
+		$this     = $(e.target);
+		$previewUrl = $this.data('preview-url');
+
+		window.open($previewUrl, 'newwindow','width=920, height=600');
+
+		return false;
+	});
+}

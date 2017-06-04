@@ -181,10 +181,10 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 				$previewUrl = UrlHelper::getCpUrl('sproutemail/preview/sent/' . $element->id);
 
-				return '<a class="prepare" ' .
+				return '<a class="email-preview" ' .
 					'data-email-id="' . $element->id . '"' .
+					'data-preview-url="' . $previewUrl . '"' .
 					'href="' . $previewUrl . '"' .
-					'onclick="window.open(\'' . $previewUrl . '\', \'newwindow\',\'width=920, height=600\'); return false;"' .
 					'" data-icon="view"></a>';
 				break;
 

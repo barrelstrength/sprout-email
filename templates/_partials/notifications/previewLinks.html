@@ -1,5 +1,4 @@
 {% set emailUrl = cpUrl('sproutemail/preview/notification/' ~ email.id) %}
 
-<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-	'width=920, height=600'); return false;" data-icon="view"></a>
+<a href="{{ emailUrl }}" title="{{ email.title }}" data-preview-url="{{ emailUrl }}" class="email-preview" data-icon="view"></a>
 
