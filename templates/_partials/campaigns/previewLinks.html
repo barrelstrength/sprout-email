@@ -1,31 +1,20 @@
-
 {% set status = email.getStatus() %}
 
-{% if status != 'sent' or not email.getUrl() %}
-	{# Draft Email or Email without URLs #}
-	{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaignType.id) %}
-	{% set separator = '&' %}
-{% else %}
-	{# Live Email with URLs #}
-	{% set emailUrl = email.getUrl() %}
-	{% set separator = '?' %}
-{% endif %}
+{% set emailUrl = cpUrl('sproutemail/preview/campaign/' ~ email.id) %}
 
 {% if emailUrl %}
 
 	{% if type == 'html' %}
 
 		<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
+			'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
 
 	{% endif %}
 
 	{% if type == 'text' %}
 
-		{% set emailUrl = emailUrl ~ separator ~ 'type=text' %}
-
 		<a href="{{ emailUrl }}" title="{{ email.subjectLine }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
+			'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
 
 	{% endif %}
 

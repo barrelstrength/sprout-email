@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -162,6 +163,10 @@ class SproutEmailPlugin extends BasePlugin
 			// Examples
 			'sproutemail/settings/examples'                                                              =>
 				'sproutemail/settings/_tabs/examples',
+
+			// Previews
+			'sproutemail/preview/(?P<emailType>campaign|notification|sent)/(?P<emailId>\d+)'             =>
+				'sproutemail/_special/preview'
 		);
 	}
 
@@ -191,16 +196,16 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			$action = craft()->request->getActionSegments();
 			// Adds support for contact form plugin :(.
-			if(isset($action[0]) && $action[0] == "contactForm")
+			if (isset($action[0]) && $action[0] == "contactForm")
 			{
 				$emailModel = $event->params['emailModel'];
-				$variables = $event->params['variables'];
+				$variables  = $event->params['variables'];
 
 				if (isset($variables['emailSubject']) && isset($variables['emailBody']))
 				{
-					$emailModel->subject  = $variables['emailSubject'];
-					$emailModel->body     = $variables['emailBody'];
-					$emailModel->htmlBody = Craft::t('No value provided by Contact Form plugin');
+					$emailModel->subject         = $variables['emailSubject'];
+					$emailModel->body            = $variables['emailBody'];
+					$emailModel->htmlBody        = Craft::t('No value provided by Contact Form plugin');
 					$event->params['emailModel'] = $emailModel;
 				}
 				else
@@ -225,7 +230,9 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail' && !craft()
+				->request->getSegment(2) == 'preview'
+		)
 		{
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
 			craft()->templates->includeJs("
@@ -270,7 +277,6 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
-
 	}
 
 	/**

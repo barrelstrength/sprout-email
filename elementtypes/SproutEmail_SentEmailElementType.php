@@ -178,9 +178,14 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		switch ($attribute)
 		{
 			case "preview":
-				return '<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal"' .
+
+				$previewUrl = UrlHelper::getCpUrl('sproutemail/preview/sent/' . $element->id);
+
+				return '<a class="prepare" ' .
 					'data-email-id="' . $element->id . '"' .
-					'href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
+					'href="' . $previewUrl . '"' .
+					'onclick="window.open(\'' . $previewUrl . '\', \'newwindow\',\'width=920, height=600\'); return false;"' .
+					'">' .
 					Craft::t("View Content") .
 					'</a>';
 				break;

@@ -218,12 +218,22 @@ class SproutEmailVariable
 		return false;
 	}
 
+	public function getCampaignEmailById($emailId)
+	{
+		return sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+	}
+
 	public function getCampaignEmailShareUrl($emailId, $campaignTypeId)
 	{
 		return UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', array(
 			'emailId'        => $emailId,
 			'campaignTypeId' => $campaignTypeId
 		));
+	}
+
+	public function getSentEmailById($emailId)
+	{
+		return sproutEmail()->sentEmails->getSentEmailById($emailId);
 	}
 
 	public function doesSiteTemplateExist($template)
