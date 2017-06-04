@@ -189,7 +189,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 				break;
 
 			case "resend":
-				return '<a class="prepare" 
+				return '<a class="prepare btn small formsubmit" 
 								data-action="sproutEmail/sentEmail/getResendModal" 
 								data-email-id="' . $element->id . '" 
 								href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .

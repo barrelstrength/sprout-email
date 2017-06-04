@@ -5,10 +5,10 @@
     data-mailer="{{ mailer.getId() }}"
     data-email-id="{{ campaignEmail.id }}"
     data-campaign-type-id="{{ campaignType.id }}"
-    class="prepare">{{ "Prepare"|t }}</a>
+    class="prepare btn small formsubmit">{{ "Prepare"|t }}</a>
 
 {%- else -%}
 
-  <span class="light">Prepare</span>
+  <span class="light">{{ "Prepare"|t }}</span>
 
 {%- endif -%}
