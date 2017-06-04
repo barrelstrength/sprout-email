@@ -2,6 +2,9 @@
 
 namespace Craft;
 
+/**
+ * Class SproutEmail_CampaignEmailElementType
+ */
 class SproutEmail_CampaignEmailElementType extends BaseElementType
 {
 	/**
@@ -142,7 +145,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$passHtml = '<span class="success" title="' . Craft::t('Passed') . '" data-icon="check"></span>';
 		$failHtml = '<span class="error" title="' . Craft::t('Failed') . '" data-icon="error"></span>';
 
-		if ($attribute == 'send')
+		if ($attribute === 'send')
 		{
 			$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
 
@@ -153,7 +156,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			));
 		}
 
-		if ($attribute == 'preview')
+		if ($attribute === 'preview')
 		{
 			return craft()->templates->render('sproutemail/_partials/campaigns/previewLinks', array(
 				'email'        => $element,
@@ -162,27 +165,27 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			));
 		}
 
-		if ($attribute == 'template')
+		if ($attribute === 'template')
 		{
 			return '<code>' . $element->template . '</code>';
 		}
 
-		if ($attribute == 'contentCheck')
+		if ($attribute === 'contentCheck')
 		{
 			return $element->isContentReady() ? $passHtml : $failHtml;
 		}
 
-		if ($attribute == 'recipientsCheck')
+		if ($attribute === 'recipientsCheck')
 		{
 			return $element->isListReady() ? $passHtml : $failHtml;
 		}
 
-		if ($attribute == 'dateScheduled' && $element->dateScheduled)
+		if ($attribute === 'dateScheduled' && $element->dateScheduled)
 		{
 			return '<span title="' . $element->dateScheduled->format('l, d F Y, h:ia') . '">' . $element->dateScheduled->uiTimestamp() . '</span>';
 		}
 
-		if ($attribute == 'dateSent' && $element->dateSent)
+		if ($attribute === 'dateSent' && $element->dateSent)
 		{
 			return '<span title="' . $element->dateSent->format('l, d F Y, h:ia') . '">' . $element->dateSent->uiTimestamp() . '</span>';
 		}
@@ -191,8 +194,6 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns the attributes that can be selected as table columns
-	 *
 	 * @return array
 	 */
 	public function defineAvailableTableAttributes()
@@ -218,7 +219,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns default table columns for table views
+	 * @param null $source
 	 *
 	 * @return array
 	 */
@@ -432,7 +433,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$setStatusAction              = craft()->elements->getAction('SetStatus');
 		$setStatusAction->onSetStatus = function (Event $event)
 		{
-			if ($event->params['status'] == BaseElementModel::ENABLED)
+			if ($event->params['status'] === BaseElementModel::ENABLED)
 			{
 				// Update Date Updated value as well
 				craft()->db->createCommand()->update(

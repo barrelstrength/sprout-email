@@ -9,6 +9,9 @@ class SproutEmailVariable
 	 */
 	public $entries;
 
+	/**
+	 * SproutEmailVariable constructor.
+	 */
 	public function __construct()
 	{
 		/**
@@ -77,6 +80,8 @@ class SproutEmailVariable
 	}
 
 	/**
+	 * Returns a specific mailer using the mailer handle
+	 *
 	 * @param string $mailer
 	 *
 	 * @return SproutEmailBaseMailer|null
@@ -105,14 +110,6 @@ class SproutEmailVariable
 	public function getEventSelectedOptions($event, $notificationEmail)
 	{
 		return sproutEmail()->notificationEmails->getEventSelectedOptions($event, $notificationEmail);
-	}
-
-	/**
-	 * @return SproutEmail_NotificationModel[]|null
-	 */
-	public function getNotifications()
-	{
-		return sproutEmail()->notificationEmails->getNotifications();
 	}
 
 	/**
@@ -148,50 +145,6 @@ class SproutEmailVariable
 	}
 
 	/**
-	 * Get All Sections for Options dropdown *
-	 *
-	 * @param string $indexBy
-	 *
-	 * @return array
-	 */
-	public function getAllSections($indexBy = null)
-	{
-		$result = craft()->sections->getAllSections($indexBy);
-
-		$options = array();
-
-		foreach ($result as $key => $section)
-		{
-			array_push(
-				$options, array(
-					'label' => $section->name,
-					'value' => $section->id
-				)
-			);
-		}
-
-		return $options;
-	}
-
-	/**
-	 * @param string $indexBy
-	 *
-	 * @return array
-	 */
-	public function getAllUserGroups($indexBy = null)
-	{
-		$groups  = craft()->userGroups->getAllGroups($indexBy);
-		$options = array();
-
-		foreach ($groups as $group)
-		{
-			$options[$group->id] = $group->name;
-		}
-
-		return $options;
-	}
-
-	/**
 	 * Get subscriber list for specified provider
 	 *
 	 * @param string $mailer
@@ -205,25 +158,26 @@ class SproutEmailVariable
 		return $mailer->getSubscriberList();
 	}
 
-	public function getGeneralSettingsTemplate($emailProvider = null)
-	{
-		$customTemplate       = 'sproutemail/_providers/' . $emailProvider . '/generalCampaignSettings';
-		$customTemplateExists = craft()->templates->doesTemplateExist($customTemplate);
-
-		// if there is a custom set of general settings for this provider, return those; if not, return the default
-		if ($customTemplateExists)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
+	/**
+	 * Returns a Campaign Email by id
+	 *
+	 * @param $emailId
+	 *
+	 * @return SproutEmail_CampaignEmailModel
+	 */
 	public function getCampaignEmailById($emailId)
 	{
 		return sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 	}
 
+	/**
+	 * Returns a Campaign Email Share URL and Token
+	 *
+	 * @param $emailId
+	 * @param $campaignTypeId
+	 *
+	 * @return array|string
+	 */
 	public function getCampaignEmailShareUrl($emailId, $campaignTypeId)
 	{
 		return UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', array(
@@ -232,36 +186,53 @@ class SproutEmailVariable
 		));
 	}
 
+	/**
+	 * Returns a Sent Email by id
+	 *
+	 * @param $emailId
+	 *
+	 * @return mixed
+	 */
 	public function getSentEmailById($emailId)
 	{
 		return sproutEmail()->sentEmails->getSentEmailById($emailId);
 	}
 
-	public function doesSiteTemplateExist($template)
-	{
-		return sproutEmail()->doesSiteTemplateExist($template);
-	}
-
+	/**
+	 * Confirm if a users Craft install can generate Sprout Email example templates
+	 *
+	 * @return bool
+	 */
 	public function canCreateExamples()
 	{
 		return sproutEmail()->canCreateExamples();
 	}
 
+	/**
+	 * Returns the site templates path
+	 *
+	 * @return string
+	 */
 	public function getTemplatePath()
 	{
 		return craft()->path->getSiteTemplatesPath();
 	}
 
+	/**
+	 * Checks if Sprout Email examples are already installed in the default example location
+	 *
+	 * @return bool
+	 */
 	public function hasExamples()
 	{
 		return sproutEmail()->hasExamples();
 	}
 
-	public function getMailerBySentEmailId($id)
-	{
-		return sproutEmail()->sentEmails->getMailerBySentEmailId($id);
-	}
-
+	/**
+	 * Returns the first Sprout Email sidebar tab in the CP that should be displayed
+	 *
+	 * @return string
+	 */
 	public function getFirstAvailableTab()
 	{
 		return sproutEmail()->getFirstAvailableTab();

@@ -33,7 +33,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	 *
 	 * @return SproutEmail_NotificationModel[]|null
 	 */
-	public function getNotifications($eventId = null)
+	public function getAllNotificationEmails($eventId = null)
 	{
 		if ($eventId)
 		{
@@ -343,7 +343,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$params  = $listener->prepareParams($event);
 		$element = isset($params['value']) ? $params['value'] : null;
 
-		if ($notificationEmails = $this->getNotifications($eventId))
+		if ($notificationEmails = $this->getAllNotificationEmails($eventId))
 		{
 			foreach ($notificationEmails as $notificationEmail)
 			{

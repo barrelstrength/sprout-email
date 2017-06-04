@@ -25,7 +25,7 @@ class SproutEmailController extends BaseController
 
 		$settingsTemplate = craft()->request->getSegment(3) . '/index';
 
-		if (craft()->request->getSegment(3) == 'integrations')
+		if (craft()->request->getSegment(3) === 'integrations')
 		{
 			$settingsTemplate = 'integrations/' . craft()->request->getSegment(4);
 		}

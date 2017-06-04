@@ -4,6 +4,9 @@ namespace Craft;
 
 class SproutEmail_CopyPasteController extends BaseController
 {
+	/**
+	 * Updates a Copy/Paste Campaign Email to add a Date Sent
+	 */
 	public function actionMarkSent()
 	{
 		$this->requirePostRequest();

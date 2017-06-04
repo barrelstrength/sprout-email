@@ -35,7 +35,7 @@ class SproutEmail_CampaignTypeController extends BaseController
 	}
 
 	/**
-	 * Save campaign type
+	 * Saves a Campaign Type
 	 *
 	 * @return void
 	 */
@@ -87,9 +87,7 @@ class SproutEmail_CampaignTypeController extends BaseController
 	}
 
 	/**
-	 * Delete Campaign Type
-	 *
-	 * @return void
+	 * Deletes a Campaign Type
 	 */
 	public function actionDeleteCampaignType()
 	{

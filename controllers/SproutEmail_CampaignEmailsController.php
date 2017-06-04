@@ -169,7 +169,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	}
 
 	/**
-	 * Delete a Campaign Email
+	 * Deletes a Campaign Email
 	 *
 	 * @return void
 	 */
@@ -193,91 +193,10 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	}
 
 	/**
-	 * Gives a mailer the ability to relay method calls to itself from a modal window
+	 * Sends a Test Email
 	 *
-	 * @throws HttpException
+	 * Test Emails do not trigger an onSendEmail event and do not get marked as Sent.
 	 */
-	public function actionRelayMailerMethod()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$response = array(
-			'success' => false,
-			'content' => '',
-			'message' => '',
-		);
-
-		$mailer = craft()->request->getPost('mailer');
-		$method = craft()->request->getPost('method');
-
-		if (!$mailer)
-		{
-			$response['message'] = Craft::t('The mailer name is required.');
-
-			$this->returnJson($response);
-		}
-
-		$mailer = sproutEmail()->mailers->getMailerByName($mailer);
-
-		if (!$mailer)
-		{
-			$response['message'] = Craft::t('The {name} mailer could not be instantiated.');
-
-			$this->returnJson($response);
-		}
-
-		if (!$method || !method_exists($mailer, $method))
-		{
-			$response['message'] = Craft::t('You forgot to pass in a method to call or that method does not exist.');
-
-			$this->returnJson($response);
-		}
-
-		try
-		{
-			$result = call_user_func(array($mailer, $method));
-
-			if (empty($result['content']))
-			{
-				$response['message'] = Craft::t('You did not return any content from {method}().', array(
-					'method' => $method
-				));
-
-				$this->returnJson($response);
-			}
-
-			$this->returnJson($result);
-		}
-		catch (\Exception $e)
-		{
-			$response['message'] = Craft::t($e->getMessage());
-
-			$this->returnJson($response);
-		}
-	}
-
-	public function actionSendTestEmailModal()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$emailId = craft()->request->getPost('emailId');
-
-		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
-
-		$html = craft()->templates->render('sproutemail/_modals/sendTestEmail', array(
-			'campaignEmail' => $campaignEmail,
-			'campaignType'  => $campaignType
-		));
-
-		$this->returnJson(array(
-			'success' => true,
-			'content' => $html
-		));
-	}
-
 	public function actionSendTestEmail()
 	{
 		$this->requirePostRequest();
@@ -304,9 +223,9 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		if (!empty($invalidRecipients))
 		{
-			$invalidEmails = implode("<br />", $invalidRecipients);
+			$invalidEmails = implode('<br/>', $invalidRecipients);
 
-			$errorMsg = Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+			$errorMsg = Craft::t('The following recipient email addresses do not validate: {invalidEmails}', array(
 				'invalidEmails' => $invalidEmails
 			));
 		}
@@ -365,6 +284,9 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		}
 	}
 
+	/**
+	 * Renders a modal to send a Scheduled Campaign Email
+	 */
 	public function actionScheduleCampaignEmail()
 	{
 		$this->requirePostRequest();
@@ -388,6 +310,10 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 	/**
 	 * Send a Campaign Email via a Mailer
+	 *
+	 * Currently, the only scheduled time available is 'immediately'.
+	 *
+	 * Scheduled emails trigger an onSendEmail event and get marked as Sent.
 	 *
 	 * @throws HttpException
 	 */

@@ -259,9 +259,11 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Get the HTML for our List Settings on the Campaign and Notification Email edit page
+	 * Returns the HTML for our List Settings on the Campaign and Notification Email edit page
 	 *
 	 * @param array $values
+	 *
+	 * @return null
 	 */
 	public function getListsHtml($values = array())
 	{

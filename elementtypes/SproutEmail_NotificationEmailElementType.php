@@ -2,6 +2,9 @@
 
 namespace Craft;
 
+/**
+ * Class SproutEmail_NotificationEmailElementType
+ */
 class SproutEmail_NotificationEmailElementType extends BaseElementType
 {
 	/**
@@ -29,14 +32,6 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function isLocalized()
-	{
-		return false;
-	}
-
-	/**
 	 * @inheritDoc IElementType::hasStatuses()
 	 *
 	 * @return bool
@@ -46,6 +41,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return true;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getStatuses()
 	{
 		return array(
@@ -93,7 +91,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns default table columns for table views
+	 * @param null $source
 	 *
 	 * @return array
 	 */
@@ -111,6 +109,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return $attributes;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function defineSortableAttributes()
 	{
 		$attributes['title']       = Craft::t('Subject Line');
@@ -131,14 +132,14 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-		if ($attribute == 'send')
+		if ($attribute === 'send')
 		{
 			return craft()->templates->render('sproutemail/_partials/notifications/prepareLink', array(
 				'notification' => $element
 			));
 		}
 
-		if ($attribute == 'preview')
+		if ($attribute === 'preview')
 		{
 			$shareUrl = null;
 
@@ -159,6 +160,17 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
+	/**
+	 * @param ElementCriteriaModel $criteria
+	 * @param array                $disabledElementIds
+	 * @param array                $viewState
+	 * @param null|string          $sourceKey
+	 * @param null|string          $context
+	 * @param bool                 $includeContainer
+	 * @param bool                 $showCheckboxes
+	 *
+	 * @return string
+	 */
 	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');

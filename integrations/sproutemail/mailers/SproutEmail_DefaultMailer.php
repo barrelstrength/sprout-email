@@ -82,7 +82,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		$email = new EmailModel();
 
 		// Allow disabled emails to be tested
-		if (!$notificationEmail->isReady() AND !$useMockData)
+		if (!$notificationEmail->isReady() && !$useMockData)
 		{
 			return false;
 		}
@@ -100,7 +100,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 		$templateErrors = sproutEmail()->getError();
 
-		if (empty($templateErrors) && (empty($email->body) OR empty($email->htmlBody)))
+		if (empty($templateErrors) && (empty($email->body) || empty($email->htmlBody)))
 		{
 			$message = Craft::t('Email Text or HTML template cannot be blank. Check template setting.');
 
@@ -124,7 +124,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			{
 				$infoTable = sproutEmail()->sentEmails->createInfoTableModel('sproutemail', array(
 					'emailType'    => 'Notification',
-					'deliveryType' => ($useMockData ? 'Test' : 'Live')
+					'deliveryType' => $useMockData ? 'Test' : 'Live'
 				));
 
 				$variables = array(
@@ -195,7 +195,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 			$recipients = craft()->request->getPost('recipients');
 
-			if ($recipients == null)
+			if ($recipients === null)
 			{
 				throw new Exception(Craft::t('Empty recipients.'));
 			}
@@ -207,9 +207,9 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 			if (!empty($invalidRecipients))
 			{
-				$invalidEmails = implode("<br />", $invalidRecipients);
+				$invalidEmails = implode('<br/>', $invalidRecipients);
 
-				throw new Exception(Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				throw new Exception(Craft::t('The following recipient email addresses do not validate: {invalidEmails}', array(
 					'invalidEmails' => $invalidEmails
 				)));
 			}
@@ -369,6 +369,9 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		));
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasInlineRecipients()
 	{
 		return true;

@@ -4,6 +4,9 @@ namespace Craft;
 
 class SproutEmail_SentEmailController extends BaseController
 {
+	/**
+	 * Returns info for the Sent Email Resend modal
+	 */
 	public function actionGetResendModal()
 	{
 		$this->requirePostRequest();
@@ -23,6 +26,9 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->returnJson($response->getAttributes());
 	}
 
+	/**
+	 * Resends a Sent Email
+	 */
 	public function actionResendEmail()
 	{
 		$this->requirePostRequest();

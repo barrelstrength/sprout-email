@@ -25,7 +25,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 	 */
 	public function getDescription()
 	{
-		return "Copy and paste your email campaigns to better (or worse) places.";
+		return Craft::t('Copy and paste your email campaigns to better (or worse) places.');
 	}
 
 	/**

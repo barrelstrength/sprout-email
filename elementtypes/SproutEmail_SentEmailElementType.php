@@ -2,6 +2,9 @@
 
 namespace Craft;
 
+/**
+ * Class SproutEmail_SentEmailElementType
+ */
 class SproutEmail_SentEmailElementType extends BaseElementType
 {
 	/**
@@ -18,22 +21,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function hasTitles()
 	{
 		return true;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function hasContent()
-	{
-		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isLocalized()
-	{
-		return false;
 	}
 
 	/**
@@ -123,7 +110,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	}
 
 	/**
-	 * Returns default table columns for table views
+	 * @param null $source
 	 *
 	 * @return array
 	 */
@@ -175,37 +162,40 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-
 		switch ($attribute)
 		{
-			case "preview":
+			case 'preview':
 
 				$previewUrl = UrlHelper::getCpUrl('sproutemail/preview/sent/' . $element->id);
 
 				return '<a class="email-preview" ' .
-					'data-email-id="' . $element->id . '"' .
-					'data-preview-url="' . $previewUrl . '"' .
-					'href="' . $previewUrl . '"' .
+					'data-email-id="' . $element->id . '" ' .
+					'data-preview-url="' . $previewUrl . '" ' .
+					'href="' . $previewUrl . '" ' .
 					'" data-icon="view"></a>';
+
 				break;
 
-			case "resend":
+			case 'resend':
+
 				return '<a class="prepare btn small formsubmit" 
 								data-action="sproutEmail/sentEmail/getResendModal" 
 								data-email-id="' . $element->id . '" 
 								href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
-					Craft::t("Prepare") .
+					Craft::t('Prepare') .
 					'</a>';
+
 				break;
 
-			case "info":
+			case 'info':
+
 				return '<span class="tableRowInfo" data-icon="info"></span>';
+
 				break;
 
 			default:
-			{
+
 				return parent::getTableAttributeHtml($element, $attribute);
-			}
 		}
 	}
 
@@ -274,6 +264,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineSearchableAttributes()
 	{
 		return array('title', 'toEmail');
