@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -46,14 +47,14 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'element'        => array(
+			'element'     => array(
 				static::BELONGS_TO,
 				'ElementRecord',
 				'id',
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
-			'fieldLayout'    => array(
+			'fieldLayout' => array(
 				static::BELONGS_TO,
 				'FieldLayoutRecord',
 				'onDelete' => static::SET_NULL

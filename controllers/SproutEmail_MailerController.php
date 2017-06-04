@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_MailerController extends BaseController
@@ -73,7 +74,7 @@ class SproutEmail_MailerController extends BaseController
 		}
 
 		craft()->userSession->setError(Craft::t('Unable to save settings.'));
-		
+
 		craft()->urlManager->setRouteVariables(array(
 			'settings' => $settings
 		));

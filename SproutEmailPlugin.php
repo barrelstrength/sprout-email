@@ -230,28 +230,27 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail' && !craft()
-				->request->getSegment(2) == 'preview'
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) === 'sproutemail' && !craft()
+				->request->getSegment(2) === 'preview'
 		)
 		{
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
-			craft()->templates->includeJs("
+			craft()->templates->includeJs('
 				sproutFormsBrand = new Craft.SproutBrand();
 				sproutFormsBrand.displayFooter({
-					pluginName: 'Sprout Email',
-					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
-					pluginVersion: '" . $this->getVersion() . "',
-					pluginDescription: '" . $this->getDescription() . "',
-					developerName: '(Barrel Strength)',
-					developerUrl: '" . $this->getDeveloperUrl() . "'
+					pluginName: "Sprout Email",
+					pluginUrl: "http://sprout.barrelstrengthdesign.com/craft-plugins/email",
+					pluginVersion: "' . $this->getVersion() . '",
+					pluginDescription: "' . $this->getDescription() . '",
+					developerName: "(Barrel Strength)",
+					developerUrl: "' . $this->getDeveloperUrl() . '"
 				});
-			");
+			');
 		}
 	}
 
 	private function importClasses()
 	{
-
 		// Sprout Email Contracts
 		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
 		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
@@ -379,6 +378,9 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function registerSproutImportImporters()
 	{
 		return array(

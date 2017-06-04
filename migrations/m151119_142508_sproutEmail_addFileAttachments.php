@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class m151119_142508_sproutEmail_addFileAttachments extends BaseMigration

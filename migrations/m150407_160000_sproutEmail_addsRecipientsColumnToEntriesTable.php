@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class m150407_160000_sproutEmail_addsRecipientsColumnToEntriesTable extends BaseMigration

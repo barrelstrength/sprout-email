@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -31,6 +32,7 @@ class m170525_073203_sproutEmail_AddDateScheduledCampaignEmail extends BaseMigra
 					LogLevel::Warning);
 			}
 		}
+
 		return true;
 	}
 }

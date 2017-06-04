@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -32,6 +33,7 @@ class m170209_084541_sproutEmail_lastSentDateCampaignEmail extends BaseMigration
 					LogLevel::Warning);
 			}
 		}
+
 		return true;
 	}
 }

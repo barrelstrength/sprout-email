@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_EntriesDeleteEntryEvent extends SproutEmailBaseEvent

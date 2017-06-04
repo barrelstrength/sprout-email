@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -14,10 +15,14 @@ class SproutEmailBaseEvent
 	 * @var array|null
 	 */
 	protected $options;
+
+	/**
+	 * @var string
+	 */
 	protected $pluginName;
 
 	/**
-	 * @param $pluginClass
+	 * @param $pluginName
 	 */
 	public function setPluginName($pluginName)
 	{
@@ -112,7 +117,7 @@ class SproutEmailBaseEvent
 	 */
 	public function getOptionsHtml()
 	{
-		return "—";
+		return '—';
 	}
 
 	/**

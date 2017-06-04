@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
@@ -29,9 +30,10 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 		if (isset($context['options']['craft']['saveUser']['userGroupIds']))
 		{
-			$options = $context['options']['craft']['saveUser']['userGroupIds'];
+			$options               = $context['options']['craft']['saveUser']['userGroupIds'];
 			$context['fieldValue'] = sproutEmail()->mailers->getCheckboxFieldValue($options);
 		}
+
 		return craft()->templates->render('sproutemail/_integrations/events/saveUser', $context);
 	}
 

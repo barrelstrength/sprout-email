@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -268,7 +269,8 @@ class SproutEmailService extends BaseApplicationComponent
 
 		// Make sure this is a Sprout Email Event
 		if (!isset($variables['email']) ||
-			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel'))
+			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel')
+		)
 		{
 			return true;
 		}

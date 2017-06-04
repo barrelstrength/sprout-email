@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -83,8 +84,8 @@ class m170410_051346_sproutEmail_AddUpdateListSettings extends BaseMigration
 					$listIdsJson = json_encode($listIds);
 
 					craft()->db->createCommand()->update($table, array(
-							'listSettings' => $listIdsJson
-						), 'id= :id', array(':id' => $id)
+						'listSettings' => $listIdsJson
+					), 'id= :id', array(':id' => $id)
 					);
 				}
 			}

@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -139,7 +140,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			return $settings;
 		}
 
-		$settingsFromDb   = $mailer->getSettings()->getAttributes();
+		$settingsFromDb = $mailer->getSettings()->getAttributes();
 
 		$settingsFromFile = isset($configOverrides) ? $configOverrides : array();
 

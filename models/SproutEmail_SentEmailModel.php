@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_SentEmailModel extends BaseElementModel

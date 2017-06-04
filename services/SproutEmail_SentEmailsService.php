@@ -278,7 +278,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 
 		if (version_compare($version, '2.6.2951', '>='))
 		{
-			$craftVersion = 'Craft ' . craft()->getEditionName() .' '. $version;
+			$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . $version;
 		}
 		else
 		{

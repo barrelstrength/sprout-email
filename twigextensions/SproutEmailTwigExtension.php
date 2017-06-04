@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 use Twig_Extension;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutEmailNotificationEmailSenderInterface
@@ -56,7 +57,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	{
 		return true;
 	}
-	
+
 	/**
 	 * @param array $settings
 	 *
@@ -416,7 +417,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 			return $validRecipients;
 		}
-
 
 		// Get recipients for live emails
 		// @todo - clarify what entryRecipents and $dynamicRecipients are
