@@ -153,21 +153,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			));
 		}
 
-		if ($attribute == 'previewHtml')
+		if ($attribute == 'preview')
 		{
 			return craft()->templates->render('sproutemail/_partials/campaigns/previewLinks', array(
 				'email'        => $element,
 				'campaignType' => $campaignType,
 				'type'         => 'html'
-			));
-		}
-
-		if ($attribute == 'previewText')
-		{
-			return craft()->templates->render('sproutemail/_partials/campaigns/previewLinks', array(
-				'email'        => $element,
-				'campaignType' => $campaignType,
-				'type'         => 'text'
 			));
 		}
 
@@ -218,8 +209,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes['recipientsCheck'] = array('label' => Craft::t('Recipients'));
 		$attributes['dateCreated']     = array('label' => Craft::t('Date Created'));
 		$attributes['dateUpdated']     = array('label' => Craft::t('Date Updated'));
-		$attributes['previewHtml']     = array('label' => Craft::t('HTML'));
-		$attributes['previewText']     = array('label' => Craft::t('Text'));
+		$attributes['preview']         = array('label' => Craft::t('Preview'));
 		$attributes['template']        = array('label' => Craft::t('Template'));
 		$attributes['send']            = array('label' => Craft::t('Send'));
 
@@ -238,8 +228,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes[] = 'title';
 		$attributes[] = 'contentCheck';
 		$attributes[] = 'recipientsCheck';
-		$attributes[] = 'previewHtml';
-		$attributes[] = 'previewText';
+		$attributes[] = 'preview';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateSent';
 		$attributes[] = 'send';

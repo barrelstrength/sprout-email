@@ -1,22 +1,9 @@
-{% set status = email.getStatus() %}
-
 {% set emailUrl = cpUrl('sproutemail/preview/campaign/' ~ email.id) %}
 
 {% if emailUrl %}
 
-	{% if type == 'html' %}
-
-		<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-			'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
-
-	{% endif %}
-
-	{% if type == 'text' %}
-
-		<a href="{{ emailUrl }}" title="{{ email.subjectLine }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-			'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
-
-	{% endif %}
+	<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
+		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
 
 {% else %}
 

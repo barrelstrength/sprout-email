@@ -1,12 +1,5 @@
 {% set emailUrl = cpUrl('sproutemail/preview/notification/' ~ email.id) %}
 
-{% if type == 'previewHtml' %}
-	<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
-{% endif %}
-
-{% if type == 'previewText' %}
-	<a href="{{ emailUrl }}" title="{{ email.subjectLine }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
-{% endif %}
+<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
+	'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
 

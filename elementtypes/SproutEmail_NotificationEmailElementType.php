@@ -85,8 +85,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'name'        => array('label' => Craft::t('Notification Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'previewHtml' => array('label' => Craft::t('HTML')),
-			'previewText' => array('label' => Craft::t('Text')),
+			'preview'     => array('label' => Craft::t('Preview')),
 			'send'        => array('label' => Craft::t('Send'))
 		);
 
@@ -106,8 +105,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'name';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-		$attributes[] = 'previewHtml';
-		$attributes[] = 'previewText';
+		$attributes[] = 'preview';
 		$attributes[] = 'send';
 
 		return $attributes;
@@ -140,7 +138,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			));
 		}
 
-		if ($attribute == 'previewHtml' or $attribute == 'previewText')
+		if ($attribute == 'preview')
 		{
 			$shareUrl = null;
 
@@ -152,9 +150,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			}
 
 			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
-				'email'        => $element,
-				'shareUrl'     => $shareUrl,
-				'type'         => $attribute
+				'email'    => $element,
+				'shareUrl' => $shareUrl,
+				'type'     => $attribute
 			));
 		}
 
