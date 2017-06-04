@@ -283,12 +283,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$mailer)
 		{
-			throw new Exception(Craft::t('The {name} mailer is not available for installation.', array(
+			throw new Exception(Craft::t('The {name} mailer is not available to be installed.', array(
 				'name' => $name
 			)));
 		}
 
-		if ($mailer->isSettingBuiltIn())
+		// If we don't have a settings URL, we store our settings in Sprout Email's mailer table
+		if ($mailer->getCpSettingsUrl() === null)
 		{
 			$this->createMailerRecord($mailer);
 		}

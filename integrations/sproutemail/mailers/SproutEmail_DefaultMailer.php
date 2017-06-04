@@ -53,11 +53,6 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		);
 	}
 
-	public function isSettingBuiltIn()
-	{
-		return true;
-	}
-
 	/**
 	 * @param array $settings
 	 *
