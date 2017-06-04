@@ -3,7 +3,7 @@
 {% if emailUrl %}
 
 	<a href="{{ emailUrl }}" title="{{ email.title }}" onclick="window.open('{{ emailUrl }}', 'newwindow',
-		'width=920, height=600'); return false;">{{ "Preview"|t }}</a>
+		'width=920, height=600'); return false;" data-icon="view"></a>
 
 {% else %}
 

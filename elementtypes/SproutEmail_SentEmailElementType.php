@@ -113,9 +113,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			'dateSent'     => array('label' => Craft::t('Date Sent')),
 			'toEmail'      => array('label' => Craft::t('Recipient')),
 			'emailSubject' => array('label' => Craft::t('Subject')),
-			'preview'      => array('label' => Craft::t('Preview')),
 			'resend'       => array('label' => Craft::t('Resend')),
-			'info'         => array('label' => Craft::t(''))
+			'preview'      => array('label' => Craft::t('Preview'), 'icon' => 'view'),
+			'info'         => array('label' => Craft::t('Info'), 'icon' => 'info')
 		);
 
 		return $attributes;
@@ -133,8 +133,8 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$attributes[] = 'dateSent';
 		$attributes[] = 'toEmail';
 		$attributes[] = 'emailSubject';
-		$attributes[] = 'preview';
 		$attributes[] = 'resend';
+		$attributes[] = 'preview';
 		$attributes[] = 'info';
 
 		return $attributes;
@@ -185,9 +185,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 					'data-email-id="' . $element->id . '"' .
 					'href="' . $previewUrl . '"' .
 					'onclick="window.open(\'' . $previewUrl . '\', \'newwindow\',\'width=920, height=600\'); return false;"' .
-					'">' .
-					Craft::t("View Content") .
-					'</a>';
+					'" data-icon="view"></a>';
 				break;
 
 			case "resend":

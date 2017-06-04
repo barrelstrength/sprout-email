@@ -209,9 +209,10 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes['recipientsCheck'] = array('label' => Craft::t('Recipients'));
 		$attributes['dateCreated']     = array('label' => Craft::t('Date Created'));
 		$attributes['dateUpdated']     = array('label' => Craft::t('Date Updated'));
-		$attributes['preview']         = array('label' => Craft::t('Preview'));
 		$attributes['template']        = array('label' => Craft::t('Template'));
 		$attributes['send']            = array('label' => Craft::t('Send'));
+		$attributes['preview']         = array('label' => Craft::t('Preview'), 'icon' => 'view');
+		$attributes['link']            = array('label' => Craft::t('Link'), 'icon' => 'world');
 
 		return $attributes;
 	}
@@ -228,10 +229,11 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes[] = 'title';
 		$attributes[] = 'contentCheck';
 		$attributes[] = 'recipientsCheck';
-		$attributes[] = 'preview';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateSent';
 		$attributes[] = 'send';
+		$attributes[] = 'preview';
+		$attributes[] = 'link';
 
 		return $attributes;
 	}

@@ -85,8 +85,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'name'        => array('label' => Craft::t('Notification Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'preview'     => array('label' => Craft::t('Preview')),
-			'send'        => array('label' => Craft::t('Send'))
+			'send'        => array('label' => Craft::t('Send')),
+			'preview'     => array('label' => Craft::t('Preview'), 'icon' => 'view')
 		);
 
 		return $attributes;
@@ -105,8 +105,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'name';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-		$attributes[] = 'preview';
 		$attributes[] = 'send';
+		$attributes[] = 'preview';
 
 		return $attributes;
 	}
