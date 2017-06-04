@@ -35,25 +35,13 @@ class SproutEmailBaseEvent
 	}
 
 	/**
-	 * @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		craft()->deprecator->log('SproutEmailBaseEvent->getId()', 'The SproutEmailBaseEvent getId() method has been deprecated in favor of getEventAction().');
-
-		return $this->getEventAction();
-	}
-
-	/**
 	 * Returns the string we use as the unique ID for the trigger event
 	 *
 	 * @return string
 	 */
 	public function getEventId()
 	{
-		$pluginName = (isset($this->pluginName)) ? $this->pluginName . '-' : '';
+		$pluginName = $this->pluginName !== null ? $this->pluginName . '-' : '';
 
 		return $pluginName . $this->getEventAction();
 	}
