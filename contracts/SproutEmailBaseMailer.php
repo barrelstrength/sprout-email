@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -10,8 +11,6 @@ namespace Craft;
  */
 abstract class SproutEmailBaseMailer
 {
-	public $hasList = true;
-
 	/**
 	 * The settings for this mailer stored in the sproutemail_mailers table
 	 *
@@ -255,6 +254,16 @@ abstract class SproutEmailBaseMailer
 	                                             SproutEmail_CampaignTypeModel $campaignType);
 
 	/**
+	 * Returns whether this Mailer supports mailing lists
+	 *
+	 * @return bool Whether this Mailer supports lists. Default is `true`.
+	 */
+	public function hasLists()
+	{
+		return true;
+	}
+
+	/**
 	 * Returns the Lists available to this Mailer
 	 */
 	public function getLists()
@@ -274,6 +283,7 @@ abstract class SproutEmailBaseMailer
 
 	/**
 	 * Return true to allow and show mailer dynamic recipients
+	 *
 	 * @return bool
 	 */
 	public function hasInlineRecipients()

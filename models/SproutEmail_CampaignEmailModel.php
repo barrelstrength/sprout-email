@@ -306,7 +306,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	{
 		$mailer = $this->getMailer();
 
-		if ($mailer->hasList)
+		if ($mailer->hasLists())
 		{
 			if (empty($this->listSettings['listIds']))
 			{

@@ -1,10 +1,9 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
-	public $hasList = false;
-
 	/**
 	 * @return string
 	 */
@@ -27,6 +26,14 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 	public function getDescription()
 	{
 		return "Copy and paste your email campaigns to better (or worse) places.";
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasLists()
+	{
+		return false;
 	}
 
 	/**
@@ -86,8 +93,8 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 			$response->success = true;
 			$response->content = craft()->templates->render('sproutemail/settings/mailers/copypaste/sendEmailPrepare', array(
 				'email' => $campaignEmail,
-				'html' => trim($html),
-				'text' => trim($text),
+				'html'  => trim($html),
+				'text'  => trim($text),
 			));
 
 			return $response;
