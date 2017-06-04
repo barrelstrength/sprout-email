@@ -329,22 +329,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 			if ($response instanceof SproutEmail_ResponseModel)
 			{
-				if ($response->success == true)
-				{
-					if ($response->emailModel != null)
-					{
-						$emailModel = $response->emailModel;
-
-						$event = new Event($this, array(
-							'campaignEmail' => $campaignEmail,
-							'emailModel'    => $emailModel,
-							'campaign'      => $campaignType
-						));
-
-						sproutEmail()->onSendSproutEmail($event);
-					}
-				}
-
 				$this->returnJson($response);
 			}
 
