@@ -1,0 +1,33 @@
+{% import "_includes/forms" as forms %}
+
+<div class="body">
+	<h1>{{ 'Send Campaign'|t }}</h1>
+
+	<table class="data fullwidth">
+		<tbody>
+			<tr>
+				<td><strong>{{ "Subject"|t }}</strong></td>
+				<td class="title">{{ campaignEmail.title }}</td>
+			</tr>
+			<tr>
+				<td><strong>{{ "Delivery"|t }}</strong></td>
+				<td><em>{{ "Clicking the button below will send your email immediately and mark your email as sent."|t }}</em></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="spinner hidden"></div>
+</div>
+
+<div class="footer">
+	<div class="buttons right">
+		<button
+			class="btn submit actions"
+			data-email-id="{{ campaignEmail.id }}"
+			data-action="sproutEmail/campaignEmails/sendCampaignEmail"
+		>{{ "Send Email Now"|t }}</button>
+	</div>
+	<div class="buttons left secondary-buttons">
+		<button id="close" class="btn">{{ "Cancel"|t }}</button>
+	</div>
+</div>

@@ -38,6 +38,9 @@
 
 	{% if mailers %}
 
+		{% set availableMailers = { '' : 'Select Mailer...'|t } %}
+		{% set availableMailers = availableMailers|merge(mailers) %}
+
 		{{ forms.textField({
 			label: "Campaign Name"|t,
 			id: 'name',
@@ -66,7 +69,7 @@
 			id: 'mailer',
 			name: 'sproutEmail[mailer]',
 			required: true,
-			options : mailers,
+			options : availableMailers,
 			value: (campaignType is defined ? campaignType.mailer : null),
 			errors: (campaignType is defined ? campaignType.getErrors('mailer') : null)
 		}) }}

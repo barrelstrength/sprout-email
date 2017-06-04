@@ -34,11 +34,14 @@
 		{% endfor %}
 	</div>
 
+{% else %}
+
+	{# Make sure we display something if all content is handled in the template and all fields are disabled. #}
+	{% if not campaignType.hasAdvancedTitles %}
+
+		<p class="light">{{ 'Add a custom field to your <a href="{editCampaignUrl}">Campaign Type</a> to manage your email content in Craft.'|t({ editCampaignUrl: cpUrl('sproutemail/settings/campaigntypes/edit') ~ '/' ~ campaignType.id })|raw }}</p>
+
+	{% endif %}
+
 {% endif %}
 
-{# Make sure we display something if all content is handled in the tempalte and all fields are disabled. #}
-{% if not campaignType.hasAdvancedTitles and campaignType.getFieldLayout().getTabs()|length %}
-
-	<p class="light">{{ 'Add a custom field to your <a href="{editCampaignUrl}">Campaign Type</a> to manage your email content in Craft.'|t({ editCampaignUrl: cpUrl('sproutemail/settings/campaigntypes/edit') ~ '/' ~ campaignType.id })|raw }}</p>
-
-{% endif %}

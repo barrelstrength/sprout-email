@@ -1,7 +1,4 @@
-{% if email.getUrl() %}
+{% set emailUrl = cpUrl('sproutemail/preview/notification/' ~ email.id) %}
 
-	<a href="{{ shareUrl }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
-	&nbsp;/&nbsp;
-	<a href="{{ shareUrl }}&type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+<a href="{{ emailUrl }}" title="{{ email.title }}" data-preview-url="{{ emailUrl }}" class="email-preview" data-icon="view"></a>
 
-{% endif %}

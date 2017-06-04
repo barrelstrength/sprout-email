@@ -59,6 +59,8 @@ class SproutEmailVariable
 	/**
 	 * Returns a list of mailers that can send campaigns
 	 *
+	 * @todo - update this and remove the $exclude variable in favor of handling exceptions on the Mailer Class
+	 *
 	 * @return SproutEmailBaseMailer[]
 	 */
 	public function getCampaignMailers($exclude = null)
@@ -216,12 +218,22 @@ class SproutEmailVariable
 		return false;
 	}
 
+	public function getCampaignEmailById($emailId)
+	{
+		return sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+	}
+
 	public function getCampaignEmailShareUrl($emailId, $campaignTypeId)
 	{
 		return UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', array(
 			'emailId'        => $emailId,
 			'campaignTypeId' => $campaignTypeId
 		));
+	}
+
+	public function getSentEmailById($emailId)
+	{
+		return sproutEmail()->sentEmails->getSentEmailById($emailId);
 	}
 
 	public function doesSiteTemplateExist($template)
@@ -255,12 +267,12 @@ class SproutEmailVariable
 	}
 
 	/**
-	 * Returns the value of the displaySendDate general config setting
+	 * Returns the value of the displayDateScheduled general config setting
 	 *
 	 * @return bool
 	 */
-	public function getDisplaySendDate()
+	public function getDisplayDateScheduled()
 	{
-		return sproutEmail()->getConfig('displaySendDate', false);
+		return sproutEmail()->getConfig('displayDateScheduled', false);
 	}
 }

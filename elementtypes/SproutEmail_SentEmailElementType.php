@@ -113,9 +113,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			'dateSent'     => array('label' => Craft::t('Date Sent')),
 			'toEmail'      => array('label' => Craft::t('Recipient')),
 			'emailSubject' => array('label' => Craft::t('Subject')),
-			'preview'      => array('label' => Craft::t('Preview')),
 			'resend'       => array('label' => Craft::t('Resend')),
-			'info'         => array('label' => Craft::t(''))
+			'preview'      => array('label' => Craft::t('Preview'), 'icon' => 'view'),
+			'info'         => array('label' => Craft::t('Info'), 'icon' => 'info')
 		);
 
 		return $attributes;
@@ -133,8 +133,8 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$attributes[] = 'dateSent';
 		$attributes[] = 'toEmail';
 		$attributes[] = 'emailSubject';
-		$attributes[] = 'preview';
 		$attributes[] = 'resend';
+		$attributes[] = 'preview';
 		$attributes[] = 'info';
 
 		return $attributes;
@@ -178,15 +178,18 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		switch ($attribute)
 		{
 			case "preview":
-				return '<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal"' .
+
+				$previewUrl = UrlHelper::getCpUrl('sproutemail/preview/sent/' . $element->id);
+
+				return '<a class="email-preview" ' .
 					'data-email-id="' . $element->id . '"' .
-					'href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
-					Craft::t("View Content") .
-					'</a>';
+					'data-preview-url="' . $previewUrl . '"' .
+					'href="' . $previewUrl . '"' .
+					'" data-icon="view"></a>';
 				break;
 
 			case "resend":
-				return '<a class="prepare" 
+				return '<a class="prepare btn small formsubmit" 
 								data-action="sproutEmail/sentEmail/getResendModal" 
 								data-email-id="' . $element->id . '" 
 								href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .

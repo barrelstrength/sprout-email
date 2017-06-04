@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -256,6 +257,135 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		}
 	}
 
+	public function actionSendTestEmailModal()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$html = craft()->templates->render('sproutemail/_modals/sendTestEmail', array(
+			'campaignEmail' => $campaignEmail,
+			'campaignType'  => $campaignType
+		));
+
+		$this->returnJson(array(
+			'success' => true,
+			'content' => $html
+		));
+	}
+
+	public function actionSendTestEmail()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$errorMsg = '';
+
+		$recipients = craft()->request->getPost('recipients');
+
+		if ($recipients == null)
+		{
+			$errorMsg = Craft::t('Empty recipients.');
+		}
+
+		$result = sproutEmail()->getValidAndInvalidRecipients($recipients);
+
+		$invalidRecipients = $result['invalid'];
+		$emails            = $result['emails'];
+
+		if (!empty($invalidRecipients))
+		{
+			$invalidEmails = implode("<br />", $invalidRecipients);
+
+			$errorMsg = Craft::t("Recipient email addresses do not validate: <br /> {invalidEmails}", array(
+				'invalidEmails' => $invalidEmails
+			));
+		}
+
+		if (!empty($errorMsg))
+		{
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+					'email'   => $campaignEmail,
+					'message' => $errorMsg
+				))
+			);
+		}
+
+		try
+		{
+			$mailer = $campaignEmail->getMailer();
+
+			$response = $mailer->sendTestEmail($campaignEmail, $campaignType, $emails);
+
+			if ($response instanceof SproutEmail_ResponseModel)
+			{
+				$this->returnJson($response);
+			}
+
+			$errorMessage = Craft::t('Mailer did not return a valid response model after sending Campaign Email.');
+
+			if (!$response)
+			{
+				$errorMessage = Craft::t('Unable to send email.');
+			}
+
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse(
+					'sproutemail/_modals/sendEmailConfirmation',
+					array(
+						'email'    => $campaignEmail,
+						'campaign' => $campaignType,
+						'message'  => Craft::t($errorMessage),
+					)
+				)
+			);
+		}
+		catch (\Exception $e)
+		{
+			$this->returnJson(
+				SproutEmail_ResponseModel::createErrorModalResponse(
+					'sproutemail/_modals/sendEmailConfirmation',
+					array(
+						'email'    => $campaignEmail,
+						'campaign' => $campaignType,
+						'message'  => Craft::t($e->getMessage()),
+					)
+				)
+			);
+		}
+	}
+
+	public function actionScheduleCampaignEmail()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$html = craft()->templates->render('sproutemail/_modals/scheduleEmail', array(
+			'campaignEmail' => $campaignEmail,
+			'campaignType'  => $campaignType
+		));
+
+		$this->returnJson(array(
+			'success' => true,
+			'content' => $html
+		));
+	}
+
 	/**
 	 * Send a Campaign Email via a Mailer
 	 *
@@ -503,7 +633,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail->fromEmail      = craft()->request->getPost('sproutEmail.fromEmail');
 		$campaignEmail->replyToEmail   = craft()->request->getPost('sproutEmail.replyToEmail');
 		$campaignEmail->subjectLine    = craft()->request->getPost('subjectLine');
-		$campaignEmail->sendDate       = craft()->request->getPost('sendDate');
+		$campaignEmail->dateScheduled  = craft()->request->getPost('dateScheduled');
 
 		if (craft()->request->getPost('sproutEmail.recipients') != null)
 		{

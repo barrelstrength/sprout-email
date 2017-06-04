@@ -3,6 +3,8 @@ namespace Craft;
 
 class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
+	public $hasList = false;
+
 	/**
 	 * @return string
 	 */

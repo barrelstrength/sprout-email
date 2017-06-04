@@ -1,67 +1,61 @@
 {% import "_includes/forms" as forms %}
 
-<h1>{{ "Test Notification"|t }}</h1>
+<div class="body">
 
-<div class="sproutemail-preparemodalbody">
-	<table class="data fullwidth">
-		<tbody>
-		<tr>
-			<td><strong>{{ "Subject"|t }}</strong></td>
-			<td class="title">{{ notificationEmail.title }}</td>
-		</tr>
+	<h1>{{ "Test Notification"|t }}</h1>
 
-		<tr>
-			<td><strong>{{ "Recipients"|t }}</strong></td>
-			<td>
+	<div class="sproutemail-preparemodalbody">
+		<table class="data fullwidth">
+			<tbody>
+			<tr>
+				<td><strong>{{ "Subject"|t }}</strong></td>
+				<td class="title">{{ notificationEmail.title }}</td>
+			</tr>
 
-				{% set baseUrl = craft.request.getServerName() %}
-				{% set placeholderEmails = 'email@' ~ baseUrl ~ ', email2@' ~ baseUrl %}
+			<tr>
+				<td><strong>{{ "Recipients"|t }}</strong></td>
+				<td>
 
-				{{ forms.textarea({
-					id:   "recipients",
-					name: "recipients",
-					class: "code",
-					placeholder: placeholderEmails,
-					value: recipients
-				}) }}
-			</td>
-		</tr>
-		</tbody>
-	</table>
+					{% set baseUrl = craft.request.getServerName() %}
+					{% set placeholderEmails = 'email@' ~ baseUrl ~ ', email2@' ~ baseUrl %}
 
-	{% if errors is defined and errors is not empty %}
-		<p>
-			<ul class="error bullets">
-				{% for error in errors %}
-		<li>{{ error | raw }}</li>
-	{% endfor %}
-			</ul>
-		</p>
-	{% endif %}
+					{{ forms.textarea({
+						id:   "recipients",
+						name: "recipients",
+						class: "code",
+						placeholder: placeholderEmails,
+						value: recipients
+					}) }}
+				</td>
+			</tr>
+			</tbody>
+		</table>
 
-	<div class="buttons right">
+		{% if errors is defined and errors is not empty %}
+			<p>
+				<ul class="error bullets">
+					{% for error in errors %}
+			<li>{{ error | raw }}</li>
+		{% endfor %}
+				</ul>
+			</p>
+		{% endif %}
+
+	</div>
+</div>
+
+<div class="footer">
+	<div class="buttons left">
 		<button id="close" class="btn">{{ "Cancel"|t }}</button>
-
+	</div>
+	<div class="buttons right">
 		<button
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
 			data-action="sproutEmail/notificationEmails/sendTestNotificationEmail"
 			data-notification-id="{{ notificationEmail.id }}"
 			class="btn submit actions">
-				{{- "Send Test"|t -}}
+			{{- "Send Test"|t -}}
 		</button>
 	</div>
 </div>
-
-<style>
-	.sproutemail-preparemodalbody table.data tbody tr:first-child td.title {
-		padding-left: 22px;
-	}
-	.sproutemail-preparemodalbody .buttons {
-		margin-bottom: 0;
-	}
-	.sproutemail-preparemodalbody .error a {
-		color: inherit;
-		text-decoration: underline;
-	}
-</style>

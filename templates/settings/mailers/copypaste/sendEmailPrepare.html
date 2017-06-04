@@ -1,15 +1,14 @@
 {% import "_includes/forms" as forms %}
 
-<section class="copypaste">
+<div class="body">
 
 	<h1>{{ "Copy & Paste"|t }}</h1>
 
-	<hr>
+	{% set dateScheduled = craft.sproutEmail.getDisplayDateScheduled(email) %}
 
-	{% set sendDate = craft.sproutEmail.getDisplaySendDate(email) %}
-	{% if sendDate is not empty %}
+	{% if dateScheduled is not empty %}
 		<div style="float:left; margin-bottom: 20px;">
-			<strong>{{ "Send Date"|t }}:</strong> {{ sendDate|date("F jS Y \\a\\t g:ia") }}
+			<strong>{{ "Date Scheduled"|t }}:</strong> {{ dateScheduled|date("F jS Y \\a\\t g:ia") }}
 		</div>
 		<div style="clear: both"></div>
 	{% endif %}
@@ -17,12 +16,17 @@
 	<div style="position:relative;">
 		<div style="float:left;"><strong>{{ "HTML Content"|t }}</strong></div>
 
-		<div style="float:right"><a href="#" class="btnSelectAll btn small formsubmit" data-subject="#html" title="{{ 'Select HTML Content'|t }}">{{ "Select HTML"|t }}</a></div>
+		<div style="float:right;margin:-2px 0 5px;">
+			<a href="#" class="btnSelectAll btn small formsubmit" data-clipboard-target-id="html-content"
+				data-success-message="{{ 'HTML content copied to your clipboard.'|t }}" title="{{ 'Select HTML Content'|t }}">
+				{{ "Select HTML"|t }}
+			</a>
+		</div>
 	</div>
 
 	<div>
 	{{ forms.textarea({
-		id: "html",
+		id: "html-content",
 		name: "html",
 		value: html,
 		rows: 5,
@@ -34,12 +38,17 @@
 	<div style="position:relative;margin-top:30px;">
 		<div style="float:left;"><strong>{{ "Text Content"|t }}</strong></div>
 	
-		<div style="float:right"><a href="#" class="btnSelectAll btn small formsubmit" data-subject="#text" title="{{ 'Select Text Content'|t }}">{{ "Select Text"|t }}</a></div>
+		<div style="float:right;margin:-2px 0 5px;">
+			<a href="#" class="btnSelectAll btn small formsubmit" data-clipboard-target-id="text-content"
+				data-success-message="{{ 'HTML content copied to your clipboard.'|t }}" title="{{ 'Select Text Content'|t }}">
+				{{ "Select Text"|t }}
+			</a>
+		</div>
 	</div>
 
 	<div>
 	{{ forms.textarea({
-		id: "text",
+		id: "text-content",
 		name: "text",
 		value: text,
 		rows: 5,
@@ -47,16 +56,27 @@
 	}) }}
 	</div>
 
-	<hr>
+</div>
 
-	<div class="buttons right">
-		<button id="close" class="btn">{{ "Close"|t }}</button>
+<div class="footer">
+
+	<div class="buttons left">
+		<button id="close" class="btn">{{ "Cancel"|t }}</button>
 	</div>
-</section>
+	<div class="buttons right actions">
+		<button
+			data-action="sproutEmail/copyPaste/markSent"
+			data-email-id="{{ email.id }}"
+			class="btn submit">
+			{{ "Mark as Sent"|t }}
+		</button>
+	</div>
 
-<style type="text/css">
+</div>
+
+{% includecss %}
 	textarea {
 		overflow: hidden!important;
 		margin-top:10px;
 	}
-</style>
+{% endincludecss %}

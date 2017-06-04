@@ -3,34 +3,6 @@ namespace Craft;
 
 class SproutEmail_SentEmailController extends BaseController
 {
-	/**
-	 * Get the Sent Email View Content Modal
-	 *
-	 * @throws HttpException
-	 */
-	public function actionGetViewContentModal()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$emailId   = craft()->request->getRequiredPost('emailId');
-		$sentEmail = sproutEmail()->sentEmails->getSentEmailById($emailId);
-
-		$body     = (!empty($sentEmail->body)) ? $sentEmail->body : null;
-		$htmlBody = (!empty($sentEmail->htmlBody)) ? $sentEmail->htmlBody : null;
-
-		$content = craft()->templates->render('sproutemail/sentemails/_view', array(
-			'body'     => $body,
-			'htmlBody' => $htmlBody
-		));
-
-		$response          = new SproutEmail_ResponseModel();
-		$response->content = $content;
-		$response->success = true;
-
-		$this->returnJson($response->getAttributes());
-	}
-
 	public function actionGetResendModal()
 	{
 		$this->requirePostRequest();

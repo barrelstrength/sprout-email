@@ -1,14 +1,25 @@
-<h1>Sprout Email</h1>
-<h2>{{ notification.title }}</h2>
-<hr>
-{% if success is defined and success %}
-	<p style="color: green;">{{ message is defined ? message : "You notification was sent successfully."|t }}</p>
+<div class="body">
 
-{% else %}
-	<p style="color: #d00;">{{ message is defined ? message : "We had some issues sending your notification, please review the
-	logs for more info."|t }}</p>
-{% endif %}
-<hr>
-<div class="buttons right">
-	<button id="close" class="btn">{{ "Done"|t }}</button>
+	<h1>Sprout Email</h1>
+	<h2>{{ notification.title }}</h2>
+
+	<hr>
+
+	{% if success is defined and success %}
+
+		<p style="color: green;">{{ message is defined ? message : 'You notification was sent successfully.'|t }}</p>
+
+	{% else %}
+
+		<p style="color: #d00;">{{ message is defined ? message : 'We had some issues sending your notification, please review the
+		logs for more info.'|t }}</p>
+
+	{% endif %}
+
+</div>
+
+<div class="footer">
+	<div class="buttons right">
+		<button id="close" class="btn">{{ 'Done'|t }}</button>
+	</div>
 </div>

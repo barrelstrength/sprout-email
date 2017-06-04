@@ -9,6 +9,14 @@ namespace Craft;
 class SproutEmail_CampaignEmailDeleteElementAction extends DeleteElementAction
 {
 	/**
+	 * @return null|string
+	 */
+	public function getConfirmationMessage()
+	{
+		return Craft::t('Are you sure you want to delete the selected emails?');
+	}
+
+	/**
 	 * @param ElementCriteriaModel $criteria
 	 *
 	 * @return bool

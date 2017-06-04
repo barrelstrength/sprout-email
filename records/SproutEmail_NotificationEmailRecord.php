@@ -32,7 +32,6 @@ class SproutEmail_NotificationEmailRecord extends BaseRecord
 			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
 			'fromEmail'             => array(AttributeType::String, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			'dateCreated'           => AttributeType::DateTime,
 			'dateUpdated'           => AttributeType::DateTime,

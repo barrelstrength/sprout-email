@@ -85,8 +85,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'name'        => array('label' => Craft::t('Notification Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'preview'     => array('label' => Craft::t('Preview')),
-			'send'        => array('label' => Craft::t('Send'))
+			'send'        => array('label' => Craft::t('Send')),
+			'preview'     => array('label' => Craft::t('Preview'), 'icon' => 'view')
 		);
 
 		return $attributes;
@@ -105,8 +105,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'name';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-		$attributes[] = 'preview';
 		$attributes[] = 'send';
+		$attributes[] = 'preview';
 
 		return $attributes;
 	}
@@ -151,7 +151,8 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
 				'email'    => $element,
-				'shareUrl' => $shareUrl
+				'shareUrl' => $shareUrl,
+				'type'     => $attribute
 			));
 		}
 
@@ -285,7 +286,19 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'successMessage'      => Craft::t('Emails deleted.'),
 		));
 
-		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+		$setStatusAction              = craft()->elements->getAction('SetStatus');
+		$setStatusAction->onSetStatus = function (Event $event)
+		{
+			if ($event->params['status'] == BaseElementModel::ENABLED)
+			{
+				// Set a Date Updated as well
+				craft()->db->createCommand()->update(
+					'sproutemail_notificationemails',
+					array('dateUpdated' => DateTimeHelper::currentTimeForDb()),
+					array('and', array('in', 'id', $event->params['elementIds']))
+				);
+			}
+		};
 
 		return array($deleteAction, $setStatusAction);
 	}
