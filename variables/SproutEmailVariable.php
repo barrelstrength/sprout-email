@@ -43,7 +43,7 @@ class SproutEmailVariable
 	/**
 	 * Returns a list of mailers that can send campaigns
 	 *
-	 * @todo - update this and remove the $exclude variable in favor of handling exceptions on the Mailer Class
+	 * @todo Craft 3 - update this and remove the $exclude variable in favor of handling exceptions on the Mailer Class
 	 *
 	 * @return SproutEmailBaseMailer[]
 	 */

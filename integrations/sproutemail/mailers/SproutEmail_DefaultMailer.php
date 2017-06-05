@@ -417,7 +417,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		}
 
 		// Get recipients for live emails
-		// @todo - clarify what entryRecipents and $dynamicRecipients are
+		// @todo Craft 3 - improve and standardize how we use entryRecipents and dynamicRecipients
 		$entryRecipients   = $this->getRecipientsFromCampaignEmailModel($email, $object);
 		$dynamicRecipients = sproutEmail()->notificationEmails->getDynamicRecipientsFromElement($object);
 

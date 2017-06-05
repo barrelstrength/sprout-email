@@ -295,6 +295,8 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailEvents()
 	{
+		$events = array();
+
 		if ($this->isEnabled && $this->isInstalled)
 		{
 			$events = array(

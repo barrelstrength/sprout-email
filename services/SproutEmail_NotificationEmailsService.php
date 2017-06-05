@@ -21,6 +21,9 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 	 */
 	protected $registeredEvents = array();
 
+	/**
+	 *
+	 */
 	public function init()
 	{
 		$this->availableEvents = $this->getAvailableEvents();
@@ -49,6 +52,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return SproutEmail_NotificationEmailModel::populateModels($notifications);
 	}
 
+	/**
+	 * @param $emailId
+	 *
+	 * @return BaseElementModel|null
+	 */
 	public function getNotificationEmailById($emailId)
 	{
 		return craft()->elements->getElementById($emailId, 'SproutEmail_NotificationEmail');
@@ -106,6 +114,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return isset($this->availableEvents[$id]) ? $this->availableEvents[$id] : $default;
 	}
 
+	/**
+	 * @param $event
+	 * @param $notification
+	 *
+	 * @return mixed
+	 */
 	public function getEventSelectedOptions($event, $notification)
 	{
 		if (craft()->request->getRequestType() == 'POST')
@@ -119,6 +133,14 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
+	/**
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 * @param bool                               $isSettingPage
+	 *
+	 * @return bool
+	 * @throws Exception
+	 * @throws \Exception
+	 */
 	public function saveNotification(SproutEmail_NotificationEmailModel $notificationEmail, $isSettingPage = false)
 	{
 		$result = false;
@@ -223,6 +245,13 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $result;
 	}
 
+	/**
+	 * Deletes a Notification Email by ID
+	 *
+	 * @param $id
+	 *
+	 * @return bool
+	 */
 	public function deleteNotificationEmailById($id)
 	{
 		$result = false;
@@ -467,6 +496,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 	}
 
+	/**
+	 * @param $notificationId
+	 *
+	 * @return SproutEmail_ResponseModel
+	 */
 	public function getPrepareModal($notificationId)
 	{
 		$notificationEmail = craft()->elements->getElementById($notificationId);
@@ -499,6 +533,11 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		return $response;
 	}
 
+	/**
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 *
+	 * @return string
+	 */
 	public function getPrepareModalHtml(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		// Display the testToEmailAddress if it exists
@@ -523,22 +562,21 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		);
 	}
 
+	/**
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 *
+	 * @return SproutEmail_ResponseModel
+	 */
 	public function sendTestNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
-		// @TODO - add support back for Recipient Lists here
-		$lists = array();
-
 		try
 		{
 			$response = $this->sendMockNotificationEmail($notificationEmail);
 
-			return SproutEmail_ResponseModel::createModalResponse(
-				'sproutemail/_modals/notifications/sendEmailConfirmation',
-				array(
-					'notification' => $notificationEmail,
-					'emailModel'   => $response['emailModel'],
-					'lists'        => $lists,
-					'message'      => Craft::t('Notification sent successfully.')
+			return SproutEmail_ResponseModel::createModalResponse('sproutemail/_modals/notifications/sendEmailConfirmation', array(
+					'notificationEmail' => $notificationEmail,
+					'emailModel'        => $response['emailModel'],
+					'message'           => Craft::t('Notification sent successfully.')
 				)
 			);
 		}
@@ -546,16 +584,19 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		{
 			sproutEmail()->error($e->getMessage());
 
-			return SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/notifications/sendEmailPrepare',
-				array(
-					'notificationEmail' => $notificationEmail,
-					'message'           => Craft::t($e->getMessage()),
-				)
-			);
+			return SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/notifications/sendEmailPrepare', array(
+				'notificationEmail' => $notificationEmail,
+				'message'           => Craft::t($e->getMessage()),
+			));
 		}
 	}
 
+	/**
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
 	public function sendMockNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail)
 	{
 		$event = $this->getEventById($notificationEmail->eventId);
@@ -632,6 +673,12 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		sproutEmail()->campaignEmails->showCampaignEmail($email, $fileExtension);
 	}
 
+	/**
+	 * @param $notificationEmail
+	 * @param $errors
+	 *
+	 * @return array
+	 */
 	public function getErrors($notificationEmail, $errors)
 	{
 		$notificationEditUrl         = UrlHelper::getCpUrl('sproutemail/notifications/edit/' . $notificationEmail->id);

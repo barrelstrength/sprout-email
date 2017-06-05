@@ -62,6 +62,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
+			'listSettings'          => array(Attributetype::Mixed),
 			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
@@ -69,9 +70,6 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'dateScheduled'         => array(AttributeType::DateTime, 'default' => null),
 			'dateSent'              => array(AttributeType::DateTime, 'default' => null),
 			'template'              => array(AttributeType::String, 'default' => null),
-
-			// @todo - integrate with Lists integration and delete old columns
-			'listSettings'          => Attributetype::Mixed,
 		);
 
 		return array_merge($defaults, $attributes);
@@ -262,9 +260,9 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	}
 
 	/**
-	 * Determine if the content of this email is ready to be sent
+	 * Determine if the content of this email is ready to be sent.
 	 *
-	 * @todo - is this necessary with proper validation? An entry shouldn't save if it has invalid fields...
+	 * Confirm that content and templates are valid.
 	 *
 	 * @return bool
 	 */
