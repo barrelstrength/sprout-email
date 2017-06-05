@@ -230,8 +230,7 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) === 'sproutemail' && !craft()
-				->request->getSegment(2) === 'preview'
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) === 'sproutemail' && craft()->request->getSegment(2) !== 'preview'
 		)
 		{
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
