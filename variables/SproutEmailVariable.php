@@ -23,26 +23,6 @@ class SproutEmailVariable
 	/**
 	 * @return string
 	 */
-	public function getName()
-	{
-		$plugin = craft()->plugins->getPlugin('sproutemail');
-
-		return $plugin->getName();
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		$plugin = craft()->plugins->getPlugin('sproutemail');
-
-		return $plugin->getVersion();
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getSettings()
 	{
 		$plugin = craft()->plugins->getPlugin('sproutemail');
@@ -113,19 +93,7 @@ class SproutEmailVariable
 	}
 
 	/**
-	 * @param $id
-	 *
-	 * @return BaseElementModel|null
-	 */
-	public function getNotificationEmailById($id)
-	{
-		return sproutEmail()->notificationEmails->getNotificationEmailById($id);
-	}
-
-	/**
-	 * @param string $type
-	 *
-	 * @return mixed Campaign model
+	 * @return SproutEmail_CampaignTypeModel[]
 	 */
 	public function getCampaignTypes()
 	{
@@ -133,29 +101,15 @@ class SproutEmailVariable
 	}
 
 	/**
-	 * Get a Campaign Type by id *
+	 * Get a Campaign Type by id
 	 *
-	 * @param int $campaignTypeId
+	 * @param $campaignTypeId
 	 *
-	 * @return object campaign record
+	 * @return SproutEmail_CampaignTypeModel
 	 */
 	public function getCampaignTypeById($campaignTypeId)
 	{
 		return sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
-	}
-
-	/**
-	 * Get subscriber list for specified provider
-	 *
-	 * @param string $mailer
-	 *
-	 * @return array
-	 */
-	public function getSubscriberList($mailer)
-	{
-		$mailer = sproutEmail()->mailers->getMailerByName(strtolower($mailer));
-
-		return $mailer->getSubscriberList();
 	}
 
 	/**
@@ -184,6 +138,16 @@ class SproutEmailVariable
 			'emailId'        => $emailId,
 			'campaignTypeId' => $campaignTypeId
 		));
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return BaseElementModel|null
+	 */
+	public function getNotificationEmailById($id)
+	{
+		return sproutEmail()->notificationEmails->getNotificationEmailById($id);
 	}
 
 	/**
