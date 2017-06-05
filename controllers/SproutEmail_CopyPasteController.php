@@ -21,7 +21,7 @@ class SproutEmail_CopyPasteController extends BaseController
 
 		if (sproutEmail()->campaignEmails->saveCampaignEmail($campaignEmail, $campaignType))
 		{
-			$html = craft()->templates->render('sproutemail/_modals/sendEmailConfirmation', array(
+			$html = craft()->templates->render('sproutemail/_modals/response', array(
 				'success' => true,
 				'email'   => $campaignEmail,
 				'message' => Craft::t('Email marked as sent.')
@@ -34,7 +34,7 @@ class SproutEmail_CopyPasteController extends BaseController
 		}
 		else
 		{
-			$html = craft()->templates->render('sproutemail/_modals/sendEmailConfirmation', array(
+			$html = craft()->templates->render('sproutemail/_modals/response', array(
 				'success' => true,
 				'email'   => $campaignEmail,
 				'message' => Craft::t('Unable to mark email as sent.')

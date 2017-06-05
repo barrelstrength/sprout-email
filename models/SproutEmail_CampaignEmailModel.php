@@ -142,7 +142,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 		if ($status == BaseElementModel::ENABLED)
 		{
 			$currentTime   = DateTimeHelper::currentTimeStamp();
-			$dateScheduled = $this->dateScheduled->getTimestamp();
+			$dateScheduled = $this->dateScheduled !== null ? $this->dateScheduled->getTimestamp() : null;
 
 			if ($this->dateSent != null)
 			{

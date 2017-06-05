@@ -62,7 +62,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 	{
 		$settings = isset($settings['settings']) ? $settings['settings'] : $this->getSettings();
 
-		$html = craft()->templates->render('sproutemail/settings/mailers/sproutemail/settings', array(
+		$html = craft()->templates->render('sproutemail/_integrations/mailers/defaultmailer/settings', array(
 			'settings' => $settings
 		));
 
@@ -238,7 +238,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			$response['emailModel'] = $email;
 
 			return SproutEmail_ResponseModel::createModalResponse(
-				'sproutemail/_modals/sendEmailConfirmation',
+				'sproutemail/_modals/response',
 				array(
 					'email'         => $campaignEmail,
 					'campaign'      => $campaignType,
@@ -253,7 +253,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			sproutEmail()->error($e->getMessage());
 
 			return SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/sendEmailConfirmation',
+				'sproutemail/_modals/response',
 				array(
 					'email'    => $campaignEmail,
 					'campaign' => $campaignType,
@@ -285,7 +285,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 
 		$errors = $this->getErrors($campaignEmail, $campaignType, $errors);
 
-		return craft()->templates->render('sproutemail/_modals/sendEmailPrepare', array(
+		return craft()->templates->render('sproutemail/_modals/campaigns/prepareEmailSnapshot', array(
 			'campaignEmail' => $campaignEmail,
 			'campaignType'  => $campaignType,
 			'recipients'    => $recipients,
@@ -360,7 +360,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			}
 		}
 
-		return craft()->templates->render('sproutemail/_integrations/mailer/defaultmailer/lists', array(
+		return craft()->templates->render('sproutemail/_integrations/mailers/defaultmailer/lists', array(
 			'options' => $options,
 			'values'  => $selected,
 		));

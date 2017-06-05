@@ -133,7 +133,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
-		$html = craft()->templates->render('sproutemail/_modals/sendTestEmail', array(
+		$html = craft()->templates->render('sproutemail/_modals/campaigns/prepareTestEmail', array(
 			'campaignEmail' => $campaignEmail,
 			'campaignType'  => $campaignType
 		));
@@ -157,7 +157,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
-		$html = craft()->templates->render('sproutemail/_modals/scheduleEmail', array(
+		$html = craft()->templates->render('sproutemail/_modals/campaigns/prepareScheduledEmail', array(
 			'campaignEmail' => $campaignEmail,
 			'campaignType'  => $campaignType
 		));
@@ -308,7 +308,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		if (!empty($errorMsg))
 		{
 			$this->returnJson(
-				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/response', array(
 					'email'   => $campaignEmail,
 					'message' => $errorMsg
 				))
@@ -335,7 +335,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 			$this->returnJson(
 				SproutEmail_ResponseModel::createErrorModalResponse(
-					'sproutemail/_modals/sendEmailConfirmation',
+					'sproutemail/_modals/response',
 					array(
 						'email'    => $campaignEmail,
 						'campaign' => $campaignType,
@@ -348,7 +348,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		{
 			$this->returnJson(
 				SproutEmail_ResponseModel::createErrorModalResponse(
-					'sproutemail/_modals/sendEmailConfirmation',
+					'sproutemail/_modals/response',
 					array(
 						'email'    => $campaignEmail,
 						'campaign' => $campaignType,
@@ -414,7 +414,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 				$this->returnJson(
 					SproutEmail_ResponseModel::createErrorModalResponse(
-						'sproutemail/_modals/sendEmailConfirmation',
+						'sproutemail/_modals/response',
 						array(
 							'email'    => $campaignEmail,
 							'campaign' => $campaignType,
@@ -427,7 +427,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			{
 				$this->returnJson(
 					SproutEmail_ResponseModel::createErrorModalResponse(
-						'sproutemail/_modals/sendEmailConfirmation',
+						'sproutemail/_modals/response',
 						array(
 							'email'    => $campaignEmail,
 							'campaign' => $campaignType,
@@ -440,7 +440,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$this->returnJson(
 			SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/sendEmailConfirmation',
+				'sproutemail/_modals/response',
 				array(
 					'email'    => $campaignEmail,
 					'campaign' => !empty($campaignType) ? $campaignType : null,

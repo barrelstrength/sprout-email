@@ -9,7 +9,7 @@
 			<tbody>
 			<tr>
 				<td><strong>{{ "Subject"|t }}</strong></td>
-				<td class="title">{{ notificationEmail.title }}</td>
+				<td class="title">{{ email.title }}</td>
 			</tr>
 
 			<tr>
@@ -35,8 +35,8 @@
 			<p>
 				<ul class="error bullets">
 					{% for error in errors %}
-			<li>{{ error | raw }}</li>
-		{% endfor %}
+						<li>{{ error | raw }}</li>
+					{% endfor %}
 				</ul>
 			</p>
 		{% endif %}
@@ -53,7 +53,7 @@
 			{% if errors is defined and errors is not empty %} disabled style="opacity: 0.25;" {% endif %}
 			data-mailer="defaultmailer"
 			data-action="sproutEmail/notificationEmails/sendTestNotificationEmail"
-			data-notification-id="{{ notificationEmail.id }}"
+			data-notification-id="{{ email.id }}"
 			class="btn submit actions">
 			{{- "Send Test"|t -}}
 		</button>

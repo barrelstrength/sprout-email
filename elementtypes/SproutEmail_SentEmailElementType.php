@@ -228,7 +228,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 		$html = parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 
-		$modal = craft()->templates->render('sproutemail/_modals/box');
+		$modal = craft()->templates->render('sproutemail/_modals/base');
 
 		return $html . $modal;
 	}
