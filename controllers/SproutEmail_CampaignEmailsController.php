@@ -90,7 +90,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 				$status = $campaignEmail->getStatus();
 
-				if ($status != 'ready')
+				if ($status !== 'ready')
 				{
 					$shareUrl = UrlHelper::getActionUrl('sproutEmail/campaignEmails/shareCampaignEmail', array(
 						'emailId'        => $campaignEmail->id,
@@ -117,6 +117,54 @@ class SproutEmail_CampaignEmailsController extends BaseController
 			'showPreviewBtn' => $showPreviewBtn,
 			'shareUrl'       => $shareUrl,
 			'tabs'           => $tabs
+		));
+	}
+
+	/**
+	 * Renders the Send Test Campaign Email Modal
+	 */
+	public function actionPrepareTestCampaignEmailModal()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$html = craft()->templates->render('sproutemail/_modals/sendTestEmail', array(
+			'campaignEmail' => $campaignEmail,
+			'campaignType'  => $campaignType
+		));
+
+		$this->returnJson(array(
+			'success' => true,
+			'content' => $html
+		));
+	}
+
+	/**
+	 * Renders the Schedule Campaign Email Modal
+	 */
+	public function actionPrepareScheduleCampaignEmail()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$emailId = craft()->request->getPost('emailId');
+
+		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
+		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+
+		$html = craft()->templates->render('sproutemail/_modals/scheduleEmail', array(
+			'campaignEmail' => $campaignEmail,
+			'campaignType'  => $campaignType
+		));
+
+		$this->returnJson(array(
+			'success' => true,
+			'content' => $html
 		));
 	}
 
@@ -171,7 +219,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	/**
 	 * Deletes a Campaign Email
 	 *
-	 * @return void
+	 * @throws Exception
 	 */
 	public function actionDeleteCampaignEmail()
 	{
@@ -238,7 +286,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 
 		$recipients = craft()->request->getPost('recipients');
 
-		if ($recipients == null)
+		if ($recipients === null)
 		{
 			$errorMsg = Craft::t('Empty recipients.');
 		}
@@ -309,30 +357,6 @@ class SproutEmail_CampaignEmailsController extends BaseController
 				)
 			);
 		}
-	}
-
-	/**
-	 * Renders a modal to send a Scheduled Campaign Email
-	 */
-	public function actionScheduleCampaignEmail()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$emailId = craft()->request->getPost('emailId');
-
-		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
-		$campaignType  = sproutEmail()->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
-
-		$html = craft()->templates->render('sproutemail/_modals/scheduleEmail', array(
-			'campaignEmail' => $campaignEmail,
-			'campaignType'  => $campaignType
-		));
-
-		$this->returnJson(array(
-			'success' => true,
-			'content' => $html
-		));
 	}
 
 	/**
