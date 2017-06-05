@@ -177,18 +177,45 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		// Get the Campaign Email
 		$emailId       = craft()->request->getRequiredPost('emailId');
 		$campaignEmail = sproutEmail()->campaignEmails->getCampaignEmailById($emailId);
 
+		if (!$campaignEmail)
+		{
+			throw new Exception(Craft::t('No Campaign Email exists with the ID “{id}”.', array(
+				'id' => $campaignEmail
+			)));
+		}
+
 		if (sproutEmail()->campaignEmails->deleteCampaignEmail($campaignEmail))
 		{
-			$this->redirectToPostedUrl($campaignEmail);
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array('success' => true));
+			}
+			else
+			{
+				craft()->userSession->setNotice(Craft::t('Campaign deleted.'));
+				$this->redirectToPostedUrl($campaignEmail);
+			}
 		}
 		else
 		{
-			// @TODO - return errors
-			SproutEmailPlugin::log(json_encode($campaignEmail->getErrors()), LogLevel::Error);
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array('success' => false));
+			}
+			else
+			{
+				SproutEmailPlugin::log(json_encode($campaignEmail->getErrors()), LogLevel::Error);
+
+				craft()->userSession->setNotice(Craft::t('Couldn’t delete campaign.'));
+
+				// Send the entry back to the template
+				craft()->urlManager->setRouteVariables(array(
+					'campaignEmail' => $campaignEmail
+				));
+			}
 		}
 	}
 
