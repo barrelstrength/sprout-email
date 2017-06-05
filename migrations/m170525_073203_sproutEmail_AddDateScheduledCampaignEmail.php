@@ -24,7 +24,7 @@ class m170525_073203_sproutEmail_AddDateScheduledCampaignEmail extends BaseMigra
 					'required' => false
 				);
 
-				$this->addColumnAfter('sproutemail_campaignemails', 'dateScheduled', $definition, 'dateSent');
+				$this->addColumnAfter('sproutemail_campaignemails', 'dateScheduled', $definition, 'enableFileAttachments');
 			}
 			else
 			{
