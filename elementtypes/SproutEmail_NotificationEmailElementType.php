@@ -273,10 +273,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 				'template'  => $element->template . $extension,
 				'variables' => array(
 					'email'  => $element,
-					'object' => $object,
-
-					// @deprecate in v3 `entry` in favor of the `email` variable
-					'entry'  => $element,
+					'object' => $object
 				)
 			)
 		);

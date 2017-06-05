@@ -126,8 +126,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$this->configOverrides = craft()->config->get('sproutEmail');
 		}
 
-		// @todo - update and document the syntax for mailer setting overrides in the general config file
-		// these should probably be namespaced by mailer handle. Are there any other settings folks can override?
 		if (isset($this->configOverrides[$name]))
 		{
 			$configOverrides = $this->configOverrides[$name];

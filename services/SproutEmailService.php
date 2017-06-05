@@ -429,11 +429,11 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * @param EmailModel $emailModel
-	 * @param            $campaign
-	 * @param            $email
+	 * @param string     $template
+	 * @param            $notification
 	 * @param            $object
 	 *
-	 * @return bool|EmailModel
+	 * @return EmailModel
 	 */
 	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $notification, $object)
 	{
@@ -444,21 +444,14 @@ class SproutEmailService extends BaseApplicationComponent
 		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($notification->replyToEmail, $object);
 
 		// Render the email templates
-		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
-			'email'        => $notification,
-			'object'       => $object,
-
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $notification,
-			'notification' => $notification
+		$emailModel->body = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
+			'email'  => $notification,
+			'object' => $object
 		));
-		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
-			'email'        => $notification,
-			'object'       => $object,
 
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $notification,
-			'notification' => $notification
+		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
+			'email'  => $notification,
+			'object' => $object
 		));
 
 		$styleTags = array();

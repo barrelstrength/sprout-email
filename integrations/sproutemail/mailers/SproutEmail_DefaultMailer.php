@@ -175,11 +175,8 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			$response = array();
 
 			$params = array(
-				'email'    => $campaignEmail,
-				'campaign' => $campaignType,
-
-				// @deprecate - in favor of `email` in v3
-				'entry'    => $campaignEmail
+				'email'        => $campaignEmail,
+				'campaignType' => $campaignType,
 			);
 
 			$email = array(

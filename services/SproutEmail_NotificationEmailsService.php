@@ -460,12 +460,8 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		}
 
 		return array_merge($attributes, array(
-			'email'        => $notificationEmail,
-			'object'       => $element,
-
-			// @deprecate - in v3 in favor of `email`
-			'entry'        => $notificationEmail,
-			'notification' => $notificationEmail,
+			'email'  => $notificationEmail,
+			'object' => $element
 		));
 	}
 
@@ -658,7 +654,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		{
 			ob_start();
 
-			echo Craft::t("Notification Email cannot display. The Event setting must be set.");
+			echo Craft::t('Notification Email cannot display. The Event setting must be set.');
 
 			// End the request
 			craft()->end();

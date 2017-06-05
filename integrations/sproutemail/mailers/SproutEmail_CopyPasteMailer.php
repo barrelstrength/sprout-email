@@ -78,12 +78,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 		{
 			$variables = array(
 				'email'        => $campaignEmail,
-				'campaignType' => $campaignType,
-
-				// @deprecate - `entry` in favor of `email` in v3
-				// @deprecate - `campaign` in favor of `campaignType` in v3
-				'entry'        => $campaignEmail,
-				'campaign'     => $campaignType
+				'campaignType' => $campaignType
 			);
 
 			$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $variables);

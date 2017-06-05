@@ -270,17 +270,15 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	{
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
+		// @todo - update recipient info to be dynamic
 		$params = array(
-			'email'     => $this,
-			'campaign'  => $campaignType,
-			'recipient' => array(
+			'email'        => $this,
+			'campaignType' => $campaignType,
+			'recipient'    => array(
 				'firstName' => 'First',
 				'lastName'  => 'Last',
 				'email'     => 'user@domain.com'
-			),
-
-			// @deprecate - in favor of `email` in v3
-			'entry'     => $this
+			)
 		);
 
 		$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params);
