@@ -1,10 +1,11 @@
 <?php
+
 namespace Craft;
 
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m170525_073203_sproutEmail_AddSendDateCampaignEmail extends BaseMigration
+class m170525_073203_sproutEmail_AddDateScheduledCampaignEmail extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -15,7 +16,7 @@ class m170525_073203_sproutEmail_AddSendDateCampaignEmail extends BaseMigration
 	{
 		if (($table = $this->dbConnection->schema->getTable('{{sproutemail_campaignemails}}')))
 		{
-			if (($column = $table->getColumn('sendDate')) == null)
+			if (($column = $table->getColumn('dateScheduled')) == null)
 			{
 				$definition = array(
 					AttributeType::Mixed,
@@ -23,13 +24,15 @@ class m170525_073203_sproutEmail_AddSendDateCampaignEmail extends BaseMigration
 					'required' => false
 				);
 
-				$this->addColumnAfter('sproutemail_campaignemails', 'sendDate', $definition, 'lastDateSent');
+				$this->addColumnAfter('sproutemail_campaignemails', 'dateScheduled', $definition, 'enableFileAttachments');
 			}
 			else
 			{
-				Craft::log('Tried to add a `sendDate` column to the `sproutemail_campaignemails` table, but there is already one there.', LogLevel::Warning);
+				Craft::log('The `dateScheduled` column already exists in the `sproutemail_campaignemails` table.',
+					LogLevel::Warning);
 			}
 		}
+
 		return true;
 	}
 }

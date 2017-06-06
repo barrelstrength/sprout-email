@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class m150420_140000_sproutEmail_addsDynamicColumnToRecipientListsTable extends BaseMigration

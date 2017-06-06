@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -8,7 +9,6 @@ namespace Craft;
  */
 class SproutEmail_NotificationEmailDeleteElementAction extends DeleteElementAction
 {
-
 	/**
 	 * @param ElementCriteriaModel $criteria
 	 *

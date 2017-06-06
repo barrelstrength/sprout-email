@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 use Twig_Extension;
@@ -7,18 +8,24 @@ use Twig_SimpleFilter;
 
 class SproutEmailTwigExtension extends Twig_Extension
 {
+	/**
+	 * @var array
+	 */
 	protected $settings = array();
 
-	public function getName()
-	{
-		return 'Sprout Email Filters';
-	}
-
+	/**
+	 * @param string $html
+	 *
+	 * @return string
+	 */
 	public function htmlEntityDecode($html = '')
 	{
 		return html_entity_decode($html, null, craft()->templates->getTwig()->getCharset());
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getFilters()
 	{
 		return array(
@@ -27,6 +34,9 @@ class SproutEmailTwigExtension extends Twig_Extension
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getFunctions()
 	{
 		return array(
@@ -34,18 +44,26 @@ class SproutEmailTwigExtension extends Twig_Extension
 		);
 	}
 
-	// @TODO - This doesn't work properly yet, but we need to
-	// get Email to support tags like this.
-	//
-	// Wordwrap filter used the following Twig Extension as a starting point but has updated the
-	// filter to chop out <p> tags and <br> tags, add \n breaks, and to not cut words off when
-	// wrapping lines.  Lines will wrap at the closest breaking space before the character limit.
-	//
-	// https://github.com/fabpot/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
-	//
-	// {% wordwrap %}
-	// {% endwordwrap %}
-	//
+	/**
+	 * @todo - Add wordwrap feature
+	 *         This doesn't work properly yet. Update Sprout Email to support tags like this.
+	 *
+	 * Wordwrap filter used the following Twig Extension as a starting point but has updated the
+	 * filter to chop out <p> tags and <br> tags, add \n breaks, and to not cut words off when
+	 * wrapping lines.  Lines will wrap at the closest breaking space before the character limit.
+	 *
+	 * https://github.com/fabpot/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
+   *
+	 * {% wordwrap %}
+	 * {% endwordwrap %}
+   *
+	 * @param        $value
+	 * @param int    $length
+	 * @param string $separator
+	 * @param bool   $preserve
+	 *
+	 * @return string
+	 */
 	public function wordwrapFilter($value, $length = 60, $separator = "\n", $preserve = false)
 	{
 		$lines = array();

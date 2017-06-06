@@ -18,10 +18,10 @@
 	background-color: #27AE60;
 }
 
-.sproutemail.campaigns .status.sent {
+.status.scheduled {
 	background-color: #0D99F2;
 }
 
-.status.failed {
+.status.failed, .status.incomplete  {
 	background-color: #D0021B;
 }

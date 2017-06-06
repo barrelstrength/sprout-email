@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -30,7 +31,6 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
 			'fromEmail'             => array(AttributeType::String, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
 			'listSettings'          => AttributeType::Mixed,
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -56,7 +57,8 @@ class SproutEmail_CampaignTypeModel extends BaseModel
 
 			// @related
 			'fieldLayoutId'     => AttributeType::Number,
-			'emailId'           => AttributeType::Number
+			'emailId'           => AttributeType::Number,
+			'campaignEmails'    => AttributeType::Mixed
 		);
 	}
 

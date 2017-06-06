@@ -1,14 +1,46 @@
-<h1>Sprout Email</h1>
-<h2>{{ notification.title }}</h2>
-<hr>
-{% if success is defined and success %}
-	<p style="color: green;">{{ message is defined ? message : "You notification was sent successfully."|t }}</p>
+<div class="body">
 
-{% else %}
-	<p style="color: #d00;">{{ message is defined ? message : "We had some issues sending your notification, please review the
-	logs for more info."|t }}</p>
-{% endif %}
-<hr>
-<div class="buttons right">
-	<button id="close" class="btn">{{ "Done"|t }}</button>
+	{% if success is defined and success %}
+
+		<h1>{{ 'Success'|t }}</h1>
+
+		<table class="data fullwidth">
+			<tbody>
+			<tr>
+				<td><strong>{{ 'Subject'|t }}</strong></td>
+				<td class="title">{{ notificationEmail.title }}</td>
+			</tr>
+			<tr>
+				<td><strong>{{ 'Message'|t }}</strong></td>
+				<td><em>{{ message is defined ? message : 'Your campaign was sent successfully.'|t }}</em></td>
+			</tr>
+			</tbody>
+		</table>
+
+	{% else %}
+
+		<h1>{{ 'Error'|t }}</h1>
+
+		<table class="data fullwidth">
+			<tbody>
+			<tr>
+				<td><strong>{{ 'Subject'|t }}</strong></td>
+				<td class="title">{{ email.title }}</td>
+			</tr>
+			<tr>
+				<td><strong>{{ 'Message'|t }}</strong></td>
+				<td><em>{{ message is defined ? message : 'An error occurred while sending your campaign. Please review the Craft logs
+		 for more info.'|t }}</em></td>
+			</tr>
+			</tbody>
+		</table>
+
+	{% endif %}
+
+</div>
+
+<div class="footer">
+	<div class="buttons right">
+		<button id="close" class="btn">{{ 'Done'|t }}</button>
+	</div>
 </div>

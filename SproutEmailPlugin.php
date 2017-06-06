@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -31,7 +32,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.5.0';
+		return '2.5.2';
 	}
 
 	/**
@@ -39,7 +40,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getSchemaVersion()
 	{
-		return '2.5.1';
+		return '2.5.2';
 	}
 
 	/**
@@ -162,6 +163,10 @@ class SproutEmailPlugin extends BasePlugin
 			// Examples
 			'sproutemail/settings/examples'                                                              =>
 				'sproutemail/settings/_tabs/examples',
+
+			// Previews
+			'sproutemail/preview/(?P<emailType>campaign|notification|sent)/(?P<emailId>\d+)'             =>
+				'sproutemail/_special/preview'
 		);
 	}
 
@@ -182,23 +187,25 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			sproutEmail()->sentEmails->logSentEmailCampaign($event);
 
-			sproutEmail()->campaignEmails->updateLastDateSent($event);
+			$campaignEmail = $event->params['campaignEmail'];
+
+			sproutEmail()->campaignEmails->updateDateSent($campaignEmail);
 		});
 
 		craft()->on('email.onSendEmail', function (Event $event)
 		{
 			$action = craft()->request->getActionSegments();
 			// Adds support for contact form plugin :(.
-			if(isset($action[0]) && $action[0] == "contactForm")
+			if (isset($action[0]) && $action[0] == "contactForm")
 			{
 				$emailModel = $event->params['emailModel'];
-				$variables = $event->params['variables'];
+				$variables  = $event->params['variables'];
 
 				if (isset($variables['emailSubject']) && isset($variables['emailBody']))
 				{
-					$emailModel->subject  = $variables['emailSubject'];
-					$emailModel->body     = $variables['emailBody'];
-					$emailModel->htmlBody = Craft::t('No value provided by Contact Form plugin');
+					$emailModel->subject         = $variables['emailSubject'];
+					$emailModel->body            = $variables['emailBody'];
+					$emailModel->htmlBody        = Craft::t('No value provided by Contact Form plugin');
 					$event->params['emailModel'] = $emailModel;
 				}
 				else
@@ -223,26 +230,26 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) === 'sproutemail' && craft()->request->getSegment(2) !== 'preview'
+		)
 		{
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
-			craft()->templates->includeJs("
+			craft()->templates->includeJs('
 				sproutFormsBrand = new Craft.SproutBrand();
 				sproutFormsBrand.displayFooter({
-					pluginName: 'Sprout Email',
-					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
-					pluginVersion: '" . $this->getVersion() . "',
-					pluginDescription: '" . $this->getDescription() . "',
-					developerName: '(Barrel Strength)',
-					developerUrl: '" . $this->getDeveloperUrl() . "'
+					pluginName: "Sprout Email",
+					pluginUrl: "http://sprout.barrelstrengthdesign.com/craft-plugins/email",
+					pluginVersion: "' . $this->getVersion() . '",
+					pluginDescription: "' . $this->getDescription() . '",
+					developerName: "(Barrel Strength)",
+					developerUrl: "' . $this->getDeveloperUrl() . '"
 				});
-			");
+			');
 		}
 	}
 
 	private function importClasses()
 	{
-
 		// Sprout Email Contracts
 		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
 		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
@@ -268,7 +275,6 @@ class SproutEmailPlugin extends BasePlugin
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
 		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
-
 	}
 
 	/**
@@ -289,6 +295,8 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailEvents()
 	{
+		$events = array();
+
 		if ($this->isEnabled && $this->isInstalled)
 		{
 			$events = array(
@@ -371,6 +379,9 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function registerSproutImportImporters()
 	{
 		return array(

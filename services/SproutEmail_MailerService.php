@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -125,8 +126,6 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			$this->configOverrides = craft()->config->get('sproutEmail');
 		}
 
-		// @todo - update and document the syntax for mailer setting overrides in the general config file
-		// these should probably be namespaced by mailer handle. Are there any other settings folks can override?
 		if (isset($this->configOverrides[$name]))
 		{
 			$configOverrides = $this->configOverrides[$name];
@@ -139,7 +138,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 			return $settings;
 		}
 
-		$settingsFromDb   = $mailer->getSettings()->getAttributes();
+		$settingsFromDb = $mailer->getSettings()->getAttributes();
 
 		$settingsFromFile = isset($configOverrides) ? $configOverrides : array();
 
@@ -282,12 +281,13 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		if (!$mailer)
 		{
-			throw new Exception(Craft::t('The {name} mailer is not available for installation.', array(
+			throw new Exception(Craft::t('The {name} mailer is not available to be installed.', array(
 				'name' => $name
 			)));
 		}
 
-		if ($mailer->isSettingBuiltIn())
+		// If we don't have a settings URL, we store our settings in Sprout Email's mailer table
+		if ($mailer->getCpSettingsUrl() === null)
 		{
 			$this->createMailerRecord($mailer);
 		}

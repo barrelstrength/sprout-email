@@ -1,36 +1,12 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_SentEmailController extends BaseController
 {
 	/**
-	 * Get the Sent Email View Content Modal
-	 *
-	 * @throws HttpException
+	 * Returns info for the Sent Email Resend modal
 	 */
-	public function actionGetViewContentModal()
-	{
-		$this->requirePostRequest();
-		$this->requireAjaxRequest();
-
-		$emailId   = craft()->request->getRequiredPost('emailId');
-		$sentEmail = sproutEmail()->sentEmails->getSentEmailById($emailId);
-
-		$body     = (!empty($sentEmail->body)) ? $sentEmail->body : null;
-		$htmlBody = (!empty($sentEmail->htmlBody)) ? $sentEmail->htmlBody : null;
-
-		$content = craft()->templates->render('sproutemail/sentemails/_view', array(
-			'body'     => $body,
-			'htmlBody' => $htmlBody
-		));
-
-		$response          = new SproutEmail_ResponseModel();
-		$response->content = $content;
-		$response->success = true;
-
-		$this->returnJson($response->getAttributes());
-	}
-
 	public function actionGetResendModal()
 	{
 		$this->requirePostRequest();
@@ -39,7 +15,7 @@ class SproutEmail_SentEmailController extends BaseController
 		$emailId   = craft()->request->getRequiredPost('emailId');
 		$sentEmail = sproutEmail()->sentEmails->getSentEmailById($emailId);
 
-		$content = craft()->templates->render('sproutemail/_modals/resendEmailPrepare', array(
+		$content = craft()->templates->render('sproutemail/_modals/sentemails/prepareResendEmail', array(
 			'sentEmail' => $sentEmail
 		));
 
@@ -50,6 +26,9 @@ class SproutEmail_SentEmailController extends BaseController
 		$this->returnJson($response->getAttributes());
 	}
 
+	/**
+	 * Resends a Sent Email
+	 */
 	public function actionResendEmail()
 	{
 		$this->requirePostRequest();
@@ -76,7 +55,7 @@ class SproutEmail_SentEmailController extends BaseController
 				$message = Craft::t("Recipient email addresses do not validate: $invalidEmails");
 
 				$response = SproutEmail_ResponseModel::createErrorModalResponse(
-					'sproutemail/_modals/sendEmailConfirmation',
+					'sproutemail/_modals/response',
 					array(
 						'email'   => $sentEmail,
 						'message' => Craft::t($message),
@@ -149,7 +128,7 @@ class SproutEmail_SentEmailController extends BaseController
 					$message = "Email sent successfully.";
 
 					$response = SproutEmail_ResponseModel::createModalResponse(
-						'sproutemail/_modals/sendEmailConfirmation',
+						'sproutemail/_modals/response',
 						array(
 							'email'   => $sentEmail,
 							'message' => Craft::t($message)
@@ -163,7 +142,7 @@ class SproutEmail_SentEmailController extends BaseController
 		catch (\Exception $e)
 		{
 			$response = SproutEmail_ResponseModel::createErrorModalResponse(
-				'sproutemail/_modals/sendEmailConfirmation',
+				'sproutemail/_modals/response',
 				array(
 					'email'   => $sentEmail,
 					'message' => Craft::t($e->getMessage()),

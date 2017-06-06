@@ -38,10 +38,9 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
 			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => array(AttributeType::Bool),
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
-			'sendDate'              => array(AttributeType::DateTime, 'default' => null)
+			'dateScheduled'         => array(AttributeType::DateTime, 'default' => null),
+			'dateSent'              => array(AttributeType::DateTime, 'default' => null),
 		);
 	}
 

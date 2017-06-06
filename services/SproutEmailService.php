@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -98,7 +99,7 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$renderedTemplate = null;
 
-		// @todo - look into how to explain this
+		// @todo Craft 3 - figure out why this is necessary
 		// If a blank template is passed in, Craft renders the index template
 		// If a template is set specifically to the value `test` Craft also
 		// appears to render the index template.
@@ -124,7 +125,7 @@ class SproutEmailService extends BaseApplicationComponent
 				$message = str_replace($template, $template . '.html', $message);
 			}
 
-			// @todo - update error handling
+			// @todo Craft 3 - update error handling
 			$this->error($message, 'template-' . $template);
 		}
 
@@ -268,7 +269,8 @@ class SproutEmailService extends BaseApplicationComponent
 
 		// Make sure this is a Sprout Email Event
 		if (!isset($variables['email']) ||
-			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel'))
+			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel')
+		)
 		{
 			return true;
 		}
@@ -290,11 +292,11 @@ class SproutEmailService extends BaseApplicationComponent
 					$field = $fieldLayoutField->getField();
 					$type  = $field->getFieldType();
 
+					// We support standard Asset fields. We don't yet support asset fields within a Matrix Field Type.
 					if (get_class($type) === 'Craft\\AssetsFieldType')
 					{
 						$this->attachAsset($eventObject, $field, $event);
 					}
-					// @todo validate assets within MatrixFieldType
 				}
 			}
 		}
@@ -427,11 +429,11 @@ class SproutEmailService extends BaseApplicationComponent
 
 	/**
 	 * @param EmailModel $emailModel
-	 * @param            $campaign
-	 * @param            $email
+	 * @param string     $template
+	 * @param            $notification
 	 * @param            $object
 	 *
-	 * @return bool|EmailModel
+	 * @return EmailModel
 	 */
 	public function renderEmailTemplates(EmailModel $emailModel, $template = '', $notification, $object)
 	{
@@ -442,21 +444,14 @@ class SproutEmailService extends BaseApplicationComponent
 		$emailModel->replyTo   = sproutEmail()->renderObjectTemplateSafely($notification->replyToEmail, $object);
 
 		// Render the email templates
-		$emailModel->body     = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
-			'email'        => $notification,
-			'object'       => $object,
-
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $notification,
-			'notification' => $notification
+		$emailModel->body = sproutEmail()->renderSiteTemplateIfExists($template . '.txt', array(
+			'email'  => $notification,
+			'object' => $object
 		));
-		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
-			'email'        => $notification,
-			'object'       => $object,
 
-			// @deprecate in v3 in favor of the `email` variable
-			'entry'        => $notification,
-			'notification' => $notification
+		$emailModel->htmlBody = sproutEmail()->renderSiteTemplateIfExists($template, array(
+			'email'  => $notification,
+			'object' => $object
 		));
 
 		$styleTags = array();
@@ -475,7 +470,7 @@ class SproutEmailService extends BaseApplicationComponent
 
 		$emailModel->htmlBody = $this->removePlaceholderStyleTags($emailModel->htmlBody, $styleTags);
 
-		// @todo - update error handling
+		// @todo Craft 3 - update error handling
 		$templateError = sproutEmail()->getError('template');
 
 		if (!empty($templateError))

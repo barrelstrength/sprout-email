@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
@@ -158,11 +159,9 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 
 		foreach ($result as $key => $section)
 		{
-			array_push(
-				$options, array(
-					'label' => $section->name,
-					'value' => $section->id
-				)
+			$options[] = array(
+				'label' => $section->name,
+				'value' => $section->id
 			);
 		}
 

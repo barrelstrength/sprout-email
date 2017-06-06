@@ -16,6 +16,8 @@ SproutModal.prototype.init = function ()
 {
 	var self = this;
 
+	self.initEmailPreview();
+
 	$(".prepare").on("click", function (e)
 	{
 		e.preventDefault();
@@ -47,7 +49,6 @@ SproutModal.prototype.init = function ()
 				modalLoader.hide();
 				modalLoader.destroy();
 			}
-
 
 			self.create(response.content);
 		});
@@ -107,7 +108,7 @@ SproutModal.prototype.create = function (content)
 
 	// Modal setup
 	var $modal   = $("#sproutmodal").clone();
-	var $content = $("#content", $modal).html(content);
+	var $content = $modal.html(content);
 	var $spinner = $(".spinner", $modal);
 	var $actions = $(".actions", $modal);
 
@@ -119,14 +120,20 @@ SproutModal.prototype.create = function (content)
 	// Instantiate and show
 	var modal = new Garnish.Modal($modal);
 
+	self.initEmailPreview();
+
 	$("#close", $modal).on("click", function ()
 	{
+		Craft.elementIndex.updateElements();
+
 		modal.hide();
 		modal.destroy();
 	});
 
 	$("#cancel", $modal).on("click", function ()
 	{
+		Craft.elementIndex.updateElements();
+
 		modal.hide();
 		modal.destroy();
 	});
@@ -184,7 +191,7 @@ SproutModal.prototype.create = function (content)
 
 SproutModal.prototype.createErrorModal = function(error)
 {
-	var $content = $('#sproutmodalcontent').clone();
+	var $content = $('#sproutmodal-error').clone();
 
 	$('.innercontent', $content).html(error);
 
@@ -195,7 +202,7 @@ SproutModal.prototype.createErrorModal = function(error)
 
 SproutModal.prototype.createLoadingModal = function()
 {
-	var $content = $('#sproutmodalloading').clone();
+	var $content = $('#sproutmodal-loading').clone();
 
 	$('.innercontent', $content);
 
@@ -204,3 +211,18 @@ SproutModal.prototype.createLoadingModal = function()
 	return modal.create($content.html());
 
 };
+
+SproutModal.prototype.initEmailPreview = function()
+{
+	$('.email-preview').on('click', function(e) {
+
+		e.preventDefault();
+
+		$this     = $(e.target);
+		$previewUrl = $this.data('preview-url');
+
+		window.open($previewUrl, 'newwindow','width=920, height=600');
+
+		return false;
+	});
+}

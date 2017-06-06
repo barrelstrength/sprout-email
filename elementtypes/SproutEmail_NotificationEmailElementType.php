@@ -2,6 +2,9 @@
 
 namespace Craft;
 
+/**
+ * Class SproutEmail_NotificationEmailElementType
+ */
 class SproutEmail_NotificationEmailElementType extends BaseElementType
 {
 	/**
@@ -29,14 +32,6 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function isLocalized()
-	{
-		return false;
-	}
-
-	/**
 	 * @inheritDoc IElementType::hasStatuses()
 	 *
 	 * @return bool
@@ -46,6 +41,9 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		return true;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getStatuses()
 	{
 		return array(
@@ -85,15 +83,15 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'name'        => array('label' => Craft::t('Notification Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'preview'     => array('label' => Craft::t('Preview')),
-			'send'        => array('label' => Craft::t('Send'))
+			'send'        => array('label' => Craft::t('Send')),
+			'preview'     => array('label' => Craft::t('Preview'), 'icon' => 'view')
 		);
 
 		return $attributes;
 	}
 
 	/**
-	 * Returns default table columns for table views
+	 * @param null $source
 	 *
 	 * @return array
 	 */
@@ -105,12 +103,15 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 		$attributes[] = 'name';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-		$attributes[] = 'preview';
 		$attributes[] = 'send';
+		$attributes[] = 'preview';
 
 		return $attributes;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function defineSortableAttributes()
 	{
 		$attributes['title']       = Craft::t('Subject Line');
@@ -131,14 +132,14 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-		if ($attribute == 'send')
+		if ($attribute === 'send')
 		{
 			return craft()->templates->render('sproutemail/_partials/notifications/prepareLink', array(
 				'notification' => $element
 			));
 		}
 
-		if ($attribute == 'preview')
+		if ($attribute === 'preview')
 		{
 			$shareUrl = null;
 
@@ -151,13 +152,25 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 
 			return craft()->templates->render('sproutemail/_partials/notifications/previewLinks', array(
 				'email'    => $element,
-				'shareUrl' => $shareUrl
+				'shareUrl' => $shareUrl,
+				'type'     => $attribute
 			));
 		}
 
 		return parent::getTableAttributeHtml($element, $attribute);
 	}
 
+	/**
+	 * @param ElementCriteriaModel $criteria
+	 * @param array                $disabledElementIds
+	 * @param array                $viewState
+	 * @param null|string          $sourceKey
+	 * @param null|string          $context
+	 * @param bool                 $includeContainer
+	 * @param bool                 $showCheckboxes
+	 *
+	 * @return string
+	 */
 	public function getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes)
 	{
 		craft()->templates->includeJsResource('sproutemail/js/sproutmodal.js');
@@ -260,10 +273,7 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 				'template'  => $element->template . $extension,
 				'variables' => array(
 					'email'  => $element,
-					'object' => $object,
-
-					// @deprecate in v3 `entry` in favor of the `email` variable
-					'entry'  => $element,
+					'object' => $object
 				)
 			)
 		);
@@ -285,7 +295,19 @@ class SproutEmail_NotificationEmailElementType extends BaseElementType
 			'successMessage'      => Craft::t('Emails deleted.'),
 		));
 
-		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
+		$setStatusAction              = craft()->elements->getAction('SetStatus');
+		$setStatusAction->onSetStatus = function (Event $event)
+		{
+			if ($event->params['status'] == BaseElementModel::ENABLED)
+			{
+				// Set a Date Updated as well
+				craft()->db->createCommand()->update(
+					'sproutemail_notificationemails',
+					array('dateUpdated' => DateTimeHelper::currentTimeForDb()),
+					array('and', array('in', 'id', $event->params['elementIds']))
+				);
+			}
+		};
 
 		return array($deleteAction, $setStatusAction);
 	}

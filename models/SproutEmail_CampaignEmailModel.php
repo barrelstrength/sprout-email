@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -13,7 +14,7 @@ namespace Craft;
  * @property string      $fromEmail
  * @property string      $replyToEmail
  * @property bool        $sent
- * @property datetime    $sendDate
+ * @property datetime    $dateScheduled
  * --
  * @property string|null $uri
  * @property string      $slug
@@ -26,16 +27,18 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	protected $elementType = 'SproutEmail_CampaignEmail';
 
 	/**
-	 * Disabled - Campaign isn't setup properly
-	 * Pending -  Campaign is setup but Entry is disabled
-	 * Ready -    Campaign is setup and is enabled
+	 * Ready     - Campaign is setup and is enabled
+	 * Disabled  - Campaign should not be sendable or displayed to public
+	 * Pending   - Campaign is setup but Entry is disabled
+	 * Scheduled - Campaign has a scheduled date in the future
+	 * Sent      - Campaign has a sent date in the past
 	 *
-	 * @todo - needs some testing
 	 */
-	const READY    = 'ready';
-	const PENDING  = 'pending';
-	const DISABLED = 'disabled'; // this doesn't behave properly when named 'disabled'
-	const SENT     = 'sent';
+	const READY     = 'ready';
+	const DISABLED  = 'disabled';
+	const PENDING   = 'pending';
+	const SCHEDULED = 'scheduled';
+	const SENT      = 'sent';
 
 	/**
 	 * @param mixed|null $element
@@ -53,22 +56,20 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function defineAttributes()
 	{
-		$defaults   = parent::defineAttributes();
+		$defaults = parent::defineAttributes();
 
 		$attributes = array(
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
+			'listSettings'          => array(Attributetype::Mixed),
 			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
-			'lastDateSent'          => array(AttributeType::DateTime, 'default' => null),
-			'sendDate'              => array(AttributeType::DateTime, 'default' => null),
-
-			// @todo - integrate with Lists integration and delete old columns
-			'listSettings'        => Attributetype::Mixed,
+			'dateScheduled'         => array(AttributeType::DateTime, 'default' => null),
+			'dateSent'              => array(AttributeType::DateTime, 'default' => null),
+			'template'              => array(AttributeType::String, 'default' => null),
 		);
 
 		return array_merge($defaults, $attributes);
@@ -136,40 +137,27 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 	 */
 	public function getStatus()
 	{
-		$status   = parent::getStatus();
-		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
+		$status = parent::getStatus();
 
-		switch ($status)
+		if ($status == BaseElementModel::ENABLED)
 		{
-			case BaseElementModel::DISABLED:
-			{
-				return static::DISABLED;
+			$currentTime   = DateTimeHelper::currentTimeStamp();
+			$dateScheduled = $this->dateScheduled !== null ? $this->dateScheduled->getTimestamp() : null;
 
-				break;
-			}
-			case BaseElementModel::ENABLED:
-			{
-				if ($this->sent)
-				{
-					return static::SENT;
-				}
-
-				if (empty($campaignType->mailer) || empty($campaignType->template))
-				{
-					return static::PENDING;
-				}
-
-				return static::ENABLED;
-
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::SENT:
+			if ($this->dateSent != null)
 			{
 				return static::SENT;
-
-				break;
 			}
+
+			if ($this->dateScheduled != null && $dateScheduled > $currentTime && $this->dateSent == null)
+			{
+				return static::SCHEDULED;
+			}
+
+			return static::PENDING;
 		}
+
+		return $status;
 	}
 
 	/**
@@ -239,15 +227,89 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 		}
 	}
 
-	public function isReady()
-	{
-		return (bool) ($this->getStatus() == static::ENABLED);
-	}
-
+	/**
+	 * Gets the Mailer associated with this Campaign Email
+	 *
+	 * @return SproutEmailBaseMailer|null
+	 */
 	public function getMailer()
 	{
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
 		return $campaignType->getMailer();
+	}
+
+	/**
+	 * Determine if this Campaign Email is ready to be sent
+	 *
+	 * @return bool
+	 */
+	public function isReadyToSend()
+	{
+		return (bool) ($this->getMailer() && $this->isContentReady() && $this->isListReady());
+	}
+
+	/**
+	 * Determine if this Campaign Email is ready enough to be tested (a campaign can be tested before we assign a list)
+	 *
+	 * @return bool
+	 */
+	public function isReadyToTest()
+	{
+		return (bool) ($this->getMailer() && $this->isContentReady());
+	}
+
+	/**
+	 * Determine if the content of this email is ready to be sent.
+	 *
+	 * Confirm that content and templates are valid.
+	 *
+	 * @return bool
+	 */
+	public function isContentReady()
+	{
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
+
+		// @todo - update recipient info to be dynamic
+		$params = array(
+			'email'        => $this,
+			'campaignType' => $campaignType,
+			'recipient'    => array(
+				'firstName' => 'First',
+				'lastName'  => 'Last',
+				'email'     => 'user@domain.com'
+			)
+		);
+
+		$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $params);
+
+		$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $params);
+
+		if ($html == null || $text == null)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determine if this Campaign Email has lists that it will be sent to
+	 *
+	 * @return bool
+	 */
+	public function isListReady()
+	{
+		$mailer = $this->getMailer();
+
+		if ($mailer->hasLists())
+		{
+			if (empty($this->listSettings['listIds']))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

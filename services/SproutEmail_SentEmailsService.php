@@ -149,7 +149,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		unset($infoTable['deliveryStatus']);
 		$sentEmail->info = JsonHelper::encode($infoTable);
 
-		// @todo - why do we need to set this to blank?
+		// @todo Craft 3 - why do we need to set this to blank?
 		// Where are Global Sets and other Element Types handling this? They do not
 		// add a value for slug in the craft_elements table
 		$sentEmail->slug = '';
@@ -278,7 +278,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 
 		if (version_compare($version, '2.6.2951', '>='))
 		{
-			$craftVersion = 'Craft ' . craft()->getEditionName() .' '. $version;
+			$craftVersion = 'Craft ' . craft()->getEditionName() . ' ' . $version;
 		}
 		else
 		{

@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -103,34 +104,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * @return string
-	 */
-	final public function getCpSectionUrl()
-	{
-		if ($this->hasCpSection())
-		{
-			return UrlHelper::getCpUrl(sprintf('sproutemail/%s', $this->getId()));
-		}
-	}
-
-	/**
-	 * @return string
-	 */
-
-	public function getCpSettingsUrl()
-	{
-		if ($this->hasCpSettings())
-		{
-			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
-		}
-	}
-
-	public function isSettingBuiltIn()
-	{
-		return false;
-	}
-
-	/**
 	 * Returns whether or not the mailer has settings to display
 	 *
 	 * @return bool
@@ -140,6 +113,21 @@ abstract class SproutEmailBaseMailer
 		$settings = $this->defineSettings();
 
 		return is_array($settings) && count($settings);
+	}
+
+	/**
+	 * Returns the URL for this Mailer's CP Settings
+	 *
+	 * @return null|string
+	 */
+	public function getCpSettingsUrl()
+	{
+		if (!$this->hasCpSettings())
+		{
+			return null;
+		}
+
+		return UrlHelper::getCpUrl('sproutemail/settings/mailers/' . $this->getId());
 	}
 
 	/**
@@ -253,6 +241,16 @@ abstract class SproutEmailBaseMailer
 	                                             SproutEmail_CampaignTypeModel $campaignType);
 
 	/**
+	 * Returns whether this Mailer supports mailing lists
+	 *
+	 * @return bool Whether this Mailer supports lists. Default is `true`.
+	 */
+	public function hasLists()
+	{
+		return true;
+	}
+
+	/**
 	 * Returns the Lists available to this Mailer
 	 */
 	public function getLists()
@@ -261,9 +259,11 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Get the HTML for our List Settings on the Campaign and Notification Email edit page
+	 * Returns the HTML for our List Settings on the Campaign and Notification Email edit page
 	 *
 	 * @param array $values
+	 *
+	 * @return null
 	 */
 	public function getListsHtml($values = array())
 	{
@@ -272,6 +272,7 @@ abstract class SproutEmailBaseMailer
 
 	/**
 	 * Return true to allow and show mailer dynamic recipients
+	 *
 	 * @return bool
 	 */
 	public function hasInlineRecipients()

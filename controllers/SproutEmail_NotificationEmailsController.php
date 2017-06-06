@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -255,20 +256,45 @@ class SproutEmail_NotificationEmailsController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$notificationId = craft()->request->getRequiredPost('sproutEmail.id');
+		$notificationEmailId = craft()->request->getRequiredPost('sproutEmail.id');
 
-		if ($notificationId)
+		$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationEmailId);
+
+		if (!$notificationEmail)
 		{
-			$notificationEmail = sproutEmail()->notificationEmails->getNotificationEmailById($notificationId);
+			throw new Exception(Craft::t('No Notification Email exists with the ID “{id}”.', array(
+				'id' => $notificationEmailId
+			)));
+		}
 
-			if (sproutEmail()->notificationEmails->deleteNotificationEmailById($notificationId))
+		if (sproutEmail()->notificationEmails->deleteNotificationEmailById($notificationEmailId))
+		{
+			if (craft()->request->isAjaxRequest())
 			{
-				$this->redirectToPostedUrl($notificationEmail);
+				$this->returnJson(array('success' => true));
 			}
 			else
 			{
-				// @TODO - return errors
+				craft()->userSession->setNotice(Craft::t('Notification deleted.'));
+				$this->redirectToPostedUrl($notificationEmail);
+			}
+		}
+		else
+		{
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array('success' => false));
+			}
+			else
+			{
 				SproutEmailPlugin::log(json_encode($notificationEmail->getErrors()), LogLevel::Error);
+
+				craft()->userSession->setNotice(Craft::t('Couldn’t delete notification.'));
+
+				// Send the entry back to the template
+				craft()->urlManager->setRouteVariables(array(
+					'notificationEmail' => $notificationEmail
+				));
 			}
 		}
 	}
@@ -311,7 +337,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		if (!empty($errorMsg))
 		{
 			$this->returnJson(
-				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+				SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/response', array(
 					'email'   => $notificationEmail,
 					'message' => $errorMsg
 				))
@@ -354,7 +380,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 				}
 
 				$this->returnJson(
-					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/response', array(
 						'email'   => $notificationEmail,
 						'message' => $errorMessage
 					))
@@ -363,7 +389,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 			catch (\Exception $e)
 			{
 				$this->returnJson(
-					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+					SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/response', array(
 						'email'   => $notificationEmail,
 						'message' => $e->getMessage(),
 					))
@@ -372,7 +398,7 @@ class SproutEmail_NotificationEmailsController extends BaseController
 		}
 
 		$this->returnJson(
-			SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/sendEmailConfirmation', array(
+			SproutEmail_ResponseModel::createErrorModalResponse('sproutemail/_modals/response', array(
 				'email'    => $notificationEmail,
 				'campaign' => !empty($campaign) ? $campaign : null,
 				'message'  => Craft::t('The notification email you are trying to send is missing.'),

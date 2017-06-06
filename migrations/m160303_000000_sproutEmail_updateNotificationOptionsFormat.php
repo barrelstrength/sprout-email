@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class m160303_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMigration
