@@ -83,6 +83,14 @@
 
 {% includejs %}
 
+{% set isText = (craft.request.getParam('type') == 'text')? true : false	%}
+
+{% if isText == true %}
+	jQuery(document).ready(function() {
+		$('.preview-text-btn').click();
+	});
+{% endif %}
+
 $(".sentemail-btn").click(function() {
 
 $(".sentemail-btn").removeClass('active');

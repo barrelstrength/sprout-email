@@ -52,7 +52,7 @@
 				<strong>{{ "Text"|t }}</strong>
 			</td>
 			<td>
-				<a href="{{ emailUrl ~ '?type=text' }}" title="{{ email.title }}" data-preview-url="{{ emailUrl }}" class="email-preview">{{
+				<a href="{{ emailUrl ~ '?type=text' }}" title="{{ email.title }}" data-preview-url="{{ emailUrl ~ '?type=text' }}" class="email-preview">{{
 					"Preview"|t }}</a>
 			</td>
 		</tr>

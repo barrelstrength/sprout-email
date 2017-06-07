@@ -265,4 +265,27 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 			}
 		}
 	}
+
+	public function saveEmailSettings($campaignEmail, array $ids = array())
+	{
+		if ($campaignEmail->id != null)
+		{
+			$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findById($campaignEmail->id);
+
+			if ($campaignEmailRecord)
+			{
+				$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+				$campaignEmailRecord->emailSettings = DateTimeHelper::currentTimeForDb();
+
+				if ($campaignEmailRecord->save(false))
+				{
+					if ($transaction && $transaction->active)
+					{
+						$transaction->commit();
+					}
+				}
+			}
+		}
+	}
 }
