@@ -458,7 +458,7 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	 * @throws HttpException
 	 * @return null
 	 */
-	public function actionShareCampaignEmail($emailId = null)
+	public function actionShareCampaignEmail($emailId = null, $type = 'html')
 	{
 		if ($emailId)
 		{
@@ -478,7 +478,8 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		$token = craft()->tokens->createToken(array(
 			'action' => 'sproutEmail/campaignEmails/viewSharedCampaignEmail',
 			'params' => array(
-				'emailId' => $emailId
+				'emailId' => $emailId,
+				'type'    => $type
 			)
 		));
 
