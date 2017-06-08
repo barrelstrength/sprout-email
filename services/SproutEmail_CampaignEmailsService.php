@@ -266,7 +266,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		}
 	}
 
-	public function saveEmailSettings($campaignEmail, array $ids = array())
+	public function saveEmailSettings($campaignEmail, array $values = array())
 	{
 		if ($campaignEmail->id != null)
 		{
@@ -276,7 +276,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 			{
 				$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-				$campaignEmailRecord->emailSettings = DateTimeHelper::currentTimeForDb();
+				$campaignEmailRecord->emailSettings = $values;
 
 				if ($campaignEmailRecord->save(false))
 				{

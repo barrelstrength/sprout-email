@@ -62,6 +62,7 @@ class SproutEmail_CampaignEmailModel extends BaseElementModel
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
+			'emailSettings'         => array(Attributetype::Mixed),
 			'listSettings'          => array(Attributetype::Mixed),
 			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100, 'required' => false),
 			'fromEmail'             => array(AttributeType::String, 'minLength' => 6, 'required' => false),

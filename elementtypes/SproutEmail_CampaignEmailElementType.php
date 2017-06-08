@@ -353,6 +353,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.replyToEmail as replyToEmail,
 				 campaigns.dateSent as dateSent,
 				 campaigns.dateScheduled as dateScheduled,
+				 campaigns.emailSettings as emailSettings,
 				 campaigns.listSettings as listSettings,
 				 campaigns.enableFileAttachments as enableFileAttachments,
 				 campaigntype.template as template'

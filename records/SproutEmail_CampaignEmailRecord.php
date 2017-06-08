@@ -34,6 +34,7 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
+			'emailSettings'          => array(Attributetype::Mixed),
 			'listSettings'          => array(Attributetype::Mixed),
 			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
 			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
