@@ -23,11 +23,10 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
-	 * @return bool
+	 * @return bool|BaseRecord|SproutEmail_CampaignEmailRecord
 	 * @throws Exception
-	 * @throws \CDbException
 	 * @throws \Exception
 	 */
 	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
