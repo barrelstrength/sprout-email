@@ -69,7 +69,7 @@
 			{% if lists|length %}
 				{% for list in lists %}
 					<td colspan="2">
-						{{ list.name }}<span class="light"><i>(</i>{{ list.stats.member_count }}<i>)</i></span>
+					{{ list.name }} <span class="light"><i>(</i>{{ list.members_count }}<i>)</i></span>
 					</td>
 				{% endfor %}
 			{% else %}
