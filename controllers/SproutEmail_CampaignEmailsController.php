@@ -26,6 +26,8 @@ class SproutEmail_CampaignEmailsController extends BaseController
 	/**
 	 * Renders Campaign Email Edit Template
 	 *
+	 * @todo - cleanup how we handle the various scenarios around campaignTypeId and tabs in this method
+	 *
 	 * @param array $variables
 	 *
 	 * @throws HttpException
@@ -58,6 +60,10 @@ class SproutEmail_CampaignEmailsController extends BaseController
 		if (!is_numeric($campaignTypeId))
 		{
 			$campaignTypeId = $campaignEmail->campaignTypeId;
+		}
+		else
+		{
+			$campaignEmail->campaignTypeId = $campaignTypeId;
 		}
 
 		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($campaignTypeId);
