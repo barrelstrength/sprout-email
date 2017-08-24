@@ -22,7 +22,7 @@ class m170418_000000_sproutEmail_updateMailerSettings extends BaseMigration
 	{
 		$plugin = craft()->plugins->getPlugin('sproutCampaignMonitor', false);
 
-		if ($plugin->isInstalled)
+		if (isset($plugin->isInstalled) && $plugin->isInstalled)
 		{
 			$settings = craft()->db->createCommand()
 				->select('settings')
@@ -42,7 +42,7 @@ class m170418_000000_sproutEmail_updateMailerSettings extends BaseMigration
 	{
 		$plugin = craft()->plugins->getPlugin('sproutMailChimp', false);
 
-		if ($plugin->isInstalled)
+		if (isset($plugin->isInstalled) && $plugin->isInstalled)
 		{
 			$settings = craft()->db->createCommand()
 				->select('settings')
