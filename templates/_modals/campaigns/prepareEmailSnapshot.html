@@ -87,12 +87,14 @@
 <div class="footer">
 
 	<div class="buttons right">
+		{% if canBeTested is defined and canBeTested %}
 		<button {% if not email.isReadyToTest() %}disabled{% endif %}
 			data-action="sproutEmail/campaignEmails/prepareTestCampaignEmailModal"
 			data-email-id="{{ email.id }}"
 			class="btn actions {% if not email.isReadyToTest() %}disabled{% endif %}">
 			{{ "Send Test"|t }}
 		</button>
+		{% endif %}
 		<button {% if not email.isReadyToSend() %}disabled{% endif %}
 			data-action="sproutEmail/campaignEmails/prepareScheduleCampaignEmail"
 			data-email-id="{{ email.id }}"
