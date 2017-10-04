@@ -1,0 +1,27 @@
+{% set whenNew = (options.craft.saveUser.whenNew is defined)
+                 ? options.craft.saveUser.whenNew
+                 : false %}
+{% set whenUpdated = (options.craft.saveUser.whenUpdated is defined)
+		                 ? options.craft.saveUser.whenUpdated
+		                 : false %}
+
+{{ forms.checkboxField({
+		label: "When the user is created?"|t,
+		name: "rules[craft][saveUser][whenNew]",
+		checked: whenNew
+}) }}
+
+{{ forms.checkboxField({
+		label: "When the user is updated?"|t,
+		name: "rules[craft][saveUser][whenUpdated]",
+		checked: whenUpdated
+}) }}
+
+{{ forms.checkboxSelectField({
+	label: "User Groups"|t,
+	instructions: "Select which user groups will trigger the notification"|t,
+	name: "rules[craft][saveUser][userGroupIds]",
+	options: groups,
+	values: fieldValue,
+	errors: errors is defined ? errors : null,
+}) }}

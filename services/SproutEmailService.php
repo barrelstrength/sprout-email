@@ -2,544 +2,650 @@
 namespace Craft;
 
 /**
- * Main SproutEmail service
+ * Class SproutEmailService
+ *
+ * @package Craft
+ *
+ * @property SproutEmail_MailerService             $mailers
+ * @property SproutEmail_CampaignTypesService      $campaignTypes
+ * @property SproutEmail_CampaignEmailsService     $campaignEmails
+ * @property SproutEmail_NotificationEmailsService $notificationEmails
+ * @property SproutEmail_DefaultMailerService      $defaultmailer
+ * @property SproutEmail_SentEmailsService         $sentEmails
  */
 class SproutEmailService extends BaseApplicationComponent
 {
+	public $mailers;
+	public $campaignTypes;
+	public $campaignEmails;
+	public $notificationEmails;
+	public $defaultmailer;
+	public $sentEmails;
+
+	private $error = '';
+
+	public function init()
+	{
+		parent::init();
+
+		$this->mailers            = Craft::app()->getComponent('sproutEmail_mailer');
+		$this->defaultmailer      = Craft::app()->getComponent('sproutEmail_defaultMailer');
+		$this->campaignEmails     = Craft::app()->getComponent('sproutEmail_campaignEmails');
+		$this->campaignTypes      = Craft::app()->getComponent('sproutEmail_campaignTypes');
+		$this->notificationEmails = Craft::app()->getComponent('sproutEmail_notificationEmails');
+		$this->sentEmails         = Craft::app()->getComponent('sproutEmail_sentEmails');
+	}
+
 	/**
-	 * Returns all campaigns.
+	 * Returns a config value from general.php for the sproutEmail array
 	 *
-	 * @param string|null $indexBy
-	 * @return array
-	 */
-	public function getAllCampaigns()
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->order = 'dateCreated DESC';
-		return SproutEmail_CampaignRecord::model()->findAll($criteria);
-	}
-	
-	/**
-	 * Returns all Campaign Info (just settings, not related entries).
-	 * @return object campaign table records
+	 * @param string     $name
+	 * @param mixed|null $default
 	 *
-	 * @todo - Need a better way to identify between Campaigns
-	 * and Notifications: This is not clear and won't be true 
-	 * when we have native Campaigns: where('emailProvider != "SproutEmail"')
+	 * @return null
 	 */
-	public function getAllCampaignInfo()
+	public function getConfig($name, $default = null)
 	{
-		$query = craft()->db->createCommand()
-		    ->from('sproutemail_campaigns')
-		    ->where('emailProvider != "SproutEmail"')
-		    ->queryAll();
+		$configs = craft()->config->get('sproutEmail');
 
-		return $query;
+		return is_array($configs) && isset($configs[$name]) ? $configs[$name] : $default;
 	}
 
 	/**
-	 * Returns campaignRecipient lists
-	 * 
-	 * @param int $campaignId
-	 * @return array
-	 */
-	public function getCampaignRecipientLists($campaignId)
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->condition = 'campaign.id=:campaignId';
-		$criteria->params = array(':campaignId' => $campaignId);
-		
-		return SproutEmail_RecipientListRecord::model()
-		->with('campaign')
-		->findAll($criteria);
-	}
-	
-	/**
-	 * Returns all section based campaigns.
+	 * Allows us to render an object template without creating a fatal error
 	 *
-	 * @param string|null $indexBy
-	 * @return array
-	 */
-	public function getSectionCampaigns($campaign_id = false)
-	{
-		return SproutEmail_CampaignRecord::model()->getSectionBasedCampaigns($campaign_id);
-	}
-	
-	/**
-	 * Returns section based campaign by entryId
+	 * @param string $string
+	 * @param object $object
 	 *
-	 * @param string|null $entryId
-	 * @return array
+	 * @return string
 	 */
-	public function getSectionBasedCampaignByEntryAndCampaignId($entryId = false, $campaignId = false)
+	public function renderObjectTemplateSafely($string, $object)
 	{
-		return SproutEmail_CampaignRecord::model()->getSectionBasedCampaignByEntryAndCampaignId($entryId, $campaignId);
-	}
-
-	/**
-	 * Gets a campaign
-	 *
-	 * @param array possible conditions: array('id' => <id>, 'handle' => <handle>, ...) 
-	 * as defined in $valid_keys
-	 * @return SproutEmail_CampaignModel|null
-	 */
-	public function getCampaign($conditions = array())
-	{	
-		// we can do where clauses on these keys only
-		$valid_keys = array('id', 'handle');
-		
-		$criteria = new \CDbCriteria();
-
-		if( ! empty($conditions))
-		{
-			$params = array();
-			foreach($conditions as $key => $val)
-			{
-				if( ! in_array($key, $valid_keys)) // we only accept our defined keys
-				{
-					continue;
-				}
-				
-				$criteria->addCondition('t.' . $key . '=:' . $key);
-				$params[':' . $key] = $val;
-			}
-			
-			if( ! empty($params))
-			{
-				$criteria->params = $params;
-			}
-		}
-				
-		// get campaign record with recipient lists
-		$campaignRecord = SproutEmail_CampaignRecord::model()
-		->with('recipientList','campaignNotificationEvent')
-		->find($criteria);
-
-		if ($campaignRecord)
-		{
-			// now we need to populate the model
-			$campaignModel = SproutEmail_CampaignModel::populateModel($campaignRecord);
-			
-			$unserialized = array();
-			foreach($campaignRecord->campaignNotificationEvent as $event)
-			{
-				$opts = $event->options;
-				$event->options = isset($opts['options']) ? $opts['options'] : array();
-				$unserialized[] = $event;
-			}
-			
-			$campaignModel->notificationEvents = $unserialized;
-			
-
-			// now for the recipient related data
-			if(count($campaignRecord->recipientList) > 0)
-			{
-				$emailProviderRecipientListIdArr = array();
-				foreach($campaignRecord->recipientList as $list)
-				{
-					$emailProviderRecipientListIdArr[$list->emailProviderRecipientListId] = $list->emailProviderRecipientListId;
-				}
-			
-				$campaignModel->emailProviderRecipientListId = $emailProviderRecipientListIdArr;
-			}
-
-			return $campaignModel;
-		}
-	}
-	
-	/**
-	 * Save event
-	 * @param SproutEmail_NotificationEventModel $event
-	 * @throws Exception
-	 * @return SproutEmail_NotificationEventModel|\Craft\SproutEmail_NotificationEventRecord
-	 */
-	public function saveEvent(SproutEmail_NotificationEventModel &$event)
-	{
-		if (isset($event->id) && $event->id)
-		{
-			$eventRecord = SproutEmail_NotificationEventRecord::model()->findById($event->id);
-		
-			if ( ! $eventRecord)
-			{
-				throw new Exception(Craft::t('No event exists with the ID “{id}”', array('id' => $event->id)));
-			}
-		}
-		else
-		{
-			$eventRecord = new SproutEmail_NotificationEventRecord();
-		}
-
-		$eventRecord->registrar = $event->registrar;
-		$eventRecord->event = $event->event;
-		$eventRecord->description = $event->description;
-		
-		$eventRecord->validate();
-		$event->addErrors($eventRecord->getErrors());
-		
-		if( ! $eventRecord->hasErrors())
-		{
-			try 
-			{
-				craft()->plugins->call($event->registrar,array($event->event, function($event, BaseModel $entity, $success = TRUE){}));
-			}
-			catch (\Exception $e)
-			{
-				$event->addError('event', $e->getMessage());
-				return $event;
-			}
-			
-			$eventRecord->save(false);
-		}
-		
-		return $eventRecord;
-	}
-
-	/**
-	 * Process the 'save campaign' action.
-	 *
-	 * @param SproutEmail_CampaignModel $campaign
-	 * @throws \Exception
-	 * @return int CampaignRecordId
-	 */
-	public function saveCampaign(SproutEmail_CampaignModel $campaign, $tab = 'info')
-	{
-		// since we have to perform saves on multiple entities, 
-		// it's all or nothing using sql transactions
-		$transaction = craft()->db->beginTransaction();
-		
-		switch ($tab)
-		{
-		    case 'template':
-		        try
-		        {
-		            $campaignRecord = $this->_saveCampaignTemplates($campaign);
-		            if($campaignRecord->hasErrors()) // no good
-		            {
-		                $transaction->rollBack();
-		                return false;
-		            }
-		        }
-		        catch (\Exception $e)
-		        {
-		            throw new Exception(Craft::t('Error: Campaign could not be saved.'));
-		        }
-		        break;
-		    case 'recipients':   // save & associate the recipient list	
-		        $campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
-		        $campaign->emailProvider = $campaignRecord->emailProvider;
-        		$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
-        		if( ! craft()->{$service}->saveRecipientList($campaign, $campaignRecord))
-        		{
-        		    $transaction->rollback();
-        		    return false;
-        		}
-		        break;
-		    default: // save the campaign
-		    
-		        try 
-		        {
-		            $campaignRecord = $this->_saveCampaignInfo($campaign);
-		            if($campaignRecord->hasErrors()) // no good
-		            {
-		                $transaction->rollBack();
-		                return false;
-		            }
-		        }
-		        catch (\Exception $e)
-		        {
-		            throw new Exception(Craft::t('Error: Campaign could not be saved.'));
-		        }
-		        break;
-		}
-
-		$transaction->commit();
-
-		return $campaignRecord->id;
-	}
-	
-	private function _saveCampaignInfo(SproutEmail_CampaignModel &$campaign)
-	{
-	    $oldCampaignEmailProvider = null;
-	    
-	    if (isset($campaign->id) && $campaign->id) // this will be an edit
-	    {
-	        $campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
-	
-	        if ( ! $campaignRecord)
-	        {
-	            throw new Exception(Craft::t('No campaign exists with the ID “{id}”', array('id' => $campaign->id)));
-	        }
-	
-	        $oldCampaignEmailProvider = $campaignRecord->emailProvider;
-	    }
-	    else
-	    {
-	        $campaignRecord = new SproutEmail_CampaignRecord();
-	    }
-	
-	    // Set common attributes
-	    $campaignRecord->name			= $campaign->name;
-	    $campaignRecord->subject		= $campaign->subject;
-	    $campaignRecord->fromEmail		= $campaign->fromEmail;
-	    $campaignRecord->fromName		= $campaign->fromName;
-	    $campaignRecord->replyToEmail	= $campaign->replyToEmail;
-	    $campaignRecord->emailProvider	= $campaign->emailProvider;
-	    $campaignRecord->templateOption = $campaign->templateOption;
-	
-	    // if this is a notification and replyToEmail does NOT contain a twig variable
-	    // OR this is not a notification, set email rule
-	    if(($campaignRecord->notificationEvent && ! preg_match('/{{(.*?)}}/', $campaignRecord->replyToEmail))
-	            || ! $campaignRecord->notificationEvent)
-	    {
-	        $campaignRecord->addRules(array('replyToEmail', 'email'));
-	    }
-	
-	    $campaignRecord->validate();
-	    $campaign->addErrors($campaignRecord->getErrors());
-	
-	    if( ! $campaignRecord->hasErrors())
-	    {
-	        $campaignRecord->save(false);
-	        
-	        // if emailProvider has changed, let's get rid of the old recipient list since it's no longer valid
-	        if($campaignRecord->emailProvider != $oldCampaignEmailProvider)
-	        {
-	            if($recipientLists = $this->getCampaignRecipientLists($campaignRecord->id))
-	            {
-	                foreach($recipientLists as $list)
-	                {
-	                    $this->deleteCampaignRecipientList($list->id, $campaignRecord->id);
-	                }
-	            }
-	        }
-	    }
-	
-	    return $campaignRecord;
-	}
-	
-	private function _saveCampaignTemplates(SproutEmail_CampaignModel &$campaign)
-	{
-	    $campaignRecord = SproutEmail_CampaignRecord::model()->findById($campaign->id);
-	
-        if ( ! $campaignRecord)
-        {
-            throw new Exception(Craft::t('No campaign exists with the ID “{id}”', array('id' => $campaign->id)));
-        }
-	
-	    $oldCampaignName = $campaignRecord->name;
-
-	    $campaignRecord->templateOption	= $campaign->templateOption;
-	
-	    // template specific attributes & validation
-	    switch($campaign->templateOption)
-	    {
-	        case 1: // Import the HTML/Text on your own
-	            $campaignRecord->htmlBody	= $campaign->htmlBody;
-	            $campaignRecord->textBody	= $campaign->textBody;
-	            $campaignRecord->addRules(array('htmlBody,textBody', 'required'));
-	            break;
-	        case 2: // Send a text-based & html email
-	            $campaignRecord->htmlBody	= $campaign->htmlBody;
-	            $campaignRecord->textBody	= $campaign->textBody;
-	            $campaignRecord->addRules(array('textBody', 'required'));
-	            break;
-	        case 3: // Create a Campaign based on an Entries Section and Template
-	            $campaignRecord->sectionId		= $campaign->sectionId;
-	            $campaignRecord->htmlTemplate	= $campaign->htmlTemplate;
-	            $campaignRecord->textTemplate	= $campaign->textTemplate;
-	            $campaignRecord->addRules(array('sectionId,htmlTemplate,textTemplate', 'required'));
-	            break;
-	
-	    }
-
-	
-	    $campaignRecord->validate();
-	    $campaign->addErrors($campaignRecord->getErrors());
-	
-	    if( ! $campaignRecord->hasErrors())
-	    {
-	        $campaignRecord->save(false);
-	    }
-	
-	    return $campaignRecord;
-	}
-	
-	/**
-	 * Delete campaign recipient list entry
-	 * 
-	 * @param int $recipientListId
-	 * @param int $campaignId
-	 * @return bool
-	 */
-	public function deleteCampaignRecipientList($recipientListId, $campaignId)
-	{
-		return craft()->db->createCommand()->delete('sproutemail_campaign_recipient_lists', 
-				array('recipientListId' => $recipientListId, 'campaignId' => $campaignId));
-	}
-
-	/**
-	 * Deletes a campaign by its ID along with associations;
-	 * also cleans up any remaining orphans
-	 *
-	 * @param int $campaignId
-	 * @return bool
-	*/
-	public function deleteCampaign($campaignId)
-	{
-		// since we have to perform deletes on multiple entities,
-		// it's all or nothing using sql transactions
-		$transaction = craft()->db->beginTransaction();
-		
 		try
 		{
-			$campaignRecord = SproutEmail_CampaignRecord::model()->findByPk($campaignId);			
-
-			// delete campaign
-			if( ! craft()->db->createCommand()->delete('sproutemail_campaigns', array('id' => $campaignId)))
-			{
-				$transaction->rollback();
-				return false;
-			}
-			
-			// delete associated recipients
-			$service = 'sproutEmail_' . lcfirst($campaignRecord->emailProvider);
-			craft()->{$service}->deleteRecipients($campaignRecord);		
+			return craft()->templates->renderObjectTemplate($string, $object);
 		}
 		catch (\Exception $e)
 		{
-			$transaction->rollback();
+			$this->error(Craft::t('Cannot render template. Check template file and object variables.'), 'template');
+		}
+	}
+
+	/**
+	 * @param BaseModel   $model
+	 * @param array|mixed $object
+	 */
+	public function renderObjectContentSafely(&$model, $object)
+	{
+		$content = $model->getContent();
+
+		foreach ($content as $attribute => $value)
+		{
+			if (is_string($value) && stripos($value, '{') !== false)
+			{
+				$model->getContent()->{$attribute} = $this->renderObjectTemplateSafely($value, $object);
+			}
+		}
+	}
+
+	/**
+	 * Renders a site template when using it in control panel context
+	 *
+	 * @param string $template
+	 * @param array  $variables
+	 *
+	 * @return null|string
+	 */
+	public function renderSiteTemplateIfExists($template, array $variables = array())
+	{
+		$renderedTemplate = null;
+
+		// @todo - look into how to explain this
+		// If a blank template is passed in, Craft renders the index template
+		// If a template is set specifically to the value `test` Craft also
+		// appears to render the index template.
+		if (empty($template))
+		{
+			return $renderedTemplate;
+		}
+
+		$oldPath = craft()->templates->getTemplatesPath();
+		craft()->templates->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+
+		try
+		{
+			$renderedTemplate = craft()->templates->render($template, $variables);
+		}
+		catch (\Exception $e)
+		{
+			// Specify template .html if no .txt
+			$message = $e->getMessage();
+
+			if (strpos($template, '.txt') === false)
+			{
+				$message = str_replace($template, $template . '.html', $message);
+			}
+
+			// @todo - update error handling
+			$this->error($message, 'template-' . $template);
+		}
+
+		craft()->templates->setTemplatesPath($oldPath);
+
+		return $renderedTemplate;
+	}
+
+	/**
+	 * Returns whether or not a site template exists
+	 *
+	 * @param $template
+	 *
+	 * @return bool
+	 */
+	public function doesSiteTemplateExist($template)
+	{
+		$path = craft()->templates->getTemplatesPath();
+
+		craft()->templates->setTemplatesPath(craft()->path->getSiteTemplatesPath());
+
+		$exists = craft()->templates->doesTemplateExist($template);
+
+		craft()->templates->setTemplatesPath($path);
+
+		return $exists;
+	}
+
+	/**
+	 * Outputs JSON encoded data to standard output stream, useful during AJAX requests
+	 *
+	 * @param array $variables
+	 */
+	public function returnJson($variables = array())
+	{
+		JsonHelper::sendJsonHeaders();
+
+		// Output it into a buffer, in case TasksService wants to close the connection prematurely
+		ob_start();
+		echo JsonHelper::encode($variables);
+
+		craft()->end();
+	}
+
+	/**
+	 * Logs an info message to the plugin logs
+	 *
+	 * @param mixed $message
+	 * @param array $variables
+	 */
+	public function info($message, array $variables = array())
+	{
+		if (is_string($message))
+		{
+			$message = Craft::t($message, $variables);
+		}
+		else
+		{
+			$message = print_r($message, true);
+		}
+
+		SproutEmailPlugin::log($message, LogLevel::Info);
+	}
+
+	/**
+	 * Logs an error in cases where it makes more sense than to throw an exception
+	 *
+	 * @param mixed $message
+	 * @param array $variables
+	 */
+	public function error($message, $key = '', array $variables = array())
+	{
+		if (is_string($message))
+		{
+			$message = Craft::t($message, $variables);
+		}
+		else
+		{
+			$message = print_r($message, true);
+		}
+
+		if (!empty($key))
+		{
+			$this->error[$key] = $message;
+		}
+		else
+		{
+			$this->error = $message;
+		}
+
+		SproutEmailPlugin::log($message, LogLevel::Error);
+	}
+
+	/**
+	 * @return mixed error
+	 */
+	public function getError($key = '')
+	{
+		if (!empty($key) && isset($this->error[$key]))
+		{
+			return $this->error[$key];
+		}
+		else
+		{
+			return $this->error;
+		}
+	}
+
+	/**
+	 * @param string $text
+	 *
+	 * @return string
+	 */
+	public function createHandle($text)
+	{
+		$text  = ElementHelper::createSlug($text);
+		$words = explode('-', $text);
+		$start = array_shift($words);
+
+		if (count($words))
+		{
+			foreach ($words as $word)
+			{
+				$start = $start . ucfirst($word);
+			}
+		}
+
+		return $start;
+	}
+
+	/**
+	 * Attach files during Craft onBeforeSendEmail event
+	 *
+	 * @param Event $event
+	 *
+	 * @return bool
+	 */
+	public function handleOnBeforeSendEmail(Event $event)
+	{
+		$variables = $event->params['variables'];
+
+		// Make sure this is a Sprout Email Event
+		if (!isset($variables['sproutEmailEntry']))
+		{
+			return true;
+		}
+
+		$notificationEmail     = $variables['sproutEmailEntry'];
+		$enableFileAttachments = $notificationEmail->enableFileAttachments;
+
+		if (isset($variables['elementEntry']) && $enableFileAttachments)
+		{
+			$notificationEmail = $variables['elementEntry'];
+
+			/**
+			 * @var $field FieldModel
+			 */
+			if (method_exists($notificationEmail->getFieldLayout(), 'getFields'))
+			{
+				foreach ($notificationEmail->getFieldLayout()->getFields() as $fieldLayoutField)
+				{
+					$field = $fieldLayoutField->getField();
+					$type  = $field->getFieldType();
+
+					if (get_class($type) === 'Craft\\AssetsFieldType')
+					{
+						$this->attachAsset($notificationEmail, $field, $event);
+					}
+					// @todo validate assets within MatrixFieldType
+				}
+			}
+		}
+
+		if (isset($variables['elementEntry']) && !$enableFileAttachments)
+		{
+			$this->log('File attachments are currently not enabled for Sprout Email.');
+		}
+	}
+
+	private function attachAsset($entry, $field, $event)
+	{
+		/**
+		 * @var $criteria ElementCriteriaModel
+		 */
+		$criteria = $entry->{$field->handle};
+
+		if ($criteria instanceof ElementCriteriaModel)
+		{
+			$assets = $criteria->find();
+
+			if ($assets)
+			{
+				$this->attachAssetFilesToEmailModel($event->params['emailModel'], $assets);
+			}
+		}
+	}
+
+	/**
+	 * @param mixed $message
+	 * @param array $variables
+	 */
+	public function log($message, array $variables = array())
+	{
+		if (is_string($message))
+		{
+			$message = Craft::t($message, $variables);
+		}
+		else
+		{
+			$message = print_r($message, true);
+		}
+
+		SproutEmailPlugin::log($message, LogLevel::Info);
+	}
+
+	/**
+	 * @param EmailModel       $email
+	 * @param AssetFileModel[] $assets
+	 */
+	protected function attachAssetFilesToEmailModel(EmailModel $email, array $assets)
+	{
+		foreach ($assets as $asset)
+		{
+			$name = $asset->filename;
+			$path = $this->getAssetFilePath($asset);
+
+			$email->addAttachment($path, $name);
+		}
+	}
+
+	/**
+	 * @param AssetFileModel $asset
+	 *
+	 * @return string
+	 */
+	protected function getAssetFilePath(AssetFileModel $asset)
+	{
+		return $asset->getSource()->getSourceType()->getBasePath() . $asset->getFolder()->path . $asset->filename;
+	}
+
+	/**
+	 * Returns whether or not the templates directory is writable
+	 *
+	 * @return bool
+	 */
+	public function canCreateExamples()
+	{
+		return is_writable(craft()->path->getSiteTemplatesPath());
+	}
+
+	/**
+	 * Check if example already exist
+	 *
+	 * @return bool
+	 */
+	public function hasExamples()
+	{
+		$path = craft()->path->getSiteTemplatesPath() . 'sproutemail';
+
+		if (file_exists($path))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param $subject
+	 *
+	 * @return string
+	 */
+	public function encodeSubjectLine($subject)
+	{
+		return '=?UTF-8?B?' . base64_encode($subject) . '?=';
+	}
+
+	public function sendEmail(EmailModel $emailModel, $variables = array())
+	{
+		$errorMessage = $this->getError();
+
+		if (!empty($errorMessage))
+		{
+			if (is_array($errorMessage))
+			{
+				$errorMessage = implode("\n", $errorMessage);
+			}
+
+			$this->handleOnSendEmailErrorEvent($errorMessage, $emailModel, $variables);
+
 			return false;
 		}
 
-		$transaction->commit();
-		return true;
+		return craft()->email->sendEmail($emailModel, $variables);
 	}
-	
-	/**
-	 * Delete notification event
-	 * @param int $id
-	 * @return boolean
-	 */
-	public function deleteEvent($id)
+
+	public function getValidAndInvalidRecipients($recipients)
 	{
-		if( ! craft()->db->createCommand()->delete('sproutemail_notification_events', array('id' => $id)))
+		$invalidRecipients = array();
+		$validRecipients   = array();
+		$emails            = array();
+
+		if (!empty($recipients))
 		{
-			$transaction->rollback();
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * Returns all available system frontend templates
-	 * 
-	 * @return array
-	 */
-	public function getTemplatesDirListing()
-	{
-		$templates_path = craft()->path->getSiteTemplatesPath();
-		$files = $this->_scan($templates_path);
-		$select_options = array();
-		 
-		// set keys the same as values for <select> element
-		foreach($files as $file)
-		{
-			$fileArr = explode('.', $file);
-			array_pop($fileArr);
-			$select_options[$file] = implode('.', $fileArr);
-		}
-		return $select_options;
-	}
-	
-	/**
-	 * Returns all campaign notifications
-	 * 
-	 * @return array
-	 */
-	public function getNotifications()
-	{
-		return SproutEmail_CampaignRecord::model()->getNotifications();
-	}
-	
-	/**
-	 * Returns all supported notification events
-	 * 
-	 * @return array
-	 */
-	public function getNotificationEvents($event = null)
-	{
-		if($event)
-		{
-			$criteria = new \CDbCriteria();
-			$criteria->condition = 'event!=:event';
-			$criteria->params = array(':event' => 'craft');
-		}
-		$events = SproutEmail_NotificationEventRecord::model()->findAll();
-		$events_list = array();
-		foreach($events as $event)
-		{
-			$events_list[$event->id] = $event;
-		}
-		return $events_list;
-	}
-	
-	/**
-	 * Returns single notification event
-	 *
-	 * @return array
-	 */
-	public function getNotificationEventById($id = null)
-	{
-		return SproutEmail_NotificationEventRecord::model()->findByPk($id);
-	}
-	
-	/**
-	 * Returns event option file names
-	 * 
-	 * @return array
-	 */
-	public function getNotificationEventOptions()
-	{
-		$options = $this->_scan(dirname(__FILE__) . '/../templates/notifications/_event_options');
-		
-		$criteria = new \CDbCriteria();
-		$criteria->condition = 'registrar!=:registrar';
-		$criteria->params = array(':registrar' => 'craft');
-		$events = SproutEmail_NotificationEventRecord::model()->findAll($criteria);
-		foreach($events as $event)
-		{
-			$options['plugin_options'][$event->id] = $event->options;;
-		}
-		
-		return $options;
-	}
-	
-	/**
-	 * Recursive directory scan
-	 * 
-	 * @param string $dir
-	 * @param sring $prefix
-	 * @return array
-	 */
-	private function _scan($dir, $prefix = '')
-	{
-		$dir = rtrim($dir, '\\/');
-		$result = array();
-	
-		foreach (scandir($dir) as $f)
-		{
-			if ($f !== '.' and $f !== '..')
+			$recipients = explode(",", $recipients);
+
+			foreach ($recipients as $recipient)
 			{
-				if (is_dir("{$dir}/{$f}"))
+				$email    = trim($recipient);
+				$emails[] = $email;
+
+				if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
 				{
-					$result = array_merge($result, $this->_scan("{$dir}/{$f}", "{$prefix}{$f}/"));
+					$invalidRecipients[] = $email;
 				}
 				else
 				{
-					$result[] = $prefix.$f;
+					$recipientEmail = SproutEmail_SimpleRecipientModel::create(array(
+						'email' => $email
+					));
+
+					$validRecipients[] = $recipientEmail;
 				}
 			}
-		}	
-		return $result;
+		}
+
+		return array(
+			'valid'   => $validRecipients,
+			'invalid' => $invalidRecipients,
+			'emails'  => $emails
+		);
+	}
+
+	public function handleOnSendEmailErrorEvent($message, EmailModel $emailModel, $variables = array())
+	{
+		$user = craft()->users->getUserByEmail($emailModel->toEmail);
+
+		if (!$user)
+		{
+			$user            = new UserModel();
+			$user->email     = $emailModel->toEmail;
+			$user->firstName = $emailModel->toFirstName;
+			$user->lastName  = $emailModel->toLastName;
+		}
+
+		// Call Email service class instead of $this to get sender settings
+		$emailService = new EmailService;
+
+		$event = new Event($emailService, array(
+			'user'           => $user,
+			'emailModel'     => $emailModel,
+			'variables'      => $variables,
+			'message'        => $message,
+
+			// Set this here so we can set the status properly when saving
+			'deliveryStatus' => 'failed',
+		));
+
+		$this->onSendEmailError($event);
+	}
+
+	/**
+	 * Prepare error data and log sent email
+	 *
+	 * @param Event $event
+	 */
+	public function handleLogSentEmailOnSendEmailError(Event $event)
+	{
+		$deliveryStatus = (isset($event->params['deliveryStatus'])) ? $event->params['deliveryStatus'] : null;
+		$message        = (isset($event->params['message'])) ? $event->params['message'] : Craft::t("Unknown error");
+
+		if (isset($event->params['variables']['info']))
+		{
+			// Add a few additional variables to our info table
+			$event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+			$event->params['variables']['info']->message        = $message;
+		}
+		else
+		{
+			// This is for logging errors before sproutEmail()->sendEmail is called.
+			$infoTable = new SproutEmail_SentEmailInfoTableModel();
+
+			$infoTable->deliveryStatus = $deliveryStatus;
+			$infoTable->message        = $message;
+
+			$event->params['variables']['info'] = $infoTable;
+		}
+
+		if (isset($event->params['variables']['info']))
+		{
+			// Add a few additional variables to our info table
+			$event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+			$event->params['variables']['info']->message        = $message;
+		}
+		else
+		{
+			// This is for logging errors before sproutEmail()->sendEmail is called.
+			$infoTable = new SproutEmail_SentEmailInfoTableModel();
+
+			$infoTable->deliveryStatus = $deliveryStatus;
+			$infoTable->message        = $message;
+
+			$event->params['variables']['info'] = $infoTable;
+		}
+
+		sproutEmail()->sentEmails->logSentEmail($event);
+	}
+
+	/**
+	 * On Send Email Error Event
+	 *
+	 * @param Event $event
+	 *
+	 * @throws \CException
+	 */
+	public function onSendEmailError(Event $event)
+	{
+		$this->raiseEvent('onSendEmailError', $event);
+	}
+
+	/**
+	 * On Send Campaign Event
+	 *
+	 * @param Event $event
+	 *
+	 * @throws \CException
+	 */
+	public function onSendSproutEmail(Event $event)
+	{
+		$this->raiseEvent('onSendSproutEmail', $event);
+	}
+
+	/**
+	 * On Set Status Event
+	 *
+	 * @param Event $event
+	 *
+	 * @throws \CException
+	 */
+	public function onSetStatus(Event $event)
+	{
+		$this->raiseEvent('onSetStatus', $event);
+	}
+
+	/**
+	 * @param mixed|null $element
+	 *
+	 * @throws \Exception
+	 * @return array|string
+	 */
+	public function getRecipients($element = null, $model)
+	{
+		$recipientsString = $model->getAttribute('recipients');
+
+		// Possibly called from entry edit screen
+		if (is_null($element))
+		{
+			return $recipientsString;
+		}
+
+		// Previously converted to array somehow?
+		if (is_array($recipientsString))
+		{
+			return $recipientsString;
+		}
+
+		// Previously stored as JSON string?
+		if (stripos($recipientsString, '[') === 0)
+		{
+			return JsonHelper::decode($recipientsString);
+		}
+
+		// Still a string with possible twig generator code?
+		if (stripos($recipientsString, '{') !== false)
+		{
+			try
+			{
+				$recipients = craft()->templates->renderObjectTemplate(
+					$recipientsString,
+					$element
+				);
+
+				return array_unique(ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipients)));
+			}
+			catch (\Exception $e)
+			{
+				throw $e;
+			}
+		}
+
+		// Just a regular CSV list
+		if (!empty($recipientsString))
+		{
+			return ArrayHelper::filterEmptyStringsFromArray(ArrayHelper::stringToArray($recipientsString));
+		}
+
+		return array();
+	}
+
+	public function getFirstAvailableTab()
+	{
+		$settings = craft()->plugins->getPlugin('sproutemail')->getSettings();
+
+		switch (true)
+		{
+			case $settings->enableCampaignEmails:
+				return 'sproutemail/campaigns';
+
+			case $settings->enableNotificationEmails:
+				return 'sproutemail/notifications';
+
+			case $settings->enableSentEmails:
+				return 'sproutemail/sentemails';
+
+			case $settings->enableRecipientLists:
+				return 'sproutemail/recipients';
+
+			default:
+				return 'sproutemail/settings';
+		}
 	}
 }

@@ -1,0 +1,19 @@
+{% extends "sproutemail/_layouts/elementindex" %}
+
+{% set title         = "Sent Email"|t %}
+{% set elementType   = "SproutEmail_SentEmail" %}
+
+{% block sidebar %}
+
+	{% set customizableSources = false %}
+
+	{{ parent() }}
+
+{% endblock %}
+
+{% includeCssResource "sproutemail/css/charts-explorer.css" %}
+
+{% includeJsResource 'sproutemail/js/SproutEmail_SentEmailEntriesIndex.js' %}
+{% includeJsResource 'sproutemail/js/SproutEmail_SentEmailEntriesTableView.js' %}
+
+{% includeCssResource 'sproutemail/css/sproutemail.css' %}

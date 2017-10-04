@@ -4,22 +4,21 @@
 
     <property name="pluginFileName" value="SproutEmail" />
     <property name="pluginName" value="sproutemail" />
-    <property name="pluginVersion" value="0.7.0" />
+    <property name="pluginVersion" value="2.4.7" />
 
     <target name="release">
         <echo msg="Preparing release distro..." />
         <zip destfile="${pluginFileName}-${pluginVersion}.zip">
             <fileset dir="../../">
                 <include name="${pluginName}/" />
-                <exclude name="${pluginName}/.git/" />
-                <exclude name="${pluginName}/.gitignore" />
-                <exclude name="${pluginName}/.idea/" />
-                <exclude name="${pluginName}/build/" />
+				<exclude name="${pluginName}/.git/" />
+				<exclude name="${pluginName}/.gitignore" />
+				<exclude name="${pluginName}/.idea/" />
                 <exclude name="${pluginName}/composer.json" />
-                <exclude name="${pluginName}/README.md" />
-                <exclude name="${pluginName}/phpunit.xml" />
-                <exclude name="${pluginName}/updates/" />
-                <exclude name="${pluginName}/tests/" />
+                <exclude name="${pluginName}/composer.lock" />
+				<exclude name="${pluginName}/build/" />
+				<exclude name="${pluginName}/tests/" />
+                <exclude name="${pluginName}/NOTES.md" />
             </fileset>
         </zip>
         <echo msg="Release for (${pluginName}) has been created!" />
@@ -30,7 +29,7 @@
                 source="${pluginName}.${pluginVersion}.zip"
                 dest="use.json"
                 />
-        <echo msg="Distro was unzip properly: )" />
+        <echo msg="Distro was unzipped properly: )" />
     </target>
 
     <adhoc-task name="adhoc-plugin-unzip"><![CDATA[

@@ -1,0 +1,26 @@
+{% requirePermission "editSproutFormsSettings" %}
+
+{% extends "sproutemail/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+{% import 'sproutemail/_includes/sproutcp' as sprout %}
+
+{% includeCssResource "sproutemail/css/sproutcp.css" %}
+
+{% set title = 'Sprout Forms' %}
+
+{% set content %}
+
+	{% set boxBody %}
+	    <p>{{ "Manage targeted landing pages, contact forms, and all your website's form needs. Integrate <a href='{url}' target='_blank'>Sprout Forms</a> with Sprout Email to trigger real-time, personalized, branded, transactional email communications with your audience when your forms are submitted."|t({
+			    url: "https://sprout.barrelstrengthdesign.com/craft-plugins/forms"
+		    })|raw }}</p>
+	{% endset %}
+
+	{{ sprout.mediaBox({
+		heading: "Better form communications"|t,
+		body: boxBody,
+		resourceUrl: resourceUrl('sproutemail/icons/sproutforms-icon.svg'),
+		resourceAltText: "Sprout Forms Icon"|t,
+	}) }}
+
+{% endset %}

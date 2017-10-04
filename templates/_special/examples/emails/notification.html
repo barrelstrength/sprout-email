@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ email.subjectLine }} - {{ siteName }}</title>
+</head>
+<body>
+
+	{% if object['firstName'] is defined %}
+		<p>Good Day {{ object['firstName'] }},</p>
+	{% else %}
+		<p>Good day!</p>
+	{% endif %}
+
+	{{ email.exampleHtmlEmailBody }}
+
+{# ---------------------------------------------------------
+   Access Email Fields and Custom Fields using the `email` variable
+
+   {{ email.subjectLine }}
+   {{ email.slug }}
+   {{ email.status }}
+   {{ email.fromName }}
+   {{ email.fromEmail }}
+   {{ email.replyToEmail }}
+
+   Access Event-specific dynamic variables using the `object` variable.
+
+   The 'When a User is Saved' event has access to the UserModel of the saved user:
+   http://buildwithcraft.com/docs/templating/usermodel
+
+   In Email Fields and Custom Fields in the Control Panel:
+
+   {fullName}
+   {firstName}
+   {lastName}
+   {email}
+   {lastLoginDate|date('F, m Y')}
+
+	 In the HTML and Text templates:
+
+	 {{ object.fullName }}
+	 {{ object.firstName }}
+	 {{ object.lastName }}
+   {{ object.email }}
+   {{ object.lastLoginDate|date('F, m Y') }}
+
+    etc.
+
+   --------------------------------------------------------- #}
+</body>
+</html>

@@ -1,48 +1,74 @@
-jQuery(document).ready(function(){
-	mb.init();
+$(document).ready( function() {
+	SproutEmail.init();
 });
 
-var mb = {
-	init: function(){
-		jQuery('select[name=notificationEvent]').change(function(){
-			mb.select_notification_event();
-		});
-		jQuery('#tab-email-template').find('input[type=radio]').change(function(){
-			mb.select_email_tpl();
-		});
-		jQuery('.save-and-continue').click(function(){
-			jQuery(this).closest('form').find('input[name=continue]').val(jQuery(this).attr('id'));
-			jQuery(this).closest('form').submit();
-		});
-		mb.select_notification_event();
-		mb.set_recipient_btns();
-	},
-	set_recipient_btns: function(){
-		if(jQuery('.recipients-not-defined').length == 0){
-			jQuery('#recipient-btns').removeClass('hidden');
-		}
-	},
-	select_email_tpl: function(){
-		jQuery('.tpl_options').hide();
+var SproutEmail = {
 
-		switch(jQuery('input[name="templateOption"]:checked').val())
+	init: function()
+	{
+		$('#notificationEvent').change(function(){
+			SproutEmail.selectNotificationEvent();
+		});
+
+		$('.save-and-continue').click(function(){
+			$(this).closest('form').find('input[name=continue]').val($(this).attr('id'));
+			$(this).closest('form').submit();
+		});
+
+		$('input[name=useRecipientLists]').change(function(){
+			SproutEmail.toggleRecipientList();
+		});
+
+		$('#mailer').change(function(){
+			SproutEmail.onCampaignMailerSelect();
+		});
+
+		SproutEmail.selectNotificationEvent();
+		SproutEmail.setRecipientButtons();
+		SproutEmail.toggleRecipientList();
+		SproutEmail.onCampaignMailerSelect();
+	},
+
+	toggleRecipientList: function()
+	{
+		var checkBox = $('input[name=useRecipientLists]');
+
+		if (checkBox.is(':checked'))
 		{
-			case '1':
-				jQuery('#tpl_html, #tpl_text').show();
-				break;
-			case '2':
-				jQuery('#tpl_text').show();
-				break;
-			case '3':
-				jQuery('#tpl_section').show();
-				break;
-			default:
-			break;
+			checkBox.closest('div').find('.field').show();
+		}
+		else
+		{
+			checkBox.closest('div').find('input[type=checkbox]').attr('checked', false);
+			checkBox.closest('div').find('.field').hide();
 		}
 	},
-	select_notification_event: function(){
-		jQuery('.event_options').hide();
-		var event = jQuery('select[name=notificationEvent]').val();
-		jQuery('.'+event).show();
+
+	setRecipientButtons: function()
+	{
+		if ($('.recipients-not-defined').length == 0)
+		{
+			$('#recipient-btns').removeClass('hidden');
+		}
+	},
+
+	selectNotificationEvent: function()
+	{
+		$('.event-options').hide();
+		//alert($('#notificationEvent').val());
+		if($('#notificationEvent').val() != "")
+		{
+			var eventVal = $('#notificationEvent').val();
+
+			$('.' + eventVal).show();
+		}
+	},
+
+	/**
+	 * Event handler for mailer selection on campaign settings
+	 */
+	onCampaignMailerSelect: function()
+	{
+
 	}
 }

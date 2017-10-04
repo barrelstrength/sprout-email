@@ -1,0 +1,17 @@
+
+<h1>{{ "Copy/Paste Mailer"|t }}</h1>
+<h2>{{ email.title }}</h2>
+
+<hr>
+
+<p>{{ "Your email is ready to export"|t }}</p>
+
+<div class="buttons right">
+	<button
+		id="render"
+		data-mailer="copypaste"
+		data-action="sproutEmail/campaignEmails/sendCampaignEmail"
+		data-email-id="{{ email.id }}"
+		data-campaign-type-id="{{ campaignType.id }}"
+		class="btn submit action">{{ "Render"|t }}</button>
+</div>

@@ -1,52 +1,35 @@
-{% extends "sproutemail/_layouts/base" %}
-{% import "_includes/forms" as forms %}
+{% extends "sproutemail/_layouts/elementindex" %}
 
-{% set body %}
+{% set title       = "Campaigns"|t %}
+{% set elementType = "SproutEmail_CampaignEmail" %}
 
-	{% set campaigns = craft.sproutEmail.getSectionCampaigns() %}
+{% set extraPageHeaderHtml %}
 
-	{# If there are Section-based Campaigns, Display them. #}
-	{% for campaign in campaigns %}
-		{% include 'sproutemail/_partials/campaignindex' %}
-	{% endfor %}
+	{% set campaignTypes = craft.sproutEmail.getCampaignTypes() %}
 
-
-	{% if not campaigns|length %}
-	 	
-	 	<div style="width:40%;">
-
-		 	<h2>Create your first Campaign</h2>
-
-		 	<p>Section-based Campaigns are a great way to leverage the power of Craft to manage your content and the benefits of a dedicated email program to manage your email.</p>
-
-		 	<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutemail/campaigns/new') }}">Create a Campaign &raquo;</a>
+	<div class="buttons">
+		<div class="btngroup submit">
+			<div class="btn submit menubtn add icon">{{ "New Email"|t }}</div>
+			<div class="menu">
+				<ul>
+					{% if campaignTypes|length %}
+						{% for campaignType in campaignTypes %}
+							<li><a href="{{ url('sproutemail/campaigns/' ~ campaignType.id ~ '/new') }}">{{ campaignType.name|t }}</a></li>
+						{% endfor %}
+						<hr>
+					{% endif %}
+					<li><a href="{{ url('sproutemail/settings/campaigntypes/edit/new') }}">{{ "New Campaign"|t }}</a></li>
+				</ul>
 			</div>
-
 		</div>
-
-	{% endif %}
-
+	</div>
 
 {% endset %}
 
-{% set js %}
-	new Craft.AdminTable({
-		tableSelector: '#campaigns',
-		noObjectsSelector: '#nocampaigns',
-		deleteAction: 'SproutEmail/campaigns/delete'
-	});
-	
-	jQuery(document).ready(function(){
-		jQuery('.export').click(function(){
-			var query = 'entryId='+jQuery(this).closest('tr').attr('data-entry-id')
-			+ '&campaignId='+jQuery(this).closest('tr').attr('data-id')
-			+ '&action=SproutEmail/campaigns/export';
-			$.post('{{ url('SproutEmail/campaigns/export') }}',query, function(data){
-				alert(data);
-			})
-			return false;
-		})
-	})
-{% endset %}
-{% includeJs js %}
+{% block sidebar %}
+
+	{% set customizableSources = false %}
+
+	{{ parent() }}
+
+{% endblock %}

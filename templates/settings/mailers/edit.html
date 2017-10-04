@@ -1,0 +1,29 @@
+{% extends "sproutemail/_layouts/base" %}
+
+{% set crumbs = [
+{ label: "Settings"|t, url: url('sproutemail/settings/general') },
+{ label: "Mailers"|t, url: url('sproutemail/settings/mailers') }
+] %}
+
+{% set title = mailer.getTitle() ~ ' Settings' %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = 'sproutemail/settings/mailers' %}
+
+{% block saveButton %}{% endblock %}
+
+{% block content %}
+
+	<input type="hidden" name="action" value="sproutEmail/mailer/saveSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings/mailers">
+	<input type="hidden" name="mailerId" value="{{ mailer.getId() }}">
+
+	{{ mailer.getSettingsHtml({
+		settings: settings
+	})|raw }}
+
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
+	</div>
+
+{% endblock %}

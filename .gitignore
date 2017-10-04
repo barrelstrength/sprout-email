@@ -1,2 +1,9 @@
-builder
+.tmp
+.temp
+.idea
 .DS_Store
+# --
+etc
+sync.sh
+docs.sh
+apigen.neon

@@ -1,0 +1,7 @@
+{% if email.getUrl() %}
+
+	<a href="{{ shareUrl }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
+	&nbsp;/&nbsp;
+	<a href="{{ shareUrl }}&type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+
+{% endif %}

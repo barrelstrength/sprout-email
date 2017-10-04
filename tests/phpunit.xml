@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+	colors="true"
+	backupGlobals="false"
+	backupStaticAttributes="false"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	processIsolation="false"
+	stopOnFailure="false"
+	syntaxCheck="true"
+	strict="false"
+
+	bootstrap="bootstrap.php">
+
+	<testsuites>
+		<testsuite>
+			<directory>./</directory>
+		</testsuite>
+	</testsuites>
+
+	<filter>
+		<whitelist>
+			<directory suffix=".php">../</directory>
+			<exclude>
+				<directory>../etc</directory>
+				<directory>../tests</directory>
+				<directory>../build</directory>
+				<directory>../resources</directory>
+				<directory>../templates</directory>
+				<directory>../vendor</directory>
+				<directory>../libraries</directory>
+				<directory>../example</directory>
+			</exclude>
+		</whitelist>
+	</filter>
+</phpunit>

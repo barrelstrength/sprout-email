@@ -1,0 +1,24 @@
+
+{% if recipientLists is defined and recipientLists|length %}
+	<tr>
+		<td><strong>{{ "Recipient Lists"|t }}</strong></td>
+		<td>
+			<ul>
+				{% for list in recipientLists %}
+					<li>
+						<strong>{{ list.name }}</strong>  <strong>({{ list.recipients|length }})</strong>
+					</li>
+				{% endfor %}
+			</ul>
+		</td>
+	</tr>
+{% endif %}
+
+{% if email.recipients is defined and email.recipients|length %}
+	<tr>
+		<td><strong>{{ "Recipients"|t }}</strong></td>
+		<td>
+			{{ email.recipients|replace({',' : "<br />"})|raw }}
+		</td>
+	</tr>
+{% endif %}

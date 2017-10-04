@@ -1,54 +1,71 @@
 {% extends "_layouts/cp" %}
 
-{% set title = craft.SproutEmail.name %}
+{% set pluginSettings = craft.sproutEmail.getSettings() %}
 
-{% set tabs = {
-    overview:  { 
-      label: "Overview"|t, 
-      url: url('sproutemail') 
-    },
-    campaigns:  { 
-      label: "Campaigns"|t, 
-      url: url('sproutemail/campaigns') 
-    },
-    notifications:  { 
-      label: "Notifications"|t, 
-      url: url('sproutemail/notifications') 
-    },
-    settings:  { 
-      label: "Settings"|t, 
-      url: url('sproutemail/settings') 
-    }
-} %}
+{% if craft.request.getSegment(2) == 'campaigns' and not pluginSettings.enableCampaignEmails %}
+	{% exit 403 %}
+{% endif %}
 
-{# 
-subscribers: { 
-  label: "Subscribers"|t, 
-  url: url('sproutemail/subscribers')
-},
-reports:  { 
-  label: "Reports"|t, 
-  url: url('sproutemail/reports') 
-},
-templates: { 
-  label: "Templates"|t, 
-  url: url('sproutemail/templates')
-}, 
-#}
+{% if craft.request.getSegment(2) == 'notifications' and not pluginSettings.enableNotificationEmails %}
+	{% exit 403 %}
+{% endif %}
 
-{% set selectedTab = craft.request.segment(2) ? craft.request.segment(2) : 'overview' %}
+{% if craft.request.getSegment(2) == 'sentemails' and not pluginSettings.enableSentEmails %}
+	{% exit 403 %}
+{% endif %}
 
-{% set content %}
-  
-  {{ body }}
+{% if craft.request.getSegment(2) == 'recipients' and not pluginSettings.enableRecipientLists %}
+	{% exit 403 %}
+{% endif %}
 
-  <footer class="bsd-branding">
-    <p>
-      Powered by <a href="http://barrelstrengthdesign.com" target="_blank">{{ craft.sproutEmail.name }}</a> {{ craft.sproutEmail.version }} | 
-      Designed by <a href="http://barrelstrengthdesign.com" target="_blank">(Barrel Strength)</a>
-    </p>
-  </footer>
+{% set subnav = {} %}
 
-{% endset %}
+{% if pluginSettings.enableCampaignEmails %}
+	{% set subnav = subnav|merge({
+		campaigns: {
+			label: "Campaigns"|t,
+			url: url('sproutemail/campaigns')
+		}
+	}) %}
+{% endif %}
+
+{% if pluginSettings.enableNotificationEmails %}
+	{% set subnav = subnav|merge({
+		notifications: {
+			label: "Notifications"|t,
+			url: url('sproutemail/notifications')
+		}
+	}) %}
+{% endif %}
+
+{% if pluginSettings.enableSentEmails %}
+	{% set subnav = subnav|merge({
+		sentemails: {
+			label: "Sent Email"|t,
+			url: url('sproutemail/sentemails')
+		}
+	}) %}
+{% endif %}
+
+{% if pluginSettings.enableRecipientLists %}
+	{% set subnav = subnav|merge({
+		recipients: {
+			label: "Recipients"|t,
+			url: url('sproutemail/recipients')
+		}
+	}) %}
+{% endif %}
+
+{% if currentUser.can('editSproutEmailSettings') %}
+	{% set subnav = subnav|merge({
+		settings: {
+			label: "Settings"|t,
+			url: url('sproutemail/settings')
+		}
+	}) %}
+{% endif %}
+
+{% set selectedSubnavItem = craft.request.segment(2) %}
 
 {% includeCssResource "sproutemail/css/sproutemail.css" %}
+{% includeJsResource "sproutemail/js/sproutemail.js" %}

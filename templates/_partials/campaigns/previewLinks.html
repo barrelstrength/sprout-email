@@ -1,0 +1,21 @@
+{% set status = email.getStatus() %}
+
+{% if email.getUrl() %}
+
+	{% if status != 'ready' %}
+		{% set emailUrl = craft.sproutEmail.getCampaignEmailShareUrl(email.id, campaignType.id) %}
+		{% set separator = '&' %}
+	{% else %}
+		{% set emailUrl = email.url %}
+		{% set separator = '?' %}
+	{% endif %}
+
+	<a href="{{ emailUrl }}" title="{{ email.title }}" target="_blank">{{ "HTML"|t }}</a>
+	&nbsp;/&nbsp;
+	<a href="{{ emailUrl ~ separator }}type=text" title="{{ email.subjectLine }}" target="_blank">{{ "Text"|t }}</a>
+
+{% else %}
+
+	<a href="{{ cpUrl('sproutemail/settings/campaigntypes/edit/' ~ email.campaignTypeId) }}">Enable URLs</a>
+
+{% endif %}

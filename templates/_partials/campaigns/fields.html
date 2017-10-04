@@ -1,0 +1,29 @@
+{% from "_includes/forms" import textField %}
+
+{% if campaignEmail.getErrors('subjectLine') %}
+	{% set subjectLineError = ['Subject Line cannot be blank.'|t] %}
+{% endif %}
+
+{{ textField({
+	label: "Subject Line"|t,
+	id: 'subjectLine',
+	name: 'subjectLine',
+	value: campaignEmail.subjectLine,
+	errors: (subjectLineError is defined ? subjectLineError : null),
+	first: true,
+	autofocus: true,
+	required: true,
+	maxlength: 255
+}) }}
+
+<div>
+	{% for tab in campaignType.getFieldLayout().getTabs() %}
+		<div id="tab{{ loop.index }}"{% if not loop.first %} class="hidden"{% endif %}>
+			{% include "_includes/fields" with {
+				fields:  tab.getFields(),
+				element: campaignEmail,
+				static:  (static is defined ? static : false)
+			} only %}
+		</div>
+	{% endfor %}
+</div>

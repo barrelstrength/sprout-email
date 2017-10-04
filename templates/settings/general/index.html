@@ -1,0 +1,97 @@
+{% extends "sproutemail/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = 'Settings' %}
+
+{% set content %}
+
+	<input type="hidden" name="action" value="sproutEmail/savePluginSettings">
+	<input type="hidden" name="redirect" value="sproutemail/settings/general">
+
+	{% namespace 'settings' %}
+
+	{{ forms.textField({
+		label: "Plugin Name"|t,
+		id: 'pluginNameOverride',
+		name: 'pluginNameOverride',
+		instructions: "Intuitive, human-readable plugin name for the end user."|t,
+		value: settings.pluginNameOverride ? settings.pluginNameOverride : 'Sprout Email',
+		autofocus: true,
+		first: true,
+		errors: ''
+	}) }}
+
+	{% set advancedInput %}
+		<table class="data" style="width: auto;">
+			<thead>
+			<tr>
+				<th scope="col">{{ "Feature"|t }}</th>
+				<th scope="col">{{ "Enabled?"|t }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td><label for="enableCampaignEmails">{{ "Enable Campaigns?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableCampaignEmails',
+							on: settings.enableCampaignEmails,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="enableNotificationEmails">{{ "Enable Notifications?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableNotificationEmails',
+							on: settings.enableNotificationEmails,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="enableSentEmails">{{ "Enable Sent Email tracking?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableSentEmails',
+							on: settings.enableSentEmails,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="enableRecipientLists">{{ "Enable Recipient Lists?"|t }}</label></td>
+				<td class="centeralign">
+					<div>
+						{{ forms.lightswitch({
+							name: 'enableRecipientLists',
+							on: settings.enableRecipientLists,
+							small: true
+						}) }}
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+
+	{% endset %}
+
+	{{ forms.field({
+		label: "Choose which features to enable"|t,
+		instructions: "Disabled items will be removed from the sidebar navigation and no longer accessible in the Control Panel."|t
+	}, advancedInput) }}
+
+	{% endnamespace %}
+
+	<div class="buttons">
+		<input class="btn submit" type="submit" value="{{ 'Save'|t }}">
+	</div>
+
+{% endset %}

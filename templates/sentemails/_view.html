@@ -1,0 +1,103 @@
+<div class="sproutemail-sentemail-header">
+	<div class="btngroup sentemail-btngroup">
+		<button data-box="html" class="btn active sentemail-btn">{{ 'HTML'|t }}</button>
+		<button data-box="text" class="btn sentemail-btn">{{ 'Text'|t }}</button>
+	</div>
+</div>
+
+<div class="sentemail-pane sentemail-html active">
+
+	{% if htmlBody is not empty %}
+
+	<iframe width='100%' src="data:text/html;charset=utf-8,{{ htmlBody|raw|url_encode }}"></iframe>
+
+	{% else %}
+		<h3>{{ "No HTML content"|t }}</h3>
+	{% endif %}
+
+</div>
+
+<div class="sentemail-pane sentemail-text">
+
+	{% if body is not empty %}
+		<pre>{{ body }}</pre>
+	{% else %}
+		<h3>{{ "No Text content"|t }}</h3>
+	{% endif %}
+
+</div>
+
+<script type="text/javascript">
+
+	$(".sentemail-btn").click(function() {
+
+		$(".sentemail-btn").removeClass('active');
+		$(this).addClass('active');
+
+		var box = $(this).data('box');
+		var boxClass = ".sentemail-" + box;
+
+		$('.sentemail-pane').removeClass('active');
+		$(boxClass).addClass('active');
+
+	})
+</script>
+
+<style type="text/css">
+
+	#sproutmodal #content {
+		padding-left: 0;
+		padding-right: 0;
+		padding-bottom: 0;
+	}
+
+	.sproutemail-sentemail-header {
+		border-bottom: 1px solid #eeeeee;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		text-align: right;
+		width: 100%;
+	}
+
+	.sentemail-pane {
+		display: none;
+		min-height: 500px;
+		min-width: 500px;
+		position: relative;
+
+		/* 24px padding panel, 13px padding #content, 14px padding here = 51px */
+		margin-top: 44px;
+	}
+
+	.sentemail-pane.active {
+		display: block;
+	}
+
+	.sentemail-btngroup {
+		margin: 15px 15px;
+	}
+
+	.sentemail-html iframe {
+		height: auto;
+		min-height: 500px;
+		width: 100%;
+	}
+
+	.sentemail-text pre {
+		height: auto;
+		min-height: 500px;
+		max-height: 500px;
+		overflow: auto;
+		white-space: pre-wrap;
+		width: 100%;
+	}
+
+</style>
+
+
+
+
+
+

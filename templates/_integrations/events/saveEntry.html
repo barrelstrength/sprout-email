@@ -1,0 +1,27 @@
+{% set whenNew = (options.craft.saveEntry.whenNew is defined)
+                  ? options.craft.saveEntry.whenNew
+                  : false %}
+{% set whenUpdated = (options.craft.saveEntry.whenUpdated is defined)
+		                 ? options.craft.saveEntry.whenUpdated
+		                 : false %}
+
+{{ forms.checkboxField({
+		label: "When the entry is created?"|t,
+		name: "rules[craft][saveEntry][whenNew]",
+		checked: whenNew
+}) }}
+
+{{ forms.checkboxField({
+		label: "When the entry is updated?"|t,
+		name: "rules[craft][saveEntry][whenUpdated]",
+		checked: whenUpdated
+}) }}
+
+{{ forms.checkboxSelectField({
+	label: "Sections"|t,
+	instructions: "Select which sections will trigger the notification"|t,
+	name: "rules[craft][saveEntry][sectionIds]",
+	options: availableSections,
+	values: fieldValue,
+	errors: errors is defined ? errors : null,
+}) }}

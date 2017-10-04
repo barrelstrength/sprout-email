@@ -1,829 +1,448 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutEmailPlugin
+ *
+ * @package Craft
+ */
 class SproutEmailPlugin extends BasePlugin
 {
-	private $version = '0.7.0';
-	
-	public function getName() 
+	/**
+	 * @return string
+	 */
+	public function getName()
 	{
-		$pluginName = Craft::t('Sprout Email');
+		$alias = $this->getSettings()->getAttribute('pluginNameOverride');
 
-		// The plugin name override
-		$plugin = craft()->db->createCommand()
-			->select('settings')
-			->from('plugins')
-			->where('class=:class', array(':class'=> 'SproutEmail'))
-			->queryScalar();
-
-		$plugin = json_decode( $plugin, true );
-		$pluginNameOverride = $plugin['pluginNameOverride'];
-
-		return ($pluginNameOverride) ? $pluginNameOverride : $pluginName;
+		return $alias ? $alias : Craft::t('Sprout Email');
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return 'Flexible, integrated email marketing and notifications.';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getVersion()
 	{
-		return $this->version;
+		return '2.4.7';
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getSchemaVersion()
+	{
+		return '2.4.0';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDeveloper()
 	{
 		return 'Barrel Strength Design';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDeveloperUrl()
 	{
 		return 'http://barrelstrengthdesign.com';
 	}
 
-	public function hasCpSection()
+	/**
+	 * @return string
+	 */
+	public function getDocumentationUrl()
 	{
-		return true;
-	}
-
-	protected function defineSettings()
-	{
-		return array(
-			'pluginNameOverride' => AttributeType::String,
-		);
-	}
-
-	public function getSettingsHtml()
-	{
-		return craft()->templates->render('sproutemail/_settings/settings', array(
-			'settings' => $this->getSettings()
-		));
+		return 'http://sprout.barrelstrengthdesign.com/craft-plugins/email/docs';
 	}
 
 	/**
-	 * Register control panel routes
+	 * @return string
+	 */
+	public function getReleaseFeedUrl()
+	{
+		return 'https://sprout.barrelstrengthdesign.com/craft-plugins/email/releases.json';
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCpSection()
+	{
+		return (craft()->userSession->isAdmin() or craft()->userSession->user->can('accessPlugin-SproutEmail'));
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function defineSettings()
+	{
+		return array(
+			'pluginNameOverride'       => AttributeType::String,
+			'enableCampaignEmails'     => array(AttributeType::Bool, 'default' => true),
+			'enableNotificationEmails' => array(AttributeType::Bool, 'default' => true),
+			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false),
+			'enableRecipientLists'     => array(AttributeType::Bool, 'default' => false)
+		);
+	}
+
+	/**
+	 * Get Settings URL
+	 */
+	public function getSettingsUrl()
+	{
+		return 'sproutemail/settings';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function registerUserPermissions()
+	{
+		return array(
+			'editSproutEmailSettings' => array(
+				'label' => Craft::t('Edit Settings')
+			)
+		);
+	}
+
+	/**
+	 * @return array
 	 */
 	public function registerCpRoutes()
 	{
 		return array(
-			'sproutemail/campaigns/new' =>
-			'sproutemail/campaigns/_create',
-
-			'sproutemail/campaigns/edit\/(?P<campaignId>\d+)' =>
-			'sproutemail/campaigns/_edit',
-				
-			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/template' =>
-			'sproutemail/campaigns/_edit',
-			
-			'sproutemail/campaigns/edit/(?P<campaignId>\d+)/recipients' =>
-			'sproutemail/campaigns/_edit',
-				
-			'sproutemail/notifications/new' =>
-			'sproutemail/notifications/_create',
-				
-			'sproutemail/notifications/edit\/(?P<campaignId>\d+)' =>
-			'sproutemail/notifications/_edit',
-				
-			'sproutemail/notifications/edit/(?P<campaignId>\d+)/template' =>
-			'sproutemail/notifications/_edit',
-			
-			'sproutemail/notifications/edit/(?P<campaignId>\d+)/recipients' =>
-			'sproutemail/notifications/_edit',
-				
-			'sproutemail/events/new' =>
-			'sproutemail/events/_edit',
-				
-			'sproutemail/events/edit/(?P<eventId>\d+)' =>
-			'sproutemail/events/_edit',
-		);
-	}
-	
-	/**
-	 * Add default events after plugin is installed
-	 */
-	public function onAfterInstall()
-	{
-		$events = array(
-				
-				// @TODO - At some point, consider making all hooks available, just make 
-				// sure that less common ones don't crowd out the primary interface
-				
-				// Content
-				array(
-					'registrar' => 'craft',
-					'event' => 'entries.saveEntry.new',
-					'description' => 'Craft: When a new entry is created'
-				),			
-				array(
-					'registrar' => 'craft',
-					'event' => 'entries.saveEntry',
-					'description' => 'Craft: When an existing entry is updated'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'assets.onSaveAsset',
-					'description' => 'Craft: When an asset is saved'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'assets.saveContent',
-					'description' => 'Craft: When content is saved'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'globals.saveGlobalContent',
-					'description' => "Craft: When a global set's content is saved"
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'tags.saveTagContent',
-					'description' => 'Craft: When tag content is saved'
-				),
-
-				// Users
-				array(
-					'registrar' => 'craft',
-					'event' => 'users.saveUser',
-					'description' => 'Craft: When a user is saved'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'users.activateUser',
-					'description' => 'Craft: When a user is activated'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'users.unlockUser',
-					'description' => 'Craft: When a user is unlocked'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'users.suspendUser',
-					'description' => 'Craft: When a user is suspended'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'users.unsuspendUser',
-					'description' => 'Craft: When a user is unsuspended'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'users.deleteUser',
-					'description' => 'Craft: When a user is deleted'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'userSession.login',
-					'description' => 'Craft: When a user logs in'
-				),
-
-				// Updates
-				array(
-					'registrar' => 'craft',
-					'event' => 'updates.beginUpdate',
-					'description' => 'Craft: When an update is started'
-				),
-				array(
-					'registrar' => 'craft',
-					'event' => 'updates.endUpdate',
-					'description' => 'Craft: When an update is finished'
-				),
-
-				// Before Certain Actions
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeActivateUser',
-				// 	'description' => 'Craft: Before a user is activated'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeUnlockUser',
-				// 	'description' => 'Craft: Before a user is unlocked'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeSuspendUser',
-				// 	'description' => 'Craft: Before a user is suspended'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeUnsuspendUser',
-				// 	'description' => 'Craft: Before a user is unsuspended'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'userSession.beforeLogin',
-				// 	'description' => 'Craft: Before a user logs in'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeDeleteUser',
-				// 	'description' => 'Craft: Before a user is deleted'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeVerifyUser',
-				// 	'description' => 'Craft: Before a user is verified'
-				// ),
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'users.beforeSaveUser',
-				// 	'description' => 'Craft: Before a user is saved'
-				// ),
-
-				// Plugins
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'plugins.loadPlugins',
-				// 	'description' => 'Craft: When plugins are loaded'
-				// ),
-				// 
-				// 
-				// array(
-				// 	'registrar' => 'craft',
-				// 	'event' => 'tags.saveTag',
-				// 	'description' => 'Craft: When a tag is saved'
-				// ),
-
-				
-				
-		);
-	
-		foreach ($events as $event) 
-		{
-			craft()->db->createCommand()->insert('sproutemail_notification_events', $event);
-		}
-		
-		$providers = array(
-			array(
-				'emailProvider' => 'CampaignMonitor',
-				'apiSettings' => '{"client_id":"","api_key":""}',
-				'dateCreated' => '2014-03-10 21:00:00'
+			// Campaign Email Edit Page
+			'sproutemail/campaigns/(?P<campaignTypeId>\d+)/new'                                          => array(
+				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
 			),
-				array(
-				'emailProvider' => 'MailChimp',
-				'apiSettings' => '{"api_key":""}',
-				'dateCreated' => '2014-03-10 21:00:00'
-			)
+			'sproutemail/campaigns/edit/(?P<emailId>\d+)'                                                => array(
+				'action' => 'sproutEmail/campaignEmails/editCampaignEmailTemplate'
+			),
+
+			// Notification Email Edit Page
+			'sproutemail/notifications/edit/(?P<notificationId>\d+)'                                     => array(
+				'action' => 'sproutEmail/notificationEmails/editNotificationEmailTemplate'
+			),
+
+			// Notification Email Settings
+			'sproutemail/settings/(?P<settingsTemplate>notifications)/edit/(?P<emailId>\d+|new)'         => array(
+				'action' => 'sproutEmail/notificationEmails/editNotificationEmailSettingsTemplate'
+			),
+
+			// Campaign Type Settings
+			'sproutemail/settings/(?P<settingsTemplate>campaigntypes)/edit/(?P<campaignTypeId>\d+|new)?' => array(
+				'action' => 'sproutEmail/campaignType/campaignSettingsTemplate'
+			),
+
+			// Mailer Settings Route
+			'sproutemail/settings/(?P<settingsTemplate>mailers)/(?P<mailerId>[a-z]+)'                    => array(
+				'action' => 'sproutEmail/mailer/editSettingsTemplate'
+			),
+
+			// Redirects to `general` settings
+			'sproutemail/settings'                                                                       => array(
+				'action' => 'sproutEmail/settingsIndexTemplate'
+			),
+
+			// Settings templates such as `general` and `mailers`
+			'sproutemail/settings/(?P<settingsTemplate>.*)'                                              => array(
+				'action' => 'sproutEmail/settingsIndexTemplate'
+			),
+
+			// Recipient Lists
+			'sproutemail/recipients'                                                                     => array(
+				'action' => 'sproutEmail/defaultMailer/showRecipientIndexTemplate'
+			),
+			'sproutemail/recipients/edit/(?P<id>[\d]+)'                                                  => array(
+				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
+			),
+			'sproutemail/recipients/new'                                                                 => array(
+				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
+			),
+
+			// Examples
+			'sproutemail/settings/examples'                                                              =>
+				'sproutemail/settings/_tabs/examples',
 		);
-		
-		foreach ($providers as $provider)
-		{
-			craft()->db->createCommand()->insert('sproutemail_email_provider_settings', $provider);
-		}
 	}
-	
-	/**
-	 * Initialize
-	 * @return void
-	 */
+
 	public function init()
 	{
 		parent::init();
 
-		// events fired by $this->raiseEvent        
-		craft()->on('users.beforeSaveUser', array($this, 'onBeforeSaveUser'));
-		craft()->on('users.saveUser', array($this, 'onSaveUser'));
-		craft()->on('users.activateUser', array($this, 'onActivateUser'));
-		craft()->on('users.unlockUser', array($this, 'onUnlockUser'));
-		craft()->on('users.suspendUser', array($this, 'onSuspendUser'));
-		craft()->on('users.unsuspendUser', array($this, 'onUnsuspendUser'));
-		craft()->on('users.deleteUser', array($this, 'onDeleteUser'));
-		craft()->on('userSession.login', array($this, 'onLogin'));
-		craft()->on('globals.saveGlobalContent', array($this, 'onSaveGlobalContent'));
-		craft()->on('assets.saveAsset', array($this, 'onSaveAsset'));
-		craft()->on('content.saveContent', array($this, 'onSaveContent'));	
-		craft()->on('entries.saveEntry', array($this, 'onSaveEntry'));
-		craft()->on('tags.saveTagContent', array($this, 'onSaveTagContent'));
-		craft()->on('updates.beginUpdate', array($this, 'onBeginUpdate'));
-		craft()->on('updates.endUpdate', array($this, 'onEndUpdate'));
+		// Sprout Email Contracts
+		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailCampaignEmailSenderInterface');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationEmailSenderInterface');
 
-		// craft()->on('users.beforeActivateUser', array($this, 'onBeforeActivateUser'));
-		// craft()->on('users.beforeUnlockUser', array($this, 'onBeforeUnlockUser'));
-		// craft()->on('users.beforeSuspendUser', array($this, 'onBeforeSuspendUser'));
-		// craft()->on('users.beforeUnsuspendUser', array($this, 'onBeforeUnsuspendUser'));
-		// craft()->on('users.beforeDeleteUser', array($this, 'onBeforeDeleteUser'));
-		// craft()->on('users.beforeVerifyUser', array($this, 'onBeforeVerifyUser'));
-		// craft()->on('userSession.beforeLogin', array($this, 'onBeforeLogin'));
-		// craft()->on('plugins.loadPlugins', array($this, 'onLoadPlugins'));
-		// craft()->on('tags.saveTag', array($this, 'onSaveTag'));
+		// Sprout Email Mailers
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CampaignMonitorMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CopyPasteMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_DefaultMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_MailchimpMailer');
 
-		$criteria = new \CDbCriteria();
-		$criteria->condition = 'registrar!=:registrar';
-		$criteria->params = array(':registrar' => 'craft');
-		if( $events = SproutEmail_NotificationEventRecord::model()->findAll($criteria))
+		// Sprout Email Events
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnOrderCompleteEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnSaveTransactionEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnStatusChangeEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesDeleteEntryEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesSaveEntryEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersActivateUserEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersDeleteUserEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UserSessionLoginEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersSaveUserEvent');
+
+		// Sprout Import Importers
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
+
+		if ($this->getSettings()->enableNotificationEmails)
 		{
-			foreach($events as $event)
-			{
-				try {
-					craft()->plugins->call($event->registrar,array($event->event, $this->_get_closure()));
-				} catch (\Exception $e) {
-					die($e->getMessage());
-				}
-			}
+			sproutEmail()->notificationEmails->registerDynamicEventHandler();
+		}
+
+		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
+
+		if (sproutEmail()->defaultmailer->enableDynamicLists())
+		{
+			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
+			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
+		}
+
+		craft()->on('sproutEmail.onSendSproutEmail', function (Event $event)
+		{
+			sproutEmail()->sentEmails->logSentEmailCampaign($event);
+		});
+
+		craft()->on('email.onSendEmail', function (Event $event)
+		{
+			sproutEmail()->sentEmails->logSentEmail($event);
+		});
+
+		craft()->on('sproutEmail.onSendEmailError', function (Event $event)
+		{
+			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
+		});
+
+		craft()->on('email.onSendEmailError', function (Event $event)
+		{
+			// Add failed status.
+			$event->params['deliveryStatus'] = 'failed';
+
+			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
+		});
+
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		{
+			craft()->templates->includeJsResource('sproutemail/js/brand.js');
+			craft()->templates->includeJs("
+				sproutFormsBrand = new Craft.SproutBrand();
+				sproutFormsBrand.displayFooter({
+					pluginName: 'Sprout Email',
+					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
+					pluginVersion: '" . $this->getVersion() . "',
+					pluginDescription: '" . $this->getDescription() . "',
+					developerName: '(Barrel Strength)',
+					developerUrl: '" . $this->getDeveloperUrl() . "'
+				});
+			");
 		}
 	}
-	
+
 	/**
-	 * Anonymous function for plugin integration
-	 * @return function
+	 * @throws \Exception
+	 * @return SproutEmailTwigExtension
 	 */
-	private function _get_closure()
+	public function addTwigExtension()
 	{
-		/**
-		 * Event handler closure
-		 * @var String [required] - event fired
-		 * @var BaseModel [required] - the entity to be used for data extraction
-		 * @var Bool [optional] - event status; if passed, the function will exit on false and process on true; defaults to true
-		 */
-		return function($event, $entity = null, $success = TRUE)
-		{
-			// if ! $success, return
-			if( ! $success)
-			{
-				return false;
-			}
-			
-			// an event can be either an Event object or a string
-			if($event instanceof Event)
-			{
-				$event_name = $event->params['event'];
-			} 
-			else 
-			{
-				$event_name = (string) $event;
-			}
-			
-			// check if entity is passed in as an event param
-			if( ! $entity && isset($event->params['entity']))
-			{
-				$entity = $event->params['entity'];
-			}
+		Craft::import('plugins.sproutemail.twigextensions.SproutEmailTwigExtension');
 
-			// validate
-			$criteria = new \CDbCriteria();
-			$criteria->condition = 'event=:event';
-			$criteria->params = array(':event' => $event_name);     	 	
-
-			if( ! $event_notification = SproutEmail_NotificationEventRecord::model()->find($criteria))
-			{
-				return false;
-			}
-								
-			// process $entity
-			// get registered entries
-			if($res = craft()->sproutEmail_notifications->getEventNotifications($event_name, $entity))
-			{
-				foreach($res as $campaign)
-				{    				
-					if( ! $campaign->recipients)
-					{
-						return false;
-					}
-
-					// set $_POST vars
-					if($post = craft()->request->getPost())
-					{
-						foreach($post as $key => $val)
-						{
-							if(is_object($entity))
-							{
-								$entity->{$key} = $val;
-							}
-							else if (is_array($entity))
-							{
-								$entity[$key] = $val;
-							}
-						}
-					}
-					 
-					$opts = json_decode(json_encode($event_notification->options, false));
-					 
-					if($opts && $opts->handler)
-					{
-						list($class, $function) = explode('::', $opts->handler);
-
-						$options = $campaign->campaignNotificationEvent[0]->options;
-
-						$base_classes = json_decode($opts->handler_base_classes);
-
-						if($base_classes && ! empty($base_classes))
-						{
-							foreach($base_classes as $base)
-							{
-								require_once($base);
-							}
-						}
-
-						require_once($opts->handler_location);
-						
-						$obj = new $class();    					
-						if( ! method_exists($obj, $function))
-						{
-							return false;
-						}
-						
-						if( ! $obj->$function($event_name, $entity, $options))
-						{
-							return true;
-						}
-					}
-
-					try {
-						$campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entity));
-					} catch (\Exception $e) {
-						$campaign->subject = str_replace('{{', '', $campaign->subject);
-						$campaign->subject = str_replace('}}', '', $campaign->subject);
-					}
-					
-					try {
-						$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entity));
-					} catch (\Exception $e) {
-						$campaign->textBody = str_replace('{{', '', $campaign->textBody);
-						$campaign->textBody = str_replace('}}', '', $campaign->textBody);
-					}
-					
-					try {
-						$campaign->htmlBody = craft()->templates->renderString($campaign->htmlBody, array('entry' => $entity));
-					} catch (\Exception $e) {
-						$campaign->htmlBody = str_replace('{{', '', $campaign->htmlBody);
-						$campaign->htmlBody = str_replace('}}', '', $campaign->htmlBody);
-					}
-					
-					try {
-						$campaign->replyToEmail = craft()->templates->renderString($campaign->replyToEmail, array('entry' => $entity));
-					} catch (\Exception $e) {
-						$campaign->replyToEmail = null;
-					}
-					
-					$recipientLists = array();
-					foreach($campaign->recipientList as $list)
-					{
-						$recipientLists[] = $list->emailProviderRecipientListId;
-					}
-
-					$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
-					craft()->{$service}->sendCampaign($campaign, $recipientLists);
-				}
-			}
-		};
+		return new SproutEmailTwigExtension();
 	}
 
 	/**
-	 * Available variables:
-	 * all entries in 'craft_content' table
-	 * to access: entry.id, entry.body, entry.locale, etc.
-	 * @param Event $event
+	 * Using our own API to register native Craft events
+	 *
+	 * @return array
 	 */
-	public function onSaveEntry(Event $event)
-	{    	
-		switch($event->params['isNewEntry'])
+	public function defineSproutEmailEvents()
+	{
+		if ($this->isEnabled && $this->isInstalled)
 		{
-			case true:
-				$event_type = 'entries.saveEntry.new';
-				break;
-			default:
-				$event_type = 'entries.saveEntry';
-				break;
+			$events = array(
+				'entries.saveEntry'   => new SproutEmail_EntriesSaveEntryEvent(),
+				'entries.deleteEntry' => new SproutEmail_EntriesDeleteEntryEvent(),
+				'userSession.login'   => new SproutEmail_UserSessionLoginEvent(),
+				'users.saveUser'      => new SproutEmail_UsersSaveUserEvent(),
+				'users.deleteUser'    => new SproutEmail_UsersDeleteUserEvent(),
+				'users.activateUser'  => new SproutEmail_UsersActivateUserEvent()
+			);
 		}
-		$this->_processEvent($event_type, $event->params['entry']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeSaveUser(Event $event)
-	{
-		$this->_processEvent('users.beforeSaveUser', $event->params['user']);
-	}
 
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onSaveUser(Event $event)
-	{
-		$this->_processEvent('users.saveUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeUnlockUser(Event $event)
-	{
-		$this->_processEvent('users.beforeUnlockUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onUnlockUser(Event $event)
-	{
-		$this->_processEvent('users.unlockUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeUnsuspendUser(Event $event)
-	{
-		$this->_processEvent('users.beforeUnsuspendUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onUnsuspendUser(Event $event)
-	{
-		$this->_processEvent('users.unsuspendUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeSuspendUser(Event $event)
-	{
-		$this->_processEvent('users.beforeSuspendUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onSuspendUser(Event $event)
-	{
-		$this->_processEvent('users.suspendUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeDeleteUser(Event $event)
-	{
-		$this->_processEvent('users.beforeDeleteUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onDeleteUser(Event $event)
-	{
-		$this->_processEvent('users.deleteUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeVerifyUser(Event $event)
-	{
-		$this->_processEvent('users.beforeVerifyUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onBeforeActivateUser(Event $event)
-	{
-		$this->_processEvent('users.beforeActivateUser', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onActivateUser(Event $event)
-	{
-		$this->_processEvent('users.activateUser', $event->params['user']);
-	}
+		// Make sure Craft Commerce is installed and enabled before we register any Craft Commerce events
+		$commercePlugin = craft()->plugins->getPlugin('commerce');
 
-	/**
-	 * Available variables:
-	 * all entries in 'craft_users' table
-	 * to access: entry.id, entry.firstName, etc.
-	 * @param Event $event
-	 */
-	public function onSaveProfile(Event $event)
-	{
-		$this->_processEvent('users.saveProfile', $event->params['user']);
-	}
-	
-	/**
-	 * Available variables:
-	 * username
-	 * to access: entry.username
-	 * @param Event $event
-	 */
-	public function onBeforeLogin(Event $event)
-	{
-		$this->_processEvent('userSession.beforeLogin', array('username' => $event->params['username']));
-	}
-	
-	/**
-	 * Available variables:
-	 * username
-	 * to access: entry.username
-	 * @param Event $event
-	 */
-	public function onLogin(Event $event)
-	{
-		$this->_processEvent('userSession.login', array('username' => $event->params['username']));
-	}
-
-	/**
-	 * Available variables:
-	 * all properties of Craft\GlobalSetModel
-	 * to access: entry.id
-	 * @param Event $event
-	 */
-	public function onSaveGlobalContent(Event $event)
-	{    	
-		$this->_processEvent('globals.saveGlobalContent', $event->params['globalSet']);
-	}
-
-	/**
-	 * Available variables:
-	 * all properties of Craft\AssetFileRecord
-	 * to access: entry.filename
-	 * @param Event $event
-	 */
-	public function onSaveFileContent(Event $event)
-	{
-		$this->_processEvent('assets.saveFileContent', $event->params['file']);
-	}
-	
-	/**
-	 * Available variables:
-	 * all properties of Craft\TagRecord
-	 * to access: entry.id
-	 * @param Event $event
-	 */
-	public function onSaveTag(Event $event)
-	{
-		$this->_processEvent('tags.saveTag', $event->params['tag']);
-	}    
-
-	/**
-	 * Available variables:
-	 * all properties of Craft\TagRecord
-	 * to access: entry.id
-	 * @param Event $event
-	 */
-	public function onSaveTagContent(Event $event)
-	{
-		$this->_processEvent('tags.saveTagContent', $event->params['tag']);
-	}
-	
-	/**
-	 * Available variables:
-	 * type (manual or auto)
-	 * to access: entry.type
-	 * @param Event $event
-	 */
-	public function onBeginUpdate(Event $event)
-	{
-		$this->_processEvent('updates.beginUpdate', $event->params['type']);
-	}
-	
-	/**
-	 * Available variables:
-	 * success (bool)
-	 * to access: entry.success
-	 * @param Event $event
-	 */
-	public function onEndUpdate(Event $event)
-	{
-		$this->_processEvent('updates.endUpdate', $event->params['success']);
-	}
-	
-	/**
-	 * Available variables:
-	 * none
-	 * @param Event $event
-	 */
-	public function onLoadPlugins(Event $event)
-	{
-		$this->_processEvent('plugins.loadPlugins', null);
-	}
-
-	/**
-	 * Available variables:
-	 * all entries in 'craft_content' table
-	 * to access: entry.id, entry.body, entry.locale, etc.
-	 * @param Event $event
-	 */
-	public function onSaveContent(Event $event)
-	{
-		switch($event->params['isNewContent'])
+		if (isset($commercePlugin))
 		{
-			case true:
-				$event_type = 'content.saveContent.new';
-				break;
-			default:
-				$event_type = 'content.saveContent';
-				break;
+			$events['commerce_orders.onOrderComplete']         = new SproutEmail_CommerceOnOrderCompleteEvent();
+			$events['commerce_transactions.onSaveTransaction'] = new SproutEmail_CommerceOnSaveTransactionEvent();
+			$events['commerce_orderHistories.onStatusChange']  = new SproutEmail_CommerceOnStatusChangeEvent();
 		}
-		$this->_processEvent($event_type, $event->params['content']);
+
+		return $events;
 	}
-	
+
 	/**
-	 * Handle system event
-	 * @param string $eventType
-	 * @param obj $entry
-	 * @return boolean
+	 * Using our own API to register native Craft events
+	 *
+	 * @return array
 	 */
-	private function _processEvent($eventType, $entry)
+	public function defineSproutEmailMailers()
 	{
-		// get registered entries
-		if($res = craft()->sproutEmail_notifications->getEventNotifications($eventType, $entry))
-		{   
-			foreach($res as $campaign)
+		$mailers = array();
+
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
+		$mailers['defaultmailer'] = new SproutEmail_DefaultMailer();
+
+		$pluginMailers = array(
+			'mailchimp'       => 'SproutEmail_MailchimpMailer',
+			'copypaste'       => 'SproutEmail_CopyPasteMailer',
+			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
+		);
+
+		foreach ($pluginMailers as $handle => $class)
+		{
+			$namespace   = "Craft\\" . $class;
+			$mailerClass = new $namespace();
+
+			$mailers[$handle] = $mailerClass;
+		}
+
+		return $mailers;
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function onBeforeInstall()
+	{
+		Craft::import('plugins.sproutemail.enums.Campaign');
+	}
+
+	/**
+	 * Installs all available mailers if any
+	 */
+	public function onAfterInstall()
+	{
+		try
+		{
+			if (!$this->getIsInitialized())
 			{
-				if( ! $campaign->recipients)
-				{
-					return false;
-				}
-
-				// @TODO - probably want to tighten up this code.  Would it 
-				// be better to switch to do a string replace and only make
-				// key variables available here? 
-				// entry.author, entry.author.email, entry.title
-		
-				try {
-					$campaign->subject = craft()->templates->renderString($campaign->subject, array('entry' => $entry));
-				} catch (\Exception $e) {
-					$campaign->subject = str_replace('{{', '', $campaign->subject);
-					$campaign->subject = str_replace('}}', '', $campaign->subject);
-				}
-				
-				try {
-					$campaign->fromName = craft()->templates->renderString($campaign->fromName, array('entry' => $entry));
-				} catch (\Exception $e) {
-					$campaign->fromName = str_replace('{{', '', $campaign->fromName);
-					$campaign->fromName = str_replace('}}', '', $campaign->fromName);
-				}
-				
-				try {
-					$campaign->textBody = craft()->templates->renderString($campaign->textBody, array('entry' => $entry));
-				} catch (\Exception $e) {
-					$campaign->textBody = str_replace('{{', '', $campaign->textBody);
-					$campaign->textBody = str_replace('}}', '', $campaign->textBody);
-				}
-				
-				try {
-					$campaign->htmlBody = craft()->templates->renderString($campaign->htmlBody, array('entry' => $entry));
-				} catch (\Exception $e) {
-					$campaign->htmlBody = str_replace('{{', '', $campaign->htmlBody);
-					$campaign->htmlBody = str_replace('}}', '', $campaign->htmlBody);
-				}
-				
-				try {
-					$campaign->replyToEmail = craft()->templates->renderString($campaign->replyToEmail, array('entry' => $entry));
-				} catch (\Exception $e) {
-					$campaign->replyToEmail = null;
-				}
-				
-				try {
-					$campaign->recipients = craft()->templates->renderString($campaign->recipients, array('entry' => $entry));
-				} catch (\Exception $e) {
-					$campaign->recipients = null;
-				}
-
-				$service = 'sproutEmail_' . lcfirst($campaign->emailProvider);
-				craft()->{$service}->sendCampaign($campaign);
+				$this->init();
 			}
+
+			sproutEmail()->mailers->installMailers();
+
+			// Redirect to examples after installation
+			craft()->request->redirect(UrlHelper::getCpUrl() . '/sproutemail/settings/examples');
+		}
+		catch (\Exception $e)
+		{
+			sproutEmail()->error($e->getMessage());
 		}
 	}
-	
+
+	/**
+	 * @return array
+	 */
+	public function registerSproutSeoSitemap()
+	{
+		return array(
+			'sproutemail_campaignemails' => array(
+				'name'                   => 'Email Campaigns',
+				'elementType'            => 'SproutEmail_CampaignEmail',
+				'elementGroupId'         => 'campaignTypeId',
+				'service'                => 'sproutEmail_campaignTypes',
+				'method'                 => 'getCampaignTypes',
+				'matchedElementVariable' => 'email'
+			)
+		);
+	}
+
+	public function registerSproutImportImporters()
+	{
+		return array(
+			new SproutEmail_CampaignEmailSproutImportElementImporter(),
+			new SproutEmail_NotificationEmailSproutImportElementImporter(),
+			new SproutEmail_CampaignTypeSproutImportSettingsImporter()
+		);
+	}
+
+	/**
+	 * Override SproutEmailPlugin::log() method to allow the logging of
+	 * multiple messages and arrays
+	 *
+	 * Examples:
+	 *
+	 * Standard log:
+	 * SproutEmailPlugin::log($msg);
+	 *
+	 * Enhanced log:
+	 * $messages['thing1'] = Craft::t('Something happened');
+	 * $messages['thing2'] = $entry->getErrors();
+	 * SproutEmailPlugin::log($messages);
+	 *
+	 * @param string $messages
+	 * @param string $level
+	 * @param bool   $force
+	 *
+	 * @return null - writes log to logfile
+	 */
+	public static function log($messages, $level = LogLevel::Info, $force = false)
+	{
+		$msg = "";
+
+		if (is_array($messages))
+		{
+			foreach ($messages as $message)
+			{
+				$msg .= PHP_EOL . print_r($message, true);
+			}
+		}
+		else
+		{
+			$msg = $messages;
+		}
+
+		parent::log($msg, $level, $force);
+	}
+}
+
+/**
+ * @return SproutEmailService
+ */
+function sproutEmail()
+{
+	return Craft::app()->getComponent('sproutEmail');
+}
+
+/**
+ * @return SproutEmail_DefaultMailerService
+ */
+function sproutEmailDefaultMailer()
+{
+	return Craft::app()->getComponent('sproutEmail_defaultMailer');
 }
