@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -38,8 +39,6 @@ abstract class SproutEmailBaseMailer
 	{
 		if (!$this->initialized)
 		{
-			$this->settings    = sproutEmail()->mailers->getSettingsByMailerName($this->getId());
-			$this->installed   = sproutEmail()->mailers->isInstalled($this->getId());
 			$this->initialized = true;
 		}
 	}
@@ -65,18 +64,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns whether or not the mailer has been installed and registered with Sprout Email
-	 *
-	 * @return bool
-	 */
-	public function isInstalled()
-	{
-		$this->init();
-
-		return $this->installed;
-	}
-
-	/**
 	 * Returns the mailer id to use as the formal identifier
 	 *
 	 * @example sproutemail
@@ -87,15 +74,6 @@ abstract class SproutEmailBaseMailer
 	{
 		return preg_replace('/[^a-z0-9]+/i', '', StringHelper::toLowerCase($this->getName()));
 	}
-
-	/**
-	 * Returns the Mailer name
-	 *
-	 * @example DefaultMailer
-	 *
-	 * @return string
-	 */
-	abstract public function getName();
 
 	/**
 	 * Returns the mailer title to use when displaying a label or similar use case
@@ -126,22 +104,11 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * @return string
-	 */
-	final public function getCpSectionUrl()
-	{
-		if ($this->hasCpSection())
-		{
-			return UrlHelper::getCpUrl(sprintf('sproutemail/%s', $this->getId()));
-		}
-	}
-
-	/**
 	 * Returns whether or not the mailer has settings to display
 	 *
 	 * @return bool
 	 */
-	final public function hasCpSettings()
+	public function hasCpSettings()
 	{
 		$settings = $this->defineSettings();
 
@@ -149,38 +116,18 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * @return string
-	 */
-	final public function getCpSettingsUrl()
-	{
-		if ($this->hasCpSettings())
-		{
-			return UrlHelper::getCpUrl(sprintf('sproutemail/settings/mailers/%s', $this->getId()));
-		}
-	}
-
-	/**
-	 * Returns the settings model for this mailer
+	 * Returns the URL for this Mailer's CP Settings
 	 *
-	 * @return Model
+	 * @return null|string
 	 */
-	public function getSettings()
+	public function getCpSettingsUrl()
 	{
-		if (!$this->isInitialized())
+		if (!$this->hasCpSettings())
 		{
-			$this->init();
+			return null;
 		}
 
-		return $this->settings;
-	}
-
-	/**
-	 * Returns a rendered html string to use for capturing settings input
-	 *
-	 * @return string
-	 */
-	public function getSettingsHtml(array $settings = array())
-	{
+		return UrlHelper::getCpUrl('sproutemail/settings/mailers/' . $this->getId());
 	}
 
 	/**
@@ -194,47 +141,6 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Returns a list of recipients from the mailer to be used primarily by getRecipientListsHtml()
-	 *
-	 * @return array
-	 */
-	public function getRecipientLists()
-	{
-		return array();
-	}
-
-	/**
-	 * Returns a rendered string with inputs to select a recipient lists if available/required by this mailer
-	 *
-	 * @return \Twig_Markup
-	 */
-	public function getRecipientListsHtml()
-	{
-		return TemplateHelper::getRaw('<p>' . Craft::t('This mailer does not require recipients.') . '</p>');
-	}
-
-	/**
-	 * Returns an entry model to be stored and used by Sprout Email for sending via this mailer
-	 *
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
-	 *
-	 * @return SproutEmail_CampaignEmailModel
-	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
-	 */
-	public function prepareRecipientLists(SproutEmail_CampaignEmailModel $campaignEmail)
-	{
-		return new SproutEmail_CampaignEmailModel();
-	}
-
-	/**
-	 * @param SproutEmail_CampaignTypeModel $campaignType
-	 */
-	public function saveRecipientList(SproutEmail_CampaignTypeModel $campaignType)
-	{
-	}
-
-	/**
 	 * Returns the value that should be saved to the settings column for this mailer
 	 *
 	 * @example
@@ -242,10 +148,61 @@ abstract class SproutEmailBaseMailer
 	 *
 	 * @return mixed
 	 */
-	public function prepareSettings()
+	public function prepSettings()
 	{
 		return craft()->request->getPost($this->getId());
 	}
+
+	/**
+	 * Returns the settings model for this mailer
+	 *
+	 * @return Model
+	 */
+	public function getSettings()
+	{
+		$record = sproutEmail()->mailers->getMailerRecordByName($this->getId());
+
+		$settingsFromDb = isset($record->settings) ? $record->settings : array();
+
+		$model = new Model($this->defineSettings());
+
+		$model->setAttributes($settingsFromDb);
+
+		return $model;
+	}
+
+	/**
+	 * Returns a rendered html string to use for capturing settings input
+	 *
+	 * @return string
+	 */
+	public function getSettingsHtml(array $settings = array())
+	{
+		return '';
+	}
+
+	/**
+	 * Gives a mailer the responsibility to send Notification Emails
+	 * if they implement SproutEmailNotificationEmailSenderInterface
+	 *
+	 * @param SproutEmail_NotificationEmailModel $notificationEmail
+	 * @param                                    $object
+	 */
+	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object)
+	{
+	}
+
+	/**
+	 * Gives a mailer the responsibility to send Campaign Emails
+	 * if they implement SproutEmailCampaignEmailSenderInterface
+	 *
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 *
+	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
+	 */
+	abstract public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail,
+	                                           SproutEmail_CampaignTypeModel $campaignType);
 
 	/**
 	 * Gives mailers the ability to include their own modal resources and register their dynamic action handlers
@@ -275,38 +232,75 @@ abstract class SproutEmailBaseMailer
 	}
 
 	/**
-	 * Gives the mailer chance to attach the value to the right field id before outputting it
-	 *
-	 * @param $value
+	 * @param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
 	 * @return mixed
 	 */
-	public function prepareValue($value)
+	abstract public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail,
+	                                             SproutEmail_CampaignTypeModel $campaignType);
+
+	/**
+	 * Returns whether this Mailer supports mailing lists
+	 *
+	 * @return bool Whether this Mailer supports lists. Default is `true`.
+	 */
+	public function hasLists()
 	{
-		return $value;
+		return true;
 	}
 
 	/**
-	 * Gives a mailer the responsibility to send Notification Emails
-	 * if they implement SproutEmailNotificationEmailSenderInterface
-	 *
-	 * @param SproutEmail_NotificationEmailModel $notificationEmail
-	 * @param                                    $object
+	 * Returns the Lists available to this Mailer
 	 */
-	public function sendNotificationEmail(SproutEmail_NotificationEmailModel $notificationEmail, $object)
+	public function getLists()
 	{
+		return array();
 	}
 
 	/**
-	 * Gives a mailer the responsibility to send Campaign Emails
-	 * if they implement SproutEmailCampaignEmailSenderInterface
+	 * Returns the HTML for our List Settings on the Campaign and Notification Email edit page
 	 *
-	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param array $values
 	 *
-	 * @internal param SproutEmail_CampaignEmailModel $campaignEmail
+	 * @return null
 	 */
-	public function sendCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
+	public function getListsHtml($values = array())
 	{
+		return null;
+	}
+
+	/**
+	 * Return true to allow and show mailer dynamic recipients
+	 *
+	 * @return bool
+	 */
+	public function hasInlineRecipients()
+	{
+		return false;
+	}
+
+	/**
+	 * Prepare the list data before we save it in the database
+	 *
+	 * @param $lists
+	 *
+	 * @return mixed
+	 */
+	public function prepListSettings($lists)
+	{
+		return $lists;
+	}
+
+	/**
+	 * Allow modification of campaignType model before it is saved.
+	 *
+	 * @param SproutEmail_CampaignTypeModel $model
+	 *
+	 * @return SproutEmail_CampaignTypeModel
+	 */
+	public function prepareSave(SproutEmail_CampaignTypeModel $model)
+	{
+		return $model;
 	}
 }

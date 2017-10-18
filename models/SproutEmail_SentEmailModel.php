@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_SentEmailModel extends BaseElementModel
@@ -26,9 +27,7 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 
 	public function getLocaleNiceDateTime()
 	{
-		$date = date_create($this->dateCreated->localeDate());
-
-		return date_format($date,"M j, Y") . ' ' . $this->dateCreated->localeTime();
+		return $this->dateCreated->format("M j, Y H:i A");
 	}
 
 	/**
@@ -52,17 +51,5 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 		);
 
 		return array_merge($defaults, $attributes);
-	}
-
-	/**
-	 * Returns the element's CP edit URL.
-	 *
-	 * @return string|false
-	 */
-	public function getCpEditUrl()
-	{
-		$url = UrlHelper::getCpUrl('sproutemail/sentemail/edit/' . $this->id);
-
-		return $url;
 	}
 }

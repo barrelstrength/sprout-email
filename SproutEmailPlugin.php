@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -31,7 +32,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '2.4.7';
+		return '3.0.3';
 	}
 
 	/**
@@ -39,7 +40,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getSchemaVersion()
 	{
-		return '2.4.0';
+		return '3.0.0';
 	}
 
 	/**
@@ -91,8 +92,7 @@ class SproutEmailPlugin extends BasePlugin
 			'pluginNameOverride'       => AttributeType::String,
 			'enableCampaignEmails'     => array(AttributeType::Bool, 'default' => true),
 			'enableNotificationEmails' => array(AttributeType::Bool, 'default' => true),
-			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false),
-			'enableRecipientLists'     => array(AttributeType::Bool, 'default' => false)
+			'enableSentEmails'         => array(AttributeType::Bool, 'default' => false)
 		);
 	}
 
@@ -160,20 +160,13 @@ class SproutEmailPlugin extends BasePlugin
 				'action' => 'sproutEmail/settingsIndexTemplate'
 			),
 
-			// Recipient Lists
-			'sproutemail/recipients'                                                                     => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientIndexTemplate'
-			),
-			'sproutemail/recipients/edit/(?P<id>[\d]+)'                                                  => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
-			),
-			'sproutemail/recipients/new'                                                                 => array(
-				'action' => 'sproutEmail/defaultMailer/showRecipientEditTemplate'
-			),
-
 			// Examples
 			'sproutemail/settings/examples'                                                              =>
 				'sproutemail/settings/_tabs/examples',
+
+			// Previews
+			'sproutemail/preview/(?P<emailType>campaign|notification|sent)/(?P<emailId>\d+)'             =>
+				'sproutemail/_special/preview'
 		);
 	}
 
@@ -181,33 +174,7 @@ class SproutEmailPlugin extends BasePlugin
 	{
 		parent::init();
 
-		// Sprout Email Contracts
-		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
-		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
-		Craft::import('plugins.sproutemail.contracts.SproutEmailCampaignEmailSenderInterface');
-		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationEmailSenderInterface');
-
-		// Sprout Email Mailers
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CampaignMonitorMailer');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CopyPasteMailer');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_DefaultMailer');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_MailchimpMailer');
-
-		// Sprout Email Events
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnOrderCompleteEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnSaveTransactionEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnStatusChangeEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesDeleteEntryEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesSaveEntryEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersActivateUserEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersDeleteUserEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UserSessionLoginEvent');
-		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersSaveUserEvent');
-
-		// Sprout Import Importers
-		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
-		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
-		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
+		$this->importClasses();
 
 		if ($this->getSettings()->enableNotificationEmails)
 		{
@@ -216,19 +183,37 @@ class SproutEmailPlugin extends BasePlugin
 
 		craft()->on('email.onBeforeSendEmail', array(sproutEmail(), 'handleOnBeforeSendEmail'));
 
-		if (sproutEmail()->defaultmailer->enableDynamicLists())
-		{
-			craft()->on('sproutCommerce.saveProduct', array(sproutEmailDefaultMailer(), 'handleSaveProduct'));
-			craft()->on('sproutCommerce.checkoutEnd', array(sproutEmailDefaultMailer(), 'handleCheckoutEnd'));
-		}
-
 		craft()->on('sproutEmail.onSendSproutEmail', function (Event $event)
 		{
 			sproutEmail()->sentEmails->logSentEmailCampaign($event);
+
+			$campaignEmail = $event->params['campaignEmail'];
+
+			sproutEmail()->campaignEmails->updateDateSent($campaignEmail);
 		});
 
 		craft()->on('email.onSendEmail', function (Event $event)
 		{
+			$action = craft()->request->getActionSegments();
+			// Adds support for contact form plugin :(.
+			if (isset($action[0]) && $action[0] == "contactForm")
+			{
+				$emailModel = $event->params['emailModel'];
+				$variables  = $event->params['variables'];
+
+				if (isset($variables['emailSubject']) && isset($variables['emailBody']))
+				{
+					$emailModel->subject         = $variables['emailSubject'];
+					$emailModel->body            = $variables['emailBody'];
+					$emailModel->htmlBody        = Craft::t('No value provided by Contact Form plugin');
+					$event->params['emailModel'] = $emailModel;
+				}
+				else
+				{
+					return false;
+				}
+			}
+
 			sproutEmail()->sentEmails->logSentEmail($event);
 		});
 
@@ -245,21 +230,51 @@ class SproutEmailPlugin extends BasePlugin
 			sproutEmail()->handleLogSentEmailOnSendEmailError($event);
 		});
 
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutemail')
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) === 'sproutemail' && craft()->request->getSegment(2) !== 'preview'
+		)
 		{
 			craft()->templates->includeJsResource('sproutemail/js/brand.js');
-			craft()->templates->includeJs("
+			craft()->templates->includeJs('
 				sproutFormsBrand = new Craft.SproutBrand();
 				sproutFormsBrand.displayFooter({
-					pluginName: 'Sprout Email',
-					pluginUrl: 'http://sprout.barrelstrengthdesign.com/craft-plugins/email',
-					pluginVersion: '" . $this->getVersion() . "',
-					pluginDescription: '" . $this->getDescription() . "',
-					developerName: '(Barrel Strength)',
-					developerUrl: '" . $this->getDeveloperUrl() . "'
+					pluginName: "Sprout Email",
+					pluginUrl: "http://sprout.barrelstrengthdesign.com/craft-plugins/email",
+					pluginVersion: "' . $this->getVersion() . '",
+					pluginDescription: "' . $this->getDescription() . '",
+					developerName: "(Barrel Strength)",
+					developerUrl: "' . $this->getDeveloperUrl() . '"
 				});
-			");
+			');
 		}
+	}
+
+	private function importClasses()
+	{
+		// Sprout Email Contracts
+		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseEvent');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailBaseMailer');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailCampaignEmailSenderInterface');
+		Craft::import('plugins.sproutemail.contracts.SproutEmailNotificationEmailSenderInterface');
+
+		// Sprout Email Mailers
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_CopyPasteMailer');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.SproutEmail_DefaultMailer');
+
+		// Sprout Email Events
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnOrderCompleteEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnSaveTransactionEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_CommerceOnStatusChangeEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesDeleteEntryEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_EntriesSaveEntryEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersActivateUserEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersDeleteUserEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UserSessionLoginEvent');
+		Craft::import('plugins.sproutemail.integrations.sproutemail.SproutEmail_UsersSaveUserEvent');
+
+		// Sprout Import Importers
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignEmailSproutImportElementImporter');
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_CampaignTypeSproutImportSettingsImporter');
+		Craft::import('plugins.sproutemail.integrations.sproutimport.SproutEmail_NotificationEmailSproutImportElementImporter');
 	}
 
 	/**
@@ -280,6 +295,8 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function defineSproutEmailEvents()
 	{
+		$events = array();
+
 		if ($this->isEnabled && $this->isInstalled)
 		{
 			$events = array(
@@ -315,31 +332,11 @@ class SproutEmailPlugin extends BasePlugin
 		$mailers = array();
 
 		Craft::import('plugins.sproutemail.integrations.sproutemail.mailers.*');
+
 		$mailers['defaultmailer'] = new SproutEmail_DefaultMailer();
-
-		$pluginMailers = array(
-			'mailchimp'       => 'SproutEmail_MailchimpMailer',
-			'copypaste'       => 'SproutEmail_CopyPasteMailer',
-			'campaignmonitor' => 'SproutEmail_CampaignMonitorMailer'
-		);
-
-		foreach ($pluginMailers as $handle => $class)
-		{
-			$namespace   = "Craft\\" . $class;
-			$mailerClass = new $namespace();
-
-			$mailers[$handle] = $mailerClass;
-		}
+		$mailers['copypaste']     = new SproutEmail_CopyPasteMailer();
 
 		return $mailers;
-	}
-
-	/**
-	 * @throws \Exception
-	 */
-	public function onBeforeInstall()
-	{
-		Craft::import('plugins.sproutemail.enums.Campaign');
 	}
 
 	/**
@@ -351,7 +348,7 @@ class SproutEmailPlugin extends BasePlugin
 		{
 			if (!$this->getIsInitialized())
 			{
-				$this->init();
+				$this->importClasses();
 			}
 
 			sproutEmail()->mailers->installMailers();
@@ -382,6 +379,9 @@ class SproutEmailPlugin extends BasePlugin
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function registerSproutImportImporters()
 	{
 		return array(
@@ -437,12 +437,4 @@ class SproutEmailPlugin extends BasePlugin
 function sproutEmail()
 {
 	return Craft::app()->getComponent('sproutEmail');
-}
-
-/**
- * @return SproutEmail_DefaultMailerService
- */
-function sproutEmailDefaultMailer()
-{
-	return Craft::app()->getComponent('sproutEmail_defaultMailer');
 }

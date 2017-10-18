@@ -1,6 +1,10 @@
 <?php
+
 namespace Craft;
 
+/**
+ * Class SproutEmail_SentEmailElementType
+ */
 class SproutEmail_SentEmailElementType extends BaseElementType
 {
 	/**
@@ -17,22 +21,6 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	public function hasTitles()
 	{
 		return true;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function hasContent()
-	{
-		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isLocalized()
-	{
-		return false;
 	}
 
 	/**
@@ -113,16 +101,16 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 			'dateSent'     => array('label' => Craft::t('Date Sent')),
 			'toEmail'      => array('label' => Craft::t('Recipient')),
 			'emailSubject' => array('label' => Craft::t('Subject')),
-			'preview'      => array('label' => Craft::t('Preview')),
 			'resend'       => array('label' => Craft::t('Resend')),
-			'info'         => array('label' => Craft::t(''))
+			'preview'      => array('label' => Craft::t('Preview'), 'icon' => 'view'),
+			'info'         => array('label' => Craft::t('Info'), 'icon' => 'info')
 		);
 
 		return $attributes;
 	}
 
 	/**
-	 * Returns default table columns for table views
+	 * @param null $source
 	 *
 	 * @return array
 	 */
@@ -133,8 +121,8 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		$attributes[] = 'dateSent';
 		$attributes[] = 'toEmail';
 		$attributes[] = 'emailSubject';
-		$attributes[] = 'preview';
 		$attributes[] = 'resend';
+		$attributes[] = 'preview';
 		$attributes[] = 'info';
 
 		return $attributes;
@@ -174,34 +162,40 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-
 		switch ($attribute)
 		{
-			case "preview":
-				return '<a class="prepare" data-action="sproutEmail/sentEmail/getViewContentModal"' .
-					'data-email-id="' . $element->id . '"' .
-					'href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
-					Craft::t("View Content") .
-					'</a>';
+			case 'preview':
+
+				$previewUrl = UrlHelper::getCpUrl('sproutemail/preview/sent/' . $element->id);
+
+				return '<a class="email-preview" ' .
+					'data-email-id="' . $element->id . '" ' .
+					'data-preview-url="' . $previewUrl . '" ' .
+					'href="' . $previewUrl . '" ' .
+					'" data-icon="view"></a>';
+
 				break;
 
-			case "resend":
-				return '<a class="prepare" 
+			case 'resend':
+
+				return '<a class="prepare btn small formsubmit" 
 								data-action="sproutEmail/sentEmail/getResendModal" 
 								data-email-id="' . $element->id . '" 
 								href="' . UrlHelper::getCpUrl('sproutemail/sentemails/view/' . $element->id) . '">' .
-					Craft::t("Prepare") .
+					Craft::t('Prepare') .
 					'</a>';
+
 				break;
 
-			case "info":
+			case 'info':
+
 				return '<span class="tableRowInfo" data-icon="info"></span>';
+
 				break;
 
 			default:
-			{
+
 				return parent::getTableAttributeHtml($element, $attribute);
-			}
 		}
 	}
 
@@ -234,7 +228,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 
 		$html = parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 
-		$modal = craft()->templates->render('sproutemail/_modals/box');
+		$modal = craft()->templates->render('sproutemail/_modals/base');
 
 		return $html . $modal;
 	}
@@ -270,6 +264,9 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineSearchableAttributes()
 	{
 		return array('title', 'toEmail');
@@ -299,7 +296,7 @@ class SproutEmail_SentEmailElementType extends BaseElementType
 	 *
 	 * @param array $row
 	 *
-	 * @return array
+	 * @return BaseModel
 	 */
 	public function populateElementModel($row)
 	{

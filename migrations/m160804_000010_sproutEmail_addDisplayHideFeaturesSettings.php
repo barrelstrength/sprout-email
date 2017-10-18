@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -15,7 +16,7 @@ class m160804_000010_sproutEmail_addDisplayHideFeaturesSettings extends BaseMigr
 	{
 		SproutEmailPlugin::log('Updating general settings to display or hide Sent Emails and Recipients');
 
-		$plugin = craft()->plugins->getPlugin('sproutemail');
+		$plugin   = craft()->plugins->getPlugin('sproutemail');
 		$settings = $plugin->getSettings();
 
 		// Update Sent Emails to be enabled to keep tracking

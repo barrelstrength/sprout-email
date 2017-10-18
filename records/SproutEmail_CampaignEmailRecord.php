@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -8,7 +9,6 @@ namespace Craft;
  * --
  * @property int    $id
  * @property int    $campaignTypeId
- * @property int    $recipientListId
  * @property string $subjectLine
  * @property string $fromName
  * @property string $fromEmail
@@ -34,11 +34,14 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 			'subjectLine'           => array(AttributeType::String, 'required' => true),
 			'campaignTypeId'        => array(AttributeType::Number, 'required' => true),
 			'recipients'            => array(AttributeType::String, 'required' => false),
-			'fromName'              => array(AttributeType::String, 'required' => false, 'minLength' => 2, 'maxLength' => 100),
-			'fromEmail'             => array(AttributeType::String, 'required' => false, 'minLength' => 6),
-			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
+			'emailSettings'          => array(Attributetype::Mixed),
+			'listSettings'          => array(Attributetype::Mixed),
+			'fromName'              => array(AttributeType::String, 'minLength' => 2, 'maxLength' => 100),
+			'fromEmail'             => array(AttributeType::String, 'minLength' => 6),
+			'replyToEmail'          => array(AttributeType::String),
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
+			'dateScheduled'         => array(AttributeType::DateTime, 'default' => null),
+			'dateSent'              => array(AttributeType::DateTime, 'default' => null),
 		);
 	}
 
@@ -52,8 +55,34 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 		$rules[] = array('replyToEmail', 'validateEmailWithOptionalPlaceholder');
 		$rules[] = array('fromEmail', 'validateEmailWithOptionalPlaceholder');
 		$rules[] = array('recipients', 'validateOnTheFlyRecipients');
+		$rules[] = array('fromName,fromEmail,replyToEmail', 'validateWhenRequired');
 
 		return $rules;
+	}
+
+	public function validateWhenRequired($attribute)
+	{
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($this->campaignTypeId);
+
+		if ($campaignType !== 'copypaste')
+		{
+			$value = $this->{$attribute};
+
+			$attributeLabelMap = array(
+				'fromName' => Craft::t('From Name'),
+				'fromEmail' => Craft::t('From Email'),
+			  'replyToEmail' => Craft::t('Reply To Email')
+			);
+
+			if ($value === '')
+			{
+				$attributeLabel = $attributeLabelMap[$attribute];
+
+				$this->addError($attribute, Craft::t('{attribute} is required.', array(
+					'attribute' => $attributeLabel
+				)));
+			}
+		}
 	}
 
 	/**
@@ -113,24 +142,19 @@ class SproutEmail_CampaignEmailRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'element'        => array(
+			'element'  => array(
 				static::BELONGS_TO,
 				'ElementRecord',
 				'id',
 				'required' => true,
 				'onDelete' => static::CASCADE
 			),
-			'campaign'       => array(
+			'campaign' => array(
 				static::BELONGS_TO,
 				'SproutEmail_CampaignTypeRecord',
 				'campaignTypeId',
 				'required' => true,
 				'onDelete' => static::CASCADE
-			),
-			'recipientLists' => array(
-				static::HAS_MANY,
-				'SproutEmail_RecipientListRelationsRecord',
-				'emailId'
 			)
 		);
 	}

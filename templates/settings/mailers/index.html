@@ -3,17 +3,6 @@
 
 {% set title = 'Mailers' %}
 
-{% set shouldRefresh = false %}
-
-{% block saveButton %}
-	{% if shouldRefresh %}
-		<div class="buttons">
-				<a href="{{ actionUrl('sproutEmail/mailer/installMailers') }}"  class="btn submit" title='{{ "Install Mailers"|t }}'>{{ "Install Mailers"|t }}</a>
-		</div>
-	{% endif %}
-
-{% endblock %}
-
 {% set content %}
 
 	{% set mailers = craft.sproutEmail.getCampaignMailers() %}
@@ -31,21 +20,17 @@
 				</thead>
 			{% endif %}
 
-			{% if mailer.isInstalled() %}
-				<tr>
-					<td>
-						{{ mailer.getTitle() }}
-					</td>
-					<td>
-						{% if mailer.hasCpSettings() %}
-							<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
-						{% endif %}
-					</td>
-					<td>{{ mailer.getDescription()|md }}</td>
-				</tr>
-			{% else %}
-				{% set shouldRefresh = true %}
-			{% endif %}{# mailer installed? #}
+			<tr>
+				<td>
+					{{ mailer.getTitle() }}
+				</td>
+				<td>
+					{% if mailer.getCpSettingsUrl() != null %}
+						<a href="{{ mailer.getCpSettingsUrl() }}" title="{{ mailer.getTitle() }}">{{ "Settings"|t }}</a>
+					{% endif %}
+				</td>
+				<td>{{ mailer.getDescription()|md }}</td>
+			</tr>
 
 			{% if loop.last %}
 				</table>
@@ -54,13 +39,6 @@
 		{% endfor %}
 
 	{% endset %}
-
-	{% if shouldRefresh %}
-		<h2 class="error">{{ "Installation Required"|t }}</h2>
-		<p>{{ "Press the 'Install Mailers' button at the top right. Sprout Email has detected mailers not currently
-		installed."|t }}</p>
-		<hr>
-	{% endif %}
 
 	{% if mailerTableHtml is defined %}
 		{{ mailerTableHtml }}

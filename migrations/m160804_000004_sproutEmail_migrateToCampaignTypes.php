@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -15,7 +16,7 @@ class m160804_000004_sproutEmail_migrateToCampaignTypes extends BaseMigration
 	{
 		SproutEmailPlugin::log('Updating to campaign types');
 
-		$tableName  = "sproutemail_campaigns";
+		$tableName = "sproutemail_campaigns";
 
 		if (craft()->db->tableExists($tableName))
 		{

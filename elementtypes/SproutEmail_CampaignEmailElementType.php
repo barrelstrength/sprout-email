@@ -1,6 +1,10 @@
 <?php
+
 namespace Craft;
 
+/**
+ * Class SproutEmail_CampaignEmailElementType
+ */
 class SproutEmail_CampaignEmailElementType extends BaseElementType
 {
 	/**
@@ -45,13 +49,22 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		return true;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getStatuses()
 	{
-		return array(
-			SproutEmail_CampaignEmailModel::ENABLED  => Craft::t('Enabled'),
-			SproutEmail_CampaignEmailModel::PENDING  => Craft::t('Pending'),
-			SproutEmail_CampaignEmailModel::DISABLED => Craft::t('Disabled')
-		);
+		$statuses[SproutEmail_CampaignEmailModel::SENT] = Craft::t('Sent');
+
+		if (sproutEmail()->getConfig('displayDateScheduled', false))
+		{
+			$statuses[SproutEmail_CampaignEmailModel::SCHEDULED] = Craft::t('Scheduled');
+		}
+
+		$statuses[SproutEmail_CampaignEmailModel::PENDING]  = Craft::t('Pending');
+		$statuses[SproutEmail_CampaignEmailModel::DISABLED] = Craft::t('Disabled');
+
+		return $statuses;
 	}
 
 	/**
@@ -114,32 +127,99 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$criteria->limit = null;
 		$criteria->order = sprintf('%s %s', $order, $sort);
 
-		return craft()->templates->render('sproutemail/_partials/campaigns/entryindex', array(
-			'context'            => $context,
-			'elementType'        => new ElementTypeVariable($this),
-			'disabledElementIds' => $disabledElementIds,
-			'elements'           => $criteria->find(),
-		));
+		return parent::getIndexHtml($criteria, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer, $showCheckboxes);
 	}
 
 	/**
-	 * Returns the attributes that can be selected as table columns
+	 * @inheritDoc IElementType::getTableAttributeHtml()
 	 *
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return string
+	 */
+	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
+	{
+		$campaignType = sproutEmail()->campaignTypes->getCampaignTypeById($element->campaignTypeId);
+
+		$passHtml = '<span class="success" title="' . Craft::t('Passed') . '" data-icon="check"></span>';
+		$failHtml = '<span class="error" title="' . Craft::t('Failed') . '" data-icon="error"></span>';
+
+		if ($attribute === 'send')
+		{
+			$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
+
+			return craft()->templates->render('sproutemail/_partials/campaigns/prepareLink', array(
+				'campaignEmail' => $element,
+				'campaignType'  => $campaignType,
+				'mailer'        => $mailer
+			));
+		}
+
+		if ($attribute === 'preview')
+		{
+			return craft()->templates->render('sproutemail/_partials/campaigns/previewLinks', array(
+				'email'        => $element,
+				'campaignType' => $campaignType,
+				'type'         => 'html'
+			));
+		}
+
+		if ($attribute === 'template')
+		{
+			return '<code>' . $element->template . '</code>';
+		}
+
+		if ($attribute === 'contentCheck')
+		{
+			return $element->isContentReady() ? $passHtml : $failHtml;
+		}
+
+		if ($attribute === 'recipientsCheck')
+		{
+			return $element->isListReady() ? $passHtml : $failHtml;
+		}
+
+		if ($attribute === 'dateScheduled' && $element->dateScheduled)
+		{
+			return '<span title="' . $element->dateScheduled->format('l, d F Y, h:ia') . '">' . $element->dateScheduled->uiTimestamp() . '</span>';
+		}
+
+		if ($attribute === 'dateSent' && $element->dateSent)
+		{
+			return '<span title="' . $element->dateSent->format('l, d F Y, h:ia') . '">' . $element->dateSent->uiTimestamp() . '</span>';
+		}
+
+		return parent::getTableAttributeHtml($element, $attribute);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function defineAvailableTableAttributes()
 	{
-		$attributes = array(
-			'title'       => array('label' => Craft::t('Title')),
-			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated'))
-		);
+		$attributes['title'] = array('label' => Craft::t('Subject'));
+
+		if (sproutEmail()->getConfig('displayDateScheduled', false))
+		{
+			$attributes['dateScheduled'] = array('label' => Craft::t('Date Scheduled'));
+		}
+
+		$attributes['dateSent']        = array('label' => Craft::t('Date Sent'));
+		$attributes['contentCheck']    = array('label' => Craft::t('Content'));
+		$attributes['recipientsCheck'] = array('label' => Craft::t('Recipients'));
+		$attributes['dateCreated']     = array('label' => Craft::t('Date Created'));
+		$attributes['dateUpdated']     = array('label' => Craft::t('Date Updated'));
+		$attributes['template']        = array('label' => Craft::t('Template'));
+		$attributes['send']            = array('label' => Craft::t('Send'));
+		$attributes['preview']         = array('label' => Craft::t('Preview'), 'icon' => 'view');
+		$attributes['link']            = array('label' => Craft::t('Link'), 'icon' => 'world');
 
 		return $attributes;
 	}
 
 	/**
-	 * Returns default table columns for table views
+	 * @param null $source
 	 *
 	 * @return array
 	 */
@@ -148,8 +228,32 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'title';
+		$attributes[] = 'contentCheck';
+		$attributes[] = 'recipientsCheck';
 		$attributes[] = 'dateCreated';
-		$attributes[] = 'dateUpdated';
+		$attributes[] = 'dateSent';
+		$attributes[] = 'send';
+		$attributes[] = 'preview';
+		$attributes[] = 'link';
+
+		return $attributes;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function defineSortableAttributes()
+	{
+		$attributes['title'] = Craft::t('Subject');
+
+		if (sproutEmail()->getConfig('displayDateScheduled', false))
+		{
+			$attributes['dateScheduled'] = Craft::t('Date Scheduled');
+		}
+
+		$attributes['dateSent']    = Craft::t('Date Sent');
+		$attributes['dateCreated'] = Craft::t('Date Created');
+		$attributes['dateUpdated'] = Craft::t('Date Updated');
 
 		return $attributes;
 	}
@@ -180,6 +284,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	{
 		switch ($status)
 		{
+			case SproutEmail_CampaignEmailModel::ENABLED:
+			{
+				$query->andWhere('elements.enabled = 1');
+
+				break;
+			}
 			case SproutEmail_CampaignEmailModel::DISABLED:
 			{
 				$query->andWhere('elements.enabled = 0');
@@ -189,34 +299,23 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 			case SproutEmail_CampaignEmailModel::PENDING:
 			{
 				$query->andWhere('elements.enabled = 1');
-				$query->andWhere('campaigntype.template IS NULL OR campaigntype.mailer IS NULL');
+				$query->andWhere('campaigns.dateSent IS NULL');
+				$query->andWhere('campaigns.dateScheduled IS NULL');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ARCHIVED:
+			case SproutEmail_CampaignEmailModel::SCHEDULED:
 			{
-				$query->andWhere('elements.archived = 1');
-				break;
-			}
-			case SproutEmail_CampaignEmailModel::READY:
-			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					AND campaigntype.template IS NOT NULL
-					AND campaigntype.mailer IS NOT NULL'
-				);
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('campaigns.dateSent IS NULL');
+				$query->andWhere('campaigns.dateScheduled IS NOT NULL');
 
 				break;
 			}
-			case SproutEmail_CampaignEmailModel::ENABLED:
+			case SproutEmail_CampaignEmailModel::SENT:
 			{
-				$query->andWhere(
-					'
-					elements.enabled = 1
-					AND campaigntype.template IS NOT NULL
-					AND campaigntype.mailer IS NOT NULL'
-				);
+				$query->andWhere('elements.enabled = 1');
+				$query->andWhere('campaigns.dateSent IS NOT NULL');
 
 				break;
 			}
@@ -252,8 +351,12 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				 campaigns.fromName as fromName,
 				 campaigns.fromEmail as fromEmail,
 				 campaigns.replyToEmail as replyToEmail,
-				 campaigns.sent as sent,
-				 campaigns.enableFileAttachments as enableFileAttachments'
+				 campaigns.dateSent as dateSent,
+				 campaigns.dateScheduled as dateScheduled,
+				 campaigns.emailSettings as emailSettings,
+				 campaigns.listSettings as listSettings,
+				 campaigns.enableFileAttachments as enableFileAttachments,
+				 campaigntype.template as template'
 			)
 			->join('sproutemail_campaignemails campaigns', 'campaigns.id = elements.id')
 			->join('sproutemail_campaigntype campaigntype', 'campaigntype.id = campaigns.campaignTypeId');
@@ -308,12 +411,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 				'template'  => $campaignType->template . $extension,
 				'variables' => array(
 					'email'        => $element,
-					'campaignType' => $campaignType,
-
-					// @deprecate in v3 `entry` in favor of the `email` variable
-					// @deprecate in v3 `campaign` in favor of the `campaignType` variable
-					'entry'        => $element,
-					'campaign'     => $campaignType,
+					'campaignType' => $campaignType
 				)
 			)
 		);
@@ -328,16 +426,25 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 */
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
+		$setStatusAction              = craft()->elements->getAction('SetStatus');
+		$setStatusAction->onSetStatus = function (Event $event)
+		{
+			if ($event->params['status'] === BaseElementModel::ENABLED)
+			{
+				// Update Date Updated value as well
+				craft()->db->createCommand()->update(
+					'sproutemail_campaignemails',
+					array('dateUpdated' => DateTimeHelper::currentTimeForDb()),
+					array('and', array('in', 'id', $event->params['elementIds']))
+				);
+			}
+		};
 
-		$deleteAction->setParams(array(
-			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
-			'successMessage'      => Craft::t('Emails deleted.'),
-		));
+		$markSentAction   = craft()->elements->getAction('SproutEmail_MarkSent');
+		$markUnsentAction = craft()->elements->getAction('SproutEmail_MarkUnsent');
+		$deleteAction     = craft()->elements->getAction('SproutEmail_CampaignEmailDelete');
 
-		$setStatusAction = craft()->elements->getAction('SproutEmail_SetStatus');
-
-		return array($deleteAction, $setStatusAction);
+		return array($setStatusAction, $markSentAction, $markUnsentAction, $deleteAction);
 	}
 
 	/**
@@ -345,7 +452,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 	 *
 	 * @param array $row
 	 *
-	 * @return array
+	 * @return BaseModel
 	 */
 	public function populateElementModel($row)
 	{

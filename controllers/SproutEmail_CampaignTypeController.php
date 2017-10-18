@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CampaignTypeController extends BaseController
@@ -34,7 +35,7 @@ class SproutEmail_CampaignTypeController extends BaseController
 	}
 
 	/**
-	 * Save campaign type
+	 * Saves a Campaign Type
 	 *
 	 * @return void
 	 */
@@ -53,6 +54,10 @@ class SproutEmail_CampaignTypeController extends BaseController
 			$campaignType->id        = null;
 			$_POST['redirect']       = 'sproutemail/settings/campaigntypes/edit/{id}';
 		}
+
+		$mailer = $campaignType->getMailer();
+
+		$mailer->prepareSave($campaignType);
 
 		if (craft()->request->getPost('fieldLayout'))
 		{
@@ -82,9 +87,7 @@ class SproutEmail_CampaignTypeController extends BaseController
 	}
 
 	/**
-	 * Delete Campaign Type
-	 *
-	 * @return void
+	 * Deletes a Campaign Type
 	 */
 	public function actionDeleteCampaignType()
 	{

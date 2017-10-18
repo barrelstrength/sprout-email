@@ -1,0 +1,14 @@
+{%- if campaignEmail.isReadyToSend() or campaignEmail.isReadyToTest() -%}
+
+  <a href="#"
+    data-action="{{ mailer.getActionForPrepareModal() }}"
+    data-mailer="{{ mailer.getId() }}"
+    data-email-id="{{ campaignEmail.id }}"
+    data-campaign-type-id="{{ campaignType.id }}"
+    class="prepare btn small formsubmit">{{ "Prepare"|t }}</a>
+
+{%- else -%}
+
+  <span class="light">{{ "Prepare"|t }}</span>
+
+{%- endif -%}

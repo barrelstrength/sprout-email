@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -14,10 +15,14 @@ class SproutEmailBaseEvent
 	 * @var array|null
 	 */
 	protected $options;
+
+	/**
+	 * @var string
+	 */
 	protected $pluginName;
 
 	/**
-	 * @param $pluginClass
+	 * @param $pluginName
 	 */
 	public function setPluginName($pluginName)
 	{
@@ -35,25 +40,13 @@ class SproutEmailBaseEvent
 	}
 
 	/**
-	 * @deprecated Deprecated since version 2.2.3 in favor of getEventAction()
-	 *
-	 * @return string
-	 */
-	public function getId()
-	{
-		craft()->deprecator->log('SproutEmailBaseEvent->getId()', 'The SproutEmailBaseEvent getId() method has been deprecated in favor of getEventAction().');
-
-		return $this->getEventAction();
-	}
-
-	/**
 	 * Returns the string we use as the unique ID for the trigger event
 	 *
 	 * @return string
 	 */
 	public function getEventId()
 	{
-		$pluginName = (isset($this->pluginName)) ? $this->pluginName . '-' : '';
+		$pluginName = $this->pluginName !== null ? $this->pluginName . '-' : '';
 
 		return $pluginName . $this->getEventAction();
 	}
@@ -124,7 +117,7 @@ class SproutEmailBaseEvent
 	 */
 	public function getOptionsHtml()
 	{
-		return "—";
+		return '—';
 	}
 
 	/**
@@ -163,6 +156,7 @@ class SproutEmailBaseEvent
 	 */
 	public function validateOptions($options, $eventData, array $params = array())
 	{
+		return true;
 	}
 
 	/**

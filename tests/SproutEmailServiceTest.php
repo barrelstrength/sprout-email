@@ -72,7 +72,7 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$styleTags = array();
 
-		$stylesResult = sproutEmail()->defaultmailer->addPlaceholderStyleTags($body, $styleTags);
+		$stylesResult = sproutEmail()->defaultMailer->addPlaceholderStyleTags($body, $styleTags);
 
 		$expected = array(
 			'tags' => array(
@@ -93,12 +93,12 @@ class SproutEmailServiceTest extends SproutEmailBaseTest
 
 		$this->assertEquals($expected['body'], $stylesResult);
 
-		$replacedBody = sproutEmail()->defaultmailer->removePlaceholderStyleTags($expected['body'], $styleTags);
+		$replacedBody = sproutEmail()->defaultMailer->removePlaceholderStyleTags($expected['body'], $styleTags);
 
 		$this->assertEquals($expected['tags'], $styleTags);
 		$this->assertEquals($expected['body'], $stylesResult);
 
-		$replacedBody = sproutEmail()->defaultmailer->removePlaceholderStyleTags($stylesResult, $styleTags);
+		$replacedBody = sproutEmail()->defaultMailer->removePlaceholderStyleTags($stylesResult, $styleTags);
 
 		$this->assertEquals($body, $replacedBody);
 	}

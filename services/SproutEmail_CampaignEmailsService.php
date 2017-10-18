@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
@@ -22,11 +23,10 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 	/**
 	 * @param SproutEmail_CampaignEmailModel $campaignEmail
-	 * @param SproutEmail_CampaignTypeModel  $campaign
+	 * @param SproutEmail_CampaignTypeModel  $campaignType
 	 *
-	 * @return bool
+	 * @return bool|BaseRecord|SproutEmail_CampaignEmailRecord
 	 * @throws Exception
-	 * @throws \CDbException
 	 * @throws \Exception
 	 */
 	public function saveCampaignEmail(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
@@ -46,10 +46,31 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 		}
 
 		$campaignEmailRecord->campaignTypeId = $campaignEmail->campaignTypeId;
-		$campaignEmailRecord->subjectLine    = $campaignEmail->subjectLine;
+
+		if ($campaignType->titleFormat)
+		{
+			$renderedSubject = craft()->templates->renderObjectTemplate($campaignType->titleFormat, $campaignEmail);
+
+			$campaignEmail->getContent()->title = $renderedSubject;
+			$campaignEmail->subjectLine         = $renderedSubject;
+			$campaignEmailRecord->subjectLine   = $renderedSubject;
+		}
+		else
+		{
+
+			$campaignEmail->getContent()->title = $campaignEmail->subjectLine;
+			$campaignEmailRecord->subjectLine   = $campaignEmail->subjectLine;
+		}
 
 		$campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
-		$campaignEmailRecord->setAttribute('recipients', $this->getOnTheFlyRecipients());
+
+		$mailer = $campaignType->getMailer();
+
+		// Give the Mailer a chance to prep the settings from post
+		$preppedSettings = $mailer->prepListSettings($campaignEmail->listSettings);
+
+		// Set the prepped settings on the FieldRecord, FieldModel, and the field type
+		$campaignEmailRecord->listSettings = $preppedSettings;
 
 		$campaignEmailRecord->validate();
 
@@ -68,6 +89,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 			try
 			{
+
 				if (craft()->elements->saveElement($campaignEmail))
 				{
 					// Now that we have an element ID, save it on the other stuff
@@ -77,10 +99,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 					}
 
 					$campaignEmailRecord->save(false);
-
-					$mailer = sproutEmail()->mailers->getMailerByName($campaignType->mailer);
-
-					sproutEmail()->mailers->saveRecipientLists($mailer, $campaignEmail);
 
 					if ($transaction && $transaction->active)
 					{
@@ -96,7 +114,7 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 				{
 					$transaction->rollback();
 				}
-				Craft::dd($e->getMessage());
+
 				throw $e;
 			}
 		}
@@ -146,33 +164,6 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 	public function getCampaignEmailById($emailId)
 	{
 		return craft()->elements->getElementById($emailId, 'SproutEmail_CampaignEmail');
-	}
-
-	public function getRecipientListsByEmailId($id)
-	{
-		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
-		{
-			return SproutEmail_RecipientListRelationsModel::populateModels($lists);
-		}
-	}
-
-	public function deleteRecipientListsByEmailId($id)
-	{
-		if (($lists = SproutEmail_RecipientListRelationsRecord::model()->findAllByAttributes(array('emailId' => $id))))
-		{
-			foreach ($lists as $list)
-			{
-				$list->delete();
-			}
-		}
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function getOnTheFlyRecipients()
-	{
-		return craft()->request->getPost('recipient.onTheFlyRecipients');
 	}
 
 	/**
@@ -244,5 +235,56 @@ class SproutEmail_CampaignEmailsService extends BaseApplicationComponent
 
 		// End the request
 		craft()->end();
+	}
+
+	/**
+	 * Update Date Sent column every time campaign email is sent
+	 *
+	 * @param Event $event
+	 */
+	public function updateDateSent($campaignEmail)
+	{
+		if ($campaignEmail->id != null)
+		{
+			$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findById($campaignEmail->id);
+
+			if ($campaignEmailRecord)
+			{
+				$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+				$campaignEmailRecord->dateSent = DateTimeHelper::currentTimeForDb();
+
+				if ($campaignEmailRecord->save(false))
+				{
+					if ($transaction && $transaction->active)
+					{
+						$transaction->commit();
+					}
+				}
+			}
+		}
+	}
+
+	public function saveEmailSettings($campaignEmail, array $values = array())
+	{
+		if ($campaignEmail->id != null)
+		{
+			$campaignEmailRecord = SproutEmail_CampaignEmailRecord::model()->findById($campaignEmail->id);
+
+			if ($campaignEmailRecord)
+			{
+				$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+				$campaignEmailRecord->emailSettings = $values;
+
+				if ($campaignEmailRecord->save(false))
+				{
+					if ($transaction && $transaction->active)
+					{
+						$transaction->commit();
+					}
+				}
+			}
+		}
 	}
 }

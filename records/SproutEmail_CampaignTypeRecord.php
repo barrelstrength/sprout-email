@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -47,8 +48,8 @@ class SproutEmail_CampaignTypeRecord extends BaseRecord
 			'name'              => AttributeType::String,
 			'handle'            => AttributeType::String,
 			'mailer'            => AttributeType::String,
-			'titleFormat'       => AttributeType::String,
-			'urlFormat'         => AttributeType::String,
+			'titleFormat'       => array(AttributeType::String, 'default' => null),
+			'urlFormat'         => array(AttributeType::String, 'default' => null),
 			'hasUrls'           => array(
 				AttributeType::Bool,
 				'default' => true,

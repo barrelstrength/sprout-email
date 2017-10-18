@@ -1,25 +1,9 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements SproutEmailCampaignEmailSenderInterface
 {
-	protected $service;
-
-	/**
-	 * @return SproutEmailCopyPasteService
-	 */
-	public function getService()
-	{
-		if (null === $this->service)
-		{
-			$this->service = Craft::app()->getComponent('sproutEmail_copyPaste');
-
-			$this->service->setSettings($this->getSettings());
-		}
-
-		return $this->service;
-	}
-
 	/**
 	 * @return string
 	 */
@@ -41,7 +25,15 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 	 */
 	public function getDescription()
 	{
-		return "Copy and paste your email campaigns to better (or worse) places.";
+		return Craft::t('Copy and paste your email campaigns to better (or worse) places.');
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasLists()
+	{
+		return false;
 	}
 
 	/**
@@ -60,12 +52,7 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 	 */
 	public function getPrepareModalHtml(SproutEmail_CampaignEmailModel $campaignEmail, SproutEmail_CampaignTypeModel $campaignType)
 	{
-		craft()->templates->includeJsResource('sproutemail/js/mailers/copypaste.js');
-
-		return craft()->templates->render('sproutemail/_modal', array(
-			'entry'    => $campaignEmail,
-			'campaign' => $campaignType
-		));
+		return '';
 	}
 
 	/**
@@ -89,7 +76,24 @@ class SproutEmail_CopyPasteMailer extends SproutEmailBaseMailer implements Sprou
 
 		try
 		{
-			return $this->getService()->sendCampaignEmail($campaignEmail, $campaignType);
+			$variables = array(
+				'email'        => $campaignEmail,
+				'campaignType' => $campaignType
+			);
+
+			$html = sproutEmail()->renderSiteTemplateIfExists($campaignType->template, $variables);
+			$text = sproutEmail()->renderSiteTemplateIfExists($campaignType->template . '.txt', $variables);
+
+			$response          = new SproutEmail_ResponseModel();
+			$response->success = true;
+			$response->content = craft()->templates->render('sproutemail/_integrations/mailers/copypaste/scheduleCampaignEmail',
+				array(
+				'email' => $campaignEmail,
+				'html'  => trim($html),
+				'text'  => trim($text),
+			));
+
+			return $response;
 		}
 		catch (\Exception $e)
 		{

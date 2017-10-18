@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutEmail_MailerController extends BaseController
@@ -25,11 +26,6 @@ class SproutEmail_MailerController extends BaseController
 		if (!$mailer)
 		{
 			throw new HttpException(404, Craft::t('No mailer was found with that id'));
-		}
-
-		if (!$mailer->hasCpSettings())
-		{
-			throw new HttpException(404, Craft::t('No settings found for this mailer'));
 		}
 
 		if (!$settings)
@@ -63,26 +59,22 @@ class SproutEmail_MailerController extends BaseController
 
 			if ($record)
 			{
-				$settings = sproutEmail()->mailers->getSettingsByMailerName($mailer->getId());
+				$record->setAttribute('settings', $mailer->prepSettings());
 
-				$settings->setAttributes($mailer->prepareSettings());
-
-				if ($settings->validate())
+				if ($record->validate())
 				{
-					$record->setAttribute('settings', $settings->getAttributes());
-
 					if ($record->save(false))
 					{
 						craft()->userSession->setNotice(Craft::t('Settings successfully saved.'));
 
-						$this->redirectToPostedUrl($settings);
+						$this->redirectToPostedUrl($record);
 					}
 				}
 			}
 		}
 
 		craft()->userSession->setError(Craft::t('Unable to save settings.'));
-		
+
 		craft()->urlManager->setRouteVariables(array(
 			'settings' => $settings
 		));
@@ -105,21 +97,5 @@ class SproutEmail_MailerController extends BaseController
 		$modal = sproutEmail()->mailers->getPrepareModal($mailer, $emailId, $campaignTypeId);
 
 		$this->returnJson($modal->getAttributes());
-	}
-
-	/**
-	 * Allows Sprout Email to officially register mailers already installed via Craft
-	 *
-	 * @note This is called onAfterInstall() and on sproutemail/settings/mailers [Refresh List]
-	 */
-	public function actionInstallMailers()
-	{
-		sproutEmail()->mailers->installMailers();
-
-		craft()->userSession->setNotice(Craft::t('Mailers refreshed successfully.'));
-
-		$url = UrlHelper::getCpUrl('sproutemail/settings/mailers');
-
-		$this->redirect($url);
 	}
 }

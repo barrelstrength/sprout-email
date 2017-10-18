@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -30,8 +31,8 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 			'fromName'              => array('type' => AttributeType::String, 'required' => false, 'minLength' => 2),
 			'fromEmail'             => array(AttributeType::String, 'required' => false),
 			'replyToEmail'          => array(AttributeType::String, 'required' => false),
-			'sent'                  => AttributeType::Bool,
 			'enableFileAttachments' => array(AttributeType::Bool, 'default' => false),
+			'listSettings'          => AttributeType::Mixed,
 
 			// @related
 			'fieldLayoutId'         => AttributeType::Number
@@ -181,5 +182,16 @@ class SproutEmail_NotificationEmailModel extends BaseElementModel
 	public function getRecipients($element = null)
 	{
 		return sproutEmail()->getRecipients($element, $this);
+	}
+
+	/**
+	 * Get the Notification Email Mailer
+	 *
+	 * @return mixed
+	 */
+	public function getMailer()
+	{
+		// All Notification Emails use the Default Mailer
+		return sproutEmail()->mailers->getMailerByName('defaultmailer');
 	}
 }

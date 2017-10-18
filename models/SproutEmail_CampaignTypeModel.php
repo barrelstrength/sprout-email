@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -37,8 +38,8 @@ class SproutEmail_CampaignTypeModel extends BaseModel
 			'name'              => AttributeType::String,
 			'handle'            => AttributeType::String,
 			'mailer'            => AttributeType::String,
-			'titleFormat'       => AttributeType::String,
-			'urlFormat'         => AttributeType::String,
+			'titleFormat'       => array(AttributeType::String, 'default' => null),
+			'urlFormat'         => array(AttributeType::String, 'default' => null),
 			'hasUrls'           => array(
 				AttributeType::Bool,
 				'default' => false,
@@ -56,7 +57,8 @@ class SproutEmail_CampaignTypeModel extends BaseModel
 
 			// @related
 			'fieldLayoutId'     => AttributeType::Number,
-			'emailId'           => AttributeType::Number
+			'emailId'           => AttributeType::Number,
+			'campaignEmails'    => AttributeType::Mixed
 		);
 	}
 
@@ -107,5 +109,10 @@ class SproutEmail_CampaignTypeModel extends BaseModel
 	public function setFields($fields)
 	{
 		$this->fields = $fields;
+	}
+
+	public function getMailer()
+	{
+		return sproutEmail()->mailers->getMailerByName($this->mailer);
 	}
 }

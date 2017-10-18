@@ -1,0 +1,45 @@
+{# Placeholder Sprout Modal #}
+<div id="sproutmodal" class="modal fitted hidden">
+
+	{# BEGIN Example template.
+	   All of this gets replaced by the mailer. #}
+	<div class="body">
+		<h1>{{ 'Campaign Snapshot'|t }}</h1>
+		<div id="content"></div>
+		<div class="spinner hidden"></div>
+	</div>
+
+	<div class="footer">
+		<div class="buttons left">
+			<button class="btn submit">{{ "Schedule Campaign"|t }}</button>
+			<button class="btn">{{ "Send Test"|t }}</button>
+		</div>
+		<div class="buttons right secondary-buttons">
+			<button id="close" class="btn">{{ "Cancel"|t }}</button>
+		</div>
+	</div>
+	{# END Example template #}
+
+</div>
+
+{# Placeholder Sprout Modal Content #}
+<div id="sproutmodal-error" class="hidden">
+	<div class="body">
+		<h1>{{ 'An error occurred'|t }}</h1>
+		<div class="innercontent"></div>
+		<div class="spinner hidden"></div>
+	</div>
+
+	<div class="footer">
+		<div class="buttons right secondary-buttons">
+			<button id="close" class="btn">{{ "Close"|t }}</button>
+		</div>
+	</div>
+</div>
+
+{# Placeholder Sprout Modal Loading #}
+<div id="sproutmodal-loading" class="hidden">
+	<div class="body">
+		<div class="spinner"></div>
+	</div>
+</div>
