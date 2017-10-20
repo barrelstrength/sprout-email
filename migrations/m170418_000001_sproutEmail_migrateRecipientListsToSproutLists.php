@@ -35,8 +35,11 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				$list         = new SproutLists_ListModel();
 				$list->name   = $recipientList['name'];
 				$list->handle = $recipientList['handle'];
+				$list->type   = 'subscriber';
 
-				sproutLists()->lists->saveList($list);
+				$listType = sproutLists()->lists->getListType($list->type);
+
+				$listType->saveList($list);
 
 				$listsByKey[$recipientList['id']]                 = $recipientList;
 				$listsByKey[$recipientList['id']]['newElementId'] = $list->id;
@@ -62,12 +65,17 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 			// Migrate Recipients to craft_sproutlists_subscriptions
 			foreach ($subscribers as $subscriber)
 			{
+				$listType = sproutLists()->lists->getListType($list->type);
+
 				$subscriberModel            = new SproutLists_SubscriberModel();
 				$subscriberModel->email     = $subscriber['email'];
 				$subscriberModel->firstName = $subscriber['firstName'];
 				$subscriberModel->lastName  = $subscriber['lastName'];
 
-				sproutLists()->subscribers->saveSubscriber($subscriberModel);
+				$list         = new SproutLists_ListModel();
+				$list->type   = 'subscriber';
+
+				$listType->saveSubscriber($subscriberModel);
 
 				$subscribersByKey[$subscriber['id']]                 = $subscriber;
 				$subscribersByKey[$subscriber['id']]['newElementId'] = $subscriberModel->id;
@@ -78,17 +86,21 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 			// Migrate Subscriptions to craft_sproutlists_subscriptions
 			foreach ($subscriptions as $subscription)
 			{
-				$subscriptionModel                  = new SproutLists_SubscriberModel();
-				$subscriptionModel->id              = $subscribersByKey[$subscription['recipientId']]['newElementId'];
-				$subscriptionModel->subscriberLists = array(
-					0 => $listsByKey[$subscription['recipientListId']]['newElementId']
-				);
+				$subscriptionModel             = new SproutLists_SubscriptionModel();
+				$subscriptionModel->listType   = 'subscriber';
+				$subscriptionModel->listHandle = $listsByKey[$subscription['recipientListId']]['handle'];
+				$subscriptionModel->listId     = $listsByKey[$subscription['recipientListId']]['newElementId'];
+				$subscriptionModel->subscriberId = $subscribersByKey[$subscription['recipientId']]['newElementId'];
+				$subscriptionModel->email      = $subscribersByKey[$subscription['recipientId']]['email'];
+				$subscriptionModel->elementId  = $listsByKey[$subscription['recipientListId']]['newElementId'];
 
-				sproutLists()->subscriptions->saveSubscriptions($subscriptionModel);
+				$listType = sproutLists()->lists->getListType($subscriptionModel->listType);
+
+				$result = $listType->subscribe($subscriptionModel);
+
+				// Update our Subscriber counts
+				$listType->updateTotalSubscribersCount();
 			}
-
-			// Update our Subscriber counts
-			sproutLists()->subscribers->updateTotalSubscribersCount();
 
 			// Since we already migrated listIds from sproutemail_campaigns_entries_recipientlists
 			// We will grab the old ids from the listSettings column and update those reference
