@@ -456,6 +456,7 @@ class SproutEmailService extends BaseApplicationComponent
 
 		$styleTags = array();
 
+		// Add placeholder style tags to avoid CSS brackets conflicting with Craft object syntax shorthand i.e. {title}
 		$htmlBody = $this->addPlaceholderStyleTags($emailModel->htmlBody, $styleTags);
 
 		// Some Twig code in our email fields may need us to decode
@@ -464,7 +465,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$emailModel->body = HtmlHelper::decode($emailModel->body);
 		$htmlBody         = HtmlHelper::decode($htmlBody);
 
-		// Process the results of the template s once more, to render any dynamic objects used in fields
+		// Process the results of the template sonce more, to render any dynamic objects used in fields
 		$emailModel->body     = sproutEmail()->renderObjectTemplateSafely($emailModel->body, $object);
 		$emailModel->htmlBody = sproutEmail()->renderObjectTemplateSafely($htmlBody, $object);
 
