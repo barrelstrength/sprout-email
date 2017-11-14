@@ -8,6 +8,8 @@ class SproutEmail_SentEmailModel extends BaseElementModel
 
 	protected $fields;
 
+	public $enableFileAttachments;
+
 	const ELEMENT_TYPE = 'SproutEmail_SentEmail';
 
 	const SENT   = "sent";
