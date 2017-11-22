@@ -660,6 +660,10 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			craft()->end();
 		}
 
+		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
+		$notificationEmail->setContentFromPost($fieldsLocation);
+
 		$email         = new EmailModel();
 		$template      = $notificationEmail->template;
 		$fileExtension = ($type != null && $type == 'text') ? 'txt' : 'html';
