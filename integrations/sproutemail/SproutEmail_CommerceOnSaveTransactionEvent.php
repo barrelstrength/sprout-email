@@ -89,7 +89,7 @@ class SproutEmail_CommerceOnSaveTransactionEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, Commerce_TransactionModel $model, array $params = array())
+	public function validateOptions($options, $model, array $params = array())
 	{
 		// This will ensure to trigger the event after the payment is made
 		if ($model->reference != null)

@@ -67,7 +67,7 @@ class SproutEmail_CommerceOnOrderCompleteEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, Commerce_OrderModel $order, array $params = array())
+	public function validateOptions($options, $order, array $params = array())
 	{
 		return true;
 	}

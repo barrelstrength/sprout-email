@@ -28,7 +28,7 @@ class SproutEmail_UserSessionLoginEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, UserModel $user, array $params = array())
+	public function validateOptions($options, $user, array $params = array())
 	{
 		SproutEmailPlugin::log(Craft::t("Sprout Email '" . $this->getTitle() . "' event has been triggered"));
 
