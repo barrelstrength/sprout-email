@@ -269,14 +269,17 @@ class SproutEmailService extends BaseApplicationComponent
 
 		// Make sure this is a Sprout Email Event
 		if (!isset($variables['email']) ||
-			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel')
+			(isset($variables['email']) &&
+				(is_object($variables['email']) &&
+					!get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel'))
 		)
 		{
 			return true;
 		}
 
 		$notificationEmail     = $variables['email'];
-		$enableFileAttachments = $notificationEmail->enableFileAttachments;
+		$enableFileAttachments = (isset($notificationEmail->enableFileAttachments))?
+			$notificationEmail->enableFileAttachments : false;
 
 		if (isset($variables['object']) && $enableFileAttachments)
 		{
