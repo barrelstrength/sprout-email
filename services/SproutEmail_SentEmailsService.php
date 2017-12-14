@@ -75,7 +75,7 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		// If we have info set, grab the custom info that's already prepared
 		// If we don't have info, we probably have an email sent by Craft so
 		// we can continue with our generic info table model
-		$infoTable = isset($variables['info']) ? $variables['info'] : new SproutEmail_SentEmailInfoTableModel();
+		$infoTable = new SproutEmail_SentEmailInfoTableModel();
 
 		// Prepare our info table settings for Campaigns
 		// -----------------------------------------------------------
