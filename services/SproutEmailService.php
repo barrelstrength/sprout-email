@@ -267,7 +267,7 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$variables = $event->params['variables'];
 
-		if ($this->isSproutEmailEvent($variables) === false)
+		if (!$this->isSproutEmailEvent($variables))
 		{
 			return true;
 		}
@@ -313,18 +313,17 @@ class SproutEmailService extends BaseApplicationComponent
 	 */
 	private function isSproutEmailEvent($variables)
 	{
-		$result = true;
-
-		if (!isset($variables['email']) ||
-			(isset($variables['email']) &&
-				(is_object($variables['email']) &&
-					!get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel'))
-		)
+		if (!isset($variables['email']))
 		{
-			$result = false;
+			return false;
 		}
 
-		return $result;
+		if (get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel')
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	private function attachAsset($entry, $field, $event)
