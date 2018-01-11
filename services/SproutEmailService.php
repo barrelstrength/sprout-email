@@ -267,16 +267,14 @@ class SproutEmailService extends BaseApplicationComponent
 	{
 		$variables = $event->params['variables'];
 
-		// Make sure this is a Sprout Email Event
-		if (!isset($variables['email']) ||
-			(isset($variables['email']) && !get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel')
-		)
+		if (!$this->isSproutEmailEvent($variables))
 		{
 			return true;
 		}
 
 		$notificationEmail     = $variables['email'];
-		$enableFileAttachments = $notificationEmail->enableFileAttachments;
+		$enableFileAttachments = (isset($notificationEmail->enableFileAttachments))?
+			$notificationEmail->enableFileAttachments : false;
 
 		if (isset($variables['object']) && $enableFileAttachments)
 		{
@@ -305,6 +303,27 @@ class SproutEmailService extends BaseApplicationComponent
 		{
 			$this->log('File attachments are currently not enabled for Sprout Email.');
 		}
+	}
+
+	/**
+	 * Ensure this is a Sprout Email Event
+	 * @param $variables
+	 *
+	 * @return bool
+	 */
+	private function isSproutEmailEvent($variables)
+	{
+		if (!isset($variables['email']))
+		{
+			return false;
+		}
+
+		if (get_class($variables['email']) === 'Craft\\SproutEmail_NotificationEmailModel')
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	private function attachAsset($entry, $field, $event)
