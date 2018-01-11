@@ -22,7 +22,7 @@ class SproutEmail_CampaignEmailSproutImportElementImporter extends BaseSproutImp
 		return false;
 	}
 
-	public function setModel($model, $settings)
+	public function setModel($model, $settings = array())
 	{
 		$model = parent::setModel($model, $settings);
 

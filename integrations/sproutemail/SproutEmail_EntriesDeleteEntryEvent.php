@@ -28,7 +28,7 @@ class SproutEmail_EntriesDeleteEntryEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, EntryModel $entry, array $params = array())
+	public function validateOptions($options, $entry, array $params = array())
 	{
 		SproutEmailPlugin::log(Craft::t("Sprout Email '" . $this->getTitle() . "' event has been triggered"));
 

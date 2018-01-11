@@ -55,7 +55,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, UserModel $user, array $params = array())
+	public function validateOptions($options, $user, array $params = array())
 	{
 		$isNewUser = isset($params['isNewUser']) && $params['isNewUser'];
 
