@@ -648,6 +648,8 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		if ($event)
 		{
+			$event->setOptions($notificationEmail->options);
+
 			$object = $event->getMockedParams();
 		}
 		else
