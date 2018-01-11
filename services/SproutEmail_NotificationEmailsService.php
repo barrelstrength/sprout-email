@@ -648,6 +648,8 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 		if ($event)
 		{
+			$event->setOptions($notificationEmail->options);
+
 			$object = $event->getMockedParams();
 		}
 		else
@@ -659,6 +661,10 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			// End the request
 			craft()->end();
 		}
+
+		$fieldsLocation = craft()->request->getParam('fieldsLocation', 'fields');
+
+		$notificationEmail->setContentFromPost($fieldsLocation);
 
 		$email         = new EmailModel();
 		$template      = $notificationEmail->template;

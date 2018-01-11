@@ -40,7 +40,7 @@ class SproutEmail_CampaignTypeSproutImportSettingsImporter extends BaseSproutImp
 		return sproutEmail()->campaignTypes->deleteCampaignType($id);
 	}
 
-	public function setModel($model, $settings)
+	public function setModel($model, $settings = array())
 	{
 		$model = parent::setModel($model, $settings);
 

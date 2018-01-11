@@ -56,7 +56,7 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	 *
 	 * @return bool
 	 */
-	public function validateOptions($options, EntryModel $entry, array $params = array())
+	public function validateOptions($options, $entry, array $params = array())
 	{
 		$isNewEntry = isset($params['isNewEntry']) && $params['isNewEntry'];
 
