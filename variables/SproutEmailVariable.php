@@ -211,4 +211,14 @@ class SproutEmailVariable
 	{
 		return sproutEmail()->getConfig('displayDateScheduled', false);
 	}
+
+    /**
+     * @param $template
+     *
+     * @return bool
+     */
+	public function doesSiteTemplateExist($template)
+    {
+        return sproutEmail()->doesSiteTemplateExist($template);
+    }
 }
