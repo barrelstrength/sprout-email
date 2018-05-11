@@ -57,6 +57,12 @@ class SproutEmail_MailerController extends BaseController
 		{
 			$record = sproutEmail()->mailers->getMailerRecordByName($mailer->getId());
 
+			// Create record for new mailer setting
+			if (!$record) {
+			    $record = new SproutEmail_MailerRecord();
+                $record->name = $mailer->getId();
+            }
+
 			if ($record)
 			{
 				$record->setAttribute('settings', $mailer->prepSettings());
