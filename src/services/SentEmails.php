@@ -103,6 +103,47 @@ class SentEmails extends Component
     }
 
     /**
+     * @param Event $event
+     *
+     * @throws \Throwable
+     */
+    public function handleLogSentEmailOnSendEmailError(Event $event)
+    {
+        $deliveryStatus = $event->params['deliveryStatus'] ?? null;
+        $message = $event->params['message'] ?? Craft::t('sprout-email', 'Unknown error');
+
+        if (isset($event->params['variables']['info'])) {
+            // Add a few additional variables to our info table
+            $event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+            $event->params['variables']['info']->message = $message;
+        } else {
+            // This is for logging errors before sproutEmail()->sendEmail is called.
+            $infoTable = new SentEmailInfoTable();
+
+            $infoTable->deliveryStatus = $deliveryStatus;
+            $infoTable->message = $message;
+
+            $event->params['variables']['info'] = $infoTable;
+        }
+
+        if (isset($event->params['variables']['info'])) {
+            // Add a few additional variables to our info table
+            $event->params['variables']['info']->deliveryStatus = $deliveryStatus;
+            $event->params['variables']['info']->message = $message;
+        } else {
+            // This is for logging errors before sproutEmail()->sendEmail is called.
+            $infoTable = new SentEmailInfoTable();
+
+            $infoTable->deliveryStatus = $deliveryStatus;
+            $infoTable->message = $message;
+
+            $event->params['variables']['info'] = $infoTable;
+        }
+
+        SproutEmail::$app->sentEmails->logSentEmail($event);
+    }
+
+    /**
      * Save email snapshot using the Sent Email Element Type
      *
      * @param Message            $message

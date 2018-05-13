@@ -68,7 +68,7 @@ class CampaignEmailController extends Controller
             $showPreviewBtn = true;
         }
 
-        $tabs = SproutEmail::$app->getFieldLayoutTabs($campaignEmail);
+        $tabs = $this->getFieldLayoutTabs($campaignEmail);
 
         return $this->renderTemplate('sprout-base-email/campaigns/_edit', [
             'campaignEmail' => $campaignEmail,
@@ -362,7 +362,7 @@ class CampaignEmailController extends Controller
             $errorMsg = Craft::t('sprout-email', 'Empty recipients.');
         }
 
-        $result = SproutEmail::$app->getValidAndInvalidRecipients($recipients);
+        $result = $this->getValidAndInvalidRecipients($recipients);
 
         $invalidRecipients = $result['invalid'];
         $emails = $result['emails'];
