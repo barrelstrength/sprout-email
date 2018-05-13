@@ -1,0 +1,46 @@
+{
+    "name": "barrelstrength/sprout-email",
+    "description": "Flexible, integrated email marketing and notifications.",
+    "version": "4.0.0",
+    "type": "craft-plugin",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "email",
+        "sprout email"
+    ],
+    "license": "Barrel Strength Design LLC",
+    "authors": [
+        {
+            "name": "Barrel Strength",
+            "homepage": "https://www.barrelstrengthdesign.com/"
+        }
+    ],
+    "support": {
+        "email": "sprout@barrelstrengthdesign.com",
+        "issues": "https://github.com/barrelstrength/sprout-email/issues?state=open",
+        "source": "https://github.com/barrelstrength/sprout-email",
+        "docs": "https://sprout.barrelstrengthdesign.com/craft-plugins/email/docs",
+        "rss": "https://github.com/barrelstrength/sprout-email/commits/v2.atom"
+    },
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1",
+        "barrelstrength/sprout-base": "^1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "barrelstrength\\sproutemail\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Sprout Email",
+        "handle": "sprout-email",
+        "developer": "Barrel Strength",
+        "developerUrl": "https://barrelstrengthdesign.com",
+        "documentationUrl": "https://sprout.barrelstrengthdesign.com/craft-plugins/email",
+        "changelogUrl": "https://raw.githubusercontent.com/BarrelStrength/sprout-email/master/CHANGELOG.md",
+        "downloadUrl": "https://github.com/BarrelStrength/sprout-email/archive/master.zip",
+        "class": "barrelstrength\\sproutemail\\SproutEmail"
+    }
+}
