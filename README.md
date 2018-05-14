@@ -1,37 +1,43 @@
-Have a blast: Sprout Email!
+# Sprout Email plugin for Craft CMS 3.x
 
-Here are some online resources you might find useful:
+Flexible, integrated email marketing and notifications.
 
+![Screenshot](resources/img/plugin-logo.png)
 
-Sprout Email Docs
-------------------------------------------------------------
-Code examples, tags, common questions:
-http://sprout.barrelstrengthdesign.com/craft-plugins/email
+## Requirements
 
+This plugin requires Craft CMS 3.0.0-beta.23 or later.
 
-Sprout Email Updates
-------------------------------------------------------------
-http://sprout.barrelstrengthdesign.com/craft-plugins/email/updates
+## Installation
 
+To install the plugin, follow these instructions.
 
-Sprout Email Translations
-------------------------------------------------------------
-A default translation file is provided on GitHub and can be modified 
-as needed for your language requirements.
-https://github.com/BarrelStrength/Sprout-Plugin-Translations
+1. Open your terminal and go to your Craft project:
 
+        cd /path/to/project
 
-Sprout Email Support
-------------------------------------------------------------
+2. Then tell Composer to load the plugin:
 
-Via Craft Stack Exchange: Tag your questions with `plugin-sproutemail`:
-https://craftcms.stackexchange.com/
+        composer require /sprout-email
 
-Via Email:
-Send us a note at: sprout@barrelstrengthdesign.com
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Sprout Email.
 
+## Sprout Email Overview
 
-Sprout Email License Terms
-------------------------------------------------------------
-Use of Sprout Email is subject to the license agreement available here:
-http://sprout.barrelstrengthdesign.com/license
+-Insert text here-
+
+## Configuring Sprout Email
+
+-Insert text here-
+
+## Using Sprout Email
+
+-Insert text here-
+
+## Sprout Email Roadmap
+
+Some things to do, and ideas for potential features:
+
+* Release it
+
+Brought to you by [Barrelstrength](https://barrelstrengthdesign.com)

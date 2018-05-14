@@ -1,0 +1,59 @@
+<?php
+
+namespace barrelstrength\sproutemail\services;
+
+use barrelstrength\sproutemail\models\SentEmailInfoTable;
+use barrelstrength\sproutemail\SproutEmail;
+use craft\base\Component;
+use Craft;
+use yii\base\Event;
+
+/**
+ * App Service
+ *
+ * All of your plugin’s business logic should go in services, including saving data,
+ * retrieving data, etc. They provide APIs that your controllers, template variables,
+ * and other plugins can interact with.
+ *
+ * https://craftcms.com/docs/plugins/services
+ *
+ * @author    Barrelstrength
+ * @package   SproutEmail
+ * @since     3
+ */
+class App extends Component
+{
+    /**
+     * @var Mailers
+     */
+    public $mailers;
+
+    /**
+     * @var CampaignTypes
+     */
+    public $campaignTypes;
+
+    /**
+     * @var CampaignEmails
+     */
+    public $campaignEmails;
+
+    /**
+     * @var SentEmails
+     */
+    public $sentEmails;
+
+    /**
+     * @var Utilities
+     */
+    public $utilities;
+
+    public function init()
+    {
+        $this->mailers = new Mailers();
+        $this->campaignTypes = new CampaignTypes();
+        $this->campaignEmails = new CampaignEmails();
+        $this->sentEmails = new SentEmails();
+        $this->utilities = Utilities::Instance();
+    }
+}
