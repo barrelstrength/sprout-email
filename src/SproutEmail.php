@@ -75,6 +75,11 @@ class SproutEmail extends Plugin
     public $schemaVersion = '4.0.0';
 
     /**
+     * @var string
+     */
+    public $minVersionRequired = '3.0.6';
+
+    /**
      * @throws \yii\base\InvalidConfigException
      */
     public function init()
