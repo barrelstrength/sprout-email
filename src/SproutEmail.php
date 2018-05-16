@@ -57,7 +57,7 @@ class SproutEmail extends Plugin
     /**
      * @var string
      */
-    public static $pluginId = 'sprout-email';
+    public static $pluginHandle = 'sprout-email';
 
     /**
      * @var bool
