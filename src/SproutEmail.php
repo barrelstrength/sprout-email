@@ -57,7 +57,7 @@ class SproutEmail extends Plugin
     /**
      * @var string
      */
-    public static $pluginId = 'sprout-email';
+    public static $pluginHandle = 'sprout-email';
 
     /**
      * @var bool
@@ -73,6 +73,11 @@ class SproutEmail extends Plugin
      * @var string
      */
     public $schemaVersion = '4.0.0';
+
+    /**
+     * @var string
+     */
+    public $minVersionRequired = '3.0.6';
 
     /**
      * @throws \yii\base\InvalidConfigException
