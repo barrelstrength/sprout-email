@@ -1,3 +1,8 @@
+{% extends "_layouts/basecp" %}
+
+{% set title  = 'Preview'|t %}
+
+{% block body %}
 <div class="sproutemail-sentemail-header">
 	<div class="btngroup sentemail-btngroup">
 		<button data-preview-target="html" class="btn active sentemail-btn preview-html-btn">{{ 'HTML'|t }}</button>
@@ -192,3 +197,4 @@ $(previewTargetClass).addClass('active');
 
 </style>
 
+{% endblock %}
