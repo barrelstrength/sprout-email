@@ -135,13 +135,8 @@ class SproutEmail extends Plugin
             SproutEmail::$app->sentEmails->handleLogSentEmailOnSendEmailError($event);
         });
 
-        Event::on(Mailers::class, Mailers::ON_SEND_EMAIL, function(RegisterSendEmailEvent $event) {
+        Event::on(BaseMailer::class, BaseMailer::EVENT_BEFORE_SEND, function(MailEvent $event) {
             SproutEmail::$app->sentEmails->logSentEmail($event);
-        });
-
-        Event::on(BaseMailer::class, BaseMailer::EVENT_AFTER_SEND, function(MailEvent $event) {
-            // @todo - update logSentEmail to work with Yii's MailEvent
-            //SproutEmail::$app->sentEmails->logSentEmail($event);
         });
     }
 

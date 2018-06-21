@@ -2,14 +2,14 @@
 
 namespace barrelstrength\sproutemail\services;
 
-use barrelstrength\sproutbase\app\email\models\Message;
+use craft\mail\Message;
 use barrelstrength\sproutemail\elements\SentEmail;
-use barrelstrength\sproutbase\app\email\events\RegisterSendEmailEvent;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
 use craft\base\Component;
 use craft\helpers\Json;
 use yii\base\Event;
 use Craft;
+use yii\mail\MailEvent;
 
 /**
  * Class SentEmails
@@ -23,15 +23,11 @@ class SentEmails extends Component
      *
      * @throws \Throwable
      */
-    public function logSentEmail(RegisterSendEmailEvent $event)
+    public function logSentEmail(MailEvent $event)
     {
         // Prepare some variables
         // -----------------------------------------------------------
-        /**
-         * @var $transport \Swift_SmtpTransport
-         */
-        $variables = $event->variables;
-        $transport = $event->mailer->getTransport();
+
         $message = $event->message;
 
         $from = $message->getFrom();
@@ -49,20 +45,27 @@ class SentEmails extends Component
         // Sender Info
         $infoTable->senderName = $fromName;
         $infoTable->senderEmail = $fromEmail;
-        $infoTable->ipAddress = Craft::$app->getRequest()->getUserIP();
-        $infoTable->userAgent = Craft::$app->getRequest()->getUserAgent();
 
-        // Email Settings
-        $infoTable->hostName = ($transport->getHost() != null) ? $transport->getHost() : '–';
-        $infoTable->port = ($transport->getPort() != null) ? $transport->getPort() : '–';
-        $infoTable->timeout = ($transport->getTimeout() != null) ? $transport->getTimeout() : '–';
+        /**
+         * @var $transport \Swift_SmtpTransport
+         */
+        $mailer = $event->message->mailer ?? null;
+        if ($mailer) {
+            $transport = $mailer->getTransport();
+
+            // Email Settings
+            $infoTable->hostName = ($transport->getHost() != null) ? $transport->getHost() : '–';
+            $infoTable->port = ($transport->getPort() != null) ? $transport->getPort() : '–';
+            $infoTable->timeout = ($transport->getTimeout() != null) ? $transport->getTimeout() : '–';
+        }
+
 
         // Override some settings if this is an email sent by Craft
         // -----------------------------------------------------------
 
         $infoTable = $this->updateInfoTableWithCraftInfo($infoTable);
 
-        $this->saveSentEmail($message, $infoTable, $variables);
+        $this->saveSentEmail($message, $infoTable);
     }
 
     /**
@@ -92,9 +95,6 @@ class SentEmails extends Component
         // Sender Info
         $infoTable->senderName = $emailModel->fromName;
         $infoTable->senderEmail = $emailModel->fromEmail;
-
-        $infoTable->ipAddress = Craft::$app->getRequest()->getUserIP();
-        $infoTable->userAgent = Craft::$app->getRequest()->getUserAgent();
 
         // Email Settings
         $infoTable->mailer = ucwords($campaign->mailer);
@@ -153,7 +153,7 @@ class SentEmails extends Component
      * @return SentEmail|bool
      * @throws \Throwable
      */
-    public function saveSentEmail(Message $message, SentEmailInfoTable $infoTable, array $variables = [])
+    public function saveSentEmail(Message $message, SentEmailInfoTable $infoTable)
     {
         $from = $message->getFrom();
         $fromEmail = ($res = array_keys($from)) ? $res[0] : '';
@@ -191,8 +191,15 @@ class SentEmails extends Component
         $sentEmail->fromEmail = $fromEmail;
         $sentEmail->fromName = $fromName;
         $sentEmail->toEmail = $toEmail;
-        $sentEmail->body = $message->renderedBody;
-        $sentEmail->htmlBody = $message->renderedHtmlBody;
+
+        $children = $message->getSwiftMessage()->getChildren();
+
+        $body = '';
+        if (!empty($children)) {
+            $body = $children[0]->getBody();
+        }
+
+        $sentEmail->body = $body;
 
         if ($infoTable->deliveryStatus == 'failed') {
             $sentEmail->status = 'failed';
@@ -202,11 +209,6 @@ class SentEmails extends Component
         $infoTable = $infoTable->getAttributes();
         unset($infoTable['deliveryStatus']);
         $sentEmail->info = Json::encode($infoTable);
-
-        // todo: why do we need to set this to blank?
-        // Where are Global Sets and other Element Types handling this? They do not
-        // add a value for slug in the craft_elements table
-        $sentEmail->slug = '';
 
         try {
             if (Craft::$app->getElements()->saveElement($sentEmail)) {

@@ -22,8 +22,6 @@ class SentEmailInfoTable extends Model
     public $source;
     public $sourceVersion;
     public $craftVersion;
-    public $ipAddress;
-    public $userAgent;
     // Email Settings
     public $mailer;
     public $protocol;
