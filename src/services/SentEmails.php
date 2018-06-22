@@ -10,7 +10,7 @@ use craft\helpers\Json;
 use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
-
+use barrelstrength\sproutemail\SproutEmail;
 /**
  * Class SentEmails
  *
@@ -19,7 +19,7 @@ use yii\mail\MailEvent;
 class SentEmails extends Component
 {
     /**
-     * @param RegisterSendEmailEvent $event
+     * @param MailEvent $event
      *
      * @throws \Throwable
      */
