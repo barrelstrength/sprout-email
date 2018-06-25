@@ -29,7 +29,8 @@ class SentEmailController extends Controller
         $emailId   = Craft::$app->getRequest()->getBodyParam('emailId');
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
 
-        $content = Craft::$app->getView()->renderTemplate('sproutemail/_modals/sentemails/prepareResendEmail', array(
+        $content = Craft::$app->getView()->renderTemplate(
+            'sprout-base-email/_modals/sentemails/prepare-resend-email', array(
             'sentEmail' => $sentEmail
         ));
 
@@ -37,7 +38,7 @@ class SentEmailController extends Controller
         $response->content = $content;
         $response->success = true;
 
-        $this->asJson($response->getAttributes());
+        return $this->asJson($response->getAttributes());
     }
 
     /**
@@ -154,7 +155,7 @@ class SentEmailController extends Controller
                         )
                     );
 
-                    $this->asJson($response);
+                    return $this->asJson($response);
                 }
             }
         }
@@ -194,6 +195,6 @@ class SentEmailController extends Controller
             'html' => $html
         );
 
-        $this->asJson(Json::encode($response));
+        return $this->asJson(Json::encode($response));
     }
 }
