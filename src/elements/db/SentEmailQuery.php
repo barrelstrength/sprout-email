@@ -26,6 +26,8 @@ class SentEmailQuery extends ElementQuery
             'sproutemail_sentemail.dateUpdated'
         ]);
 
+        $this->query->orderBy('sproutemail_sentemail.dateCreated DESC');
+
         return parent::beforePrepare();
     }
 }

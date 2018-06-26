@@ -85,7 +85,7 @@ class SentEmailController extends Controller
                     )
                 );
 
-                $this->asJson($response);
+                return $this->asJson($response);
             }
         }
         else
@@ -104,7 +104,7 @@ class SentEmailController extends Controller
                 {
                     $recipientEmail = $validRecipient->email;
 
-                    $email            = new Message();
+                    $email = new Message();
                     $email->setSubject($sentEmail->title);
                     $email->setFrom([$sentEmail->fromEmail => $sentEmail->fromName]);
                     $email->setTo($recipientEmail);
@@ -169,7 +169,7 @@ class SentEmailController extends Controller
                 )
             );
 
-            $this->asJson($response);
+           return $this->asJson($response);
         }
     }
 

@@ -199,7 +199,18 @@ class SentEmails extends Component
             $body = $children[0]->getBody();
         }
 
-        $sentEmail->body = $body;
+        if ($children) {
+            foreach ($children as $child) {
+                if ($child->getContentType() == 'text/html') {
+                    $sentEmail->htmlBody = $child->getBody();
+                }
+
+                if ($child->getContentType() == 'text/plain') {
+                    $sentEmail->body = $body;
+                }
+            }
+        }
+
 
         if ($infoTable->deliveryStatus == 'failed') {
             $sentEmail->status = 'failed';
