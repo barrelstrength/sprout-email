@@ -110,4 +110,9 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     {
         return $this->sendCampaignEmail($campaignEmail, $campaignType);
     }
+
+    public function getRecipientsHtml($campaignEmail)
+    {
+        return "";
+    }
 }

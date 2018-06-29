@@ -51,11 +51,10 @@ class MailerController extends Controller
     {
         $this->requirePostRequest();
 
-        $mailer = Craft::$app->getRequest()->getBodyParam('mailer');
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
         $campaignTypeId = Craft::$app->getRequest()->getBodyParam('campaignTypeId');
 
-        $modal = SproutEmail::$app->mailers->getPrepareModal($mailer, $emailId, $campaignTypeId);
+        $modal = SproutEmail::$app->mailers->getPrepareModal($emailId, $campaignTypeId);
 
         return $this->asJson($modal->getAttributes());
     }

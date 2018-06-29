@@ -452,7 +452,7 @@ class CampaignEmail extends Element
         Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         if (empty($campaignType->template)) {
-            $template = SproutBase::$app->sproutEmail->getEmailTemplates();
+            $template = SproutBase::$app->sproutEmail->getEmailTemplate();
         }
 
         $html = $this->renderSiteTemplateIfExists($template, $params);

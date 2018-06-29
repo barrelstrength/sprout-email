@@ -47,9 +47,9 @@ class Mailers extends Component
      * @return Response
      * @throws \Exception
      */
-    public function getPrepareModal($mailerName, $emailId, $campaignTypeId)
+    public function getPrepareModal($emailId, $campaignTypeId)
     {
-        $mailer = SproutBase::$app->mailers->getMailerByName($mailerName);
+
 
         if (!$mailer) {
             throw new Exception(Craft::t('sprout-email', 'No mailer with id {id} was found.', ['id' => $mailerName]));
@@ -60,6 +60,9 @@ class Mailers extends Component
          */
         $campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId);
         $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignTypeId);
+
+        $mailer = $campaignEmail->getMailer();
+
         $response = new Response();
 
         if ($campaignEmail && $campaignType) {
