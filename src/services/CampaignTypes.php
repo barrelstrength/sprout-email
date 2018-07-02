@@ -169,6 +169,7 @@ class CampaignTypes extends Component
         $campaignTypeRecord->hasUrls = $campaignType->hasUrls;
         $campaignTypeRecord->hasAdvancedTitles = $campaignType->hasAdvancedTitles;
         $campaignTypeRecord->mailer = $campaignType->mailer;
+        $campaignTypeRecord->emailTemplateId = $campaignType->emailTemplateId;
 
         $campaignTypeRecord->urlFormat = $campaignType->urlFormat;
         $campaignTypeRecord->template = $campaignType->template;

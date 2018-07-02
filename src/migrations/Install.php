@@ -49,6 +49,7 @@ class Install extends Migration
                 'handle' => $this->string()->notNull(),
                 'type' => $this->string()->notNull(),
                 'mailer' => $this->string()->notNull(),
+                'emailTemplateId' => $this->string(),
                 'titleFormat' => $this->string(),
                 'urlFormat' => $this->string(),
                 'hasUrls' => $this->boolean(),

@@ -83,6 +83,7 @@ class CampaignType extends Model
      */
     public $emailId;
 
+    public $emailTemplateId;
     /**
      * @var
      */
