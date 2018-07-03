@@ -54,8 +54,6 @@ class CampaignEmails extends Component
             $campaignEmailRecord->subjectLine = $campaignEmail->subjectLine;
         }
 
-        $campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
-
         $mailer = $campaignType->getMailer();
 
         if ($mailer) {
@@ -64,7 +62,11 @@ class CampaignEmails extends Component
 
             // Set the prepped settings on the FieldRecord, FieldModel, and the field type
             $campaignEmailRecord->listSettings = $preppedSettings;
+
+            $campaignEmail = $mailer->beforeValidate($campaignEmail);
         }
+
+        $campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
 
         $campaignEmailRecord->validate();
 

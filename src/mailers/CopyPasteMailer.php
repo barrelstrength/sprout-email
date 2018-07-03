@@ -10,6 +10,7 @@ use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutbase\app\email\models\Response;
 use Craft;
+use craft\base\Element;
 
 class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
 {
@@ -114,5 +115,23 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     public function getRecipientsHtml($campaignEmail)
     {
         return "";
+    }
+
+    /**
+     * Override campaign email validation when saving a new campaign email
+     *
+     * @param Element $email
+     *
+     * @return Element
+     */
+    public function beforeValidate(Element $email)
+    {
+        $user = Craft::$app->user->getIdentity();
+
+        $email->fromName = $user->username;
+        $email->fromEmail = $user->email;
+        $email->replyToEmail = $user->email;
+
+        return $email;
     }
 }

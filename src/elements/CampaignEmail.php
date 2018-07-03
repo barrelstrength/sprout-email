@@ -98,6 +98,15 @@ class CampaignEmail extends Element
     public $saveAsNew;
 
     /**
+     * The default email message.
+     *
+     * This field is only visible when no Email Notification Field Layout exists. Once a Field Layout exists, this field will no longer appear in the interface.
+     *
+     * @var string
+     */
+    public $defaultBody;
+
+    /**
      * @var string
      */
     const READY = 'ready';
@@ -268,12 +277,12 @@ class CampaignEmail extends Element
         $attributes = [
             'subjectLine' => ['label' => Craft::t('sprout-email', 'Subject')],
             'contentCheck' => ['label' => Craft::t('sprout-email', 'Content')],
-            'recipientsCheck' => ['label' => Craft::t('sprout-email', 'Recipients')],
-            'dateCreated' => ['label' => Craft::t('sprout-email', 'Date Created')],
-            'dateSent' => ['label' => Craft::t('sprout-email', 'Date Sent')],
-            'send' => ['label' => Craft::t('sprout-email', 'Send')],
-            'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
-            'link' => ['label' => Craft::t('sprout-email', 'Link'), 'icon' => 'world']
+          //  'recipientsCheck' => ['label' => Craft::t('sprout-email', 'Recipients')],
+           // 'dateCreated' => ['label' => Craft::t('sprout-email', 'Date Created')],
+          //  'dateSent' => ['label' => Craft::t('sprout-email', 'Date Sent')],
+           // 'send' => ['label' => Craft::t('sprout-email', 'Send')],
+           // 'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
+           // 'link' => ['label' => Craft::t('sprout-email', 'Link'), 'icon' => 'world']
         ];
 
         return $attributes;
@@ -434,7 +443,8 @@ class CampaignEmail extends Element
      */
     public function isContentReady(): bool
     {
-        $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($this->campaignTypeId);
+
+        $campaignType = $this->getCampaignType();
 
         // todo: update recipient info to be dynamic
         $params = [
@@ -447,19 +457,22 @@ class CampaignEmail extends Element
             ]
         ];
 
-        $template = $campaignType->template;
+        $emailTemplatePath = SproutBase::$app->sproutEmail->getEmailTemplate($campaignType);
 
-        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_SITE);
+        $view = Craft::$app->getView();
 
-        if (empty($campaignType->template)) {
-            $template = SproutBase::$app->sproutEmail->getEmailTemplate();
-        }
+        $view->setTemplatesPath($emailTemplatePath);
 
-        $html = $this->renderSiteTemplateIfExists($template, $params);
+        $htmlEmailTemplate = 'email.html';
 
-        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
+        $view->setTemplatesPath($emailTemplatePath);
 
-        return !($html == null);
+        $htmlBody = $this->renderSiteTemplateIfExists($htmlEmailTemplate, [
+            'email' => $this,
+            'object' => $params
+        ]);
+
+        return !($htmlBody == null);
     }
 
     /**
@@ -554,6 +567,11 @@ class CampaignEmail extends Element
         $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
         return $campaignType->getMailer();
+    }
+
+    public function getCampaignType()
+    {
+        return SproutEmail::$app->campaignTypes->getCampaignTypeById($this->campaignTypeId);
     }
 
     /**

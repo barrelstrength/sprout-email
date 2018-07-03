@@ -27,6 +27,7 @@ class Install extends Migration
                 'campaignTypeId' => $this->integer()->notNull(),
                 'recipients' => $this->text(),
                 'emailSettings' => $this->text(),
+                'defaultBody' => $this->text(),
                 'listSettings' => $this->text(),
                 'fromName' => $this->string(),
                 'fromEmail' => $this->string(),
