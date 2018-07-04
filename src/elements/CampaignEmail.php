@@ -277,12 +277,12 @@ class CampaignEmail extends Element
         $attributes = [
             'subjectLine' => ['label' => Craft::t('sprout-email', 'Subject')],
             'contentCheck' => ['label' => Craft::t('sprout-email', 'Content')],
-          //  'recipientsCheck' => ['label' => Craft::t('sprout-email', 'Recipients')],
-           // 'dateCreated' => ['label' => Craft::t('sprout-email', 'Date Created')],
-          //  'dateSent' => ['label' => Craft::t('sprout-email', 'Date Sent')],
-           // 'send' => ['label' => Craft::t('sprout-email', 'Send')],
-           // 'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
-           // 'link' => ['label' => Craft::t('sprout-email', 'Link'), 'icon' => 'world']
+            'recipientsCheck' => ['label' => Craft::t('sprout-email', 'Recipients')],
+            'dateCreated' => ['label' => Craft::t('sprout-email', 'Date Created')],
+            'dateSent' => ['label' => Craft::t('sprout-email', 'Date Sent')],
+            'send' => ['label' => Craft::t('sprout-email', 'Send')],
+            'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
+            'link' => ['label' => Craft::t('sprout-email', 'Link'), 'icon' => 'world']
         ];
 
         return $attributes;
@@ -334,6 +334,7 @@ class CampaignEmail extends Element
         }
 
         $record->subjectLine = $this->subjectLine;
+        $record->defaultBody = $this->defaultBody;
         $record->campaignTypeId = $this->campaignTypeId;
         $record->recipients = $this->recipients;
         $record->emailSettings = $this->emailSettings;
@@ -457,22 +458,9 @@ class CampaignEmail extends Element
             ]
         ];
 
-        $emailTemplatePath = SproutBase::$app->sproutEmail->getEmailTemplate($campaignType);
+        $content = $this->getHtmlBody($this, $params, $campaignType);
 
-        $view = Craft::$app->getView();
-
-        $view->setTemplatesPath($emailTemplatePath);
-
-        $htmlEmailTemplate = 'email.html';
-
-        $view->setTemplatesPath($emailTemplatePath);
-
-        $htmlBody = $this->renderSiteTemplateIfExists($htmlEmailTemplate, [
-            'email' => $this,
-            'object' => $params
-        ]);
-
-        return !($htmlBody == null);
+        return !($content['html'] == null);
     }
 
     /**

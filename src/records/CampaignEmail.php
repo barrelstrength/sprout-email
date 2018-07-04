@@ -21,6 +21,7 @@ use yii\db\ActiveQueryInterface;
  * @property $enableFileAttachments bool
  * @property $dateScheduled         DateTime
  * @property $dateSent              DateTime
+ * @property $defaultBody              DateTime
  */
 class CampaignEmail extends ActiveRecord
 {

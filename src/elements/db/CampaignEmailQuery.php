@@ -23,6 +23,7 @@ class CampaignEmailQuery extends ElementQuery
             'sproutemail_campaignemails.campaignTypeId',
             'sproutemail_campaignemails.recipients',
             'sproutemail_campaignemails.emailSettings',
+            'sproutemail_campaignemails.defaultBody',
             'sproutemail_campaignemails.listSettings',
             'sproutemail_campaignemails.fromName',
             'sproutemail_campaignemails.fromEmail',

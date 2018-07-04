@@ -136,9 +136,9 @@ class CampaignEmails extends Component
     public function showCampaignEmail($email, $fileExtension = 'html')
     {
         if ($fileExtension == 'txt') {
-            $output = $email->body;
+            $output = $email['body'];
         } else {
-            $output = $email->htmlBody;
+            $output = $email['html'];
         }
 
         // Output it into a buffer, in case TasksService wants to close the connection prematurely

@@ -84,16 +84,15 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
                 'campaignType' => $campaignType
             ];
 
-            $html = $this->renderSiteTemplateIfExists($campaignType->template, $variables);
-            $text = $this->renderSiteTemplateIfExists($campaignType->template.'.txt', $variables);
+            $content = $this->getHtmlBody($campaignEmail, $variables, $campaignType);
 
             $response = new Response();
             $response->success = true;
             $response->content = Craft::$app->getView()->renderPageTemplate('sprout-base-email/_components/mailers/copypaste/schedulecampaignemail',
                 [
                     'email' => $campaignEmail,
-                    'html' => trim($html),
-                    'text' => trim($text),
+                    'html' => trim($content['html']),
+                    'text' => trim($content['body']),
                 ]);
 
             return $response;

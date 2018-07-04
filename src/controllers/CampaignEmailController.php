@@ -153,24 +153,7 @@ class CampaignEmailController extends Controller
 
         if ($campaignEmail && $campaignType) {
             try {
-                Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
-                if (empty($campaignType->template)) {
-                    $campaignType->template = SproutBase::$app->sproutEmail->getEmailTemplates();
-                }
-
                 $response = SproutEmail::$app->mailers->sendCampaignEmail($campaignEmail, $campaignType);
-
-                Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-
-                if ($response instanceof Response) {
-
-                    $response->content = Craft::$app->getView()->renderTemplate('sprout-base-email/_modals/response', [
-                        'email' => $campaignEmail,
-                        'success' => $response->success,
-                        'message' => $response->message
-                    ]);
-                }
 
                 if ($response instanceof Response) {
                     if ($response->success == true) {
@@ -300,12 +283,12 @@ class CampaignEmailController extends Controller
 
     /**
      * Renders the Shared Campaign Email
-     *
      * @param null $emailId
      * @param null $type
      *
+     * @throws Exception
      * @throws \HttpException
-     * @throws \yii\base\Exception
+     * @throws \ReflectionException
      * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
@@ -316,15 +299,16 @@ class CampaignEmailController extends Controller
         if ($campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId)) {
             $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
-            $object = null;
-            $template = $campaignType->template;
+            $params = [
+                'email' => $campaignEmail,
+                'campaignType' => $campaignType
+            ];
+
             $extension = ($type != null && $type == 'text') ? 'txt' : 'html';
 
-            // @todo - why is this calling a different method to render emails and build the message than anywhere else in the Campaigns code?
-            // Either we need to make this method more generic or refactor it to use what other Campaign stuff is using.
-            $message = SproutBase::$app->notifications->getNotificationEmailMessage($template, $campaignEmail, $object);
+            $content = $this->getHtmlBody($campaignEmail, $params, $campaignType);
 
-            SproutEmail::$app->campaignEmails->showCampaignEmail($message, $extension);
+            SproutEmail::$app->campaignEmails->showCampaignEmail($content, $extension);
         }
 
         throw new \HttpException(404);
@@ -479,7 +463,7 @@ class CampaignEmailController extends Controller
         ];
 
         // Create the token and redirect to the entry URL with the token in place
-        $token = Craft::$app->getTokens()->createToken(['sprout-base-email/campaign-email/view-shared-campaign-email', $params]);
+        $token = Craft::$app->getTokens()->createToken(['sprout-email/campaign-email/view-shared-campaign-email', $params]);
 
         $emailUrl = '';
         if (!empty($campaignEmail->getUrl())) {
@@ -549,6 +533,7 @@ class CampaignEmailController extends Controller
         $campaignEmail->replyToEmail = Craft::$app->getRequest()->getBodyParam('sproutEmail.replyToEmail');
         $campaignEmail->subjectLine = Craft::$app->getRequest()->getBodyParam('subjectLine');
         $campaignEmail->dateScheduled = Craft::$app->getRequest()->getBodyParam('dateScheduled');
+        $campaignEmail->defaultBody = Craft::$app->getRequest()->getBodyParam('defaultBody');
 
         if (Craft::$app->getRequest()->getBodyParam('sproutEmail.recipients') != null) {
             $campaignEmail->recipients = Craft::$app->request->getBodyParam('sproutEmail.recipients');
