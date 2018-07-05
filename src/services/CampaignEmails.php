@@ -8,6 +8,7 @@ use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use craft\base\Component;
 use Craft;
 use yii\base\Exception;
+use yii\mail\MailEvent;
 
 /**
  * Class CampaignEmails
@@ -148,5 +149,11 @@ class CampaignEmails extends Component
 
         // End the request
         Craft::$app->end();
+    }
+
+    public function afterSend($message)
+    {
+        $event = new MailEvent(['message' => $message, 'isSuccessful' => true]);
+        $this->trigger(self::EVENT_SEND_SPROUTEMAIL, $event);
     }
 }

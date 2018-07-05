@@ -49,12 +49,6 @@ class Mailers extends Component
      */
     public function getPrepareModal($emailId, $campaignTypeId)
     {
-
-
-        if (!$mailer) {
-            throw new Exception(Craft::t('sprout-email', 'No mailer with id {id} was found.', ['id' => $mailerName]));
-        }
-
         /**
          * @var $campaignEmail CampaignEmail
          */

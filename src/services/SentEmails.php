@@ -31,8 +31,12 @@ class SentEmails extends Component
         $message = $event->message;
 
         $from = $message->getFrom();
-        $fromEmail = ($res = array_keys($from)) ? $res[0] : '';
-        $fromName = ($res = array_values($from)) ? $res[0] : '';
+        $fromEmail = '';
+        $fromName = '';
+        if ($from) {
+            $fromEmail = ($res = array_keys($from)) ? $res[0] : '';
+            $fromName = ($res = array_values($from)) ? $res[0] : '';
+        }
 
         // If we have info set, grab the custom info that's already prepared
         // If we don't have info, we probably have an email sent by Craft so
@@ -156,11 +160,18 @@ class SentEmails extends Component
     public function saveSentEmail(Message $message, SentEmailInfoTable $infoTable)
     {
         $from = $message->getFrom();
-        $fromEmail = ($res = array_keys($from)) ? $res[0] : '';
-        $fromName = ($res = array_values($from)) ? $res[0] : '';
+        $fromEmail = '';
+        $fromName = '';
+        if ($from) {
+            $fromEmail = ($res = array_keys($from)) ? $res[0] : '';
+            $fromName = ($res = array_values($from)) ? $res[0] : '';
+        }
 
-        $to = $message->getTo();
-        $toEmail = ($res = array_keys($to)) ? $res[0] : '';
+        $toEmail = '';
+        if ($toEmail) {
+            $to = $message->getTo();
+            $toEmail = ($res = array_keys($to)) ? $res[0] : '';
+        }
 
         // Make sure we should be saving Sent Emails
         // -----------------------------------------------------------

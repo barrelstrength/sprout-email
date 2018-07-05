@@ -13,8 +13,6 @@ namespace barrelstrength\sproutemail;
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\app\email\events\RegisterMailersEvent;
 use barrelstrength\sproutbase\app\email\events\NotificationEmailEvent;
-use barrelstrength\sproutbase\app\email\events\RegisterSendEmailEvent;
-
 use barrelstrength\sproutbase\app\email\services\NotificationEmailEvents;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
@@ -22,10 +20,10 @@ use barrelstrength\sproutemail\events\notificationevents\Manual;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
 use barrelstrength\sproutemail\mailers\CopyPasteMailer;
-
 use barrelstrength\sproutemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
 use barrelstrength\sproutbase\app\email\services\Mailers;
+use barrelstrength\sproutemail\services\CampaignEmails;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -135,7 +133,11 @@ class SproutEmail extends Plugin
             SproutEmail::$app->sentEmails->handleLogSentEmailOnSendEmailError($event);
         });
 
-        Event::on(BaseMailer::class, BaseMailer::EVENT_BEFORE_SEND, function(MailEvent $event) {
+        Event::on(BaseMailer::class, BaseMailer::EVENT_AFTER_SEND, function(MailEvent $event) {
+            SproutEmail::$app->sentEmails->logSentEmail($event);
+        });
+
+        Event::on(CampaignEmails::class, CampaignEmails::EVENT_SEND_SPROUTEMAIL, function(MailEvent $event) {
             SproutEmail::$app->sentEmails->logSentEmail($event);
         });
     }

@@ -4,12 +4,9 @@ namespace barrelstrength\sproutemail\controllers;
 
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
-use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
-use barrelstrength\sproutemail\events\RegisterSendSproutEmailEvent;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\models\CampaignType;
-use barrelstrength\sproutemail\services\CampaignEmails;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
@@ -18,6 +15,7 @@ use craft\web\Controller;
 use Craft;
 use craft\web\View;
 use yii\base\Exception;
+use yii\mail\MailEvent;
 
 class CampaignEmailController extends Controller
 {
@@ -158,13 +156,7 @@ class CampaignEmailController extends Controller
                 if ($response instanceof Response) {
                     if ($response->success == true) {
                         if ($response->emailModel != null) {
-                            $emailModel = $response->emailModel;
-
-                            $this->trigger(CampaignEmails::EVENT_SEND_SPROUTEMAIL, new RegisterSendSproutEmailEvent([
-                                'campaignEmail' => $campaignEmail,
-                                'emailModel' => $emailModel,
-                                'campaign' => $campaignType
-                            ]));
+                            SproutEmail::$app->campaignEmails->afterSend($response->emailModel);
                         }
                     }
 
@@ -376,12 +368,6 @@ class CampaignEmailController extends Controller
 
             $response = null;
 
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
-            if (empty($campaignType->template)) {
-                $campaignType->template = SproutBase::$app->sproutEmail->getEmailTemplates();
-            }
-
             if ($mailer) {
                 $response = $mailer->sendTestCampaignEmail($campaignEmail, $campaignType, $emails);
             }
@@ -397,6 +383,9 @@ class CampaignEmailController extends Controller
                 ]);
 
                 if ($response->success == true) {
+
+                    SproutEmail::$app->campaignEmails->afterSend($response->emailModel);
+
                     return $this->asJson($response);
                 }
             }
