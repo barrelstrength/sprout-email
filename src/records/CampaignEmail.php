@@ -9,18 +9,18 @@ use yii\db\ActiveQueryInterface;
 /**
  * Class CampaignEmail
  *
- * @property $id                    bool
- * @property $subjectLine           string
- * @property $campaignTypeId        bool
- * @property $recipients            string
- * @property $emailSettings         string
- * @property $listSettings          string
- * @property $fromName              string
- * @property $fromEmail             string
- * @property $replyToEmail          bool
- * @property $enableFileAttachments bool
- * @property $dateScheduled         DateTime
- * @property $dateSent              DateTime
+ * @property $id                       bool
+ * @property $subjectLine              string
+ * @property $campaignTypeId           bool
+ * @property $recipients               string
+ * @property $emailSettings            string
+ * @property $listSettings             string
+ * @property $fromName                 string
+ * @property $fromEmail                string
+ * @property $replyToEmail             bool
+ * @property $enableFileAttachments    bool
+ * @property $dateScheduled            DateTime
+ * @property $dateSent                 DateTime
  * @property $defaultBody              DateTime
  */
 class CampaignEmail extends ActiveRecord

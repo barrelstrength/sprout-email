@@ -18,7 +18,7 @@ use yii\base\Exception;
 class CampaignEmailController extends Controller
 {
     use EmailTemplateTrait;
-    
+
     /**
      * @var CampaignType
      */

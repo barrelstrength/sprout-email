@@ -84,8 +84,7 @@ class EntriesDelete extends NotificationEvent
     {
         $event = $this->event ?? null;
 
-        if (!$event)
-        {
+        if (!$event) {
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
 

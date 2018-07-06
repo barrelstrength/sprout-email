@@ -104,13 +104,17 @@ class EntriesSave extends NotificationEvent
     {
         $rules = parent::rules();
 
-        $rules[] = ['whenNew', 'required', 'when' => function() {
-            return $this->whenUpdated == false;
-        }];
+        $rules[] = [
+            'whenNew', 'required', 'when' => function() {
+                return $this->whenUpdated == false;
+            }
+        ];
 
-        $rules[] = ['whenUpdated', 'required', 'when' => function() {
-            return $this->whenNew == false;
-        }];
+        $rules[] = [
+            'whenUpdated', 'required', 'when' => function() {
+                return $this->whenNew == false;
+            }
+        ];
 
         $rules[] = [['whenNew', 'whenUpdated'], 'validateWhenTriggers'];
         $rules[] = [['event'], 'validateEvent'];
@@ -132,8 +136,7 @@ class EntriesSave extends NotificationEvent
         $matchesWhenNew = $this->whenNew && $isNewEntry ?? false;
         $matchesWhenUpdated = $this->whenUpdated && !$isNewEntry ?? false;
 
-        if (!$matchesWhenNew && !$matchesWhenUpdated)
-        {
+        if (!$matchesWhenNew && !$matchesWhenUpdated) {
             $this->addError('event', Craft::t('sprout-email', 'When an Entry is saved Event does not match any scenarios.'));
         }
 
@@ -152,8 +155,7 @@ class EntriesSave extends NotificationEvent
     {
         $event = $this->event ?? null;
 
-        if (!$event)
-        {
+        if (!$event) {
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
 

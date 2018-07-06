@@ -112,13 +112,17 @@ class UsersSave extends NotificationEvent
     {
         $rules = parent::rules();
 
-        $rules[] = ['whenNew', 'required', 'when' => function() {
-            return $this->whenUpdated == false;
-        }];
+        $rules[] = [
+            'whenNew', 'required', 'when' => function() {
+                return $this->whenUpdated == false;
+            }
+        ];
 
-        $rules[] = ['whenUpdated', 'required', 'when' => function() {
-            return $this->whenNew == false;
-        }];
+        $rules[] = [
+            'whenUpdated', 'required', 'when' => function() {
+                return $this->whenNew == false;
+            }
+        ];
 
         $rules[] = [['whenNew', 'whenUpdated'], 'validateWhenTriggers'];
         $rules[] = [['event'], 'validateEvent'];
@@ -140,8 +144,7 @@ class UsersSave extends NotificationEvent
         $matchesWhenNew = $this->whenNew && $isNewEntry ?? false;
         $matchesWhenUpdated = $this->whenUpdated && !$isNewEntry ?? false;
 
-        if (!$matchesWhenNew && !$matchesWhenUpdated)
-        {
+        if (!$matchesWhenNew && !$matchesWhenUpdated) {
             $this->addError('event', Craft::t('sprout-email', 'When user is saved event does not match any scenarios.'));
         }
 
@@ -218,8 +221,8 @@ class UsersSave extends NotificationEvent
     private function isValidUserGroupIds($currentUsersUserGroups)
     {
         return count($this->userGroupIds) > 0
-        AND ($this->userGroupIds !== '*')
-        AND count($currentUsersUserGroups);
+            AND ($this->userGroupIds !== '*')
+            AND count($currentUsersUserGroups);
     }
 
     /**
