@@ -2,11 +2,9 @@
 
 namespace barrelstrength\sproutemail\services;
 
-use barrelstrength\sproutemail\models\SentEmailInfoTable;
-use barrelstrength\sproutemail\SproutEmail;
+
 use craft\base\Component;
-use Craft;
-use yii\base\Event;
+
 
 /**
  * App Service

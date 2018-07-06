@@ -7,8 +7,6 @@ use barrelstrength\sproutbase\app\email\base\NotificationEvent;
 use Craft;
 
 use craft\elements\Entry;
-use craft\events\ElementEvent;
-use craft\services\Elements;
 
 
 class EntriesDelete extends NotificationEvent

@@ -9,13 +9,12 @@ use yii\db\ActiveQueryInterface;
 /**
  * Class CampaignTypeRecord
  *
- * @package Craft
- * --
  * @property int    $id
  * @property string $name
  * @property string $handle
  * @property string $type
  * @property string $mailer
+ * @property string $emailTemplateId
  * @property string $titleFormat
  * @property string $urlFormat
  * @property bool   $hasUrls

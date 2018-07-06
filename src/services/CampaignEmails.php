@@ -96,10 +96,11 @@ class CampaignEmails extends Component
     /**
      * @param $id
      *
-     * @return \craft\base\ElementInterface|null|CampaignEmail
+     * @return CampaignEmail|null
      */
     public function getCampaignEmailById($id)
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::$app->getElements()->getElementById($id, CampaignEmail::class);
     }
 
@@ -120,9 +121,7 @@ class CampaignEmails extends Component
                 $campaignEmailRecord->emailSettings = $values;
 
                 if ($campaignEmailRecord->save(false)) {
-                    if ($transaction) {
-                        $transaction->commit();
-                    }
+                    $transaction->commit();
                 }
             }
         }

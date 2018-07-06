@@ -4,6 +4,7 @@ namespace barrelstrength\sproutemail\models;
 
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
+use craft\base\Field;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\records\FieldLayoutField;
@@ -132,7 +133,7 @@ class CampaignType extends Model
     /**
      * Returns the fields associated with this form.
      *
-     * @return array
+     * @return Field[]
      * @throws \yii\base\InvalidConfigException
      */
     public function getFields()
@@ -146,6 +147,10 @@ class CampaignType extends Model
              * @var $fieldLayoutField FieldLayoutField
              */
             foreach ($fieldLayoutFields as $fieldLayoutField) {
+
+                /**
+                 * @var Field $field
+                 */
                 $field = $fieldLayoutField->getField();
                 $field->required = $fieldLayoutField->required;
                 $this->fields[] = $field;

@@ -143,18 +143,14 @@ class CampaignTypes extends Component
      */
     protected function saveCampaignTypeInfo(CampaignType $campaignType, CampaignTypeRecord $campaignTypeRecord)
     {
-        $oldCampaignMailer = null;
+        if ($campaignType->id !== null &&
+            is_numeric($campaignType->id) &&
+            !$campaignType->saveAsNew &&
+            !$campaignTypeRecord) {
 
-        if ($campaignType->id !== null && is_numeric($campaignType->id) && !$campaignType->saveAsNew) {
-            if (!$campaignTypeRecord) {
-                throw new Exception(
-                    Craft::t('sprout-email',
-                        'No campaign exists with the ID “{id}”', [
-                            'id' => $campaignType->id
-                        ]
-                    )
-                );
-            }
+            throw new Exception(Craft::t('sprout-email', 'No campaign exists with the ID “{id}”', [
+                'id' => $campaignType->id
+            ]));
         }
 
         if (!$campaignType->hasAdvancedTitles) {

@@ -15,9 +15,12 @@ use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
-use craft\web\View;
+
 use yii\base\Exception;
 
+/**
+ * Class CampaignEmail
+ */
 class CampaignEmail extends Element
 {
     use EmailTemplateTrait;
@@ -489,14 +492,13 @@ class CampaignEmail extends Element
     {
         $value = $this->{$attribute};
         // Validate only if it is not a placeholder and it is not empty
-        if (strpos($value, '{') !== 0 && !empty($this->{$attribute})) {
-            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                $params = [
-                    'attribute' => ($attribute == 'replyToEmail') ? Craft::t('sprout-email', 'Reply To') : Craft::t('sprout-email', 'From Email'),
-                ];
+        if (strpos($value, '{') !== 0 &&
+            !empty($this->{$attribute}) &&
+            !filter_var($value, FILTER_VALIDATE_EMAIL)) {
 
-                $this->addError($attribute, Craft::t('sprout-email', '{attribute} is not a valid email address.', $params));
-            }
+            $this->addError($attribute, Craft::t('sprout-email', '{attribute} is not a valid email address.', [
+                'attribute' => ($attribute == 'replyToEmail') ? Craft::t('sprout-email', 'Reply To') : Craft::t('sprout-email', 'From Email'),
+            ]));
         }
     }
 
@@ -511,14 +513,13 @@ class CampaignEmail extends Element
 
         if (is_array($value) && count($value)) {
             foreach ($value as $recipient) {
-                if (strpos($recipient, '{') !== 0 && !empty($this->{$attribute})) {
-                    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                        $params = [
-                            'attribute' => $attribute,
-                        ];
+                if (strpos($recipient, '{') !== 0 &&
+                    !empty($this->{$attribute}) &&
+                    !filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
 
-                        $this->addError($attribute, Craft::t('sprout-email', 'All recipients must be placeholders or valid email addresses.', $params));
-                    }
+                    $this->addError($attribute, Craft::t('sprout-email', 'All recipients must be placeholders or valid email addresses.', [
+                        'attribute' => $attribute,
+                    ]));
                 }
             }
         }

@@ -3,7 +3,7 @@
 namespace barrelstrength\sproutemail\services;
 
 use barrelstrength\sproutbase\app\email\base\Mailer;
-use barrelstrength\sproutbase\SproutBase;
+
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutbase\app\email\models\Response;
@@ -40,12 +40,10 @@ class Mailers extends Component
     }
 
     /**
-     * @param $mailerName
      * @param $emailId
      * @param $campaignTypeId
      *
      * @return Response
-     * @throws \Exception
      */
     public function getPrepareModal($emailId, $campaignTypeId)
     {

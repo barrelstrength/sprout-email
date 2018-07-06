@@ -119,7 +119,7 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     /**
      * Override campaign email validation when saving a new campaign email
      *
-     * @param Element $email
+     * @param Element|CampaignEmail $email
      *
      * @return Element
      */

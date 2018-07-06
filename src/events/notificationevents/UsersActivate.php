@@ -10,6 +10,9 @@ use craft\services\Users;
 use Craft;
 
 
+/**
+ * @property UserEvent $event
+ */
 class UsersActivate extends NotificationEvent
 {
     /**

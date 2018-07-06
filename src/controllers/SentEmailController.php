@@ -11,6 +11,7 @@ use barrelstrength\sproutemail\SproutEmail;
 use craft\helpers\Json;
 use craft\web\Controller;
 use Craft;
+use yii\base\Exception;
 
 class SentEmailController extends Controller
 {
@@ -42,7 +43,7 @@ class SentEmailController extends Controller
     }
 
     /**
-     * Resends a Sent Email
+     * Re-sends a Sent Email
      *
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
@@ -73,7 +74,7 @@ class SentEmailController extends Controller
 
             if (!empty($invalidRecipients))
             {
-                $invalidEmails = implode(", ", $invalidRecipients);
+                $invalidEmails = implode(', ', $invalidRecipients);
 
                 $message = Craft::t('sprout-email', "Recipient email addresses do not validate: $invalidEmails");
 
@@ -98,66 +99,70 @@ class SentEmailController extends Controller
             $processedRecipients = array();
             $failedRecipients    = array();
 
-            if (!empty($validRecipients))
+            if (empty($validRecipients))
             {
-                foreach ($validRecipients as $validRecipient)
+                throw new Exception(Craft::t('sprout-email', 'No valid recipients.'));
+            }
+
+            foreach ($validRecipients as $validRecipient)
+            {
+                $recipientEmail = $validRecipient->email;
+
+                $email = new Message();
+                $email->setSubject($sentEmail->title);
+                $email->setFrom([$sentEmail->fromEmail => $sentEmail->fromName]);
+                $email->setTo($recipientEmail);
+                $email->setTextBody($sentEmail->body);
+                $email->setHtmlBody($sentEmail->htmlBody);
+
+                $infoTable =  SproutEmail::$app->sentEmails->createInfoTableModel('sprout-email', array(
+                    'emailType'    => 'Resent Email',
+                    'deliveryType' => 'Live'
+                ));
+
+                $variables = array(
+                    'email'               => $sentEmail,
+                    'renderedEmail'       => $email,
+                    'recipients'          => $recipients,
+                    'processedRecipients' => null,
+                    'info'                => $infoTable
+                );
+
+                if (SproutBase::$app->mailers->sendEmail($email, $variables))
                 {
-                    $recipientEmail = $validRecipient->email;
-
-                    $email = new Message();
-                    $email->setSubject($sentEmail->title);
-                    $email->setFrom([$sentEmail->fromEmail => $sentEmail->fromName]);
-                    $email->setTo($recipientEmail);
-                    $email->setTextBody($sentEmail->body);
-                    $email->setHtmlBody($sentEmail->htmlBody);
-
-                    $infoTable =  SproutEmail::$app->sentEmails->createInfoTableModel('sprout-email', array(
-                        'emailType'    => 'Resent Email',
-                        'deliveryType' => 'Live'
-                    ));
-
-                    $variables = array(
-                        'email'               => $sentEmail,
-                        'renderedEmail'       => $email,
-                        'recipients'          => $recipients,
-                        'processedRecipients' => null,
-                        'info'                => $infoTable
-                    );
-
-                    if (SproutBase::$app->mailers->sendEmail($email, $variables))
-                    {
-                        $processedRecipients[] = $recipientEmail;
-                    }
-                    else
-                    {
-                        $failedRecipients[] = $recipientEmail;
-                    }
+                    $processedRecipients[] = $recipientEmail;
                 }
-
-                if (!empty($failedRecipients))
+                else
                 {
-                    $failedRecipientsText = implode(", ", $failedRecipients);
-
-                    $message = Craft::t('sprout=email', "Failed to resend emails: $failedRecipientsText");
-
-                    throw new \Exception($message);
-                }
-
-                if (!empty($processedRecipients))
-                {
-                    $message = "Email sent successfully.";
-
-                    $response = Response::createModalResponse(
-                        'sprout-base-email/_modals/response',
-                        array(
-                            'email'   => $sentEmail,
-                            'message' => Craft::t('sprout-email', $message)
-                        )
-                    );
-
-                    return $this->asJson($response);
+                    $failedRecipients[] = $recipientEmail;
                 }
             }
+
+            if (!empty($failedRecipients))
+            {
+                $failedRecipientsText = implode(', ', $failedRecipients);
+
+                $message = Craft::t('sprout-email', "Failed to resend emails: $failedRecipientsText");
+
+                throw new Exception($message);
+            }
+
+            if (!empty($processedRecipients))
+            {
+                $message = 'Email sent successfully.';
+
+                $response = Response::createModalResponse(
+                    'sprout-base-email/_modals/response',
+                    array(
+                        'email'   => $sentEmail,
+                        'message' => Craft::t('sprout-email', $message)
+                    )
+                );
+
+                return $this->asJson($response);
+            }
+
+            return true;
         }
         catch (\Exception $e)
         {

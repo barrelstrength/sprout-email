@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutbase\app\email\models\Response;
@@ -15,7 +14,6 @@ use craft\web\Controller;
 use Craft;
 use craft\web\View;
 use yii\base\Exception;
-use yii\mail\MailEvent;
 
 class CampaignEmailController extends Controller
 {
@@ -43,6 +41,7 @@ class CampaignEmailController extends Controller
         // that we don't want to overwrite.
         if (!$campaignEmail) {
             if (is_numeric($emailId)) {
+                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
                 $campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId);
             } else {
                 $campaignEmail = new CampaignEmail();
@@ -154,10 +153,10 @@ class CampaignEmailController extends Controller
                 $response = SproutEmail::$app->mailers->sendCampaignEmail($campaignEmail, $campaignType);
 
                 if ($response instanceof Response) {
-                    if ($response->success == true) {
-                        if ($response->emailModel != null) {
-                            SproutEmail::$app->campaignEmails->afterSend($response->emailModel);
-                        }
+                    if ($response->success == true &&
+                        $response->emailModel != null) {
+
+                        SproutEmail::$app->campaignEmails->afterSend($response->emailModel);
                     }
 
                     return $this->asJson($response);
@@ -275,12 +274,12 @@ class CampaignEmailController extends Controller
 
     /**
      * Renders the Shared Campaign Email
+     *
      * @param null $emailId
      * @param null $type
      *
      * @throws Exception
      * @throws \HttpException
-     * @throws \ReflectionException
      * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
@@ -361,9 +360,6 @@ class CampaignEmailController extends Controller
         }
 
         try {
-            /**
-             * @var $mailer Mailer
-             */
             $mailer = $campaignEmail->getMailer();
 
             $response = null;

@@ -11,6 +11,8 @@ use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
 use barrelstrength\sproutemail\SproutEmail;
+use yii\swiftmailer\Mailer;
+
 /**
  * Class SentEmails
  *
@@ -51,10 +53,14 @@ class SentEmails extends Component
         $infoTable->senderEmail = $fromEmail;
 
         /**
-         * @var $transport \Swift_SmtpTransport
+         * @var Mailer $mailer
          */
         $mailer = $event->message->mailer ?? null;
         if ($mailer) {
+
+            /**
+             * @var $transport \Swift_SmtpTransport
+             */
             $transport = $mailer->getTransport();
 
             // Email Settings
@@ -82,8 +88,8 @@ class SentEmails extends Component
         // Prepare some variables
         // -----------------------------------------------------------
 
-        $emailModel = $event->params['emailModel'];
-        $campaign = $event->params['campaign'];
+        $emailModel = $event['emailModel'];
+        $campaign = $event['campaign'];
 
         // If we have info set, grab the custom info that's already prepared
         // If we don't have info, we probably have an email sent by Craft so
@@ -113,13 +119,13 @@ class SentEmails extends Component
      */
     public function handleLogSentEmailOnSendEmailError(Event $event)
     {
-        $deliveryStatus = $event->params['deliveryStatus'] ?? null;
-        $message = $event->params['message'] ?? Craft::t('sprout-email', 'Unknown error');
+        $deliveryStatus = $event['deliveryStatus'] ?? null;
+        $message = $event['message'] ?? Craft::t('sprout-email', 'Unknown error');
 
-        if (isset($event->params['variables']['info'])) {
+        if (isset($event['variables']['info'])) {
             // Add a few additional variables to our info table
-            $event->params['variables']['info']->deliveryStatus = $deliveryStatus;
-            $event->params['variables']['info']->message = $message;
+            $event['variables']['info']->deliveryStatus = $deliveryStatus;
+            $event['variables']['info']->message = $message;
         } else {
             // This is for logging errors before sproutEmail()->sendEmail is called.
             $infoTable = new SentEmailInfoTable();
@@ -127,13 +133,13 @@ class SentEmails extends Component
             $infoTable->deliveryStatus = $deliveryStatus;
             $infoTable->message = $message;
 
-            $event->params['variables']['info'] = $infoTable;
+            $event['variables']['info'] = $infoTable;
         }
 
-        if (isset($event->params['variables']['info'])) {
+        if (isset($event['variables']['info'])) {
             // Add a few additional variables to our info table
-            $event->params['variables']['info']->deliveryStatus = $deliveryStatus;
-            $event->params['variables']['info']->message = $message;
+            $event['variables']['info']->deliveryStatus = $deliveryStatus;
+            $event['variables']['info']->message = $message;
         } else {
             // This is for logging errors before sproutEmail()->sendEmail is called.
             $infoTable = new SentEmailInfoTable();
@@ -141,7 +147,7 @@ class SentEmails extends Component
             $infoTable->deliveryStatus = $deliveryStatus;
             $infoTable->message = $message;
 
-            $event->params['variables']['info'] = $infoTable;
+            $event['variables']['info'] = $infoTable;
         }
 
         SproutEmail::$app->sentEmails->logSentEmail($event);
@@ -152,7 +158,6 @@ class SentEmails extends Component
      *
      * @param Message            $message
      * @param SentEmailInfoTable $infoTable
-     * @param array              $variables
      *
      * @return SentEmail|bool
      * @throws \Throwable
