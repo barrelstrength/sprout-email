@@ -2,12 +2,13 @@
 
 namespace barrelstrength\sproutemail\elements;
 
-use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
+use barrelstrength\sproutbase\app\email\base\EmailElement;
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\app\email\web\assets\email\EmailAsset;
 use barrelstrength\sproutemail\elements\db\CampaignEmailQuery;
 use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
+use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\SproutEmail;
 use Craft;
 use craft\base\Element;
@@ -15,25 +16,26 @@ use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
-
 use yii\base\Exception;
 
 /**
  * Class CampaignEmail
  */
-class CampaignEmail extends Element
+class CampaignEmail extends EmailElement
 {
-    use EmailTemplateTrait;
+    // Constants
+    // =========================================================================
+
+    const READY = 'ready';
+    const DISABLED = 'disabled';
+    const PENDING = 'pending';
+    const SCHEDULED = 'scheduled';
+    const SENT = 'sent';
 
     /**
      * @var bool
      */
     public $id;
-
-    /**
-     * @var string
-     */
-    public $subjectLine;
 
     /**
      * @var bool
@@ -43,37 +45,7 @@ class CampaignEmail extends Element
     /**
      * @var string
      */
-    public $recipients;
-
-    /**
-     * @var string
-     */
     public $emailSettings;
-
-    /**
-     * @var string
-     */
-    public $listSettings;
-
-    /**
-     * @var string
-     */
-    public $fromName;
-
-    /**
-     * @var string
-     */
-    public $fromEmail;
-
-    /**
-     * @var string
-     */
-    public $replyToEmail;
-
-    /**
-     * @var bool
-     */
-    public $enableFileAttachments;
 
     /**
      * @var
@@ -108,31 +80,6 @@ class CampaignEmail extends Element
      * @var string
      */
     public $defaultBody;
-
-    /**
-     * @var string
-     */
-    const READY = 'ready';
-
-    /**
-     * @var string
-     */
-    const DISABLED = 'disabled';
-
-    /**
-     * @var string
-     */
-    const PENDING = 'pending';
-
-    /**
-     * @var string
-     */
-    const SCHEDULED = 'scheduled';
-
-    /**
-     * @var string
-     */
-    const SENT = 'sent';
 
     /**
      * @return string
@@ -670,5 +617,15 @@ class CampaignEmail extends Element
                 ]
             ]
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEmailTemplateId()
+    {
+        $campaignType = $this->getCampaignType();
+
+        return $campaignType->emailTemplateId;
     }
 }
