@@ -128,17 +128,18 @@ class CampaignEmails extends Component
     }
 
     /**
-     * @param        $email
+     * @param        $htmlBody
+     * @param        $body
      * @param string $fileExtension
      *
      * @throws \yii\base\ExitException
      */
-    public function showCampaignEmail($email, $fileExtension = 'html')
+    public function showCampaignEmail($htmlBody, $body, $fileExtension = 'html')
     {
         if ($fileExtension == 'txt') {
-            $output = $email['body'];
+            $output = $body;
         } else {
-            $output = $email['html'];
+            $output = $htmlBody;
         }
 
         // Output it into a buffer, in case TasksService wants to close the connection prematurely

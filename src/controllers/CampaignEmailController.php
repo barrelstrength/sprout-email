@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\models\CampaignType;
@@ -17,8 +16,6 @@ use yii\base\Exception;
 
 class CampaignEmailController extends Controller
 {
-    use EmailTemplateTrait;
-
     /**
      * @var CampaignType
      */
@@ -65,15 +62,13 @@ class CampaignEmailController extends Controller
             $showPreviewBtn = true;
         }
 
-        $tabs = $this->getFieldLayoutTabs($campaignEmail);
-
         return $this->renderTemplate('sprout-base-email/campaigns/_edit', [
             'campaignEmail' => $campaignEmail,
             'emailId' => $emailId,
             'campaignTypeId' => $campaignTypeId,
             'campaignType' => $campaignType,
             'showPreviewBtn' => $showPreviewBtn,
-            'tabs' => $tabs
+            'tabs' => $campaignEmail->getFieldLayoutTabs()
         ]);
     }
 
@@ -290,6 +285,8 @@ class CampaignEmailController extends Controller
         if ($campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId)) {
             $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
+            $mailer = $campaignType->getMailer();
+
             $params = [
                 'email' => $campaignEmail,
                 'campaignType' => $campaignType
@@ -297,9 +294,13 @@ class CampaignEmailController extends Controller
 
             $extension = ($type != null && $type == 'text') ? 'txt' : 'html';
 
-            $content = $this->getHtmlBody($campaignEmail, $params, $campaignType);
+            $campaignEmail->setEventObject($params);
+            $message = $mailer->getMessage($campaignEmail);
 
-            SproutEmail::$app->campaignEmails->showCampaignEmail($content, $extension);
+            $htmlBody = $message->renderedHtmlBody;
+            $body = $message->renderedBody;
+
+            SproutEmail::$app->campaignEmails->showCampaignEmail($htmlBody, $body, $extension);
         }
 
         throw new \HttpException(404);
@@ -309,6 +310,8 @@ class CampaignEmailController extends Controller
      * Sends a Test Campaign Email
      *
      * Test Emails do not trigger an onSendEmail event and do not get marked as Sent.
+     *
+     * @todo - update to use new EmailElement::getRecipients() syntax and new isTest syntax
      *
      * @return \yii\web\Response
      * @throws \Twig_Error_Loader
@@ -337,7 +340,8 @@ class CampaignEmailController extends Controller
             $errorMsg = Craft::t('sprout-email', 'Empty recipients.');
         }
 
-        $result = $this->getValidAndInvalidRecipients($recipients);
+        // @todo - update to use new EmailElement::getRecipients() syntax and new isTest syntax
+         $result = $this->getValidAndInvalidRecipients($recipients);
 
         $invalidRecipients = $result['invalid'];
         $emails = $result['emails'];
@@ -365,6 +369,7 @@ class CampaignEmailController extends Controller
             $response = null;
 
             if ($mailer) {
+                // @todo - change method signature and remove $emails in favor of $campaignEmail->getRecipients()
                 $response = $mailer->sendTestCampaignEmail($campaignEmail, $campaignType, $emails);
             }
 

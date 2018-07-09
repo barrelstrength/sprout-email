@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
 use barrelstrength\sproutbase\app\email\models\Message;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutbase\SproutBase;
@@ -15,8 +14,6 @@ use yii\base\Exception;
 
 class SentEmailController extends Controller
 {
-    use EmailTemplateTrait;
-
     /**
      * Returns info for the Sent Email Resend modal
      *
@@ -45,6 +42,8 @@ class SentEmailController extends Controller
 
     /**
      * Re-sends a Sent Email
+     *
+     * @todo - update to use new EmailElement::getRecipients() syntax
      *
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception

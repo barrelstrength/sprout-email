@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutemail\mailers;
 
-use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
 use barrelstrength\sproutbase\app\email\web\assets\email\CopyPasteAsset;
@@ -14,8 +13,6 @@ use craft\base\Element;
 
 class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
 {
-    use EmailTemplateTrait;
-
     /**
      * @return string
      */
@@ -84,15 +81,16 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
                 'campaignType' => $campaignType
             ];
 
-            $content = $this->getHtmlBody($campaignEmail, $variables, $campaignType);
+            $mailer = $campaignType->getMailer();
+            $message = $mailer->getMessage($campaignEmail);
 
             $response = new Response();
             $response->success = true;
             $response->content = Craft::$app->getView()->renderPageTemplate('sprout-base-email/_components/mailers/copypaste/schedulecampaignemail',
                 [
                     'email' => $campaignEmail,
-                    'html' => trim($content['html']),
-                    'text' => trim($content['body']),
+                    'html' => $message->renderedHtmlBody,
+                    'text' => $message->renderedBody
                 ]);
 
             return $response;
@@ -102,6 +100,8 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     }
 
     /**
+     * @todo - change method signature and remove $emails in favor of $campaignEmail->getRecipients()
+     *
      * @inheritdoc
      *
      * @throws \Exception

@@ -394,7 +394,6 @@ class CampaignEmail extends EmailElement
      */
     public function isContentReady(): bool
     {
-
         $campaignType = $this->getCampaignType();
 
         // todo: update recipient info to be dynamic
@@ -408,9 +407,9 @@ class CampaignEmail extends EmailElement
             ]
         ];
 
-        $content = $this->getHtmlBody($this, $params, $campaignType);
+        $htmlBody = $this->getEmailTemplateHtmlBody($this, $params);
 
-        return !($content['html'] == null);
+        return !($htmlBody == null);
     }
 
     /**
@@ -505,6 +504,9 @@ class CampaignEmail extends EmailElement
         return $campaignType->getMailer();
     }
 
+    /**
+     * @return CampaignType
+     */
     public function getCampaignType()
     {
         return SproutEmail::$app->campaignTypes->getCampaignTypeById($this->campaignTypeId);
