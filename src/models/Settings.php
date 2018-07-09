@@ -7,20 +7,62 @@ use craft\base\Model;
 
 class Settings extends Model
 {
+    /**
+     * @var string
+     */
     public $pluginNameOverride = '';
+    /**
+     * @var bool
+     */
     public $appendTitleValue = false;
+    /**
+     * @var string
+     */
     public $localeIdOverride = '';
+    /**
+     * @var bool
+     */
     public $displayFieldHandles = false;
+    /**
+     * @var bool
+     */
     public $enableCustomSections = false;
+    /**
+     * @var bool
+     */
     public $enableMetaDetailsFields = false;
+    /**
+     * @var bool
+     */
     public $enableMetadataRendering = true;
+    /**
+     * @var string
+     */
     public $metadataVariable = 'metadata';
+    /**
+     * @var bool
+     */
     public $enableNotificationEmails = true;
+    /**
+     * @var bool
+     */
     public $enableCampaignEmails = false;
+    /**
+     * @var bool
+     */
     public $enableSentEmails = false;
-    public $emailTemplateId = '';
+    /**
+     * @var null
+     */
+    public $emailTemplateId = null;
+    /**
+     * @var int
+     */
     public $enablePerEmailEmailTemplateIdOverride = 0;
 
+    /**
+     * @return array
+     */
     public function getSettingsNavItems()
     {
         return [

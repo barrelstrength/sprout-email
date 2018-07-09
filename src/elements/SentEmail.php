@@ -24,22 +24,34 @@ use yii\base\Exception;
  */
 class SentEmail extends Element
 {
+    const SENT = 'sent';
+    const FAILED = 'failed';
+
     public $saveAsNew;
-    protected $fields;
-    public $enableFileAttachments;
     public $title;
     public $emailSubject;
-    public $fromEmail;
+    public $enableFileAttachments;
+
+    // Sender Info
     public $fromName;
+    public $fromEmail;
     public $toEmail;
+
     public $body;
     public $htmlBody;
     public $info;
     public $status;
     public $dateSent;
 
-    const SENT = 'sent';
-    const FAILED = 'failed';
+    protected $fields;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getLocaleNiceDateTime();
+    }
 
     public static function displayName(): string
     {
@@ -186,14 +198,6 @@ class SentEmail extends Element
             'elements.dateCreated' => Craft::t('sprout-email', 'Date Created'),
             'elements.dateUpdated' => Craft::t('sprout-email', 'Date Updated'),
         ];
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getLocaleNiceDateTime();
     }
 
     /**
