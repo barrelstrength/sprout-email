@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutemail\elements;
 
 use barrelstrength\sproutbase\app\email\base\EmailElement;
+use barrelstrength\sproutbase\app\email\base\EmailTemplateTrait;
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\app\email\web\assets\email\EmailAsset;
@@ -23,6 +24,7 @@ use yii\base\Exception;
  */
 class CampaignEmail extends EmailElement
 {
+    use EmailTemplateTrait;
     // Constants
     // =========================================================================
 
@@ -390,7 +392,8 @@ class CampaignEmail extends EmailElement
 
     /**
      * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
+     * @throws \Twig_Error_Loader
      */
     public function isContentReady(): bool
     {
@@ -407,9 +410,9 @@ class CampaignEmail extends EmailElement
             ]
         ];
 
-        $htmlBody = $this->getEmailTemplateHtmlBody($this, $params);
+        $emailTemplate = $this->getEmailTemplate($this, $params);
 
-        return !($htmlBody == null);
+        return !($emailTemplate->htmlBody == null);
     }
 
     /**

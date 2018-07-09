@@ -88,7 +88,7 @@ class EntriesSave extends NotificationEvent
 
         $ids = $this->sectionIds;
 
-        if (count($ids)) {
+        if (is_array($ids) && count($ids)) {
 
             $id = array_shift($ids);
 
