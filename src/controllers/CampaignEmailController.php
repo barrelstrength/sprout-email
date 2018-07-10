@@ -275,6 +275,7 @@ class CampaignEmailController extends Controller
      *
      * @throws Exception
      * @throws \HttpException
+     * @throws \Twig_Error_Loader
      * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
@@ -285,8 +286,6 @@ class CampaignEmailController extends Controller
         if ($campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId)) {
             $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
 
-            $mailer = $campaignType->getMailer();
-
             $params = [
                 'email' => $campaignEmail,
                 'campaignType' => $campaignType
@@ -295,10 +294,9 @@ class CampaignEmailController extends Controller
             $extension = ($type != null && $type == 'text') ? 'txt' : 'html';
 
             $campaignEmail->setEventObject($params);
-            $message = $mailer->getMessage($campaignEmail);
 
-            $htmlBody = $message->renderedHtmlBody;
-            $body = $message->renderedBody;
+            $htmlBody = $campaignEmail->getEmailTemplates()->getHtmlBody();
+            $body = $campaignEmail->getEmailTemplates()->getTextBody();
 
             SproutEmail::$app->campaignEmails->showCampaignEmail($htmlBody, $body, $extension);
         }
