@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\models\Message;
+use craft\mail\Message;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\SentEmail;
@@ -121,7 +121,10 @@ class SentEmailController extends Controller
                     'info' => $infoTable
                 ];
 
-                if (SproutBase::$app->mailers->sendEmail($email, $variables)) {
+                $email->variables = $variables;
+                $mailer = Craft::$app->getMailer();
+
+                if ($mailer->send($email)) {
                     $processedRecipients[] = $recipientEmail;
                 } else {
                     $failedRecipients[] = $recipientEmail;

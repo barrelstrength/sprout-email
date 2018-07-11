@@ -30,6 +30,9 @@ class SentEmails extends Component
         // Prepare some variables
         // -----------------------------------------------------------
 
+        /**
+         * @var $message Message
+         */
         $message = $event->message;
 
         $from = $message->getFrom();
@@ -51,23 +54,6 @@ class SentEmails extends Component
         // Sender Info
         $infoTable->senderName = $fromName;
         $infoTable->senderEmail = $fromEmail;
-
-        /**
-         * @var Mailer $mailer
-         */
-        $mailer = $event->message->mailer ?? null;
-        if ($mailer) {
-
-            /**
-             * @var $transport \Swift_SmtpTransport
-             */
-            $transport = $mailer->getTransport();
-
-            // Email Settings
-            $infoTable->hostName = ($transport->getHost() != null) ? $transport->getHost() : '–';
-            $infoTable->port = ($transport->getPort() != null) ? $transport->getPort() : '–';
-            $infoTable->timeout = ($transport->getTimeout() != null) ? $transport->getTimeout() : '–';
-        }
 
 
         // Override some settings if this is an email sent by Craft
@@ -127,7 +113,6 @@ class SentEmails extends Component
             $event['variables']['info']->deliveryStatus = $deliveryStatus;
             $event['variables']['info']->message = $message;
         } else {
-            // This is for logging errors before sproutEmail()->sendEmail is called.
             $infoTable = new SentEmailInfoTable();
 
             $infoTable->deliveryStatus = $deliveryStatus;
@@ -141,7 +126,6 @@ class SentEmails extends Component
             $event['variables']['info']->deliveryStatus = $deliveryStatus;
             $event['variables']['info']->message = $message;
         } else {
-            // This is for logging errors before sproutEmail()->sendEmail is called.
             $infoTable = new SentEmailInfoTable();
 
             $infoTable->deliveryStatus = $deliveryStatus;
@@ -239,6 +223,7 @@ class SentEmails extends Component
 
         try {
             if (Craft::$app->getElements()->saveElement($sentEmail)) {
+
                 return $sentEmail;
             }
         } catch (\Exception $e) {
@@ -301,7 +286,7 @@ class SentEmails extends Component
      *
      * Craft provides us the original email model, so we need to process the
      * HTML and Text body fields again in order to store the email content as
-     * it was sent. Behavior copied from craft()->emails->sendEmail()
+     * it was sent.
      *
      * @param $emailModel
      * @param $variables
