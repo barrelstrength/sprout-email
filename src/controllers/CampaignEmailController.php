@@ -150,8 +150,6 @@ class CampaignEmailController extends Controller
                 if ($response instanceof Response) {
                     if ($response->success == true &&
                         $response->emailModel != null) {
-
-                        SproutEmail::$app->campaignEmails->afterSend($response->emailModel);
                     }
 
                     return $this->asJson($response);
@@ -382,9 +380,6 @@ class CampaignEmailController extends Controller
                 ]);
 
                 if ($response->success == true) {
-
-                    SproutEmail::$app->campaignEmails->afterSend($response->emailModel);
-
                     return $this->asJson($response);
                 }
             }

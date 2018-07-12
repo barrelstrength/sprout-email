@@ -133,4 +133,5 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
 
         return $email;
     }
+
 }

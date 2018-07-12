@@ -344,7 +344,7 @@ class CampaignEmail extends EmailElement
         $failHtml = '<span class="error" title="'.Craft::t('sprout-email', 'Failed').'" data-icon="error"></span>';
 
         if ($attribute === 'send') {
-            $mailer = SproutBase::$app->mailers->getMailerByName($campaignType->mailer);
+            $mailer = $campaignType->getMailer();
 
             return Craft::$app->getView()->renderTemplate('sprout-base-email/_components/elementindex/CampaignEmail/prepare-link', [
                 'campaignEmail' => $this,
@@ -391,6 +391,7 @@ class CampaignEmail extends EmailElement
     /**
      * @return bool
      * @throws Exception
+     * @throws \Twig_Error_Loader
      */
     public function isContentReady(): bool
     {

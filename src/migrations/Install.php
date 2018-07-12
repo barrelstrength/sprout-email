@@ -88,7 +88,8 @@ class Install extends Migration
 
         $settings = new Settings();
         $basic = new BasicTemplates();
-        $settings->emailTemplateId = $basic->getTemplateId();
+
+        $settings->emailTemplateId = get_class($basic);
 
         $newSettings = json_encode($settings->getAttributes());
 
