@@ -136,10 +136,6 @@ class SproutEmail extends Plugin
         Event::on(BaseMailer::class, BaseMailer::EVENT_AFTER_SEND, function(MailEvent $event) {
             SproutEmail::$app->sentEmails->logSentEmail($event);
         });
-
-        Event::on(CampaignEmails::class, CampaignEmails::EVENT_SEND_SPROUTEMAIL, function(MailEvent $event) {
-            SproutEmail::$app->sentEmails->logSentEmail($event);
-        });
     }
 
     /**

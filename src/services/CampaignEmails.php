@@ -150,10 +150,4 @@ class CampaignEmails extends Component
         // End the request
         Craft::$app->end();
     }
-
-    public function afterSend($message)
-    {
-        $event = new MailEvent(['message' => $message, 'isSuccessful' => true]);
-        $this->trigger(self::EVENT_SEND_SPROUTEMAIL, $event);
-    }
 }

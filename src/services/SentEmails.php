@@ -43,23 +43,18 @@ class SentEmails extends Component
             $fromName = ($res = array_values($from)) ? $res[0] : '';
         }
 
-        // If we have info set, grab the custom info that's already prepared
-        // If we don't have info, we probably have an email sent by Craft so
-        // we can continue with our generic info table model
-        $infoTable = new SentEmailInfoTable();
+        $variables = $message->variables;
 
-        // Prepare our info table settings for Notifications
-        // -----------------------------------------------------------
+        $infoTable = $variables['info'] ?? null;
 
+        if ($infoTable == null) {
+            // Override some settings if this is an email sent by Craft
+
+            $infoTable = $this->updateInfoTableWithCraftInfo($infoTable);
+        }
         // Sender Info
         $infoTable->senderName = $fromName;
         $infoTable->senderEmail = $fromEmail;
-
-
-        // Override some settings if this is an email sent by Craft
-        // -----------------------------------------------------------
-
-        $infoTable = $this->updateInfoTableWithCraftInfo($infoTable);
 
         $this->saveSentEmail($message, $infoTable);
     }
@@ -194,11 +189,6 @@ class SentEmails extends Component
 
         $children = $message->getSwiftMessage()->getChildren();
 
-        $body = '';
-        if (!empty($children)) {
-            $body = $children[0]->getBody();
-        }
-
         if ($children) {
             foreach ($children as $child) {
                 if ($child->getContentType() == 'text/html') {
@@ -206,7 +196,7 @@ class SentEmails extends Component
                 }
 
                 if ($child->getContentType() == 'text/plain') {
-                    $sentEmail->body = $body;
+                    $sentEmail->body = $child->getBody();
                 }
             }
         }
