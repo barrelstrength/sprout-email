@@ -47,8 +47,11 @@ class SentEmails extends Component
 
         $infoTable = $variables['info'] ?? null;
 
-        if ($infoTable == null) {
-            // Override some settings if this is an email sent by Craft
+        if ($infoTable === null) {
+            // If we have info set, grab the custom info that's already prepared
+            // If we don't have info, we probably have an email sent by Craft so
+            // we can continue with a generic info table model
+            $infoTable = new SentEmailInfoTable();
 
             $infoTable = $this->updateInfoTableWithCraftInfo($infoTable);
         }
