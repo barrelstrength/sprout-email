@@ -26,13 +26,12 @@ class CampaignEmailController extends Controller
      *
      * @param null               $campaignTypeId
      * @param CampaignEmail|null $campaignEmail
+     * @param null               $emailId
      *
      * @return \yii\web\Response
      */
-    public function actionEditCampaignEmail($campaignTypeId = null, CampaignEmail $campaignEmail = null)
+    public function actionEditCampaignEmail($campaignTypeId = null, CampaignEmail $campaignEmail = null, $emailId = null)
     {
-        $emailId = Craft::$app->getRequest()->getSegment(4);
-
         // Check if we already have an Campaign Email route variable
         // If so it's probably due to a bad form submission and has an error object
         // that we don't want to overwrite.
@@ -62,13 +61,23 @@ class CampaignEmailController extends Controller
             $showPreviewBtn = true;
         }
 
+        $tabs = [
+            [
+                'label' => 'Message',
+                'url' => '#tab1',
+                'class' => null,
+            ]
+        ];
+
+        $tabs = count($campaignEmail->getFieldLayoutTabs()) ? $campaignEmail->getFieldLayoutTabs() : $tabs;
+
         return $this->renderTemplate('sprout-base-email/campaigns/_edit', [
             'campaignEmail' => $campaignEmail,
             'emailId' => $emailId,
             'campaignTypeId' => $campaignTypeId,
             'campaignType' => $campaignType,
             'showPreviewBtn' => $showPreviewBtn,
-            'tabs' => $campaignEmail->getFieldLayoutTabs()
+            'tabs' => $tabs
         ]);
     }
 

@@ -95,26 +95,7 @@ class SproutEmail extends Plugin
         Craft::setAlias('@sproutemail', $this->getBasePath());
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
-            $event->rules['sprout-email'] = ['template' => 'sprout-base-email/index'];
-            $event->rules['sprout-email/index'] = ['template' => 'sprout-base-email/index'];
-
-            $event->rules['sprout-email/notifications'] = ['template' => 'sprout-base-email/notifications/index'];
-            $event->rules['sprout-email/notifications/edit/<emailId:\d+|new>']
-                = 'sprout-base/notifications/edit-notification-email-template';
-            $event->rules['sprout-email/settings/notifications/edit/<emailId:\d+|new>']
-                = 'sprout-base/notifications/edit-notification-email-settings-template';
-
-            $event->rules['sprout-email/campaigns'] = ['template' => 'sprout-base-email/campaigns/index'];
-            $event->rules['sprout-email/campaigns/<campaignTypeId:\d+>/new'] = 'sprout-email/campaign-email/edit-campaign-email';
-            $event->rules['sprout-email/campaigns/edit/<emailId:\d+>'] = 'sprout-email/campaign-email/edit-campaign-email';
-
-            $event->rules['sprout-email/sentemails'] = ['template' => 'sprout-base-email/sentemails/index'];
-
-            $event->rules['sprout-email/settings'] = 'sprout-base/settings/edit-settings';
-            $event->rules['sprout-email/settings/campaigntypes/edit/<campaignTypeId:\d+|new>'] = 'sprout-email/campaign-type/campaign-settings';
-            $event->rules['sprout-email/settings/<settingsSectionHandle:.*>'] = 'sprout-base/settings/edit-settings';
-
-            $event->rules['sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>'] = ['template' => 'sprout-base-email/_special/preview'];
+            $event->rules = array_merge($event->rules, $this->getCpUrlRules());
         });
 
         Event::on(Mailers::class, Mailers::EVENT_REGISTER_MAILER_TYPES, function(RegisterMailersEvent $event) {
@@ -134,7 +115,9 @@ class SproutEmail extends Plugin
         });
 
         Event::on(BaseMailer::class, BaseMailer::EVENT_AFTER_SEND, function(MailEvent $event) {
-            SproutEmail::$app->sentEmails->logSentEmail($event);
+            if ($this->getSettings()->enableSentEmails) {
+                SproutEmail::$app->sentEmails->logSentEmail($event);
+            }
         });
     }
 
@@ -153,18 +136,16 @@ class SproutEmail extends Plugin
     {
         $parent = parent::getCpNavItem();
 
+        // Allow user to override plugin name in sidebar
+        if ($this->getSettings()->pluginNameOverride) {
+            $parent['label'] = $this->getSettings()->pluginNameOverride;
+        }
+
         $parent['url'] = 'sprout-email';
 
         $navigation = [];
 
         $settings = $this->getSettings();
-
-        if ($settings->enableNotificationEmails) {
-            $navigation['subnav']['notifications'] = [
-                'label' => Craft::t('sprout-email', 'Notifications'),
-                'url' => 'sprout-email/notifications'
-            ];
-        }
 
         if ($settings->enableCampaignEmails) {
             $navigation['subnav']['campaigns'] = [
@@ -173,6 +154,12 @@ class SproutEmail extends Plugin
             ];
         }
 
+        if ($settings->enableNotificationEmails) {
+            $navigation['subnav']['notifications'] = [
+                'label' => Craft::t('sprout-email', 'Notifications'),
+                'url' => 'sprout-email/notifications'
+            ];
+        }
 
         if ($settings->enableSentEmails) {
             $navigation['subnav']['sentemails'] = [
@@ -187,5 +174,56 @@ class SproutEmail extends Plugin
         ];
 
         return array_merge($parent, $navigation);
+    }
+
+    private function getCpUrlRules()
+    {
+        return [
+            'sprout-email' => [
+                'template' => 'sprout-base-email/index'
+            ],
+            'sprout-email/index' => [
+                'template' => 'sprout-base-email/index'
+            ],
+
+            // Notifications
+            'sprout-email/notifications/edit/<emailId:\d+|new>' =>
+                'sprout-base/notifications/edit-notification-email-template',
+            'sprout-email/notifications' => [
+                'template' => 'sprout-base-email/notifications/index'
+            ],
+
+            // Campaigns
+            'sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
+                'template' => 'sprout-base-email/_special/preview'
+            ],
+            'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
+                'sprout-email/campaign-email/edit-campaign-email',
+
+            'sprout-email/campaigns/edit/<emailId:\d+>' =>
+                'sprout-email/campaign-email/edit-campaign-email',
+
+            'sprout-email/campaigns' => [
+                'template' => 'sprout-base-email/campaigns/index'
+            ],
+
+            // Sent Emails
+            'sprout-email/sentemails' => [
+                'template' => 'sprout-base-email/sentemails/index'
+            ],
+
+            // Settings
+            'sprout-email/settings/campaigntypes/edit/<campaignTypeId:\d+|new>' =>
+                'sprout-email/campaign-type/campaign-settings',
+
+            'sprout-email/settings/notifications/edit/<emailId:\d+|new>' =>
+                'sprout-base/notifications/edit-notification-email-settings-template',
+
+            'sprout-email/settings/<settingsSectionHandle:.*>' =>
+                'sprout-base/settings/edit-settings',
+
+            'sprout-email/settings' =>
+                'sprout-base/settings/edit-settings'
+        ];
     }
 }
