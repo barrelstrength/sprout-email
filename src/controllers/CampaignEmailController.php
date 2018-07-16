@@ -2,6 +2,8 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
+use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
+use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\models\CampaignType;
@@ -337,86 +339,49 @@ class CampaignEmailController extends Controller
             $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
         }
 
-        $errorMsg = '';
+        $mailer = $campaignEmail->getMailer();
 
         $recipients = Craft::$app->getRequest()->getBodyParam('recipients');
 
-        if ($recipients === null) {
-            $errorMsg = Craft::t('sprout-email', 'Empty recipients.');
-        }
+        $campaignEmail->recipients = $recipients;
 
-        // @todo - update to use new EmailElement::getRecipients() syntax and new isTest syntax
-         $result = $this->getValidAndInvalidRecipients($recipients);
+        $recipientList = $mailer->getRecipientList($campaignEmail);
 
-        $invalidRecipients = $result['invalid'];
-        $emails = $result['emails'];
-
-        if (!empty($invalidRecipients)) {
-            $invalidEmails = implode('<br/>', $invalidRecipients);
-
-            $errorMsg = Craft::t('sprout-email', 'The following recipient email addresses do not validate: {invalidEmails}', [
-                'invalidEmails' => $invalidEmails
-            ]);
-        }
-
-        if (!empty($errorMsg)) {
-            $asJson = Response::createErrorModalResponse('sprout-base-email/_modals/response', [
-                'email' => $campaignEmail,
-                'message' => $errorMsg
-            ]);
-
-            return $this->asJson($asJson);
-        }
-
-        try {
-            $mailer = $campaignEmail->getMailer();
-
-            $response = null;
-
-            if ($mailer) {
-                // @todo - change method signature and remove $emails in favor of $campaignEmail->getRecipients()
-                $response = $mailer->sendTestCampaignEmail($campaignEmail, $campaignType, $emails);
-            }
-
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-
-            if ($response instanceof Response) {
-
-                $response->content = Craft::$app->getView()->renderTemplate('sprout-base-email/_modals/response', [
-                    'email' => $campaignEmail,
-                    'success' => $response->success,
-                    'message' => $response->message
-                ]);
-
-                if ($response->success == true) {
-                    return $this->asJson($response);
-                }
-            }
-
-            $errorMessage = Craft::t('sprout-email', 'Mailer did not return a valid response model after sending Campaign Email.');
-
-            if (!$response) {
-                $errorMessage = Craft::t('sprout-email', 'Unable to send email.');
-            }
-
-            if ($response->message) {
-                $errorMessage .= ' '.$response->message;
+        if ($recipientList->getInvalidRecipients()) {
+            $invalidEmails = [];
+            foreach ($recipientList->getInvalidRecipients() as $invalidRecipient) {
+                $invalidEmails[] = $invalidRecipient->email;
             }
 
             return $this->asJson(
-                Response::createErrorModalResponse(
-                    'sprout-base-email/_modals/response',
-                    [
+                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                    'email' => $campaignEmail,
+                    'message' => Craft::t('sprout-base', 'Recipient email addresses do not validate: {invalidEmails}', [
+                        'invalidEmails' => implode(', ', $invalidEmails)
+                    ])
+                ])
+            );
+        }
+
+        try {
+            $mailer = SproutBase::$app->mailers->getMailerByName(DefaultMailer::class);
+            $campaignEmail->setIsTest(true);
+            if (!$mailer->sendNotificationEmail($campaignEmail)) {
+                return $this->asJson(
+                    Response::createErrorModalResponse('sprout-base-email/_modals/response', [
                         'email' => $campaignEmail,
-                        'campaign' => $campaignType,
-                        'message' => Craft::t('sprout-email', $errorMessage),
-                    ]
-                )
+                        'message' => Craft::t('sprout-base', 'Unable to send Test Notification Email')
+                    ])
+                );
+            }
+
+            return $this->asJson(
+                Response::createModalResponse('sprout-base-email/_modals/response', [
+                    'email' => $campaignEmail,
+                    'message' => Craft::t('sprout-base', 'Test Campaign Email sent.')
+                ])
             );
         } catch (\Exception $e) {
-
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-
             return $this->asJson(
                 Response::createErrorModalResponse(
                     'sprout-base-email/_modals/response',
