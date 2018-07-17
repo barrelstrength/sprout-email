@@ -3,13 +3,14 @@
 namespace barrelstrength\sproutemail\services;
 
 use barrelstrength\sproutbase\app\email\base\Mailer;
-
+use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\base\Component;
 use Craft;
+use craft\helpers\DateTimeHelper;
 use yii\base\Exception;
 
 class Mailers extends Component
@@ -23,6 +24,9 @@ class Mailers extends Component
      */
     public function sendCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType)
     {
+        /**
+         * @var $mailer Mailer
+         */
         $mailer = $campaignType->getMailer();
 
         if (!$mailer) {
@@ -33,7 +37,17 @@ class Mailers extends Component
          * @var $mailer Mailer
          */
         try {
-            return $mailer->sendCampaignEmail($campaignEmail, $campaignType);
+            $response = $mailer->sendCampaignEmail($campaignEmail, $campaignType);
+
+            if ($response) {
+                // Update dateSent to change mark status
+                $record = CampaignEmailRecord::findOne($campaignEmail->id);
+                $record->dateSent = DateTimeHelper::currentUTCDateTime();
+                $record->save();
+            }
+
+            return $response;
+
         } catch (\Exception $e) {
             throw $e;
         }

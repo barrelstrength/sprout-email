@@ -184,8 +184,6 @@ class CampaignEmailController extends Controller
                 );
             } catch (\Exception $e) {
 
-                Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-
                 return $this->asJson(
                     Response::createErrorModalResponse(
                         'sprout-base-email/_modals/response',
