@@ -147,12 +147,12 @@ class SproutEmail extends Plugin
 
         $settings = $this->getSettings();
 
-        if ($settings->enableCampaignEmails) {
-            $navigation['subnav']['campaigns'] = [
-                'label' => Craft::t('sprout-email', 'Campaigns'),
-                'url' => 'sprout-email/campaigns'
-            ];
-        }
+//        if ($settings->enableCampaignEmails) {
+//            $navigation['subnav']['campaigns'] = [
+//                'label' => Craft::t('sprout-email', 'Campaigns'),
+//                'url' => 'sprout-email/campaigns'
+//            ];
+//        }
 
         if ($settings->enableNotificationEmails) {
             $navigation['subnav']['notifications'] = [
@@ -161,12 +161,12 @@ class SproutEmail extends Plugin
             ];
         }
 
-        if ($settings->enableSentEmails) {
-            $navigation['subnav']['sentemails'] = [
-                'label' => Craft::t('sprout-email', 'Sent Emails'),
-                'url' => 'sprout-email/sentemails'
-            ];
-        }
+//        if ($settings->enableSentEmails) {
+//            $navigation['subnav']['sentemails'] = [
+//                'label' => Craft::t('sprout-email', 'Sent Emails'),
+//                'url' => 'sprout-email/sentemails'
+//            ];
+//        }
 
         $navigation['subnav']['settings'] = [
             'label' => Craft::t('sprout-email', 'Settings'),
