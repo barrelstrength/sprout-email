@@ -75,22 +75,22 @@ class Settings extends Model
                 'selected' => 'general',
                 'template' => 'sprout-base-email/settings/general'
             ],
-            'mailers' => [
-                'label' => Craft::t('sprout-email', 'Mailers'),
-                'url' => 'sprout-email/settings/mailers',
-                'selected' => 'mailers',
-                'template' => 'sprout-base-email/settings/mailers'
-            ],
+//            'mailers' => [
+//                'label' => Craft::t('sprout-email', 'Mailers'),
+//                'url' => 'sprout-email/settings/mailers',
+//                'selected' => 'mailers',
+//                'template' => 'sprout-base-email/settings/mailers'
+//            ],
             'emailHeading' => [
                 'heading' => Craft::t('sprout-email', 'Email'),
             ],
-            'campaigntypes' => [
-                'label' => Craft::t('sprout-email', 'Campaigns'),
-                'url' => 'sprout-email/settings/campaigntypes',
-                'selected' => 'campaigntypes',
-                'template' => 'sprout-base-email/settings/campaigntypes',
-                'settingsForm' => false
-            ],
+//            'campaigntypes' => [
+//                'label' => Craft::t('sprout-email', 'Campaigns'),
+//                'url' => 'sprout-email/settings/campaigntypes',
+//                'selected' => 'campaigntypes',
+//                'template' => 'sprout-base-email/settings/campaigntypes',
+//                'settingsForm' => false
+//            ],
             'notifications' => [
                 'label' => Craft::t('sprout-email', 'Notifications'),
                 'url' => 'sprout-email/settings/notifications',
