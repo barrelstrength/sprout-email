@@ -30,7 +30,7 @@ class CampaignEmail extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return 'sproutemail_campaignemails';
+        return '{{%sproutemail_campaignemails}}';
     }
 
     /**

@@ -39,7 +39,7 @@ class CampaignType extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return 'sproutemail_campaigntype';
+        return '{{%sproutemail_campaigntype}}';
     }
 
     /**
