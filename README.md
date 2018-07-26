@@ -1,43 +1,31 @@
-# Sprout Email plugin for Craft CMS 3.x
+# Sprout Email
 
 Flexible, integrated email marketing and notifications.
 
-![Screenshot](resources/img/plugin-logo.png)
+## Email Types
 
-## Requirements
+- **Transactional** - Send Notification Emails to single users and lists. Trigger emails on custom events.
+- **Campaigns (coming soon)** - Build your emails in Craft and send them via your favorite Email Service Provider such as Campaign Monitor or MailChimp
+- **Sent Email (coming soon)** - Track and resend emails sent by Craft
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+## Workflows & Customization 
 
-## Installation
+- **Email Templates** - Developers can customize every detail of Email HTML and Text
+- **Lists** - Use Sprout Lists to manage and integrate Recipient Lists into your Email workflows
+- **Notification Events** - Use one of several default events or create your own
+- **Personalization** - Use any data you have in Craft in your Emails and Email Templates
+  
+See the Sprout Email documentation to learn more about Sprout Forms.
 
-To install the plugin, follow these instructions.
+## Documentation
 
-1. Open your terminal and go to your Craft project:
+See the [Sprout Website](https://sprout.barrelstrengthdesign.com/craft-plugins/email/docs) for documentation, guides, and additional resources. 
 
-        cd /path/to/project
+## Support
 
-2. Then tell Composer to load the plugin:
+- [Send a Support Ticket](https://sprout.barrelstrengthdesign.com/craft-plugins/request/support) via the Sprout Website.
+- [Create an issue](https://github.com/barrelstrength/craft-sprout-email/issues) on Github.
 
-        composer require /sprout-email
-
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Sprout Email.
-
-## Sprout Email Overview
-
--Insert text here-
-
-## Configuring Sprout Email
-
--Insert text here-
-
-## Using Sprout Email
-
--Insert text here-
-
-## Sprout Email Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
-
-Brought to you by [Barrelstrength](https://barrelstrengthdesign.com)
+<a href="https://sprout.barrelstrengthdesign.com" target="_blank">
+  <img src="https://s3.amazonaws.com/sprout.barrelstrengthdesign.com-assets/content/plugins/sprout-icon.svg" width="72" align="right">
+</a>
