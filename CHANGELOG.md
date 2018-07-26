@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0-beta.3 - 2018-07-26
+
+## Changed
+- Updated Sprout Base requirement to v3.0.0
+
+## 1.0.0-beta.2 - 2018-07-26
+
+## Added
+- Added Sprout Email to Packagist
+
 ## 4.0.0-beta.1 - 2018-07-26
 
 ## Added
