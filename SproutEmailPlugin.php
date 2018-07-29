@@ -32,7 +32,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '3.0.7';
+		return '3.1.0';
 	}
 
 	/**
@@ -64,7 +64,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getDocumentationUrl()
 	{
-		return 'http://sprout.barrelstrengthdesign.com/craft-plugins/email/docs';
+		return 'https://sprout.barrelstrengthdesign.com/docs/email';
 	}
 
 	/**
@@ -72,7 +72,7 @@ class SproutEmailPlugin extends BasePlugin
 	 */
 	public function getReleaseFeedUrl()
 	{
-		return 'https://sprout.barrelstrengthdesign.com/craft-plugins/email/releases.json';
+		return 'https://raw.githubusercontent.com/barrelstrength/craft-sprout-forms/v3/releases.json';
 	}
 
 	/**

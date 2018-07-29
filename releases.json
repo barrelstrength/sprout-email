@@ -1,0 +1,477 @@
+[
+  {
+    "version": "3.1.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/archive/v3.1.0.zip",
+    "date": "2018-07-28T08:00:00+00:00",
+    "notes": [
+      "[Improved] Moved release feed to Github"
+    ]
+  },
+  {
+    "version": "3.0.7",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2018-05-24T19:07:00+00:00",
+    "notes": [
+      "[Fixed] Added doesTemplateExists method for Mailers to help show improved error messages",
+      "[Fixed] Fixed bug where Default Mailer did not save default settings",
+      "[Fixed] Fixed bug when generating mock form submission data where an incorrect form could be returned",
+      "[Fixed] Fixed issue where opening preview modal could sometimes throw JS errors which disabled the html and text tabs"
+    ]
+  },
+  {
+    "version": "3.0.6",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2018-01-11T08:00:00+00:00",
+    "notes": [
+      "[Improved] Added note on where to download supported Sprout Email Mailers",
+      "[Fixed] Fixed issue where PHP warnings would display in dev environments",
+      "[Fixed] Fixed a potential incompatibility with various plugin integrations",
+      "[Fixed] Fixed a bug where Text Preview did no work for Sent Emails"
+    ]
+  },
+  {
+    "version": "3.0.4",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2017-11-16T08:00:00+00:00",
+    "notes": [
+      "[Fixed] Fixed bug where Sprout Email assumes Sprout Lists exists",
+      "[Fixed] Fixed bug where &#039;Resend Email&#039; for Sent Emails throws an error"
+    ]
+  },
+  {
+    "version": "3.0.3",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2017-10-18T15:45:00+00:00",
+    "notes": [
+      "_Sprout Email 3 comes with many new features and requires manual steps during the upgrade process. Please see [Upgrading from Sprout Email 2.x to 3.x](https://sprout.barrelstrengthdesign.com/craft-plugins/email/docs/getting-started/upgrading-from-2-x-to-3-x)_",
+      "[Added] Added Sent, Scheduled, Pending, and Disabled statuses",
+      "[Added] Added support for Live and Test Campaign Email workflows",
+      "[Added] Added Date Sent column to Campaign Emails",
+      "[Added] Added Date Scheduled column to Campaign Emails (hidden config required)",
+      "[Added] Added &#039;Mark as Sent&#039; as a bulk action",
+      "[Added] Added &#039;Mark as Unsent&#039; as a bulk action",
+      "[Added] Added ability to update Campaign Email Status with bulk action",
+      "[Added] Added support for Content and Recipient columns to help indicate if an email is ready to send",
+      "[Added] Added Notification Name to the list of columns for Element Index view and sortable columns",
+      "[Added] Added ability for Mailers to integrate with Sprout Lists",
+      "[Added] Added &#039;Mark as Sent&#039; option to Copy/Paste Email workflow",
+      "[Added] Added ability to manage Mailer settings via `general.php`",
+      "[Added] Added Sent Email support for Contact Form plugin",
+      "[Improved] Updated Notification workflow modals to better match Craft styles",
+      "[Improved] Updated HTML and Text Preview links for Campaigns and Notifications to open in new window",
+      "[Improved] Updated Campaign Title to behave like Craft Section Title Format",
+      "[Improved] Updated Sent Email Element Index page to use Element Index API",
+      "[Improved] `template` column output on Campaign Element Index Page",
+      "[Improved] Updated Notifications to have HTML and Text columns",
+      "[Improved] Copy/Paste modal now copies content directly to clipboard",
+      "[Improved] Updated Mailer settings area to link to each respective Mailer Plugin settings area",
+      "[Improved] Removed third-party mailers MailChimp and Campaign Monitor and makes them available as separate plugins",
+      "[Improved] Removed extra step necessary to &#039;Install Mailers&#039;",
+      "[Improved] Removed Recipient Lists functionality in favor of new Sprout Lists and List Type integrations",
+      "[Improved] Removed sent column from Campaign Email and Notification Email schema",
+      "[Improved] Removed Incomplete Status",
+      "[Improved] Deprecated `entry` variable in templates. Use `email` instead.",
+      "[Improved] Deprecated `notification` variable in templates. Use `email` instead.",
+      "[Improved] Deprecated `campaign` variable in templates. Use `campaignType` instead.",
+      "[Improved] Deprecated SproutEmailBaseEvent::getId(). Use SproutEmailBaseEvent::getEventAction() instead.",
+      "[Fixed] Fixed bug where deleting a single email via a bulk action could delete other emails too, depending on the status",
+      "[Fixed] Fixed bug where saving notification settings with Cmd+S would overwrite the Email Subject with the Notification Name",
+      "[Fixed] Fixed bug where attachments did not get attached to sprout email notifications",
+      "[Fixed] Fixed bug where field values were not retained after Notification Email failed validation",
+      "[Fixed] Fixed bug when previewing Notification emails if no Event is set",
+      "[Fixed] Fixed bug where tabs did not display on Campaign Email edit page",
+      "[Fixed] Fixed bug where Sprout Email throws an error when used alongside the Contact Form plugin",
+      "[Fixed] Fixed broken link on Sent Email index page when the site uses a different locale",
+      "[Fixed] Fixed bug with Sprout Email Sent Email format in some scenarios"
+    ]
+  },
+  {
+    "version": "2.4.7",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2017-01-11T08:00:00+00:00",
+    "notes": [
+      "[Improved] Optimized performance on Sent Emails Element Index page",
+      "[Fixed] Fixed a bug where some field values were not retained when validation failed",
+      "[Fixed] Fixed a bug when previewing Notification Emails when no Event was set"
+    ]
+  },
+  {
+    "version": "2.4.6",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-11-21T08:30:00+00:00",
+    "notes": [
+      "[Fixed] Fixed reference to deprecated `craft()-&gt;getBuild()` method introduced in Craft 2.6.2951"
+    ]
+  },
+  {
+    "version": "2.4.5",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-11-09T20:33:00+00:00",
+    "notes": [
+      "[Improved] Improved the default settings for the htmlBody column",
+      "[Improved] Improved the way that the logs are handled",
+      "[Fixed] Fixed a bug where updating from v2.3.0 could cause an error",
+      "[Fixed] Fixed a bug where the default example &#039;Campaign Type&#039; could not be deleted"
+    ]
+  },
+  {
+    "version": "2.4.4",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-10-20T12:18:00+00:00",
+    "notes": [
+      "[fixed] Fixed a bug where &quot;From&quot; and &quot;Reply To&quot; and &quot;Recipients&quot; fields do not validate dynamic values"
+    ]
+  },
+  {
+    "version": "2.4.3",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-10-10T07:00:00+00:00",
+    "notes": [
+      "[Fixed] Fixed a bug where &quot;From&quot; and &quot;Reply To&quot; fields do not validate dynamic values like {email}",
+      "[Fixed] Fixed a bug where the Sent Email Element Index table changed formatting after deleting items",
+      "[Fixed] Fixed a bug where Notification Emails threw a PHP error under certain conditions",
+      "[Fixed] Fixed an issue that could occur when loading some custom event integrations",
+      "[Fixed] Fixed broken settings link on prepare modal window",
+      "[Fixed] Fixed compatibility issue for servers using PHP 5.3"
+    ]
+  },
+  {
+    "version": "2.4.2",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-09-17T02:08:00+00:00",
+    "notes": [
+      "[Fixed] Fixed an error occurring on servers running PHP 5.5 and below"
+    ]
+  },
+  {
+    "version": "2.4.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-09-16T08:00:00+00:00",
+    "notes": [
+      "[Fixed] Fixed issues that caused the Notification page to not load properly"
+    ]
+  },
+  {
+    "version": "2.4.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-09-01T16:00:00+00:00",
+    "notes": [
+      "[Added] Added Notification Email and Campaign Email Element Types which replace the Sprout Email Entry Element Type",
+      "[Added] Added settings to enable or disable Campaigns, Notifications, Sent Emails, and Recipient Lists",
+      "[Added] Added validation for From Name, From Email, and Reply To Email in Notification Settings",
+      "[Improved] Updated flow of Notification Email edit and settings page. Removed Notification Settings page which is now accessible from the Notification Email edit page.",
+      "[Improved] Updated Sent Emails to default to disabled when first installed",
+      "[Improved] Updated Recipient Lists to default to disabled when first installed",
+      "[Improved] Deprecated `entry` variable in email templates for `email`",
+      "[Improved] Deprecated `campaign` variable in email templates for `campaignType`",
+      "[Improved] Refactored several areas of codebase",
+      "[Improved] Refactored naming conventions throughout codebase"
+    ]
+  },
+  {
+    "version": "2.3.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-06-08T17:00:00+00:00",
+    "notes": [
+      "[Added] Users can now send test emails to multiple recipients",
+      "[Added] Users can now re-send Sent Emails to one or more recipients",
+      "[Added] Added Live Preview with mock data for Notification Emails",
+      "[Added] Added token-based sharing with mock data for Notification Emails",
+      "[Added] Sent Email Element now tracks emails that fail to send",
+      "[Added] Added Sent Email Statuses: Sent and Failed",
+      "[Improved] Updated SproutEmailBaseEvent:getUniqueId() =&gt; SproutEmailBaseEvent:getId()",
+      "[Improved] Save As New Campaign behavior now only appends an incremented number to the slug value",
+      "[Improved] Various updates to naming conventions and copy",
+      "[Fixed] Fixed error that prevented Sent Email chart from rendering in PHP 5.3",
+      "[Fixed] Fixed various coding conventions that could trigger warnings in earlier versions of PHP"
+    ]
+  },
+  {
+    "version": "2.2.4",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-04-20T09:30:00+00:00",
+    "notes": [
+      "[Added] Added Explorer Chart on Sent Emails Element Index page",
+      "[Fixed] Fixed bug where MailChimp subscriber list count did not reflect proper number of people on list"
+    ]
+  },
+  {
+    "version": "2.2.3",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-04-07T07:30:00+00:00",
+    "notes": [
+      "[Improved] Removed the unused Archived status",
+      "[Fixed] Fixed issue where the Status dropdown would disappear when using bulk actions on the Email index page",
+      "[Fixed] Fixed error which blocked Live Preview from working on new Campaign Entries",
+      "[Fixed] Fixed a bug where Sent Emails did not decode the email subject line (if it was encoded) before saving",
+      "[Fixed] Fixed a bug where saving Campaign Settings did not update the URIs of existing Email Elements to match a new URL Format"
+    ]
+  },
+  {
+    "version": "2.2.2",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-03-29T17:00:00+00:00",
+    "notes": [
+      "[Added] Added Sprout SEO sitemap support for email campaigns with URLs",
+      "[Added] Added support for `email` variable in Notification and Campaign templates",
+      "[Improved] Updated naming of column and sorting for `Sent On` to `Send Date`",
+      "[Improved] Updated Copy/Paste Mailer to trim whitespace around rendered HTML and Text content",
+      "[Fixed] Fixed bug where embed css in a notification template would be processed like Twig"
+    ]
+  },
+  {
+    "version": "2.2.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-03-08T19:00:00+00:00",
+    "notes": [
+      "# Sent Emails",
+      "Emails sent via Craft and Sprout Email are now captured in the database. Keep track of every email your website sends; search Sent Email by recipient or email title; and view HTML and Text versions of the email to know exactly what was sent.",
+      "[Added] Added Sent Email Element Type",
+      "[Added] Admin can view HTML and Text content of Sent Emails",
+      "[Added] Admin can search Sent Emails by email title and recipient",
+      "# Integrated Mailers",
+      "Sprout Email now comes with four Mailers out of the box: MailChimp, Campaign Monitor, Copy/Paste, and the default Sprout Mailer. Easily enable or disable the Mailers you need for your notification and marketing emails.",
+      "[Improved] Integrated first-party mailers (Copy/Paste, Campaign Monitor, and MailChimp) into Sprout Email Core",
+      "[Improved] Improved various workflow and user interface styles in Mailer settings",
+      "# Misc",
+      "[Improved] Improved handling of shorthand `{value}` and `{{ object.value }}` syntaxes in custom fields and templates",
+      "[Improved] Added Select All checkbox option to Events with settings that could include multiple checkboxes",
+      "[Improved] Notification Entry now attempts to populate default From Name, From Email, and Reply To values from Sprout Email settings",
+      "[Improved] Updated Craft Commerce Events to support mock objects for testing",
+      "[Improved] &#039;When a Craft Commerce order status is changed&#039; event now provides both the Order and Order History model to the email template",
+      "[Improved] Updated HTML and Text preview buttons on listing page to only display when a Campaign is URL-enabled",
+      "[Improved] Moved `enableDynamicLists` to a hidden config setting",
+      "[Improved] Standardized code style and removed various legacy code"
+    ]
+  },
+  {
+    "version": "2.1.3",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-02-04T08:00:00+00:00",
+    "notes": [
+      "[Added] Added support for Craft Commerce notifications for when a transaction is saved, when an order is completed, and when an order status is changed.",
+      "[Improved] Improved error messaging when a template does not exist",
+      "[Improved] Improved error messaging for test messages when email settings are not properly setup",
+      "[Improved] Improved title behavior when using &#039;Save as new email&#039;",
+      "[Improved] Improved encoding of email subject line",
+      "[Fixed] Fixed display issue on Email entries index page after using bulk delete"
+    ]
+  },
+  {
+    "version": "2.0.2",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2016-01-14T08:00:00+00:00",
+    "notes": [
+      "[Added] Added improved error messaging on Review &amp; Test modal",
+      "[Added] Added getCpUrl() method to SproutEmail_EntryModel",
+      "[Improved] Improved workflow and errors around Recipient List creation and managing lists",
+      "[Improved] Improved error message for SSL bug that could occur when using MailChimp",
+      "[Fixed] Fixed issue where edit permission didn&#039;t restrict acccess to some links to the settings section",
+      "[Fixed] Fixed error that could prevent modal window from closing",
+      "[Fixed] Fixed bug where a Recipient could not be saved to a Recipient List under certain conditions",
+      "[Fixed] Fixed link to settings page"
+    ]
+  },
+  {
+    "version": "2.0.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-12-02T08:00:00+00:00",
+    "notes": [
+      "[Added] The entire Control Panel has been updated to work with Craft 2.5",
+      "[Added] Added Plugin icon",
+      "[Added] Added Plugin description",
+      "[Added] Added link to documentation",
+      "[Added] Added link to plugin settings",
+      "[Added] Added link to release feed",
+      "[Added] Added subnav in place of tabs for top level navigation",
+      "[Added] Added `editSproutEmailSettings` permission",
+      "[Improved] Improved and standardized display of Sprout plugin info in footer",
+      "[Improved] Improved layout and workflow of several settings pages",
+      "[Improved] Improved Campaign and Notification sidebar"
+    ]
+  },
+  {
+    "version": "1.2.3",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-11-21T08:00:00+00:00",
+    "notes": [
+      "[Fixed] Fixed bulk delete behavior where all Campaign entries could be deleted",
+      "[Fixed] Fixed `enableFileAttachments` error that could occur when saving Campaign entries",
+      "[Fixed] Fixed display bug with secondary Save button actions"
+    ]
+  },
+  {
+    "version": "1.2.2",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-11-20T08:00:00+00:00",
+    "notes": [
+      "[Added] Notifications now support File Attachments",
+      "[Added] Added &quot;Save as new email&quot; option for Campaign Emails",
+      "[Added] Added &quot;Save and add another&quot; option for Campaign Emails",
+      "[Added] Added &quot;Save and add another&quot; option for Email Notifications",
+      "[Added] Added &quot;Save and edit notification settings&quot; option for Email Notifications",
+      "[Added] Added &quot;Save and edit notification email&quot; option for Email Settings",
+      "[Added] Creating a new notification now immediately creates it&#039;s respective Notification Email entry",
+      "[Improved] Improved Test Notification workflow and modal window",
+      "[Improved] Added users email to Test Notification modal window",
+      "[Improved] Updated example notification templates work for more events",
+      "[Improved] Improved example notification error handling",
+      "[Fixed] Fixed issue where user could be redirected to page not found after saving a recipient",
+      "[Fixed] Fixed issue that caused Craft console application to throw errors",
+      "[Fixed] Fixed issue where disabled notification emails were still being sent"
+    ]
+  },
+  {
+    "version": "1.2.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-09-09T14:10:00+00:00",
+    "notes": [
+      "[Added] Added support for file attachments in notifications",
+      "[Added] Added a new config (enableFileAttachments) to enable file attachments"
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-08-17T20:23:00+00:00",
+    "notes": [
+      "[Added] Added support for MailChimp through separate plugin",
+      "[Added] Added the ability to bulk delete entries",
+      "[Improved] Improved entry status handling",
+      "[Improved] Improved notification and campaign entry preview and review workflows",
+      "[Improved] Improved overall responses when sending campaigns",
+      "[Improved] Improved template validation and error reporting",
+      "[Improved] Improved mailer settings template with proper links",
+      "[Fixed] Fixed issue where user save event would fail due to group checking"
+    ]
+  },
+  {
+    "version": "1.0.6",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-07-13T22:50:00+00:00",
+    "notes": [
+      "[Added] Adds &#039;Sprout Email Examples&#039; Field Group for example fields",
+      "[Fixed] Fixed bug where example fields could get created without a groupId",
+      "[Fixed] Fixed bug where Notification Emails could be deleted without their corresponding Campaigns and Rules"
+    ]
+  },
+  {
+    "version": "1.0.5",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-06-30T04:00:00+00:00",
+    "notes": [
+      "[Added] Added Example Notification and Campaign Emails",
+      "[Added] Added validation for Recipient Lists and makes them required for Recipients",
+      "[Added] Updated Recipient Lists to display errors",
+      "[Improved] Updated naming conventions of rules options",
+      "[Improved] Various copy and minor code updates",
+      "[Fixed] Fixed redirect error with Recipient Lists"
+    ]
+  },
+  {
+    "version": "1.0.4",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-06-27T16:00:00+00:00",
+    "notes": [
+      "[Added] Added the ability to specify Save Entry events to trigger on create and/or update",
+      "[Added] Added support to trigger notifications when a user is activated",
+      "[Added] Added support to trigger notifications when a user is deleted",
+      "[Added] Added support to trigger notifications when an entry is deleted",
+      "[Added] Added advanced support for twig constructs for on the fly recipients",
+      "[Improved] Updated on the fly recipients to be parsed when triggered instead of when saved",
+      "[Improved] Improved the save user event rule to trigger when user is created and/or updated",
+      "[Improved] Improved recipient notifications to make sure no email is sent more than once",
+      "[Improved] Various design, copy, and code improvements",
+      "[Fixed] Fixed issue with user permissions raised when Sprout Forms is also installed",
+      "[Fixed] Fixed issue triggered on notification entry page when not running Craft Pro"
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-05-13T07:00:00+00:00",
+    "notes": [
+      "[Added] Commercial Release"
+    ]
+  },
+  {
+    "version": "0.9.2",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-05-07T07:00:00+00:00",
+    "notes": [
+      "[Added] Added dynamic event to trigger when a user is created or when user is updated",
+      "[Added] Added `export` action to recipient entries so that recipients in list or all can be exported as CSV",
+      "[Added] Added `SproutEmail_UsersSaveUserEvent` to handle `onSaveUser` rules",
+      "[Added] Added `SproutEmail_DefaultMailerRecipientElementType::getAvailableActions()`",
+      "[Added] Added `SproutEmail_ExportRecipientElementAction` to enable export actions on recipients",
+      "[Added] Added the ability to search and filter recipients",
+      "[Improved] Updated recipient index to be a full element index page",
+      "[Improved] Updated the `recipients.js` file to work with the newly redesigned recipient element index",
+      "[Improved] Removed `defaultmailer/` segment from `DefaultMailerRecipientModel` edit URL",
+      "[Improved] Removed route targeting `sproutemail/recipients/{id}`",
+      "[Fixed] Fixed issue where `saveEntry` events wouldn&#039;t trigger if no section ids were selected",
+      "[Fixed] Fixed issue where some notification template variables were being overwritten by element content"
+    ]
+  },
+  {
+    "version": "0.9.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2015-04-24T20:30:00+00:00",
+    "notes": [
+      "[Added] Campaign Emails and Notification Emails are now Element Types",
+      "[Added] Campaign Emails and Notification Emails now support Custom Fields",
+      "[Added] Campaign Emails and Notification Emails are now searchable",
+      "[Added] Campaign Emails and Notification Emails now have custom statuses and can be sorted",
+      "[Added] Campaign Emails now support Live Preview and share links",
+      "[Added] Default Mailer now supports Lists and Subscribers",
+      "[Added] Added support for test Notification emails to use mocked data",
+      "[Added] Default Mailer now supports dynamic recipients and variables",
+      "[Added] Added Mailer API so Sprout Email can now be extended by other plugins and integrated more easily with third party services (we&#039;ve created additional plugins for Campaign Monitor, MailChimp, and Copy/Paste workflows)",
+      "[Added] Added Notification Events API so Sprout Email can now be extended by other plugins who need to trigger notification emails from custom events",
+      "[Added] Added support for adding recipients to a Notification at runtime to enable Sprout Email to behave as a transactional email client",
+      "[Added] Added `craft.sproutEmail.entries()` tag to display emails in templates",
+      "[Added] Notification emails now inherit sender information from setting if no sender information is provided",
+      "[Added] Campaign Emails support an optional Entry URL Format",
+      "[Added] Added example translation file for US English",
+      "[Improved] Email templates for HTML and Text can now be defined with a single setting",
+      "[Improved] Added support for sending multiple Notification emails emails per event",
+      "[Improved] Notification emails can now be disabled"
+    ]
+  },
+  {
+    "version": "0.7.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2014-04-27T09:00:00+00:00",
+    "notes": [
+      "[Fixed] Fixed bug due to onSaveAsset Event method name"
+    ]
+  },
+  {
+    "version": "0.7.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2014-04-15T20:00:00+00:00",
+    "notes": [
+      "[Added] Added support for HTML email notification templates",
+      "[Added] Campaign settings can now use submitted values in Subject, Reply To, and Recipient fields using the &#039;entry&#039; variable. For example, {{ entry.fullName }}",
+      "[Added] Notification settings can now use the &#039;entry&#039; variable to refer to any values passed to them when the notification is triggered. For example, {{ entry.fullName }}",
+      "[Added] Added settings page for Campaign Monitor and Mailchimp API settings",
+      "[Added] Added support for notifications to be sent on several new Events: onActivateUser, onUnlockUser, onSuspendUser, onUnsuspendUser, onDeleteUser, onSaveGlobalContent, onSaveAsset, onSaveContent, onSaveTagContent, onBeginUpdate, onEndUpdate",
+      "[Improved] Rewrote Campaign and Notification forms workflow so settings could be saved incrementally at each step in the workflow",
+      "[Improved] Use Entry Title for Campaign subject",
+      "[Improved] Updated recipient list delimiter to use a comma and to allow spaces between email addresses",
+      "[Improved] Updated Campaigns to work with Craft 2.0",
+      "[Improved] Standardized several naming conventions and cleaned up legacy code syntax",
+      "[Improved] Various small improvements to UI",
+      "[Fixed] Fixed bug where User Groups were displaying where they shouldn&#039;t",
+      "[Fixed] Fixed css naming conflict introduced by Craft 2.0"
+    ]
+  },
+  {
+    "version": "0.5.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/releases",
+    "date": "2014-04-08T17:00:00+00:00",
+    "notes": [
+      "[Added] Private Beta"
+    ]
+  }
+]
