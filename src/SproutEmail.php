@@ -198,6 +198,9 @@ class SproutEmail extends Plugin
             ],
 
             // Campaigns
+            'sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>/<siteHandle:.*>' => [
+                'template' => 'sprout-base-email/_special/preview'
+            ],
             'sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
                 'template' => 'sprout-base-email/_special/preview'
             ],
