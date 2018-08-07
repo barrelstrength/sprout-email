@@ -162,6 +162,15 @@ class EntriesSave extends NotificationEvent
         if (get_class($event->sender) !== Entry::class) {
             $this->addError('event', Craft::t('sprout-email', 'Event Element does not match craft\elements\Entry class.'));
         }
+
+        /**
+         * @var ElementEvent $event
+         */
+        $element = $this->event->sender ?? null;
+
+        if ($element->siteId != $this->notificationEmail->siteId) {
+            $this->addError('event', Craft::t('sprout-email', 'Entry Element siteId does not match the notification email siteId.'));
+        }
     }
 
     public function validateSectionIds()
@@ -171,10 +180,10 @@ class EntriesSave extends NotificationEvent
          */
         $element = $this->event->sender ?? null;
 
-        $elementId = null;
+        $sectionId = null;
 
         if (get_class($element) === Entry::class) {
-            $elementId = $element->getSection()->id;
+            $sectionId = $element->getSection()->id;
         }
 
         // If entry sections settings are unchecked
@@ -183,7 +192,7 @@ class EntriesSave extends NotificationEvent
         }
 
         // If any section ids were checked, make sure the entry belongs in one of them
-        if (is_array($this->sectionIds) AND !in_array($elementId, $this->sectionIds, false)) {
+        if (is_array($this->sectionIds) AND !in_array($sectionId, $this->sectionIds, false)) {
             $this->addError('event', Craft::t('sprout-email', 'Saved Entry Element does not match any selected Sections.'));
         }
     }
