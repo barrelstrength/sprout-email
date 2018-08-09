@@ -173,6 +173,11 @@ class EntriesSave extends NotificationEvent
         }
     }
 
+    public function isMultiSite()
+    {
+        return true;
+    }
+
     public function validateSectionIds()
     {
         /**
