@@ -36,8 +36,11 @@ class SproutEmail_SentEmailsService extends BaseApplicationComponent
 		// Sender Info
 		$infoTable->senderName  = $emailModel->fromName;
 		$infoTable->senderEmail = $emailModel->fromEmail;
-		$infoTable->ipAddress   = craft()->request->getUserHostAddress();
-		$infoTable->userAgent   = craft()->request->getUserAgent();
+
+		if (!craft()->isConsole()) {
+            $infoTable->ipAddress   = craft()->request->getUserHostAddress();
+            $infoTable->userAgent   = craft()->request->getUserAgent();
+        }
 
 		// Email Settings
 		$infoTable->protocol                = isset($emailSettings['protocol']) ? $emailSettings['protocol'] : '–';
