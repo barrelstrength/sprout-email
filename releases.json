@@ -1,5 +1,14 @@
 [
   {
+    "version": "3.1.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/archive/v3.1.1.zip",
+    "date": "2018-10-23T08:00:00+00:00",
+    "notes": [
+      "[Fixed] Fixed error when triggering email from console requests",
+      "[Fixed] Fixed PHP 7 syntax error on User Delete Event"
+    ]
+  },
+  {
     "version": "3.1.0",
     "downloadUrl": "https://github.com/barrelstrength/craft-sprout-email/archive/v3.1.0.zip",
     "date": "2018-07-28T08:00:00+00:00",
