@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.0-beta.4 - 2018-10-23
+
+### Added
+- Added EVENT_SEND_NOTIFICATION_EMAIL that is triggered when a Notification Email is sent
+
+### Changed
+- Updated Notifications to render object variables in Live Preview and via Share links ([#52])
+- Updated Sprout Base requirement to v3.0.8
+	
+### Fixed
+- Fixed bug where Notification would send when status was disabled ([#54])
+- Fixed bug that could create missing `emailTemplateId` in migration from Craft 2 to Craft 3 ([#53])
+
+[#52]: https://github.com/barrelstrength/craft-sprout-email/issues/52
+[#53]: https://github.com/barrelstrength/craft-sprout-email/issues/53
+[#54]: https://github.com/barrelstrength/craft-sprout-email/issues/54
+
 ## 4.0.0-beta.3 - 2018-07-26
 
 ## Changed
