@@ -44,18 +44,16 @@ class m180726_000000_schema_version_v302 extends Migration
         $notificationOptionsMigration->safeUp();
         ob_end_clean();
 
+        $notificationAddMigration = new m180725_080639_add_notification_columns();
+
+        ob_start();
+        $notificationAddMigration->safeUp();
+        ob_end_clean();
 
         $notificationEmailTemplateIdMigration = new m180515_000003_update_notification_eventId_types();
 
         ob_start();
         $notificationEmailTemplateIdMigration->safeUp();
-        ob_end_clean();
-
-
-        $notificationAddMigration = new m180725_080639_add_notification_columns();
-
-        ob_start();
-        $notificationAddMigration->safeUp();
         ob_end_clean();
 
 
