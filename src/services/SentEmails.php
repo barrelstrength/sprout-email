@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutemail\services;
 
+use barrelstrength\sproutemail\models\Settings;
 use craft\mail\Message;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
@@ -11,7 +12,6 @@ use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
 use barrelstrength\sproutemail\SproutEmail;
-use yii\swiftmailer\Mailer;
 
 /**
  * Class SentEmails
@@ -97,11 +97,11 @@ class SentEmails extends Component
     }
 
     /**
-     * @param Event $event
+     * @param MailEvent $event
      *
      * @throws \Throwable
      */
-    public function handleLogSentEmailOnSendEmailError(Event $event)
+    public function handleLogSentEmailOnSendEmailError(MailEvent $event)
     {
         $deliveryStatus = $event['deliveryStatus'] ?? null;
         $message = $event['message'] ?? Craft::t('sprout-email', 'Unknown error');
