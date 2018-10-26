@@ -13,7 +13,6 @@ use craft\helpers\UrlHelper;
 use craft\web\assets\cp\CpAsset;
 use craft\web\Controller;
 use Craft;
-use craft\web\View;
 use yii\base\Exception;
 
 class CampaignEmailController extends Controller

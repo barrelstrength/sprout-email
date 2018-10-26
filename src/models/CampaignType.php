@@ -171,7 +171,8 @@ class CampaignType extends Model
     }
 
     /**
-     * @return \barrelstrength\sproutbase\app\email\base\Mailer|null
+     * @return \barrelstrength\sproutbase\app\email\base\Mailer
+     * @throws \yii\base\Exception
      */
     public function getMailer()
     {

@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;
 use Craft;
