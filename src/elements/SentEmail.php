@@ -27,22 +27,70 @@ class SentEmail extends Element
     const SENT = 'sent';
     const FAILED = 'failed';
 
+    /**
+     * @var bool
+     */
     public $saveAsNew;
+
+    /**
+     * @var string
+     */
     public $title;
+
+    /**
+     * @var string
+     */
     public $emailSubject;
+
+    /**
+     * @var bool
+     */
     public $enableFileAttachments;
 
     // Sender Info
+    /**
+     * @var string
+     */
     public $fromName;
+
+    /**
+     * @var string
+     */
     public $fromEmail;
+
+    /**
+     * @var string
+     */
     public $toEmail;
 
+    /**
+     * @var string
+     */
     public $body;
+
+    /**
+     * @var string
+     */
     public $htmlBody;
+
+    /**
+     * @var string
+     */
     public $info;
+
+    /**
+     * @var string
+     */
     public $status;
+
+    /**
+     * @var \DateTime
+     */
     public $dateSent;
 
+    /**
+     * @var array
+     */
     protected $fields;
 
     /**
@@ -53,6 +101,9 @@ class SentEmail extends Element
         return $this->getLocaleNiceDateTime();
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function displayName(): string
     {
         return Craft::t('sprout-email', 'Campaign Email');
@@ -66,6 +117,11 @@ class SentEmail extends Element
         return true;
     }
 
+    /**
+     * @param string|null $context
+     *
+     * @return array
+     */
     protected static function defineSources(string $context = null): array
     {
         $sources = [
@@ -88,18 +144,26 @@ class SentEmail extends Element
             'toEmail' => ['label' => Craft::t('sprout-email', 'Recipient')],
             'emailSubject' => ['label' => Craft::t('sprout-email', 'Subject')],
             'resend' => ['label' => Craft::t('sprout-email', 'Resend')],
-            'preview' => ['label' => Craft::t('sprout-email', 'Send')],
-            'info' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view']
+            'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
+            'info' => ['label' => Craft::t('sprout-email', 'Details'), 'icon' => 'info']
         ];
 
         return $attributes;
     }
 
+    /**
+     * @return ElementQueryInterface
+     */
     public static function find(): ElementQueryInterface
     {
         return new SentEmailQuery(static::class);
     }
 
+    /**
+     * @param string $attribute
+     *
+     * @return string
+     */
     public function getTableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
@@ -135,6 +199,9 @@ class SentEmail extends Element
         return parent::getTableAttributeHtml($attribute);
     }
 
+    /**
+     * @return string
+     */
     public function setHud()
     {
         $element = $this;

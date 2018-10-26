@@ -475,9 +475,10 @@ class CampaignEmail extends EmailElement
     }
 
     /**
-     *  Determine if this Campaign Email has lists that it will be sent to     *
+     * Determine if this Campaign Email has lists that it will be sent to
      *
      * @return bool
+     * @throws Exception
      */
     public function isListReady()
     {
@@ -498,7 +499,8 @@ class CampaignEmail extends EmailElement
     }
 
     /**
-     * @return Mailer|null
+     * @return Mailer|\barrelstrength\sproutbase\app\email\mailers\DefaultMailer
+     * @throws Exception
      */
     public function getMailer()
     {
@@ -569,7 +571,8 @@ class CampaignEmail extends EmailElement
      * Determine if this Campaign Email is ready to be sent
      *
      * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
+     * @throws \Twig_Error_Loader
      */
     public function isReadyToSend()
     {
@@ -580,7 +583,8 @@ class CampaignEmail extends EmailElement
      * Determine if this Campaign Email is ready to be sent
      *
      * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
+     * @throws \Twig_Error_Loader
      */
     public function isReadyToTest()
     {
