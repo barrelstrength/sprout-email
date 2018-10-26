@@ -154,9 +154,8 @@ class SentEmails extends Component
             $fromName = ($res = array_values($from)) ? $res[0] : '';
         }
 
-        $toEmail = '';
-        if ($toEmail) {
-            $to = $message->getTo();
+        $to = $message->getTo();
+        if ($to) {
             $toEmail = ($res = array_keys($to)) ? $res[0] : '';
         }
 
@@ -165,6 +164,9 @@ class SentEmails extends Component
         $plugin = Craft::$app->getPlugins()->getPlugin('sprout-email');
 
         if ($plugin) {
+            /**
+             * @var $settings Settings
+             */
             $settings = $plugin->getSettings();
 
             if ($settings != null AND !$settings->enableSentEmails) {
