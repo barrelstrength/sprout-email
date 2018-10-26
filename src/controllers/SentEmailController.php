@@ -19,42 +19,21 @@ use Egulias\EmailValidator\Validation\RFCValidation;
 class SentEmailController extends Controller
 {
     /**
-     * Returns info for the Sent Email Resend modal
-     *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
-     */
-    public function actionGetResendModal()
-    {
-        $this->requirePostRequest();
-
-        $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
-        $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
-
-        $content = Craft::$app->getView()->renderTemplate(
-            'sprout-base-email/_modals/sentemails/prepare-resend-email', [
-            'sentEmail' => $sentEmail
-        ]);
-
-        $response = new Response();
-        $response->content = $content;
-        $response->success = true;
-
-        return $this->asJson($response->getAttributes());
-    }
-
-    /**
      * Re-sends a Sent Email
      *
      * @todo - update to use new EmailElement::getRecipients() syntax
      *
+     * @return bool|\yii\web\Response
+     * @throws Exception
+     * @throws \Throwable
      * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionResendEmail()
     {
+        // @todo - Why is this so long?
+        // @todo - do we really need all this logic here? Can we delegate it to a common sendEmail method?
+
         $this->requirePostRequest();
 
         $emailId = Craft::$app->request->getBodyParam('emailId');
@@ -182,6 +161,32 @@ class SentEmailController extends Controller
 
             return $this->asJson($response);
         }
+    }
+
+    /**
+     * Returns info for the Sent Email Resend modal
+     *
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionGetResendModal()
+    {
+        $this->requirePostRequest();
+
+        $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
+        $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
+
+        $content = Craft::$app->getView()->renderTemplate(
+            'sprout-base-email/_modals/sentemails/prepare-resend-email', [
+            'sentEmail' => $sentEmail
+        ]);
+
+        $response = new Response();
+        $response->content = $content;
+        $response->success = true;
+
+        return $this->asJson($response->getAttributes());
     }
 
     /**
