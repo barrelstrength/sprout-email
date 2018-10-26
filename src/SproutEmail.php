@@ -23,7 +23,6 @@ use barrelstrength\sproutemail\mailers\CopyPasteMailer;
 use barrelstrength\sproutemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
 use barrelstrength\sproutbase\app\email\services\Mailers;
-use barrelstrength\sproutemail\services\CampaignEmails;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -110,14 +109,15 @@ class SproutEmail extends Plugin
             $event->events[] = Manual::class;
         });
 
-        Event::on(Mailers::class, Mailers::ON_SEND_EMAIL_ERROR, function(Event $event) {
-            SproutEmail::$app->sentEmails->handleLogSentEmailOnSendEmailError($event);
-        });
-
+        // Email Tracking
         Event::on(BaseMailer::class, BaseMailer::EVENT_AFTER_SEND, function(MailEvent $event) {
             if ($this->getSettings()->enableSentEmails) {
                 SproutEmail::$app->sentEmails->logSentEmail($event);
             }
+        });
+
+        Event::on(Mailers::class, Mailers::ON_SEND_EMAIL_ERROR, function(Event $event) {
+            SproutEmail::$app->sentEmails->handleLogSentEmailOnSendEmailError($event);
         });
     }
 
@@ -161,12 +161,12 @@ class SproutEmail extends Plugin
             ];
         }
 
-//        if ($settings->enableSentEmails) {
-//            $navigation['subnav']['sentemails'] = [
-//                'label' => Craft::t('sprout-email', 'Sent Emails'),
-//                'url' => 'sprout-email/sentemails'
-//            ];
-//        }
+        if ($settings->enableSentEmails) {
+            $navigation['subnav']['sentemails'] = [
+                'label' => Craft::t('sprout-email', 'Sent Emails'),
+                'url' => 'sprout-email/sentemails'
+            ];
+        }
 
         $navigation['subnav']['settings'] = [
             'label' => Craft::t('sprout-email', 'Settings'),
