@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.0.0-beta.6 - 2018-10-29
+
+### Changed
+- Updated Sprout Base requirement to v4.0.0
+
+## 4.0.0-beta.5 - 2018-10-26
+
+### Added
+- Added support for CC and BCC recipients on Notification Emails.
+
+### Changed
+- Updated Sprout Base requirement to v3.0.10
+	
+### Fixed
+- Fixed various issues in Notification Email migrations from Craft 2 
+
 ## 4.0.0-beta.4 - 2018-10-23
 
 ### Added
