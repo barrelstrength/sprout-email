@@ -16,12 +16,16 @@ class SentEmailInfoTable extends Model
     public $deliveryType;
     public $deliveryStatus;
     public $message;
+
     // Sender Info
     public $senderName;
     public $senderEmail;
     public $source;
     public $sourceVersion;
     public $craftVersion;
+    public $ipAddress;
+    public $userAgent;
+
     // Email Settings
     public $mailer;
     public $protocol;

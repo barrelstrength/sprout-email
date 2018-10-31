@@ -200,18 +200,18 @@ class SentEmailController extends Controller
     {
         $this->requirePostRequest();
 
-        $sentEmailId = Craft::$app->getRequest()->getBodyParam('sentEmailId');
-
+        $sentEmailId = Craft::$app->getRequest()->getBodyParam('emailId');
         $sentEmail = Craft::$app->elements->getElementById($sentEmailId, SentEmail::class);
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-base-email/sentemails/_hud', [
-            'sentEmail' => $sentEmail
+        $content = Craft::$app->getView()->renderTemplate(
+            'sprout-base-email/_modals/sentemails/info-table', [
+            'info' => $sentEmail->getInfo()
         ]);
 
-        $response = [
-            'html' => $html
-        ];
+        $response = new Response();
+        $response->content = $content;
+        $response->success = true;
 
-        return $this->asJson(Json::encode($response));
+        return $this->asJson($response->getAttributes());
     }
 }
