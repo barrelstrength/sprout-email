@@ -115,10 +115,6 @@ class SproutEmail extends Plugin
                 SproutEmail::$app->sentEmails->logSentEmail($event);
             }
         });
-
-        Event::on(Mailers::class, Mailers::ON_SEND_EMAIL_ERROR, function(Event $event) {
-            SproutEmail::$app->sentEmails->handleLogSentEmailOnSendEmailError($event);
-        });
     }
 
     /**

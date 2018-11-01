@@ -11,7 +11,6 @@ use craft\helpers\Json;
 use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
-use barrelstrength\sproutemail\SproutEmail;
 
 /**
  * Class SentEmails
@@ -97,45 +96,6 @@ class SentEmails extends Component
     }
 
     /**
-     * @param MailEvent $event
-     *
-     * @throws \Throwable
-     */
-    public function handleLogSentEmailOnSendEmailError(MailEvent $event)
-    {
-        $deliveryStatus = $event['deliveryStatus'] ?? null;
-        $message = $event['message'] ?? Craft::t('sprout-email', 'Unknown error');
-
-        if (isset($event['variables']['info'])) {
-            // Add a few additional variables to our info table
-            $event['variables']['info']->deliveryStatus = $deliveryStatus;
-            $event['variables']['info']->message = $message;
-        } else {
-            $infoTable = new SentEmailInfoTable();
-
-            $infoTable->deliveryStatus = $deliveryStatus;
-            $infoTable->message = $message;
-
-            $event['variables']['info'] = $infoTable;
-        }
-
-        if (isset($event['variables']['info'])) {
-            // Add a few additional variables to our info table
-            $event['variables']['info']->deliveryStatus = $deliveryStatus;
-            $event['variables']['info']->message = $message;
-        } else {
-            $infoTable = new SentEmailInfoTable();
-
-            $infoTable->deliveryStatus = $deliveryStatus;
-            $infoTable->message = $message;
-
-            $event['variables']['info'] = $infoTable;
-        }
-
-        SproutEmail::$app->sentEmails->logSentEmail($event);
-    }
-
-    /**
      * Save email snapshot using the Sent Email Element Type
      *
      * @param Message            $message
@@ -155,6 +115,7 @@ class SentEmails extends Component
         }
 
         $to = $message->getTo();
+        $toEmail = '';
         if ($to) {
             $toEmail = ($res = array_keys($to)) ? $res[0] : '';
         }
@@ -206,7 +167,6 @@ class SentEmails extends Component
             }
         }
 
-
         if ($infoTable->deliveryStatus == 'failed') {
             $sentEmail->status = 'failed';
         }
@@ -218,7 +178,6 @@ class SentEmails extends Component
 
         try {
             if (Craft::$app->getElements()->saveElement($sentEmail)) {
-
                 return $sentEmail;
             }
         } catch (\Exception $e) {

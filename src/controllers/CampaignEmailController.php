@@ -318,8 +318,9 @@ class CampaignEmailController extends Controller
      * @todo - update to use new EmailElement::getRecipients() syntax and new isTest syntax
      *
      * @return \yii\web\Response
+     * @throws Exception
+     * @throws \Throwable
      * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSendTestCampaignEmail()

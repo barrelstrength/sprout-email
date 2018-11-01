@@ -8,7 +8,6 @@ use craft\mail\Message;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\SproutEmail;
-use craft\helpers\Json;
 use craft\web\Controller;
 use Craft;
 use yii\base\Exception;
@@ -201,6 +200,10 @@ class SentEmailController extends Controller
         $this->requirePostRequest();
 
         $sentEmailId = Craft::$app->getRequest()->getBodyParam('emailId');
+
+        /**
+         * @var $sentEmail SentEmail
+         */
         $sentEmail = Craft::$app->elements->getElementById($sentEmailId, SentEmail::class);
 
         $content = Craft::$app->getView()->renderTemplate(

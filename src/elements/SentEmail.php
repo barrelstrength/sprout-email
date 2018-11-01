@@ -12,8 +12,6 @@ use Craft;
 use craft\base\Element;
 use barrelstrength\sproutemail\records\SentEmail as SentEmailRecord;
 use craft\elements\db\ElementQueryInterface;
-use craft\helpers\ElementHelper;
-use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use yii\base\Exception;
