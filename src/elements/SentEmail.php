@@ -295,7 +295,7 @@ class SentEmail extends Element
      */
     public function getLocaleNiceDateTime()
     {
-        return $this->dateCreated->format('M j, Y H:i A');
+        return $this->dateCreated->format('M j, Y H:i:s A');
     }
 
     /**
