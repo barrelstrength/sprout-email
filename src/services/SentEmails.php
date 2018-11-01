@@ -20,15 +20,17 @@ use yii\mail\MailEvent;
 class SentEmails extends Component
 {
     /**
+     * The name of the variable used for the Email Message variables where we pass sent email info.
+     */
+    const SENT_EMAIL_MESSAGE_VARIABLE = 'sprout-sent-email-info';
+
+    /**
      * @param MailEvent $event
      *
      * @throws \Throwable
      */
     public function logSentEmail(MailEvent $event)
     {
-        // Prepare some variables
-        // -----------------------------------------------------------
-
         /**
          * @var $message Message
          */
@@ -42,9 +44,10 @@ class SentEmails extends Component
             $fromName = ($res = array_values($from)) ? $res[0] : '';
         }
 
+        // We manage the info we track using the Message variables
         $variables = $message->variables;
 
-        $infoTable = $variables['info'] ?? null;
+        $infoTable = $variables[SentEmails::SENT_EMAIL_MESSAGE_VARIABLE] ?? null;
 
         if ($infoTable === null) {
             // If we have info set, grab the custom info that's already prepared

@@ -305,9 +305,11 @@ class SentEmail extends Element
         return $actions;
     }
 
+    /**
+     * @return SentEmailInfoTable
+     */
     public function getInfo()
     {
-        // @todo - review Sent Email assignment
         $infoTable = new SentEmailInfoTable();
         $infoTable->setAttributes(Json::decode($this->info), false);
 

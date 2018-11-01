@@ -4,6 +4,7 @@ namespace barrelstrength\sproutemail\controllers;
 
 use barrelstrength\sproutbase\app\email\models\SimpleRecipient;
 use barrelstrength\sproutbase\app\email\models\SimpleRecipientList;
+use barrelstrength\sproutemail\services\SentEmails;
 use craft\mail\Message;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\elements\SentEmail;
@@ -30,9 +31,6 @@ class SentEmailController extends Controller
      */
     public function actionResendEmail()
     {
-        // @todo - Why is this so long?
-        // @todo - do we really need all this logic here? Can we delegate it to a common sendEmail method?
-
         $this->requirePostRequest();
 
         $emailId = Craft::$app->request->getBodyParam('emailId');
@@ -41,49 +39,52 @@ class SentEmailController extends Controller
          */
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
 
-        $recipients = [];
+        $recipients = Craft::$app->getRequest()->getBodyParam('recipients');
 
-        if (Craft::$app->getRequest()->getBodyParam('recipients') !== null) {
-            $recipients = Craft::$app->request->getBodyParam('recipients');
-
-            $validator = new EmailValidator();
-            $validations = new MultipleValidationWithAnd([
-                new RFCValidation()
-            ]);
-            $recipientList = new SimpleRecipientList();
-            $recipientArray = explode(',', $recipients);
-
-            foreach ($recipientArray as $recipient) {
-                $recipientModel = new SimpleRecipient();
-                $recipientModel->email = trim($recipient);
-
-                if ($validator->isValid($recipientModel->email, $validations)) {
-                    $recipientList->addRecipient($recipientModel);
-                } else {
-                    $recipientList->addInvalidRecipient($recipientModel);
-                }
-            }
-
-            if ($recipientList->getInvalidRecipients()) {
-                $invalidEmails = [];
-                foreach ($recipientList->getInvalidRecipients() as $invalidRecipient) {
-                    $invalidEmails[] = $invalidRecipient->email;
-                }
-
-                return $this->asJson(
-                    Response::createErrorModalResponse('sprout-base-email/_modals/response', [
-                        'email' => $sentEmail,
-                        'message' => Craft::t('sprout-base', 'Recipient email addresses do not validate: {invalidEmails}', [
-                            'invalidEmails' => implode(', ', $invalidEmails)
-                        ])
-                    ])
-                );
-            }
-
-            $validRecipients = $recipientList->getRecipients();
-        } else {
-            $recipients[] = $sentEmail->toEmail;
+        if (!$recipients) {
+            return $this->asJson(
+                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                    'email' => $sentEmail,
+                    'message' => Craft::t('sprout-email', 'A recipient email address is required')
+                ])
+            );
         }
+
+        $validator = new EmailValidator();
+        $validations = new MultipleValidationWithAnd([
+            new RFCValidation()
+        ]);
+        $recipientList = new SimpleRecipientList();
+        $recipientArray = explode(',', $recipients);
+
+        foreach ($recipientArray as $recipient) {
+            $recipientModel = new SimpleRecipient();
+            $recipientModel->email = trim($recipient);
+
+            if ($validator->isValid($recipientModel->email, $validations)) {
+                $recipientList->addRecipient($recipientModel);
+            } else {
+                $recipientList->addInvalidRecipient($recipientModel);
+            }
+        }
+
+        if ($recipientList->getInvalidRecipients()) {
+            $invalidEmails = [];
+            foreach ($recipientList->getInvalidRecipients() as $invalidRecipient) {
+                $invalidEmails[] = $invalidRecipient->email;
+            }
+
+            return $this->asJson(
+                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                    'email' => $sentEmail,
+                    'message' => Craft::t('sprout-email', 'Invalid email address(es) provided: {invalidEmails}', [
+                        'invalidEmails' => implode(', ', $invalidEmails)
+                    ])
+                ])
+            );
+        }
+
+        $validRecipients = $recipientList->getRecipients();
 
         try {
             $processedRecipients = [];
@@ -113,7 +114,7 @@ class SentEmailController extends Controller
                     'renderedEmail' => $email,
                     'recipients' => $recipients,
                     'processedRecipients' => null,
-                    'info' => $infoTable
+                    SentEmails::SENT_EMAIL_MESSAGE_VARIABLE => $infoTable
                 ];
 
                 $email->variables = $variables;
