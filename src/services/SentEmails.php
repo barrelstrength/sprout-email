@@ -2,7 +2,10 @@
 
 namespace barrelstrength\sproutemail\services;
 
+use barrelstrength\sproutbase\app\email\enums\DeliveryStatus;
+use barrelstrength\sproutbase\app\email\enums\DeliveryType;
 use barrelstrength\sproutemail\models\Settings;
+use craft\mail\Mailer as CraftMailer;
 use craft\mail\Message;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
@@ -47,19 +50,39 @@ class SentEmails extends Component
         // We manage the info we track using the Message variables
         $variables = $message->variables;
 
+        /**
+         * @var $infoTable SentEmailInfoTable
+         */
         $infoTable = $variables[SentEmails::SENT_EMAIL_MESSAGE_VARIABLE] ?? null;
 
-        if ($infoTable === null) {
-            // If we have info set, grab the custom info that's already prepared
-            // If we don't have info, we probably have an email sent by Craft so
-            // we can continue with a generic info table model
+        // Populate what we can for the Info Table for System Messages
+        if (get_class($message->mailer) === CraftMailer::class) {
             $infoTable = new SentEmailInfoTable();
-
-            $infoTable = $this->updateInfoTableWithCraftInfo($infoTable);
+            $infoTable = $this->updateInfoTableWithCraftInfo($message, $infoTable);
         }
         // Sender Info
         $infoTable->senderName = $fromName;
         $infoTable->senderEmail = $fromEmail;
+
+        $infoTable->ipAddress = Craft::$app->getRequest()->getUserIP();
+        $infoTable->userAgent = Craft::$app->getRequest()->getUserAgent();
+
+        $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
+
+        $infoTable->transportType = $emailSettings->transportType;
+
+        $transportSettings = $emailSettings->transportSettings;
+
+        // If SMTP
+        if ($transportSettings)
+        {
+            $infoTable->host = $transportSettings['host'];
+//        $infoTable->port = ;
+//        $infoTable->username = ;
+//        $infoTable->encryptionMethod = ;
+//        $infoTable->timeout = ;
+        }
+
 
         $this->saveSentEmail($message, $infoTable);
     }
@@ -226,14 +249,22 @@ class SentEmails extends Component
      *
      * @return mixed
      */
-    public function updateInfoTableWithCraftInfo($infoTable)
+    public function updateInfoTableWithCraftInfo(Message $message, SentEmailInfoTable $infoTable)
     {
         $craftVersion = $this->_getCraftVersion();
 
-        $infoTable->emailType = Craft::t('sprout-email', 'Craft CMS Email');
+        $infoTable->emailType = Craft::t('sprout-email', 'System Message');
         $infoTable->source = 'Craft CMS';
         $infoTable->sourceVersion = $craftVersion;
         $infoTable->craftVersion = $craftVersion;
+
+        $infoTable->deliveryStatus = DeliveryStatus::Sent;
+
+        if ($message->key === 'test_email') {
+            $infoTable->deliveryType = DeliveryType::Test;
+        }
+
+        $infoTable->mailer = Craft::t('sprout-email', 'Craft Mailer');
 
         return $infoTable;
     }
