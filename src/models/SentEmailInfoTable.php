@@ -105,7 +105,11 @@ class SentEmailInfoTable extends Model
     /**
      * @var
      */
-    public $smtpSecureTransportType;
+    public $username;
+    /**
+     * @var
+     */
+    public $encryptionMethod;
     /**
      * @var
      */
