@@ -4,6 +4,7 @@ namespace barrelstrength\sproutemail\services;
 
 use barrelstrength\sproutbase\app\email\enums\DeliveryStatus;
 use barrelstrength\sproutbase\app\email\enums\DeliveryType;
+use barrelstrength\sproutbase\app\email\jobs\DeleteSentEmails;
 use barrelstrength\sproutemail\models\Settings;
 use craft\base\Plugin;
 use craft\mail\Mailer as CraftMailer;
@@ -171,6 +172,17 @@ class SentEmails extends Component
 
             if ($settings != null AND !$settings->enableSentEmails) {
                 return false;
+            }
+
+            $sentEmailsLimit = $settings->sentEmailsLimit;
+
+            if ($sentEmailsLimit > 0) {
+                $sentEmailJob = new DeleteSentEmails();
+                $sentEmailJob->totalToDelete = $sentEmailsLimit;
+                $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+
+                // Call the delete redirects job
+                Craft::$app->queue->push($sentEmailJob);
             }
         }
 
