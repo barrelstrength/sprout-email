@@ -9,7 +9,8 @@ class SentEmailQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected $defaultOrderBy = ['sproutemail_sentemail.dateUpdated' => SORT_DESC];
+    protected $defaultOrderBy = ['sproutemail_sentemail.dateCreated' => SORT_DESC];
+
     /**
      * @inheritdoc
      */

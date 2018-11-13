@@ -136,6 +136,26 @@ class SentEmail extends Element
     /**
      * @inheritdoc
      */
+    protected static function defineSearchableAttributes(): array
+    {
+        return ['toEmail', 'emailSubject'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static function defineSortOptions(): array
+    {
+        $attributes = [
+            'elements.dateCreated' => Craft::t('sprout-email', 'Date Sent')
+        ];
+
+        return $attributes;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected static function defineTableAttributes(): array
     {
         $attributes = [
@@ -206,18 +226,6 @@ class SentEmail extends Element
         }
 
         return parent::getTableAttributeHtml($attribute);
-    }
-
-    /**
-     * @return array
-     */
-    protected static function defineSortOptions(): array
-    {
-        return [
-            'title' => Craft::t('sprout-email', 'Title'),
-            'elements.dateCreated' => Craft::t('sprout-email', 'Date Created'),
-            'elements.dateUpdated' => Craft::t('sprout-email', 'Date Updated'),
-        ];
     }
 
     /**
