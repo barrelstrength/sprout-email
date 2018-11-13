@@ -26,6 +26,11 @@ use yii\mail\MailEvent;
 class SentEmails extends Component
 {
     /**
+     * Default limit for the Sent Email trimming
+     */
+    const SENT_EMAIL_DEFAULT_LIMIT = 5000;
+
+    /**
      * The name of the variable used for the Email Message variables where we pass sent email info.
      */
     const SENT_EMAIL_MESSAGE_VARIABLE = 'sprout-sent-email-info';
@@ -174,16 +179,7 @@ class SentEmails extends Component
                 return false;
             }
 
-            $sentEmailsLimit = $settings->sentEmailsLimit;
-
-            if ($sentEmailsLimit > 0) {
-                $sentEmailJob = new DeleteSentEmails();
-                $sentEmailJob->totalToDelete = $sentEmailsLimit;
-                $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
-
-                // Call the delete redirects job
-                Craft::$app->queue->push($sentEmailJob);
-            }
+            $this->cleanUpSentEmails();
         }
 
         // decode subject if it is encoded
@@ -236,6 +232,33 @@ class SentEmails extends Component
         }
 
         return false;
+    }
+
+    public function cleanUpSentEmails() {
+        /**
+         * @var $settings Settings
+         */
+        $plugin = Craft::$app->getPlugins()->getPlugin('sprout-email');
+
+        if (!$plugin) {
+            return false;
+        }
+
+        $settings = $plugin->getSettings();
+
+        // Default to 5000 if no integer is found in settings
+        $sentEmailsLimit = is_int((int)$settings->sentEmailsLimit)
+            ? (int)$settings->sentEmailsLimit
+            : static::SENT_EMAIL_DEFAULT_LIMIT;
+
+        if ($sentEmailsLimit > 0) {
+            $sentEmailJob = new DeleteSentEmails();
+            $sentEmailJob->limit = $sentEmailsLimit;
+            $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+
+            // Call the Delete Sent Emails job
+            Craft::$app->queue->push($sentEmailJob);
+        }
     }
 
     /**
