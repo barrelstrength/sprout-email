@@ -220,8 +220,8 @@ class UsersSave extends NotificationEvent
 
     private function isValidUserGroupIds($currentUsersUserGroups)
     {
-        return count($this->userGroupIds) > 0
-            AND ($this->userGroupIds !== '*')
+        return $this->userGroupIds !== '*'
+            AND count($this->userGroupIds) > 0
             AND count($currentUsersUserGroups);
     }
 
