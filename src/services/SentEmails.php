@@ -2,16 +2,20 @@
 
 namespace barrelstrength\sproutemail\services;
 
+use barrelstrength\sproutbase\app\email\jobs\DeleteSentEmails;
+use barrelstrength\sproutemail\models\Settings;
+use barrelstrength\sproutemail\SproutEmail;
+use craft\base\Plugin;
+use craft\mail\Mailer as CraftMailer;
 use craft\mail\Message;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
 use craft\base\Component;
 use craft\helpers\Json;
+use craft\mail\transportadapters\Smtp;
 use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
-use barrelstrength\sproutemail\SproutEmail;
-use yii\swiftmailer\Mailer;
 
 /**
  * Class SentEmails
@@ -21,15 +25,22 @@ use yii\swiftmailer\Mailer;
 class SentEmails extends Component
 {
     /**
+     * Default limit for the Sent Email trimming
+     */
+    const SENT_EMAIL_DEFAULT_LIMIT = 5000;
+
+    /**
+     * The name of the variable used for the Email Message variables where we pass sent email info.
+     */
+    const SENT_EMAIL_MESSAGE_VARIABLE = 'sprout-sent-email-info';
+
+    /**
      * @param MailEvent $event
      *
      * @throws \Throwable
      */
     public function logSentEmail(MailEvent $event)
     {
-        // Prepare some variables
-        // -----------------------------------------------------------
-
         /**
          * @var $message Message
          */
@@ -43,21 +54,55 @@ class SentEmails extends Component
             $fromName = ($res = array_values($from)) ? $res[0] : '';
         }
 
+        // We manage the info we track using the Message variables
         $variables = $message->variables;
 
-        $infoTable = $variables['info'] ?? null;
+        /**
+         * @var $infoTable SentEmailInfoTable
+         */
+        $infoTable = $variables[SentEmails::SENT_EMAIL_MESSAGE_VARIABLE] ?? null;
 
-        if ($infoTable === null) {
-            // If we have info set, grab the custom info that's already prepared
-            // If we don't have info, we probably have an email sent by Craft so
-            // we can continue with a generic info table model
+        // Populate what we can for the Info Table for System Messages
+        if (isset($message->mailer) && get_class($message->mailer) === CraftMailer::class) {
             $infoTable = new SentEmailInfoTable();
-
-            $infoTable = $this->updateInfoTableWithCraftInfo($infoTable);
+            $infoTable = $this->updateInfoTableWithCraftInfo($message, $infoTable);
         }
+
         // Sender Info
         $infoTable->senderName = $fromName;
         $infoTable->senderEmail = $fromEmail;
+
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            $infoTable->ipAddress = 'Console Request';
+            $infoTable->userAgent = 'Console Request';
+        } else {
+            $infoTable->ipAddress = Craft::$app->getRequest()->getUserIP();
+            $infoTable->userAgent = Craft::$app->getRequest()->getUserAgent();
+        }
+
+        $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
+
+        $transportType = new $emailSettings->transportType();
+        $transportType->setAttributes($emailSettings->transportSettings);
+        $infoTable->transportType = $transportType::displayName();
+
+        // If SMTP
+        if (get_class($transportType) === Smtp::class) {
+            $infoTable->host = $transportType->host;
+            $infoTable->port = $transportType->port;
+            $infoTable->username = $transportType->username;
+            $infoTable->encryptionMethod = $transportType->encryptionMethod;
+            $infoTable->timeout = $transportType->timeout;
+        }
+
+        $deliveryStatuses = $infoTable->getDeliveryStatuses();
+
+        if ($event->isSuccessful) {
+            $infoTable->deliveryStatus = $deliveryStatuses['Sent'];
+        } else {
+            $infoTable->deliveryStatus = $deliveryStatuses['Error'];
+            $infoTable->message = $message;
+        }
 
         $this->saveSentEmail($message, $infoTable);
     }
@@ -84,7 +129,8 @@ class SentEmails extends Component
         // -----------------------------------------------------------
 
         // General Info
-        $infoTable->emailType = Craft::t('sprout-email', 'Campaign');
+        $emailTypes = $infoTable->getEmailTypes();
+        $infoTable->emailType = $emailTypes['Campaign'];
 
         // Sender Info
         $infoTable->senderName = $emailModel->fromName;
@@ -94,45 +140,6 @@ class SentEmails extends Component
         $infoTable->mailer = ucwords($campaign->mailer);
 
         $this->saveSentEmail($emailModel, $infoTable);
-    }
-
-    /**
-     * @param Event $event
-     *
-     * @throws \Throwable
-     */
-    public function handleLogSentEmailOnSendEmailError(Event $event)
-    {
-        $deliveryStatus = $event['deliveryStatus'] ?? null;
-        $message = $event['message'] ?? Craft::t('sprout-email', 'Unknown error');
-
-        if (isset($event['variables']['info'])) {
-            // Add a few additional variables to our info table
-            $event['variables']['info']->deliveryStatus = $deliveryStatus;
-            $event['variables']['info']->message = $message;
-        } else {
-            $infoTable = new SentEmailInfoTable();
-
-            $infoTable->deliveryStatus = $deliveryStatus;
-            $infoTable->message = $message;
-
-            $event['variables']['info'] = $infoTable;
-        }
-
-        if (isset($event['variables']['info'])) {
-            // Add a few additional variables to our info table
-            $event['variables']['info']->deliveryStatus = $deliveryStatus;
-            $event['variables']['info']->message = $message;
-        } else {
-            $infoTable = new SentEmailInfoTable();
-
-            $infoTable->deliveryStatus = $deliveryStatus;
-            $infoTable->message = $message;
-
-            $event['variables']['info'] = $infoTable;
-        }
-
-        SproutEmail::$app->sentEmails->logSentEmail($event);
     }
 
     /**
@@ -154,9 +161,9 @@ class SentEmails extends Component
             $fromName = ($res = array_values($from)) ? $res[0] : '';
         }
 
+        $to = $message->getTo();
         $toEmail = '';
-        if ($toEmail) {
-            $to = $message->getTo();
+        if ($to) {
             $toEmail = ($res = array_keys($to)) ? $res[0] : '';
         }
 
@@ -165,11 +172,16 @@ class SentEmails extends Component
         $plugin = Craft::$app->getPlugins()->getPlugin('sprout-email');
 
         if ($plugin) {
+            /**
+             * @var $settings Settings
+             */
             $settings = $plugin->getSettings();
 
             if ($settings != null AND !$settings->enableSentEmails) {
                 return false;
             }
+
+            $this->cleanUpSentEmails();
         }
 
         // decode subject if it is encoded
@@ -204,8 +216,9 @@ class SentEmails extends Component
             }
         }
 
+        $deliveryStatuses = $infoTable->getDeliveryStatuses();
 
-        if ($infoTable->deliveryStatus == 'failed') {
+        if ($infoTable->deliveryStatus == $deliveryStatuses['Error']) {
             $sentEmail->status = 'failed';
         }
 
@@ -216,7 +229,6 @@ class SentEmails extends Component
 
         try {
             if (Craft::$app->getElements()->saveElement($sentEmail)) {
-
                 return $sentEmail;
             }
         } catch (\Exception $e) {
@@ -224,6 +236,34 @@ class SentEmails extends Component
         }
 
         return false;
+    }
+
+    public function cleanUpSentEmails()
+    {
+        /**
+         * @var $settings Settings
+         */
+        $plugin = Craft::$app->getPlugins()->getPlugin('sprout-email');
+
+        if (!$plugin) {
+            return false;
+        }
+
+        $settings = $plugin->getSettings();
+
+        // Default to 5000 if no integer is found in settings
+        $sentEmailsLimit = is_int((int)$settings->sentEmailsLimit)
+            ? (int)$settings->sentEmailsLimit
+            : static::SENT_EMAIL_DEFAULT_LIMIT;
+
+        if ($sentEmailsLimit > 0) {
+            $sentEmailJob = new DeleteSentEmails();
+            $sentEmailJob->limit = $sentEmailsLimit;
+            $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+
+            // Call the Delete Sent Emails job
+            Craft::$app->queue->push($sentEmailJob);
+        }
     }
 
     /**
@@ -239,21 +279,36 @@ class SentEmails extends Component
         $infoTable = new SentEmailInfoTable();
         $infoTable->setAttributes($values, false);
 
+        /**
+         * @var $plugin Plugin
+         */
         $plugin = Craft::$app->getPlugins()->getPlugin($pluginHandle);
         $infoTable->source = '';
         $infoTable->sourceVersion = '';
 
         if ($plugin) {
-            $infoTable->source = $plugin->getHandle();
-            $infoTable->sourceVersion = $plugin->getHandle().' '.$plugin->getVersion();
+            $infoTable->source = $plugin::getInstance()->name;
+            $infoTable->sourceVersion = $plugin::getInstance()->name.' '.$plugin->getVersion();
         }
 
-        $craftVersion = $this->_getCraftVersion();
+        $craftVersion = $this->getCraftVersion();
 
         $infoTable->craftVersion = $craftVersion;
 
         return $infoTable;
     }
+
+//    public function getDeliveryStatus($status)
+//    {
+//        switch ($status) {
+//            case 'Live':
+//                return Craft::t('sprout-email', 'Live');
+//                break;
+//            case 'Test':
+//                return Craft::t('sprout-email', 'Test');
+//                break;
+//        }
+//    }
 
     /**
      * Update the SproutEmail_SentEmailInfoTableModel based on the emailKey
@@ -262,14 +317,22 @@ class SentEmails extends Component
      *
      * @return mixed
      */
-    public function updateInfoTableWithCraftInfo($infoTable)
+    public function updateInfoTableWithCraftInfo(Message $message, SentEmailInfoTable $infoTable)
     {
-        $craftVersion = $this->_getCraftVersion();
+        $craftVersion = $this->getCraftVersion();
 
-        $infoTable->emailType = Craft::t('sprout-email', 'Craft CMS Email');
+        $emailTypes = $infoTable->getEmailTypes();
+        $infoTable->emailType = $emailTypes['System'];
         $infoTable->source = 'Craft CMS';
         $infoTable->sourceVersion = $craftVersion;
         $infoTable->craftVersion = $craftVersion;
+
+        if ($message->key === 'test_email') {
+            $deliveryTypes = $infoTable->getDeliveryTypes();
+            $infoTable->deliveryType = $deliveryTypes['Test'];
+        }
+
+        $infoTable->mailer = Craft::t('sprout-email', 'Craft Mailer');
 
         return $infoTable;
     }
@@ -302,7 +365,8 @@ class SentEmails extends Component
         return $emailModel;
     }
 
-    private function _getCraftVersion()
+
+    private function getCraftVersion()
     {
         $version = Craft::$app->getVersion();
         $craftVersion = '';

@@ -111,6 +111,7 @@ class CampaignTypeController extends Controller
      * Deletes a Campaign Type
      *
      * @return \yii\web\Response
+     * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionDeleteCampaignType()

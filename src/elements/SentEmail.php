@@ -7,12 +7,11 @@ use barrelstrength\sproutbase\app\email\web\assets\email\EmailAsset;
 use barrelstrength\sproutemail\elements\actions\DeleteEmail;
 use barrelstrength\sproutemail\elements\db\SentEmailQuery;
 
+use barrelstrength\sproutemail\models\SentEmailInfoTable;
 use Craft;
 use craft\base\Element;
 use barrelstrength\sproutemail\records\SentEmail as SentEmailRecord;
 use craft\elements\db\ElementQueryInterface;
-use craft\helpers\ElementHelper;
-use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use yii\base\Exception;
@@ -27,22 +26,70 @@ class SentEmail extends Element
     const SENT = 'sent';
     const FAILED = 'failed';
 
+    /**
+     * @var bool
+     */
     public $saveAsNew;
+
+    /**
+     * @var string
+     */
     public $title;
+
+    /**
+     * @var string
+     */
     public $emailSubject;
+
+    /**
+     * @var bool
+     */
     public $enableFileAttachments;
 
     // Sender Info
+    /**
+     * @var string
+     */
     public $fromName;
+
+    /**
+     * @var string
+     */
     public $fromEmail;
+
+    /**
+     * @var string
+     */
     public $toEmail;
 
+    /**
+     * @var string
+     */
     public $body;
+
+    /**
+     * @var string
+     */
     public $htmlBody;
+
+    /**
+     * @var string
+     */
     public $info;
+
+    /**
+     * @var string
+     */
     public $status;
+
+    /**
+     * @var \DateTime
+     */
     public $dateSent;
 
+    /**
+     * @var array
+     */
     protected $fields;
 
     /**
@@ -53,6 +100,9 @@ class SentEmail extends Element
         return $this->getLocaleNiceDateTime();
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function displayName(): string
     {
         return Craft::t('sprout-email', 'Campaign Email');
@@ -66,6 +116,11 @@ class SentEmail extends Element
         return true;
     }
 
+    /**
+     * @param string|null $context
+     *
+     * @return array
+     */
     protected static function defineSources(string $context = null): array
     {
         $sources = [
@@ -81,25 +136,53 @@ class SentEmail extends Element
     /**
      * @inheritdoc
      */
+    protected static function defineSearchableAttributes(): array
+    {
+        return ['toEmail', 'emailSubject'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static function defineSortOptions(): array
+    {
+        $attributes = [
+            'elements.dateCreated' => Craft::t('sprout-email', 'Date Sent')
+        ];
+
+        return $attributes;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected static function defineTableAttributes(): array
     {
         $attributes = [
             'dateSent' => ['label' => Craft::t('sprout-email', 'Date Sent')],
             'toEmail' => ['label' => Craft::t('sprout-email', 'Recipient')],
             'emailSubject' => ['label' => Craft::t('sprout-email', 'Subject')],
+            'info' => ['label' => Craft::t('sprout-email', 'Details')],
             'resend' => ['label' => Craft::t('sprout-email', 'Resend')],
-            'preview' => ['label' => Craft::t('sprout-email', 'Send')],
-            'info' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view']
+            'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
         ];
 
         return $attributes;
     }
 
+    /**
+     * @return ElementQueryInterface
+     */
     public static function find(): ElementQueryInterface
     {
         return new SentEmailQuery(static::class);
     }
 
+    /**
+     * @param string $attribute
+     *
+     * @return string
+     */
     public function getTableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
@@ -118,86 +201,31 @@ class SentEmail extends Element
 
                 return '<a class="prepare btn small formsubmit" 
                                 data-action="sprout-email/sent-email/get-resend-modal" 
-                                data-email-id="'.$this->id.'" 
-                                href="'.UrlHelper::cpUrl('sprout-email/sentemails/view/'.$this->id).'">'.
+                                data-email-id="'.$this->id.'">'.
                     Craft::t('sprout-email', 'Prepare').
                     '</a>';
                 break;
 
             case 'info':
 
-                return ''.$this->setHud().'';
-
+                return '<a class="prepare btn small formsubmit"
+                                data-action="sprout-email/sent-email/get-info-html" 
+                                data-email-id="'.$this->id.'" 
+                                data-type="'.get_class($this).'"
+                                data-id="'.$this->id.'"
+                                data-site-id="'.$this->siteId.'"
+                                data-status="'.$this->getStatus().'"
+                                data-label="'.(string)$this.'"
+                                data-url="'.$this->getUrl().'"              
+                                data-level="'.$this->level.'">'.
+                    Craft::t('sprout-email', 'Details').
+                    '</a>';
                 break;
 
             default:
         }
+
         return parent::getTableAttributeHtml($attribute);
-    }
-
-    public function setHud()
-    {
-        $element = $this;
-
-        $htmlAttributes =
-            [
-                'data-icon' => 'info',
-                'data-type' => get_class($element),
-                'data-id' => $element->id,
-                'data-site-id' => $element->siteId,
-                'data-status' => $element->getStatus(),
-                'data-label' => (string)$element,
-                'data-url' => $element->getUrl(),
-                'data-level' => $element->level,
-                'class' => 'element info-hud',
-            ];
-
-
-        $html = '<div';
-
-        foreach ($htmlAttributes as $attribute => $value) {
-            $html .= ' '.$attribute.($value !== null ? '="'.Html::encode($value).'"' : '');
-        }
-
-        if (ElementHelper::isElementEditable($element)) {
-            $html .= ' data-editable';
-        }
-
-        $html .= '>';
-
-        return $html;
-    }
-
-    /**
-     * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     */
-    public function getEditorHtml(): string
-    {
-        $sentEmailInfo = [];
-
-        if ($this->info != null) {
-            $sentEmailInfo = Json::decode($this->info);
-        }
-
-        $html = Craft::$app->getView()->renderTemplate('sprout-base-email/sentemails/_hud', [
-            'sentEmail' => $sentEmailInfo
-        ]);
-
-        return $html;
-    }
-
-    /**
-     * @return array
-     */
-    protected static function defineSortOptions(): array
-    {
-        return [
-            'title' => Craft::t('sprout-email', 'Title'),
-            'elements.dateCreated' => Craft::t('sprout-email', 'Date Created'),
-            'elements.dateUpdated' => Craft::t('sprout-email', 'Date Updated'),
-        ];
     }
 
     /**
@@ -205,7 +233,7 @@ class SentEmail extends Element
      */
     public function getLocaleNiceDateTime()
     {
-        return $this->dateCreated->format('M j, Y H:i A');
+        return $this->dateCreated->format('M j, Y H:i:s A');
     }
 
     /**
@@ -283,5 +311,16 @@ class SentEmail extends Element
         $actions[] = DeleteEmail::class;
 
         return $actions;
+    }
+
+    /**
+     * @return SentEmailInfoTable
+     */
+    public function getInfo()
+    {
+        $infoTable = new SentEmailInfoTable();
+        $infoTable->setAttributes(Json::decode($this->info), false);
+
+        return $infoTable;
     }
 }

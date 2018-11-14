@@ -61,6 +61,11 @@ class Settings extends Model
     public $enablePerEmailEmailTemplateIdOverride = 0;
 
     /**
+     * @var int
+     */
+    public $sentEmailsLimit;
+
+    /**
      * @return array
      */
     public function getSettingsNavItems()
@@ -96,6 +101,12 @@ class Settings extends Model
                 'url' => 'sprout-email/settings/notifications',
                 'selected' => 'notifications',
                 'template' => 'sprout-base-email/settings/notifications'
+            ],
+            'sentemails' => [
+                'label' => Craft::t('sprout-email', 'Sent Emails'),
+                'url' => 'sprout-email/settings/sentemails',
+                'selected' => 'sentemails',
+                'template' => 'sprout-base-email/settings/sentemails'
             ]
         ];
     }
