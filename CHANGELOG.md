@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.0.0-beta.7 - 2018-11-13
+
+> {tip} Upgrade to enjoy the new Sent Email Element Type! Sent Emails keep a copy of each email sent through Craft, give you more insight when troubleshooting deliverability, and make it easy to follow up and resend any email previously sent.
+
+### Added
+- Added Sent Email Element Type
+- Added support limiting the number of Sent Emails saved to the database
+- Added Sent Email migration for Craft 2 to Craft 3 upgrade
+
+### Changed
+- Renamed default Email Templates from _Basic Email => Basic Notification
+- Updates Notification Email layout and instructional text 
+- Updated Sprout Base requirement to v4.0.2
+	
+### Fixed
+- Fixed issue where no line breaks were added to the default Notification Email template
+- Fixed error when all User Groups were selected for 'When a User is saved' event
+- Fixed error when using Live Preview or Share options with a 'When a User is saved' event is selected
+
 ## 4.0.0-beta.6 - 2018-10-29
 
 ### Changed
