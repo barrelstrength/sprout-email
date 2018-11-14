@@ -99,7 +99,7 @@ class UsersSave extends NotificationEvent
 
         $ids = $this->userGroupIds;
 
-        if (count($ids)) {
+        if (is_array($ids) && count($ids)) {
             $id = array_shift($ids);
 
             $criteria->groupId = $id;
