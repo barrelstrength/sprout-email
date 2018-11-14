@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutemail\models;
 
 use craft\base\Model;
+use Craft;
 
 /**
  * Class SentEmailInfoTable
@@ -114,4 +115,31 @@ class SentEmailInfoTable extends Model
      * @var
      */
     public $timeout;
+
+    public function getEmailTypes()
+    {
+        return [
+            'Campaign' => Craft::t('sprout-email', 'Campaign'),
+            'Notification' => Craft::t('sprout-email', 'Notification'),
+            'Resent' => Craft::t('sprout-email', 'Resent'),
+            'Sent' => Craft::t('sprout-email', 'Sent'),
+            'System' => Craft::t('sprout-email', 'System Message')
+        ];
+    }
+
+    public function getDeliveryStatuses()
+    {
+        return [
+            'Sent' => Craft::t('sprout-email', 'Sent'),
+            'Error' => Craft::t('sprout-email', 'Error')
+        ];
+    }
+
+    public function getDeliveryTypes()
+    {
+        return [
+            'Live' => Craft::t('sprout-email', 'Live'),
+            'Test' => Craft::t('sprout-email', 'Test')
+        ];
+    }
 }

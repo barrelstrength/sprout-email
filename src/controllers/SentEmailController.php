@@ -5,6 +5,7 @@ namespace barrelstrength\sproutemail\controllers;
 use barrelstrength\sproutbase\app\email\models\SimpleRecipient;
 use barrelstrength\sproutbase\app\email\models\SimpleRecipientList;
 use barrelstrength\sproutemail\services\SentEmails;
+use craft\mail\Mailer;
 use craft\mail\Message;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\elements\SentEmail;
@@ -104,10 +105,16 @@ class SentEmailController extends Controller
                 $email->setTextBody($sentEmail->body);
                 $email->setHtmlBody($sentEmail->htmlBody);
 
-                $infoTable = SproutEmail::$app->sentEmails->createInfoTableModel('sprout-email', [
-                    'emailType' => 'Resent Email',
-                    'deliveryType' => 'Live'
-                ]);
+                $infoTable = SproutEmail::$app->sentEmails->createInfoTableModel('sprout-email');
+
+                $emailTypes = $infoTable->getEmailTypes();
+                $infoTable->emailType = $emailTypes['Resent'];
+
+                $deliveryTypes = $infoTable->getDeliveryTypes();
+                $infoTable->deliveryType = $deliveryTypes['Live'];
+
+                $mailer = Craft::$app->getMailer();
+                $email->mailer = new Mailer();
 
                 $variables = [
                     'email' => $sentEmail,
@@ -118,7 +125,6 @@ class SentEmailController extends Controller
                 ];
 
                 $email->variables = $variables;
-                $mailer = Craft::$app->getMailer();
 
                 if ($mailer->send($email)) {
                     $processedRecipients[] = $recipientEmail;
