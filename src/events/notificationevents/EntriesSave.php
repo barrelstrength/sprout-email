@@ -167,6 +167,10 @@ class EntriesSave extends NotificationEvent
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
 
+        if ($event->sender->getStatus() != Entry::STATUS_LIVE) {
+            $this->addError('event', Craft::t('sprout-email', 'ElementEvent only triggers for enabled element.'));
+        }
+
         if (get_class($event->sender) !== Entry::class) {
             $this->addError('event', Craft::t('sprout-email', 'Event Element does not match craft\elements\Entry class.'));
         }
