@@ -155,6 +155,14 @@ class EntriesSave extends NotificationEvent
     {
         $event = $this->event ?? null;
 
+        $isAjax    = Craft::$app->request->getIsAjax();
+        $isConsole = Craft::$app->request->getIsConsoleRequest();
+
+        // Do not trigger this event on queue job and console request.
+        if ($isAjax === true || $isConsole === true) {
+            $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not trigger ajax and console request.'));
+        }
+
         if (!$event) {
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
