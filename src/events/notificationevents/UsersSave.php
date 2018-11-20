@@ -198,14 +198,10 @@ class UsersSave extends NotificationEvent
             $errorMessage = Craft::t('sprout-email', 'Not admin role');
         }
 
-        if (count($currentUsersUserGroups) == 0 && $this->isAdminUser() === null) {
-            $errorMessage = Craft::t('sprout-email', 'User does not belong to any group.');
-        }
+        $inGroup = false;
 
         if ($this->userGroupIds != false) {
             if ($this->isValidUserGroupIds($currentUsersUserGroups)) {
-
-                $inGroup = false;
 
                 // When saving a new user, we grab our groups from the post request
                 // because _processUserGroupsPermissions() runs after saveUser()
@@ -224,12 +220,14 @@ class UsersSave extends NotificationEvent
                 if (!$inGroup) {
                     $errorMessage = Craft::t('sprout-email', 'Saved user not in any selected User Group.');
                 }
+            } else {
+                $errorMessage = Craft::t('sprout-email', 'empty user group');
             }
         } else {
             $errorMessage = Craft::t('sprout-email', 'No User Group has been selected');
         }
 
-        if ($errorMessage) {
+        if (($this->isAdminUser() === null || $this->isAdminUser() === false)  && !$inGroup) {
             $this->addError('event', $errorMessage);
         }
     }
