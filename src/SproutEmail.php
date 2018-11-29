@@ -69,7 +69,7 @@ class SproutEmail extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '4.0.4';
+    public $schemaVersion = '4.0.5';
 
     /**
      * @var string
