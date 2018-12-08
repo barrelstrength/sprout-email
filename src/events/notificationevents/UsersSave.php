@@ -99,7 +99,7 @@ class UsersSave extends NotificationEvent
 
         $ids = $this->userGroupIds;
 
-        if (count($ids)) {
+        if (is_array($ids) && count($ids)) {
             $id = array_shift($ids);
 
             $criteria->groupId = $id;
@@ -220,8 +220,8 @@ class UsersSave extends NotificationEvent
 
     private function isValidUserGroupIds($currentUsersUserGroups)
     {
-        return count($this->userGroupIds) > 0
-            AND ($this->userGroupIds !== '*')
+        return $this->userGroupIds !== '*'
+            AND count($this->userGroupIds) > 0
             AND count($currentUsersUserGroups);
     }
 

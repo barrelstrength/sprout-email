@@ -9,10 +9,17 @@ class SentEmailQuery extends ElementQuery
     /**
      * @inheritdoc
      */
+    protected $defaultOrderBy = ['sproutemail_sentemail.dateCreated' => SORT_DESC];
+
+    /**
+     * @inheritdoc
+     */
     protected function beforePrepare(): bool
     {
         $this->joinElementTable('sproutemail_sentemail');
+
         $this->query->select([
+            'sproutemail_sentemail.id',
             'sproutemail_sentemail.title',
             'sproutemail_sentemail.emailSubject',
             'sproutemail_sentemail.fromEmail',
@@ -25,8 +32,6 @@ class SentEmailQuery extends ElementQuery
             'sproutemail_sentemail.dateCreated',
             'sproutemail_sentemail.dateUpdated'
         ]);
-
-        $this->query->orderBy('sproutemail_sentemail.dateCreated DESC');
 
         return parent::beforePrepare();
     }

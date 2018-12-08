@@ -47,7 +47,6 @@ class Mailers extends Component
             }
 
             return $response;
-
         } catch (\Exception $e) {
             throw $e;
         }
@@ -58,6 +57,7 @@ class Mailers extends Component
      * @param $campaignTypeId
      *
      * @return Response
+     * @throws Exception
      */
     public function getPrepareModal($emailId, $campaignTypeId)
     {

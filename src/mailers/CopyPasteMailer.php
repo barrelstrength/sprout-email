@@ -70,8 +70,8 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
      * @param CampaignEmail $campaignEmail
      * @param CampaignType  $campaignType
      *
-     * @return mixed
-     * @throws \Exception
+     * @return Response|mixed|null
+     * @throws \Throwable
      */
     public function sendCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType)
     {
@@ -104,7 +104,12 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
      *
      * @inheritdoc
      *
-     * @throws \Exception
+     * @param CampaignEmail $campaignEmail
+     * @param CampaignType  $campaignType
+     * @param array         $emails
+     *
+     * @return Response|mixed|null
+     * @throws \Throwable
      */
     public function sendTestCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType, array $emails = [])
     {

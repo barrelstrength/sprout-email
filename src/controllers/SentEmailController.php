@@ -4,11 +4,12 @@ namespace barrelstrength\sproutemail\controllers;
 
 use barrelstrength\sproutbase\app\email\models\SimpleRecipient;
 use barrelstrength\sproutbase\app\email\models\SimpleRecipientList;
+use barrelstrength\sproutemail\services\SentEmails;
+use craft\mail\Mailer;
 use craft\mail\Message;
 use barrelstrength\sproutbase\app\email\models\Response;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\SproutEmail;
-use craft\helpers\Json;
 use craft\web\Controller;
 use Craft;
 use yii\base\Exception;
@@ -19,38 +20,14 @@ use Egulias\EmailValidator\Validation\RFCValidation;
 class SentEmailController extends Controller
 {
     /**
-     * Returns info for the Sent Email Resend modal
-     *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
-     */
-    public function actionGetResendModal()
-    {
-        $this->requirePostRequest();
-
-        $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
-        $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
-
-        $content = Craft::$app->getView()->renderTemplate(
-            'sprout-base-email/_modals/sentemails/prepare-resend-email', [
-            'sentEmail' => $sentEmail
-        ]);
-
-        $response = new Response();
-        $response->content = $content;
-        $response->success = true;
-
-        return $this->asJson($response->getAttributes());
-    }
-
-    /**
      * Re-sends a Sent Email
      *
      * @todo - update to use new EmailElement::getRecipients() syntax
      *
+     * @return bool|\yii\web\Response
+     * @throws Exception
+     * @throws \Throwable
      * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionResendEmail()
@@ -63,49 +40,52 @@ class SentEmailController extends Controller
          */
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
 
-        $recipients = [];
+        $recipients = Craft::$app->getRequest()->getBodyParam('recipients');
 
-        if (Craft::$app->getRequest()->getBodyParam('recipients') !== null) {
-            $recipients = Craft::$app->request->getBodyParam('recipients');
-
-            $validator = new EmailValidator();
-            $validations = new MultipleValidationWithAnd([
-                new RFCValidation()
-            ]);
-            $recipientList = new SimpleRecipientList();
-            $recipientArray = explode(',', $recipients);
-
-            foreach ($recipientArray as $recipient) {
-                $recipientModel = new SimpleRecipient();
-                $recipientModel->email = trim($recipient);
-
-                if ($validator->isValid($recipientModel->email, $validations)) {
-                    $recipientList->addRecipient($recipientModel);
-                } else {
-                    $recipientList->addInvalidRecipient($recipientModel);
-                }
-            }
-
-            if ($recipientList->getInvalidRecipients()) {
-                $invalidEmails = [];
-                foreach ($recipientList->getInvalidRecipients() as $invalidRecipient) {
-                    $invalidEmails[] = $invalidRecipient->email;
-                }
-
-                return $this->asJson(
-                    Response::createErrorModalResponse('sprout-base-email/_modals/response', [
-                        'email' => $sentEmail,
-                        'message' => Craft::t('sprout-base', 'Recipient email addresses do not validate: {invalidEmails}', [
-                            'invalidEmails' => implode(', ', $invalidEmails)
-                        ])
-                    ])
-                );
-            }
-
-            $validRecipients = $recipientList->getRecipients();
-        } else {
-            $recipients[] = $sentEmail->toEmail;
+        if (!$recipients) {
+            return $this->asJson(
+                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                    'email' => $sentEmail,
+                    'message' => Craft::t('sprout-email', 'A recipient email address is required')
+                ])
+            );
         }
+
+        $validator = new EmailValidator();
+        $validations = new MultipleValidationWithAnd([
+            new RFCValidation()
+        ]);
+        $recipientList = new SimpleRecipientList();
+        $recipientArray = explode(',', $recipients);
+
+        foreach ($recipientArray as $recipient) {
+            $recipientModel = new SimpleRecipient();
+            $recipientModel->email = trim($recipient);
+
+            if ($validator->isValid($recipientModel->email, $validations)) {
+                $recipientList->addRecipient($recipientModel);
+            } else {
+                $recipientList->addInvalidRecipient($recipientModel);
+            }
+        }
+
+        if ($recipientList->getInvalidRecipients()) {
+            $invalidEmails = [];
+            foreach ($recipientList->getInvalidRecipients() as $invalidRecipient) {
+                $invalidEmails[] = $invalidRecipient->email;
+            }
+
+            return $this->asJson(
+                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                    'email' => $sentEmail,
+                    'message' => Craft::t('sprout-email', 'Invalid email address(es) provided: {invalidEmails}', [
+                        'invalidEmails' => implode(', ', $invalidEmails)
+                    ])
+                ])
+            );
+        }
+
+        $validRecipients = $recipientList->getRecipients();
 
         try {
             $processedRecipients = [];
@@ -125,21 +105,26 @@ class SentEmailController extends Controller
                 $email->setTextBody($sentEmail->body);
                 $email->setHtmlBody($sentEmail->htmlBody);
 
-                $infoTable = SproutEmail::$app->sentEmails->createInfoTableModel('sprout-email', [
-                    'emailType' => 'Resent Email',
-                    'deliveryType' => 'Live'
-                ]);
+                $infoTable = SproutEmail::$app->sentEmails->createInfoTableModel('sprout-email');
+
+                $emailTypes = $infoTable->getEmailTypes();
+                $infoTable->emailType = $emailTypes['Resent'];
+
+                $deliveryTypes = $infoTable->getDeliveryTypes();
+                $infoTable->deliveryType = $deliveryTypes['Live'];
+
+                $mailer = Craft::$app->getMailer();
+                $email->mailer = new Mailer();
 
                 $variables = [
                     'email' => $sentEmail,
                     'renderedEmail' => $email,
                     'recipients' => $recipients,
                     'processedRecipients' => null,
-                    'info' => $infoTable
+                    SentEmails::SENT_EMAIL_MESSAGE_VARIABLE => $infoTable
                 ];
 
                 $email->variables = $variables;
-                $mailer = Craft::$app->getMailer();
 
                 if ($mailer->send($email)) {
                     $processedRecipients[] = $recipientEmail;
@@ -185,6 +170,32 @@ class SentEmailController extends Controller
     }
 
     /**
+     * Returns info for the Sent Email Resend modal
+     *
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionGetResendModal()
+    {
+        $this->requirePostRequest();
+
+        $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
+        $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
+
+        $content = Craft::$app->getView()->renderTemplate(
+            'sprout-base-email/_modals/sentemails/prepare-resend-email', [
+            'sentEmail' => $sentEmail
+        ]);
+
+        $response = new Response();
+        $response->content = $content;
+        $response->success = true;
+
+        return $this->asJson($response->getAttributes());
+    }
+
+    /**
      * Get HTML for Info Table HUD
      *
      * @throws \Twig_Error_Loader
@@ -195,18 +206,22 @@ class SentEmailController extends Controller
     {
         $this->requirePostRequest();
 
-        $sentEmailId = Craft::$app->getRequest()->getBodyParam('sentEmailId');
+        $sentEmailId = Craft::$app->getRequest()->getBodyParam('emailId');
 
+        /**
+         * @var $sentEmail SentEmail
+         */
         $sentEmail = Craft::$app->elements->getElementById($sentEmailId, SentEmail::class);
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-base-email/sentemails/_hud', [
-            'sentEmail' => $sentEmail
+        $content = Craft::$app->getView()->renderTemplate(
+            'sprout-base-email/_modals/sentemails/info-table', [
+            'info' => $sentEmail->getInfo()
         ]);
 
-        $response = [
-            'html' => $html
-        ];
+        $response = new Response();
+        $response->content = $content;
+        $response->success = true;
 
-        return $this->asJson(Json::encode($response));
+        return $this->asJson($response->getAttributes());
     }
 }

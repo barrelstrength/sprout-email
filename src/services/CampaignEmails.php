@@ -8,7 +8,6 @@ use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use craft\base\Component;
 use Craft;
 use yii\base\Exception;
-use yii\mail\MailEvent;
 
 /**
  * Class CampaignEmails
