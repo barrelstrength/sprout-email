@@ -30,6 +30,20 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function hasSender() {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasRecipients() {
+        return false;
+    }
+
+    /**
      * @return bool
      */
     public function hasLists()
