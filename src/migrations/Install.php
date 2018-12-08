@@ -47,7 +47,6 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
-                'type' => $this->string()->notNull(),
                 'mailer' => $this->string()->notNull(),
                 'emailTemplateId' => $this->string(),
                 'titleFormat' => $this->string(),
