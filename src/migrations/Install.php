@@ -6,6 +6,7 @@ use barrelstrength\sproutbase\app\email\emailtemplates\BasicTemplates;
 use barrelstrength\sproutemail\models\Settings;
 use craft\db\Migration;
 use barrelstrength\sproutbase\app\email\migrations\Install as SproutBaseNotificationInstall;
+use craft\helpers\Json;
 
 class Install extends Migration
 {
@@ -89,7 +90,7 @@ class Install extends Migration
 
         $settings->emailTemplateId = get_class($basic);
 
-        $newSettings = json_encode($settings->getAttributes());
+        $newSettings = Json::encode($settings->getAttributes());
 
         $this->db->createCommand()->update('{{%plugins}}', [
             'settings' => $newSettings

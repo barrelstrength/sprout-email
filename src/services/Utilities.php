@@ -17,7 +17,7 @@ class Utilities extends Component
     {
         static $inst = null;
         if ($inst === null) {
-            $inst = new Utilities();
+            $inst = new self();
         }
 
         return $inst;

@@ -7,6 +7,14 @@ use barrelstrength\sproutbase\app\email\base\NotificationEvent;
 use Craft;
 
 
+/**
+ *
+ * @property null  $eventHandlerClassName
+ * @property mixed $name
+ * @property null  $eventName
+ * @property mixed $description
+ * @property null  $eventClassName
+ */
 class Manual extends NotificationEvent
 {
     /**

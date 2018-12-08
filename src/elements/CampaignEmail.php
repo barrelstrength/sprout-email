@@ -15,11 +15,16 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use yii\base\Exception;
 
 /**
  * Class CampaignEmail
+ *
+ * @property \barrelstrength\sproutemail\models\CampaignType                                                             $campaignType
+ * @property mixed                                                                                                       $emailTemplateId
+ * @property \barrelstrength\sproutbase\app\email\mailers\DefaultMailer|\barrelstrength\sproutbase\app\email\base\Mailer $mailer
  */
 class CampaignEmail extends EmailElement
 {
@@ -169,9 +174,7 @@ class CampaignEmail extends EmailElement
     }
 
     /**
-     * @param string|null $context
-     *
-     * @return array
+     * @inheritdoc
      */
     protected static function defineSources(string $context = null): array
     {
@@ -267,7 +270,7 @@ class CampaignEmail extends EmailElement
     /**
      * @param bool $isNew
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function afterSave(bool $isNew)
     {
@@ -362,7 +365,7 @@ class CampaignEmail extends EmailElement
         }
 
         if ($attribute === 'template') {
-            return '<code>'.$this->template.'</code>';
+            return '<code>'.$campaignType->template.'</code>';
         }
 
         if ($attribute === 'contentCheck') {
@@ -488,7 +491,7 @@ class CampaignEmail extends EmailElement
         $mailer = $this->getMailer();
 
         if ($mailer AND $mailer->hasLists()) {
-            $listSettings = json_decode($this->listSettings);
+            $listSettings = Json::decode($this->listSettings);
 
             if (empty($listSettings->listIds)) {
                 return false;
@@ -512,7 +515,7 @@ class CampaignEmail extends EmailElement
     /**
      * @return CampaignType
      */
-    public function getCampaignType()
+    public function getCampaignType(): CampaignType
     {
         return SproutEmail::$app->campaignTypes->getCampaignTypeById($this->campaignTypeId);
     }
@@ -574,9 +577,9 @@ class CampaignEmail extends EmailElement
      * @throws Exception
      * @throws \Twig_Error_Loader
      */
-    public function isReadyToSend()
+    public function isReadyToSend(): bool
     {
-        return (bool)($this->getMailer() && $this->isContentReady() && $this->isListReady());
+        return ($this->getMailer() && $this->isContentReady() && $this->isListReady());
     }
 
     /**
@@ -586,9 +589,9 @@ class CampaignEmail extends EmailElement
      * @throws Exception
      * @throws \Twig_Error_Loader
      */
-    public function isReadyToTest()
+    public function isReadyToTest(): bool
     {
-        return (bool)($this->getMailer() && $this->isContentReady());
+        return ($this->getMailer() && $this->isContentReady());
     }
 
     /**
@@ -633,8 +636,6 @@ class CampaignEmail extends EmailElement
      */
     public function getEmailTemplateId()
     {
-        $campaignType = $this->getCampaignType();
-
-        return $campaignType->emailTemplateId;
+        return $this->getCampaignType()->emailTemplateId;
     }
 }

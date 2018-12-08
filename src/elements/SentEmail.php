@@ -20,6 +20,8 @@ use yii\base\Exception;
  * Class SentEmail
  *
  * @package barrelstrength\sproutemail\elements
+ *
+ * @property string $localeNiceDateTime
  */
 class SentEmail extends Element
 {
@@ -117,9 +119,7 @@ class SentEmail extends Element
     }
 
     /**
-     * @param string|null $context
-     *
-     * @return array
+     * @inheritdoc
      */
     protected static function defineSources(string $context = null): array
     {
@@ -179,9 +179,7 @@ class SentEmail extends Element
     }
 
     /**
-     * @param string $attribute
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getTableAttributeHtml(string $attribute): string
     {
@@ -215,7 +213,7 @@ class SentEmail extends Element
                                 data-id="'.$this->id.'"
                                 data-site-id="'.$this->siteId.'"
                                 data-status="'.$this->getStatus().'"
-                                data-label="'.(string)$this.'"
+                                data-label="'.$this.'"
                                 data-url="'.$this->getUrl().'"              
                                 data-level="'.$this->level.'">'.
                     Craft::t('sprout-email', 'Details').

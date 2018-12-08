@@ -14,6 +14,8 @@ use yii\base\Exception;
  * Class CampaignTypes
  *
  * @package barrelstrength\sproutemail\services
+ *
+ * @property array $campaignTypes
  */
 class CampaignTypes extends Component
 {

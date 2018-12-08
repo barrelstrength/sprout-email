@@ -4,7 +4,6 @@ namespace barrelstrength\sproutemail\services;
 
 use barrelstrength\sproutbase\app\email\jobs\DeleteSentEmails;
 use barrelstrength\sproutemail\models\Settings;
-use barrelstrength\sproutemail\SproutEmail;
 use craft\base\Plugin;
 use craft\mail\Mailer as CraftMailer;
 use craft\mail\Message;
@@ -21,6 +20,8 @@ use yii\mail\MailEvent;
  * Class SentEmails
  *
  * @package barrelstrength\sproutemail\services
+ *
+ * @property string $craftVersion
  */
 class SentEmails extends Component
 {
@@ -60,7 +61,7 @@ class SentEmails extends Component
         /**
          * @var $infoTable SentEmailInfoTable
          */
-        $infoTable = $variables[SentEmails::SENT_EMAIL_MESSAGE_VARIABLE] ?? null;
+        $infoTable = $variables[self::SENT_EMAIL_MESSAGE_VARIABLE] ?? null;
 
         // Populate what we can for the Info Table for System Messages
         if (isset($message->mailer) && get_class($message->mailer) === CraftMailer::class) {
@@ -238,7 +239,11 @@ class SentEmails extends Component
         return false;
     }
 
-    public function cleanUpSentEmails()
+    /**
+     * @return bool
+     * @throws \craft\errors\SiteNotFoundException
+     */
+    public function cleanUpSentEmails() : bool
     {
         /**
          * @var $settings Settings
@@ -256,14 +261,18 @@ class SentEmails extends Component
             ? (int)$settings->sentEmailsLimit
             : static::SENT_EMAIL_DEFAULT_LIMIT;
 
-        if ($sentEmailsLimit > 0) {
-            $sentEmailJob = new DeleteSentEmails();
-            $sentEmailJob->limit = $sentEmailsLimit;
-            $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
-
-            // Call the Delete Sent Emails job
-            Craft::$app->queue->push($sentEmailJob);
+        if ($sentEmailsLimit <= 0) {
+            return false;
         }
+
+        $sentEmailJob = new DeleteSentEmails();
+        $sentEmailJob->limit = $sentEmailsLimit;
+        $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+
+        // Call the Delete Sent Emails job
+        Craft::$app->queue->push($sentEmailJob);
+
+        return true;
     }
 
     /**
@@ -274,7 +283,7 @@ class SentEmails extends Component
      *
      * @return SentEmailInfoTable
      */
-    public function createInfoTableModel($pluginHandle, array $values = [])
+    public function createInfoTableModel($pluginHandle, array $values = []): SentEmailInfoTable
     {
         $infoTable = new SentEmailInfoTable();
         $infoTable->setAttributes($values, false);
@@ -313,11 +322,12 @@ class SentEmails extends Component
     /**
      * Update the SproutEmail_SentEmailInfoTableModel based on the emailKey
      *
-     * @param $infoTable
+     * @param Message            $message
+     * @param SentEmailInfoTable $infoTable
      *
-     * @return mixed
+     * @return SentEmailInfoTable
      */
-    public function updateInfoTableWithCraftInfo(Message $message, SentEmailInfoTable $infoTable)
+    public function updateInfoTableWithCraftInfo(Message $message, SentEmailInfoTable $infoTable): SentEmailInfoTable
     {
         $craftVersion = $this->getCraftVersion();
 
@@ -366,7 +376,7 @@ class SentEmails extends Component
     }
 
 
-    private function getCraftVersion()
+    private function getCraftVersion(): string
     {
         $version = Craft::$app->getVersion();
         $craftVersion = '';

@@ -16,7 +16,7 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Copy/Paste';
     }
@@ -24,7 +24,7 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return Craft::t('sprout-email', 'Copy and paste your email campaigns to better (or worse) places.');
     }
@@ -32,14 +32,16 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     /**
      * @inheritdoc
      */
-    public function hasSender() {
+    public function hasSender(): bool
+    {
         return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function hasRecipients() {
+    public function hasRecipients(): bool
+    {
         return false;
     }
 
@@ -90,14 +92,6 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     public function sendCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType)
     {
         try {
-            $variables = [
-                'email' => $campaignEmail,
-                'campaignType' => $campaignType
-            ];
-
-            $mailer = $campaignType->getMailer();
-            $message = $mailer->getMessage($campaignEmail);
-
             $response = new Response();
             $response->success = true;
             $response->content = Craft::$app->getView()->renderPageTemplate('sprout-base-email/_components/mailers/copypaste/schedulecampaignemail',
@@ -132,7 +126,7 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
 
     public function getRecipientsHtml($campaignEmail)
     {
-        return "";
+        return '';
     }
 
     /**

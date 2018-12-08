@@ -11,6 +11,13 @@ use Craft;
 
 
 /**
+ * @property string    $eventClassName
+ * @property mixed     $description
+ * @property mixed     $eventName
+ * @property mixed     $name
+ * @property mixed     $eventObject
+ * @property mixed     $mockEventObject
+ * @property string    $eventHandlerClassName
  * @property UserEvent $event
  */
 class UsersActivate extends NotificationEvent

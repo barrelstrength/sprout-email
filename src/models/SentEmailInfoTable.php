@@ -9,6 +9,10 @@ use Craft;
  * Class SentEmailInfoTable
  *
  * @package barrelstrength\sproutemail\models
+ *
+ * @property array $deliveryStatuses
+ * @property array $emailTypes
+ * @property array $deliveryTypes
  */
 class SentEmailInfoTable extends Model
 {
@@ -28,7 +32,7 @@ class SentEmailInfoTable extends Model
     /**
      * The status of the email that was sent
      *
-     * @var Sent, Error
+     * @var string Sent, Error
      */
     public $deliveryStatus;
     /**

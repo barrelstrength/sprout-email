@@ -8,6 +8,17 @@ use Craft;
 use craft\events\ElementEvent;
 use craft\events\ModelEvent;
 
+/**
+ *
+ * @property string                                                        $eventHandlerClassName
+ * @property array                                                         $allSections
+ * @property \craft\elements\Entry|null|array|\craft\base\ElementInterface $mockEventObject
+ * @property null                                                          $eventObject
+ * @property string                                                        $name
+ * @property mixed                                                         $eventName
+ * @property string                                                        $description
+ * @property string                                                        $eventClassName
+ */
 class EntriesSave extends NotificationEvent
 {
     public $whenNew = false;

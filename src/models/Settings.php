@@ -5,6 +5,10 @@ namespace barrelstrength\sproutemail\models;
 use Craft;
 use craft\base\Model;
 
+/**
+ *
+ * @property array $settingsNavItems
+ */
 class Settings extends Model
 {
     /**
@@ -54,7 +58,7 @@ class Settings extends Model
     /**
      * @var null
      */
-    public $emailTemplateId = null;
+    public $emailTemplateId;
     /**
      * @var int
      */

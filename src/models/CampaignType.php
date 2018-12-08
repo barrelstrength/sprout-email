@@ -16,18 +16,19 @@ use craft\validators\UniqueValidator;
  * @mixin FieldLayoutBehavior
  * @package Craft
  * --
- * @property int    $id
- * @property string $name
- * @property string $handle
- * @property string $mailer
- * @property string $titleFormat
- * @property string $urlFormat
- * @property bool   $hasUrls
- * @property bool   $hasAdvancedTitles
- * @property string $template
- * @property string $templateCopyPaste
- * @property int    $fieldLayoutId
- * @property int    $emailId
+ * @property int                       $id
+ * @property string                    $name
+ * @property string                    $handle
+ * @property string                    $mailer
+ * @property string                    $titleFormat
+ * @property string                    $urlFormat
+ * @property bool                      $hasUrls
+ * @property bool                      $hasAdvancedTitles
+ * @property string                    $template
+ * @property string                    $templateCopyPaste
+ * @property int                       $fieldLayoutId
+ * @property \craft\models\FieldLayout $fieldLayout
+ * @property int                       $emailId
  */
 class CampaignType extends Model
 {
@@ -97,7 +98,7 @@ class CampaignType extends Model
     {
         return [
             [['id'], 'number', 'integerOnly' => true],
-            [['name', 'handle'], UniqueValidator::class, 'targetClass' => CampaignType::class],
+            [['name', 'handle'], UniqueValidator::class, 'targetClass' => __CLASS__],
             [['name', 'handle'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
         ];

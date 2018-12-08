@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
+use barrelstrength\sproutbase\app\email\base\NotificationEmailSenderInterface;
 use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
@@ -14,7 +15,12 @@ use craft\web\assets\cp\CpAsset;
 use craft\web\Controller;
 use Craft;
 use yii\base\Exception;
+use yii\web\HttpException;
 
+/**
+ *
+ * @property null|\craft\base\ElementInterface|\barrelstrength\sproutemail\elements\CampaignEmail $campaignEmailModel
+ */
 class CampaignEmailController extends Controller
 {
     /**
@@ -31,7 +37,7 @@ class CampaignEmailController extends Controller
      *
      * @return \yii\web\Response
      */
-    public function actionEditCampaignEmail($campaignTypeId = null, CampaignEmail $campaignEmail = null, $emailId = null)
+    public function actionEditCampaignEmail($campaignTypeId = null, CampaignEmail $campaignEmail = null, $emailId = null) 
     {
         // Check if we already have an Campaign Email route variable
         // If so it's probably due to a bad form submission and has an error object
@@ -158,10 +164,6 @@ class CampaignEmailController extends Controller
                 $response = SproutEmail::$app->mailers->sendCampaignEmail($campaignEmail, $campaignType);
 
                 if ($response instanceof Response) {
-                    if ($response->success == true &&
-                        $response->emailModel != null) {
-                    }
-
                     return $this->asJson($response);
                 }
 
@@ -201,7 +203,7 @@ class CampaignEmailController extends Controller
                 'sprout-base-email/_modals/response',
                 [
                     'email' => $campaignEmail,
-                    'campaign' => !empty($campaignType) ? $campaignType : null,
+                    'campaign' => $campaignType,
                     'message' => Craft::t('sprout-email', 'The campaign email you are trying to send is missing.'),
                 ]
             )
@@ -280,7 +282,7 @@ class CampaignEmailController extends Controller
      * @param null $type
      *
      * @throws Exception
-     * @throws \HttpException
+     * @throws HttpException
      * @throws \Twig_Error_Loader
      * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
@@ -307,7 +309,7 @@ class CampaignEmailController extends Controller
             SproutEmail::$app->campaignEmails->showCampaignEmail($htmlBody, $body, $extension);
         }
 
-        throw new \HttpException(404);
+        throw new HttpException(404);
     }
 
     /**
@@ -364,6 +366,7 @@ class CampaignEmailController extends Controller
         try {
             $mailer = SproutBase::$app->mailers->getMailerByName(DefaultMailer::class);
             $campaignEmail->setIsTest(true);
+            /* @var $mailer NotificationEmailSenderInterface */
             if (!$mailer->sendNotificationEmail($campaignEmail)) {
                 return $this->asJson(
                     Response::createErrorModalResponse('sprout-base-email/_modals/response', [
@@ -398,7 +401,7 @@ class CampaignEmailController extends Controller
      * @param string $type
      *
      * @return \yii\web\Response
-     * @throws \HttpException
+     * @throws HttpException
      */
     public function actionShareCampaignEmail($emailId = null, $type = 'html')
     {
@@ -406,10 +409,10 @@ class CampaignEmailController extends Controller
             $campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId);
 
             if (!$campaignEmail) {
-                throw new \HttpException(404);
+                throw new HttpException(404);
             }
         } else {
-            throw new \HttpException(404);
+            throw new HttpException(404);
         }
 
         $params = [
@@ -421,7 +424,7 @@ class CampaignEmailController extends Controller
         $token = Craft::$app->getTokens()->createToken(['sprout-email/campaign-email/view-shared-campaign-email', $params]);
 
         $emailUrl = '';
-        if (!empty($campaignEmail->getUrl())) {
+        if ($campaignEmail->getUrl() !== null) {
             $emailUrl = $campaignEmail->getUrl();
         }
 
@@ -478,7 +481,7 @@ class CampaignEmailController extends Controller
      *
      * @return CampaignEmail
      */
-    protected function populateCampaignEmailModel(CampaignEmail $campaignEmail)
+    protected function populateCampaignEmailModel(CampaignEmail $campaignEmail): CampaignEmail
     {
         $campaignEmail->campaignTypeId = $this->campaignType->id;
         $campaignEmail->slug = Craft::$app->getRequest()->getBodyParam('slug', $campaignEmail->slug);

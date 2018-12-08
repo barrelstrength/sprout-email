@@ -8,6 +8,16 @@ use Craft;
 use craft\elements\User;
 
 
+/**
+ *
+ * @property null   $eventHandlerClassName
+ * @property mixed  $mockEventObject
+ * @property null   $eventObject
+ * @property mixed  $name
+ * @property mixed  $eventName
+ * @property mixed  $description
+ * @property string $eventClassName
+ */
 class UsersDelete extends NotificationEvent
 {
     /**

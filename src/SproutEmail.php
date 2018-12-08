@@ -39,6 +39,9 @@ use yii\mail\MailEvent;
  * @package   SproutEmail
  * @since     3
  *
+ *
+ * @property array $cpNavItem
+ * @property array $cpUrlRules
  */
 class SproutEmail extends Plugin
 {
