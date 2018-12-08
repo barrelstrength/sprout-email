@@ -37,7 +37,7 @@ class CampaignEmailController extends Controller
      *
      * @return \yii\web\Response
      */
-    public function actionEditCampaignEmail($campaignTypeId = null, CampaignEmail $campaignEmail = null, $emailId = null) 
+    public function actionEditCampaignEmail($campaignTypeId = null, CampaignEmail $campaignEmail = null, $emailId = null)
     {
         // Check if we already have an Campaign Email route variable
         // If so it's probably due to a bad form submission and has an error object

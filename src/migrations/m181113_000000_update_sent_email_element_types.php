@@ -24,7 +24,8 @@ class m181113_000000_update_sent_email_element_types extends Migration
 
         foreach ($types as $type) {
             $this->update('{{%elements}}', [
-                'type' => $type['newType']], ['type' => $type['oldType']], [], false);
+                'type' => $type['newType']
+            ], ['type' => $type['oldType']], [], false);
         }
 
         return true;

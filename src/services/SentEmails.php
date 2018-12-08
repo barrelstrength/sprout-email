@@ -243,7 +243,7 @@ class SentEmails extends Component
      * @return bool
      * @throws \craft\errors\SiteNotFoundException
      */
-    public function cleanUpSentEmails() : bool
+    public function cleanUpSentEmails(): bool
     {
         /**
          * @var $settings Settings

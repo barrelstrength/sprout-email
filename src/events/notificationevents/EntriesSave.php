@@ -166,7 +166,7 @@ class EntriesSave extends NotificationEvent
     {
         $event = $this->event ?? null;
 
-        $isAjax    = Craft::$app->request->getIsAjax();
+        $isAjax = Craft::$app->request->getIsAjax();
         $isConsole = Craft::$app->request->getIsConsoleRequest();
 
         // Do not trigger this event on queue job and console request.
