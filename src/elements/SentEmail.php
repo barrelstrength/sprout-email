@@ -229,7 +229,7 @@ class SentEmail extends Element
     /**
      * @return string
      */
-    public function getLocaleNiceDateTime()
+    public function getLocaleNiceDateTime(): string
     {
         return $this->dateCreated->format('M j, Y H:i:s A');
     }
@@ -284,6 +284,7 @@ class SentEmail extends Element
      *
      * @return string
      * @throws \yii\base\InvalidConfigException
+     *
      */
     public static function indexHtml(ElementQueryInterface $elementQuery, array $disabledElementIds = null, array $viewState, string $sourceKey = null, string $context = null, bool $includeContainer, bool $showCheckboxes): string
     {
@@ -314,7 +315,7 @@ class SentEmail extends Element
     /**
      * @return SentEmailInfoTable
      */
-    public function getInfo()
+    public function getInfo(): SentEmailInfoTable
     {
         $infoTable = new SentEmailInfoTable();
         $infoTable->setAttributes(Json::decode($this->info), false);

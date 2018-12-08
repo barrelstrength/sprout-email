@@ -7,20 +7,21 @@ use barrelstrength\sproutemail\SproutEmail;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use Craft;
+use yii\web\Response;
 
 class CopyPasteController extends Controller
 {
     /**
      * Updates a Copy/Paste Campaign Email to add a Date Sent
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Exception
      * @throws \Throwable
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionMarkSent()
+    public function actionMarkSent(): Response
     {
         $this->requirePostRequest();
 

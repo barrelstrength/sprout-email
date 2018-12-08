@@ -120,7 +120,7 @@ class SentEmailInfoTable extends Model
      */
     public $timeout;
 
-    public function getEmailTypes()
+    public function getEmailTypes(): array
     {
         return [
             'Campaign' => Craft::t('sprout-email', 'Campaign'),
@@ -131,7 +131,7 @@ class SentEmailInfoTable extends Model
         ];
     }
 
-    public function getDeliveryStatuses()
+    public function getDeliveryStatuses(): array
     {
         return [
             'Sent' => Craft::t('sprout-email', 'Sent'),
@@ -139,7 +139,7 @@ class SentEmailInfoTable extends Model
         ];
     }
 
-    public function getDeliveryTypes()
+    public function getDeliveryTypes(): array
     {
         return [
             'Live' => Craft::t('sprout-email', 'Live'),

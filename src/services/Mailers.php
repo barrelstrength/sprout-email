@@ -6,7 +6,7 @@ use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
-use barrelstrength\sproutbase\app\email\models\Response;
+use barrelstrength\sproutbase\app\email\models\ModalResponse;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\base\Component;
 use Craft;
@@ -42,6 +42,13 @@ class Mailers extends Component
             if ($response) {
                 // Update dateSent to change mark status
                 $record = CampaignEmailRecord::findOne($campaignEmail->id);
+
+                if (!$record) {
+                    throw new Exception(Craft::t('sprout-email', 'No Campaign Email with id {id} was found.', [
+                        'id' => $campaignType->id
+                    ]));
+                }
+
                 $record->dateSent = DateTimeHelper::currentUTCDateTime();
                 $record->save();
             }
@@ -56,10 +63,10 @@ class Mailers extends Component
      * @param $emailId
      * @param $campaignTypeId
      *
-     * @return Response
+     * @return ModalResponse
      * @throws Exception
      */
-    public function getPrepareModal($emailId, $campaignTypeId)
+    public function getPrepareModal($emailId, $campaignTypeId): ModalResponse
     {
         /**
          * @var $campaignEmail CampaignEmail
@@ -69,7 +76,7 @@ class Mailers extends Component
 
         $mailer = $campaignEmail->getMailer();
 
-        $response = new Response();
+        $response = new ModalResponse();
 
         if ($campaignEmail && $campaignType) {
             try {

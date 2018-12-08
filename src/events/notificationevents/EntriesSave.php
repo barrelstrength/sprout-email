@@ -29,7 +29,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return Entry::class;
     }
@@ -37,7 +37,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return Entry::EVENT_AFTER_SAVE;
     }
@@ -45,7 +45,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return ModelEvent::class;
     }
@@ -53,7 +53,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('sprout-email', 'When an entry is saved');
     }
@@ -61,7 +61,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return Craft::t('sprout-email', 'Triggered when an entry is saved.');
     }
@@ -72,7 +72,7 @@ class EntriesSave extends NotificationEvent
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function getSettingsHtml($settings = [])
+    public function getSettingsHtml($settings = []): string
     {
         if (!$this->availableSections) {
             $this->availableSections = $this->getAllSections();
@@ -111,7 +111,7 @@ class EntriesSave extends NotificationEvent
         return $criteria->one();
     }
 
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -193,10 +193,9 @@ class EntriesSave extends NotificationEvent
          * @var ElementEvent $event
          */
         $element = $this->event->sender ?? null;
-
         $elementId = null;
 
-        if (get_class($element) === Entry::class) {
+        if (get_class($element) === Entry::class && $element !== null) {
             $elementId = $element->getSection()->id;
         }
 
@@ -216,7 +215,7 @@ class EntriesSave extends NotificationEvent
      *
      * @return array
      */
-    protected function getAllSections()
+    protected function getAllSections(): array
     {
         $result = Craft::$app->sections->getAllSections();
         $options = [];

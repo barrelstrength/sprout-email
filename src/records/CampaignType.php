@@ -60,7 +60,7 @@ class CampaignType extends ActiveRecord
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             // required fields

@@ -20,7 +20,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return null;
     }
@@ -28,7 +28,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return null;
     }
@@ -36,7 +36,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return null;
     }
@@ -44,7 +44,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('sprout-email', 'None');
     }
@@ -52,7 +52,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return Craft::t('sprout-email', 'The manual event is never triggered.');
     }

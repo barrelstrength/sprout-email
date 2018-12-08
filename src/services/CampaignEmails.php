@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutemail\services;
 
+use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
@@ -63,7 +64,14 @@ class CampaignEmails extends Component
             // Set the prepped settings on the FieldRecord, FieldModel, and the field type
             $campaignEmailRecord->listSettings = $preppedSettings;
 
-            $campaignEmail = $mailer->beforeValidate($campaignEmail);
+            /** @var Mailer $mailer */
+            $mailer->emailElement = $campaignEmail;
+
+            // Run mailer validation so Mailers have a chance to modify the Campaign Email Element
+            // We use this in the Copy/Paste Mailer to ensure the Sender settings validate.
+            $mailer->validate();
+
+            $campaignEmail = $mailer->emailElement;
         }
 
         $campaignEmailRecord->setAttributes($campaignEmail->getAttributes());

@@ -10,6 +10,7 @@ use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;
 use Craft;
+use yii\web\Response;
 
 class CampaignTypeController extends Controller
 {
@@ -19,9 +20,9 @@ class CampaignTypeController extends Controller
      * @param                        $campaignTypeId
      * @param CampaignType|null      $campaignType
      *
-     * @return \yii\web\Response
+     * @return Response
      */
-    public function actionCampaignSettings($campaignTypeId, CampaignType $campaignType = null)
+    public function actionCampaignSettings($campaignTypeId, CampaignType $campaignType = null): Response
     {
         if ($campaignTypeId) {
             if (!$campaignType) {
@@ -110,11 +111,11 @@ class CampaignTypeController extends Controller
     /**
      * Deletes a Campaign Type
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionDeleteCampaignType()
+    public function actionDeleteCampaignType(): Response
     {
         $this->requirePostRequest();
 

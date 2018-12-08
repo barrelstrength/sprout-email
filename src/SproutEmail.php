@@ -123,7 +123,7 @@ class SproutEmail extends Plugin
     /**
      * @return Settings
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
@@ -131,7 +131,7 @@ class SproutEmail extends Plugin
     /**
      * @return array
      */
-    public function getCpNavItem()
+    public function getCpNavItem(): array
     {
         $parent = parent::getCpNavItem();
 
@@ -175,7 +175,7 @@ class SproutEmail extends Plugin
         return array_merge($parent, $navigation);
     }
 
-    private function getCpUrlRules()
+    private function getCpUrlRules(): array
     {
         return [
             'sprout-email' => [

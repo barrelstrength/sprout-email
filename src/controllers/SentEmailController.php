@@ -7,7 +7,7 @@ use barrelstrength\sproutbase\app\email\models\SimpleRecipientList;
 use barrelstrength\sproutemail\services\SentEmails;
 use craft\mail\Mailer;
 use craft\mail\Message;
-use barrelstrength\sproutbase\app\email\models\Response;
+use barrelstrength\sproutbase\app\email\models\ModalResponse;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;
@@ -16,6 +16,7 @@ use yii\base\Exception;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use yii\web\Response;
 
 class SentEmailController extends Controller
 {
@@ -44,7 +45,7 @@ class SentEmailController extends Controller
 
         if (!$recipients) {
             return $this->asJson(
-                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
                     'email' => $sentEmail,
                     'message' => Craft::t('sprout-email', 'A recipient email address is required')
                 ])
@@ -76,7 +77,7 @@ class SentEmailController extends Controller
             }
 
             return $this->asJson(
-                Response::createErrorModalResponse('sprout-base-email/_modals/response', [
+                ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
                     'email' => $sentEmail,
                     'message' => Craft::t('sprout-email', 'Invalid email address(es) provided: {invalidEmails}', [
                         'invalidEmails' => implode(', ', $invalidEmails)
@@ -144,7 +145,7 @@ class SentEmailController extends Controller
             if (!empty($processedRecipients)) {
                 $message = 'Email sent successfully.';
 
-                $response = Response::createModalResponse(
+                $response = ModalResponse::createModalResponse(
                     'sprout-base-email/_modals/response',
                     [
                         'email' => $sentEmail,
@@ -157,7 +158,7 @@ class SentEmailController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            $response = Response::createErrorModalResponse(
+            $response = ModalResponse::createErrorModalResponse(
                 'sprout-base-email/_modals/response',
                 [
                     'email' => $sentEmail,
@@ -176,7 +177,7 @@ class SentEmailController extends Controller
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionGetResendModal()
+    public function actionGetResendModal(): Response
     {
         $this->requirePostRequest();
 
@@ -188,7 +189,7 @@ class SentEmailController extends Controller
             'sentEmail' => $sentEmail
         ]);
 
-        $response = new Response();
+        $response = new ModalResponse();
         $response->content = $content;
         $response->success = true;
 
@@ -202,7 +203,7 @@ class SentEmailController extends Controller
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionGetInfoHtml()
+    public function actionGetInfoHtml(): Response
     {
         $this->requirePostRequest();
 
@@ -218,7 +219,7 @@ class SentEmailController extends Controller
             'info' => $sentEmail->getInfo()
         ]);
 
-        $response = new Response();
+        $response = new ModalResponse();
         $response->content = $content;
         $response->success = true;
 

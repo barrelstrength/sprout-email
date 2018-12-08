@@ -37,7 +37,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return User::class;
     }
@@ -45,7 +45,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return User::EVENT_AFTER_SAVE;
     }
@@ -53,7 +53,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return ModelEvent::class;
     }
@@ -61,7 +61,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('sprout-email', 'When a user is saved');
     }
@@ -69,7 +69,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return Craft::t('sprout-email', 'Triggered when a user is saved.');
     }
@@ -80,7 +80,7 @@ class UsersSave extends NotificationEvent
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function getSettingsHtml($settings = [])
+    public function getSettingsHtml($settings = []): string
     {
         if (!$this->groups) {
             $this->groups = $this->getAllGroups();
@@ -119,7 +119,7 @@ class UsersSave extends NotificationEvent
         return $criteria->one();
     }
 
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -229,7 +229,7 @@ class UsersSave extends NotificationEvent
         }
     }
 
-    private function isValidUserGroupIds($currentUsersUserGroups)
+    private function isValidUserGroupIds($currentUsersUserGroups): bool
     {
         return $this->userGroupIds !== '*'
             AND count($this->userGroupIds) > 0
@@ -241,7 +241,7 @@ class UsersSave extends NotificationEvent
      *
      * @return array
      */
-    public function getAllGroups()
+    public function getAllGroups(): array
     {
         try {
             $groups = Craft::$app->userGroups->getAllGroups();

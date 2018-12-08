@@ -12,7 +12,7 @@ class m181113_000000_update_sent_email_element_types extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         /** @noinspection ClassConstantCanBeUsedInspection */
         $types = [
@@ -34,7 +34,7 @@ class m181113_000000_update_sent_email_element_types extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m181113_000000_update_sent_email_element_types cannot be reverted.\n";
         return false;

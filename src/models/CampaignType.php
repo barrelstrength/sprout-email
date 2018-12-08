@@ -2,11 +2,13 @@
 
 namespace barrelstrength\sproutemail\models;
 
+use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use craft\base\Field;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
+use craft\models\FieldLayout;
 use craft\records\FieldLayoutField;
 use craft\validators\UniqueValidator;
 
@@ -94,7 +96,7 @@ class CampaignType extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id'], 'number', 'integerOnly' => true],
@@ -107,7 +109,7 @@ class CampaignType extends Model
     /**
      * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'fieldLayout' => [
@@ -118,10 +120,10 @@ class CampaignType extends Model
     }
 
     /**
-     * @return \craft\models\FieldLayout
+     * @return FieldLayout
      * @throws \yii\base\InvalidConfigException
      */
-    public function getFieldLayout()
+    public function getFieldLayout(): FieldLayout
     {
         /**
          * @var $behavior FieldLayoutBehavior
@@ -137,7 +139,7 @@ class CampaignType extends Model
      * @return Field[]
      * @throws \yii\base\InvalidConfigException
      */
-    public function getFields()
+    public function getFields(): array
     {
         if ($this->fields !== null) {
             $this->fields = [];
@@ -172,10 +174,10 @@ class CampaignType extends Model
     }
 
     /**
-     * @return \barrelstrength\sproutbase\app\email\base\Mailer
+     * @return Mailer
      * @throws \yii\base\Exception
      */
-    public function getMailer()
+    public function getMailer(): Mailer
     {
         return SproutBase::$app->mailers->getMailerByName($this->mailer);
     }

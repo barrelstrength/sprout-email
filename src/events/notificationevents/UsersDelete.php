@@ -23,7 +23,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return User::class;
     }
@@ -31,7 +31,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return User::EVENT_AFTER_DELETE;
     }
@@ -39,7 +39,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return null;
     }
@@ -47,7 +47,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('sprout-email', 'When a user is deleted');
     }
@@ -55,7 +55,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return Craft::t('sprout-email', 'Triggered when a user is deleted.');
     }
@@ -80,7 +80,7 @@ class UsersDelete extends NotificationEvent
         return $criteria->one();
     }
 
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 

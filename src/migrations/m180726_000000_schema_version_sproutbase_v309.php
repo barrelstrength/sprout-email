@@ -21,7 +21,7 @@ class m180726_000000_schema_version_sproutbase_v309 extends Migration
      * @return bool
      * @throws \yii\base\NotSupportedException
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $notificationElementTypeMigration = new m180501_000001_update_notification_element_types();
         ob_start();
@@ -69,7 +69,7 @@ class m180726_000000_schema_version_sproutbase_v309 extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180726_000000_schema_version_v302 cannot be reverted.\n";
         return false;

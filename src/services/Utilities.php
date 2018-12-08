@@ -13,7 +13,7 @@ class Utilities extends Component
      *
      * @return Utilities
      */
-    public static function Instance($refresh = false)
+    public static function Instance($refresh = false): Utilities
     {
         static $inst = null;
         if ($inst === null) {

@@ -422,7 +422,7 @@ class CampaignEmail extends EmailElement
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -483,7 +483,7 @@ class CampaignEmail extends EmailElement
      * @return bool
      * @throws Exception
      */
-    public function isListReady()
+    public function isListReady(): bool
     {
         /**
          * @var $mailer Mailer
@@ -634,7 +634,7 @@ class CampaignEmail extends EmailElement
     /**
      * @inheritdoc
      */
-    public function getEmailTemplateId()
+    public function getEmailTemplateId(): int
     {
         return $this->getCampaignType()->emailTemplateId;
     }

@@ -72,7 +72,7 @@ class Settings extends Model
     /**
      * @return array
      */
-    public function getSettingsNavItems()
+    public function getSettingsNavItems(): array
     {
         return [
             'settingsHeading' => [

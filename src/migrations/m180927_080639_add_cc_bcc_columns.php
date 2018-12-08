@@ -14,7 +14,7 @@ class m180927_080639_add_cc_bcc_columns extends Migration
      * @return bool
      * @throws \yii\base\NotSupportedException
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $notificationAddColumns = new baseMigration();
 
@@ -28,7 +28,7 @@ class m180927_080639_add_cc_bcc_columns extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180927_080639_add_cc_bcc_columns cannot be reverted.\n";
         return false;

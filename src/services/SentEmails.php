@@ -81,8 +81,10 @@ class SentEmails extends Component
             $infoTable->userAgent = Craft::$app->getRequest()->getUserAgent();
         }
 
+
         $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
 
+        // @todo - transport type is a string, how does this work?
         $transportType = new $emailSettings->transportType();
         $transportType->setAttributes($emailSettings->transportSettings);
         $infoTable->transportType = $transportType::displayName();
@@ -245,15 +247,15 @@ class SentEmails extends Component
      */
     public function cleanUpSentEmails(): bool
     {
-        /**
-         * @var $settings Settings
-         */
         $plugin = Craft::$app->getPlugins()->getPlugin('sprout-email');
 
         if (!$plugin) {
             return false;
         }
 
+        /**
+         * @var $settings Settings
+         */
         $settings = $plugin->getSettings();
 
         // Default to 5000 if no integer is found in settings

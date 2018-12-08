@@ -24,7 +24,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return User::class;
     }
@@ -32,7 +32,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return User::EVENT_AFTER_LOGIN;
     }
@@ -40,7 +40,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return UserEvent::class;
     }
@@ -48,7 +48,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('sprout-email', 'When a user is logged in.');
     }
@@ -56,7 +56,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return Craft::t('sprout-email', 'Triggered when a user is logged in.');
     }

@@ -22,7 +22,7 @@ class CampaignTypes extends Component
     /**
      * @return array
      */
-    public function getCampaignTypes()
+    public function getCampaignTypes(): array
     {
         $campaignsTypes = CampaignTypeRecord::find()->all();
 
@@ -41,7 +41,7 @@ class CampaignTypes extends Component
         return $models;
     }
 
-    public function getCampaignTypeById($campaignTypeId)
+    public function getCampaignTypeById($campaignTypeId): CampaignType
     {
         $campaignRecord = CampaignTypeRecord::findOne($campaignTypeId);
 
@@ -143,7 +143,7 @@ class CampaignTypes extends Component
      * @return CampaignTypeRecord
      * @throws \Exception
      */
-    protected function saveCampaignTypeInfo(CampaignType $campaignType, CampaignTypeRecord $campaignTypeRecord)
+    protected function saveCampaignTypeInfo(CampaignType $campaignType, CampaignTypeRecord $campaignTypeRecord): CampaignTypeRecord
     {
         if ($campaignType->id !== null &&
             is_numeric($campaignType->id) &&
