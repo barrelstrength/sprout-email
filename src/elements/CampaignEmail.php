@@ -3,7 +3,9 @@
 namespace barrelstrength\sproutemail\elements;
 
 use barrelstrength\sproutbase\app\email\base\EmailElement;
+use barrelstrength\sproutbase\app\email\base\ListsTrait;
 use barrelstrength\sproutbase\app\email\base\Mailer;
+use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\app\email\web\assets\email\EmailAsset;
 use barrelstrength\sproutemail\elements\db\CampaignEmailQuery;
@@ -502,10 +504,10 @@ class CampaignEmail extends EmailElement
     }
 
     /**
-     * @return Mailer|\barrelstrength\sproutbase\app\email\mailers\DefaultMailer
+     * @return Mailer|DefaultMailer
      * @throws Exception
      */
-    public function getMailer()
+    public function getMailer(): Mailer
     {
         $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
@@ -634,7 +636,7 @@ class CampaignEmail extends EmailElement
     /**
      * @inheritdoc
      */
-    public function getEmailTemplateId(): int
+    public function getEmailTemplateId(): string
     {
         return $this->getCampaignType()->emailTemplateId;
     }

@@ -75,15 +75,6 @@ class CampaignTypeController extends Controller
 
         $campaignType->setAttributes(Craft::$app->getRequest()->getBodyParam('sproutEmail'), false);
 
-        /**
-         * @var $mailer Mailer
-         */
-        $mailer = $campaignType->getMailer();
-
-        if ($mailer) {
-            $mailer->prepareSave($campaignType);
-        }
-
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
 

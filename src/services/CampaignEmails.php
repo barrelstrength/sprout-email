@@ -2,12 +2,14 @@
 
 namespace barrelstrength\sproutemail\services;
 
+use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use craft\base\Component;
 use Craft;
+use craft\helpers\DateTimeHelper;
 use yii\base\Exception;
 
 /**
@@ -156,5 +158,48 @@ class CampaignEmails extends Component
 
         // End the request
         Craft::$app->end();
+    }
+
+    /**
+     * @param CampaignEmail $campaignEmail
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public function sendCampaignEmail(CampaignEmail $campaignEmail)
+    {
+        /* @var $mailer Mailer|CampaignEmailSenderInterface */
+        $mailer = $campaignEmail->getCampaignType()->getMailer();
+
+        if (!$mailer) {
+            throw new Exception(Craft::t('sprout-email', 'No mailer with id {id} was found.', [
+                'id' => $campaignEmail->getMailer()->id
+            ]));
+        }
+
+        /**
+         * @var $mailer Mailer
+         */
+        try {
+            $response = $mailer->sendCampaignEmail($campaignEmail);
+
+            if ($response) {
+                // Update dateSent to change mark status
+                $record = CampaignEmailRecord::findOne($campaignEmail->id);
+
+                if (!$record) {
+                    throw new Exception(Craft::t('sprout-email', 'No Campaign Email with id {id} was found.', [
+                        'id' => $campaignEmail->getCampaignType()->id
+                    ]));
+                }
+
+                $record->dateSent = DateTimeHelper::currentUTCDateTime();
+                $record->save();
+            }
+
+            return $response;
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

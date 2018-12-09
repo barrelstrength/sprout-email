@@ -22,11 +22,6 @@ use craft\base\Component;
 class App extends Component
 {
     /**
-     * @var Mailers
-     */
-    public $mailers;
-
-    /**
      * @var CampaignTypes
      */
     public $campaignTypes;
@@ -48,7 +43,6 @@ class App extends Component
 
     public function init()
     {
-        $this->mailers = new Mailers();
         $this->campaignTypes = new CampaignTypes();
         $this->campaignEmails = new CampaignEmails();
         $this->sentEmails = new SentEmails();
