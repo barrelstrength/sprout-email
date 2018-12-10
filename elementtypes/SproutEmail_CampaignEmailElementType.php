@@ -84,7 +84,7 @@ class SproutEmail_CampaignEmailElementType extends BaseElementType
 
 		$campaignTypes = sproutEmail()->campaignTypes->getCampaignTypes();
 
-		if (count($campaignTypes))
+		if (is_array($campaignTypes) && count($campaignTypes))
 		{
 			$sources[] = array('heading' => Craft::t('Campaigns'));
 
