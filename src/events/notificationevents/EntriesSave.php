@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbase\app\email\base\NotificationEvent;
+use craft\base\Element;
 use craft\elements\Entry;
 use Craft;
 use craft\events\ElementEvent;
@@ -166,24 +167,23 @@ class EntriesSave extends NotificationEvent
     {
         $event = $this->event ?? null;
 
-        $isAjax = Craft::$app->request->getIsAjax();
-        $isConsole = Craft::$app->request->getIsConsoleRequest();
-
-        // Do not trigger this event on queue job and console request.
-        if ($isAjax === true || $isConsole === true) {
-            $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not trigger ajax and console request.'));
-        }
-
         if (!$event) {
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
 
-        if ($event->sender->getStatus() != Entry::STATUS_LIVE) {
-            $this->addError('event', Craft::t('sprout-email', 'ElementEvent only triggers for enabled element.'));
+        // Only trigger this event when an Entry is Live.
+        // When an Entry Type is updated, SCENARIO_ESSENTIALS
+        // When status is disabled, SCENARIO_DEFAULT
+        if ($event->sender->getScenario() !== Element::SCENARIO_LIVE) {
+            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers when an Entry is saved in a live scenario.'));
+        }
+
+        if ($event->sender->getStatus() !== Entry::STATUS_LIVE) {
+            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers for enabled element.'));
         }
 
         if (get_class($event->sender) !== Entry::class) {
-            $this->addError('event', Craft::t('sprout-email', 'Event Element does not match craft\elements\Entry class.'));
+            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event does not match the craft\elements\Entry class.'));
         }
     }
 
