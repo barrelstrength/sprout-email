@@ -42,7 +42,7 @@ class CampaignTypeController extends Controller
                  * @var $mailer Mailer
                  */
                 $mailerOptions[$key]['value'] = get_class($mailer);
-                $mailerOptions[$key]['label'] = $mailer->getName();
+                $mailerOptions[$key]['label'] = $mailer::displayName();
             }
         }
 
