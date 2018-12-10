@@ -205,7 +205,7 @@ class CampaignTypes extends Component
         try {
             Craft::$app->getDb()->createCommand()
                 ->delete(
-                    'sproutemail_campaigntype',
+                    'sproutemail_campaigntypes',
                     [
                         'id' => $campaignTypeId
                     ])

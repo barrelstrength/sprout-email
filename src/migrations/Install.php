@@ -11,7 +11,7 @@ use craft\helpers\Json;
 class Install extends Migration
 {
     private $campaignEmailTable = '{{%sproutemail_campaignemails}}';
-    private $campaignTypeTable = '{{%sproutemail_campaigntype}}';
+    private $campaignTypeTable = '{{%sproutemail_campaigntypes}}';
     private $sentEmailTable = '{{%sproutemail_sentemail}}';
 
     /**
