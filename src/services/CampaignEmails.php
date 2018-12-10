@@ -59,21 +59,21 @@ class CampaignEmails extends Component
 
         $mailer = $campaignType->getMailer();
 
-        if ($mailer) {
-            // Give the Mailer a chance to prep the settings from post
-            $preppedSettings = $mailer->prepListSettings($campaignEmail->listSettings);
+        // Give the Mailer a chance to prep the settings from post
+        $preppedSettings = $mailer->prepListSettings($campaignEmail->listSettings);
 
-            // Set the prepped settings on the FieldRecord, FieldModel, and the field type
-            $campaignEmailRecord->listSettings = $preppedSettings;
+        // Set the prepped settings on the FieldRecord, FieldModel, and the field type
+        $campaignEmailRecord->listSettings = $preppedSettings;
 
-            /** @var Mailer $mailer */
-            $mailer->emailElement = $campaignEmail;
+        // Store generic Sender credentials for Mailers that don't support Senders
+        // @todo - update this to use validation Scenarios on the CampaignEmail model
+        $user = Craft::$app->user->getIdentity();
 
-            // Run mailer validation so Mailers have a chance to modify the Campaign Email Element
-            // We use this in the Copy/Paste Mailer to ensure the Sender settings validate.
-            $mailer->validate();
-
-            $campaignEmail = $mailer->emailElement;
+        if ($campaignType->hasSender() !== false)
+        {
+            $campaignEmail->fromName = $user->username;
+            $campaignEmail->fromEmail = $user->email;
+            $campaignEmail->replyToEmail = $user->email;
         }
 
         $campaignEmailRecord->setAttributes($campaignEmail->getAttributes());
@@ -168,13 +168,11 @@ class CampaignEmails extends Component
      */
     public function sendCampaignEmail(CampaignEmail $campaignEmail)
     {
-        /* @var $mailer Mailer|CampaignEmailSenderInterface */
+        /** @var CampaignEmailSenderInterface $mailer */
         $mailer = $campaignEmail->getCampaignType()->getMailer();
 
         if (!$mailer) {
-            throw new Exception(Craft::t('sprout-email', 'No mailer with id {id} was found.', [
-                'id' => $campaignEmail->getMailer()->id
-            ]));
+            throw new Exception(Craft::t('sprout-email', 'No Mailer found.'));
         }
 
         /**

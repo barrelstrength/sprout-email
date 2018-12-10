@@ -170,7 +170,7 @@ class UsersSave extends NotificationEvent
         }
     }
 
-    public function validateEvent(): bool
+    public function validateEvent()
     {
         $event = $this->event ?? null;
 

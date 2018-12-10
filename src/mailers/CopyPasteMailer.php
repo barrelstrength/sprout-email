@@ -2,14 +2,18 @@
 
 namespace barrelstrength\sproutemail\mailers;
 
+use barrelstrength\sproutbase\app\email\base\EmailElement;
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
 use barrelstrength\sproutbase\app\email\web\assets\email\CopyPasteAsset;
 use barrelstrength\sproutemail\elements\CampaignEmail;
-use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutbase\app\email\models\ModalResponse;
 use Craft;
 
+/**
+ *
+ * @property string $senderHtml
+ */
 class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
 {
     /**
@@ -61,12 +65,11 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
     }
 
     /**
-     * @param CampaignEmail $campaignEmail
-     * @param CampaignType  $campaignType
+     * @param EmailElement $email
      *
-     * @return mixed
+     * @return string
      */
-    public function getPrepareModalHtml(CampaignEmail $campaignEmail, CampaignType $campaignType): string
+    public function getPrepareModalHtml(EmailElement $email): string
     {
         return '';
     }
@@ -83,24 +86,21 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
 
     /**
      * @param CampaignEmail $campaignEmail
-     * @param CampaignType  $campaignType
      *
      * @return ModalResponse|mixed|null
      * @throws \Throwable
      */
-    public function sendCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType)
+    public function sendCampaignEmail(CampaignEmail $campaignEmail)
     {
         try {
             $response = new ModalResponse();
             $response->success = true;
 
-            $emailTemplates = $campaignEmail->getEmailTemplates();
-
             $response->content = Craft::$app->getView()->renderPageTemplate('sprout-base-email/_components/mailers/copypaste/schedulecampaignemail',
                 [
                     'email' => $campaignEmail,
-                    'html' => $emailTemplates->getHtmlBody(),
-                    'text' => $emailTemplates->getTextBody()
+                    'html' => $campaignEmail->getEmailTemplates()->getHtmlBody(),
+                    'text' => $campaignEmail->getEmailTemplates()->getTextBody()
                 ]);
 
             return $response;
@@ -109,38 +109,8 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
         }
     }
 
-    /**
-     * @todo - change method signature and remove $emails in favor of $campaignEmail->getRecipients()
-     *
-     * @inheritdoc
-     *
-     * @param CampaignEmail $campaignEmail
-     * @param CampaignType  $campaignType
-     * @param array         $emails
-     *
-     * @return ModalResponse|mixed|null
-     * @throws \Throwable
-     */
-    public function sendTestCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType, array $emails = [])
-    {
-        return $this->sendCampaignEmail($campaignEmail, $campaignType);
-    }
-
-    public function getRecipientsHtml($campaignEmail): string
+    public function getSenderHtml(): string
     {
         return '';
     }
-
-    /**
-     * Override campaign email validation when saving a new campaign email
-     */
-    public function beforeValidate()
-    {
-        $user = Craft::$app->user->getIdentity();
-
-        $this->emailElement->fromName = $user->username;
-        $this->emailElement->fromEmail = $user->email;
-        $this->emailElement->replyToEmail = $user->email;
-    }
-
 }

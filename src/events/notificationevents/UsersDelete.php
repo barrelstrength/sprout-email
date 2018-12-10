@@ -89,7 +89,7 @@ class UsersDelete extends NotificationEvent
         return $rules;
     }
 
-    public function validateEvent(): bool
+    public function validateEvent()
     {
         $event = $this->event ?? null;
 

@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutemail\models;
 
 use barrelstrength\sproutbase\app\email\base\Mailer;
+use barrelstrength\sproutbase\app\email\base\SenderTrait;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use craft\base\Field;
@@ -34,6 +35,8 @@ use craft\validators\UniqueValidator;
  */
 class CampaignType extends Model
 {
+    use SenderTrait;
+
     /**
      * @var
      */

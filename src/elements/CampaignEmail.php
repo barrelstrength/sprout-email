@@ -3,7 +3,6 @@
 namespace barrelstrength\sproutemail\elements;
 
 use barrelstrength\sproutbase\app\email\base\EmailElement;
-use barrelstrength\sproutbase\app\email\base\ListsTrait;
 use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
 use barrelstrength\sproutbase\SproutBase;

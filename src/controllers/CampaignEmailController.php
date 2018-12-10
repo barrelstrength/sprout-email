@@ -16,13 +16,14 @@ use craft\web\assets\cp\CpAsset;
 use craft\web\Controller;
 use Craft;
 use yii\base\Exception;
+use yii\base\InvalidArgumentException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
  *
- * @property null|\craft\base\ElementInterface|\barrelstrength\sproutemail\elements\CampaignEmail $campaignEmailModel
+ * @property null|ElementInterface|CampaignEmail $campaignEmailModel
  */
 class CampaignEmailController extends Controller
 {
@@ -161,12 +162,8 @@ class CampaignEmailController extends Controller
         $campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId);
 
         if ($campaignEmail) {
-            $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
-        }
-
-        if ($campaignEmail && $campaignType) {
             try {
-                $response = SproutEmail::$app->mailers->sendCampaignEmail($campaignEmail, $campaignType);
+                $response = SproutEmail::$app->campaignEmails->sendCampaignEmail($campaignEmail);
 
                 if ($response instanceof ModalResponse) {
                     return $this->asJson($response);
@@ -315,14 +312,8 @@ class CampaignEmailController extends Controller
 
         $campaignEmail->setEventObject($params);
 
-        $emailTemplates = $campaignEmail->getEmailTemplates();
-
-        if (!isset($emailTemplates)) {
-            throw new NotFoundHttpException(Craft::t('sprout-email', 'Email Templates not found.'));
-        }
-
-        $htmlBody = $emailTemplates->getHtmlBody();
-        $body = $emailTemplates->getTextBody();
+        $htmlBody = $campaignEmail->getEmailTemplates()->getHtmlBody();
+        $body = $campaignEmail->getEmailTemplates()->getTextBody();
 
         SproutEmail::$app->campaignEmails->showCampaignEmail($htmlBody, $body, $extension);
     }
@@ -346,12 +337,12 @@ class CampaignEmailController extends Controller
 
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
 
-        $campaignType = null;
-
         $campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId);
 
-        if ($campaignEmail) {
-            $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
+        if (!$campaignEmail) {
+            throw new InvalidArgumentException(Craft::t('sprout-email', 'Unable to find Campaign Email with id {id}', [
+                'id' => $emailId
+            ]));
         }
 
         $mailer = $campaignEmail->getMailer();
@@ -360,7 +351,7 @@ class CampaignEmailController extends Controller
 
         $campaignEmail->recipients = $recipients;
 
-        $recipientList = $mailer->getRecipientList($campaignEmail);
+        $recipientList = $mailer->getRecipientList();
 
         if ($recipientList->getInvalidRecipients()) {
             $invalidEmails = [];
@@ -381,7 +372,11 @@ class CampaignEmailController extends Controller
         try {
             $mailer = SproutBase::$app->mailers->getMailerByName(DefaultMailer::class);
             $campaignEmail->setIsTest(true);
-            /* @var $mailer NotificationEmailSenderInterface */
+            /**
+             * @todo - sending CampaignEmail using sendNotificationEmail method.
+             *
+             * @var $mailer NotificationEmailSenderInterface
+             */
             if (!$mailer->sendNotificationEmail($campaignEmail)) {
                 return $this->asJson(
                     ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
@@ -403,7 +398,7 @@ class CampaignEmailController extends Controller
                     'sprout-base-email/_modals/response',
                     [
                         'email' => $campaignEmail,
-                        'campaign' => $campaignType,
+                        'campaign' => $campaignEmail->getCampaignType(),
                         'message' => Craft::t('sprout-email', $e->getMessage()),
                     ]
                 )

@@ -247,5 +247,14 @@ return [
     'Transport Type' => 'Transport Type',
     'Campaign Type Name' => 'Campaign Type Name',
     'System Message' => 'System Message',
-    'ElementEvent only triggers for enabled element.' => 'ElementEvent only triggers for enabled element.'
+    'ElementEvent only triggers for enabled element.' => 'ElementEvent only triggers for enabled element.',
+    'Unable to find Campaign Email with id {id}' => 'Unable to find Campaign Email with id {id}',
+    'No actions available for this Campaign Email.' => 'No actions available for this Campaign Email.',
+    'Campaign Email Element not found.' => 'Campaign Email Element not found.',
+    'No actions are available for this Campaign Email.' => 'No actions are available for this Campaign Email.',
+    'No Campaign Email with id {id} was found..' => 'No Campaign Email with id {id} was found..',
+    'Campaign Email Element not found with id {id}.' => 'Campaign Email Element not found with id {id}.',
+    'No Campaign Email with id {id} was found.' => 'No Campaign Email with id {id} was found.',
+    'Email Templates not found.' => 'Email Templates not found.',
+    'No Mailer found.' => 'No Mailer found.'
 ];
