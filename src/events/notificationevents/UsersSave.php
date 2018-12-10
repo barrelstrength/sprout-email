@@ -34,6 +34,8 @@ class UsersSave extends NotificationEvent
 
     public $userGroupIds = [];
 
+    public $adminUsers = false;
+
     /**
      * @inheritdoc
      */
@@ -201,10 +203,16 @@ class UsersSave extends NotificationEvent
             $currentUsersUserGroups = $element->getGroups();
         }
 
+        $errorMessage = null;
+
+        if ($this->isAdminUser() === false) {
+            $errorMessage = Craft::t('sprout-email', 'Not admin role');
+        }
+
+        $inGroup = false;
+
         if ($this->userGroupIds != false) {
             if ($this->isValidUserGroupIds($currentUsersUserGroups)) {
-
-                $inGroup = false;
 
                 // When saving a new user, we grab our groups from the post request
                 // because _processUserGroupsPermissions() runs after saveUser()
@@ -221,12 +229,43 @@ class UsersSave extends NotificationEvent
                 }
 
                 if (!$inGroup) {
-                    $this->addError('event', Craft::t('sprout-email', 'Saved user not in any selected User Group.'));
+                    $errorMessage = Craft::t('sprout-email', 'Saved user not in any selected User Group.');
                 }
+            } else {
+                $errorMessage = Craft::t('sprout-email', 'empty user group');
             }
         } else {
-            $this->addError('event', Craft::t('sprout-email', 'No User Group has been selected.'));
+            $errorMessage = Craft::t('sprout-email', 'No User Group has been selected');
         }
+
+        if (($this->isAdminUser() === null || $this->isAdminUser() === false)  && !$inGroup) {
+            $this->addError('event', $errorMessage);
+        }
+    }
+
+    private function isAdminUser()
+    {
+        /**
+         * Don't trigger if adminUsers setting is off
+         */
+        if (!$this->adminUsers) {
+            return null;
+        }
+        /**
+         * @var ElementEvent $event
+         */
+        $event = $this->event ?? null;
+
+        /**
+         * @var User $element
+         */
+        $element = $event->sender;
+
+        if (!$element->admin) {
+            return false;
+        }
+
+        return true;
     }
 
     private function isValidUserGroupIds($currentUsersUserGroups): bool
