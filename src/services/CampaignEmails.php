@@ -69,8 +69,7 @@ class CampaignEmails extends Component
         // @todo - update this to use validation Scenarios on the CampaignEmail model
         $user = Craft::$app->user->getIdentity();
 
-        if ($campaignType->hasSender() !== false)
-        {
+        if ($campaignType->hasSender() !== false) {
             $campaignEmail->fromName = $user->username;
             $campaignEmail->fromEmail = $user->email;
             $campaignEmail->replyToEmail = $user->email;

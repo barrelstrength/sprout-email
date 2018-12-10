@@ -323,7 +323,7 @@ class CampaignEmailController extends Controller
      *
      * Test Emails do not trigger an onSendEmail event and do not get marked as Sent.
      *
-     * @todo - update to use new EmailElement::getRecipients() syntax and new isTest syntax
+     * @todo - update to use getIsTest() syntax
      *
      * @return \yii\web\Response
      * @throws Exception
