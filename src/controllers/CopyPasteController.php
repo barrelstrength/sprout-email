@@ -30,15 +30,9 @@ class CopyPasteController extends Controller
         /** @var  $campaignEmail CampaignEmail */
         $campaignEmail = SproutEmail::$app->campaignEmails->getCampaignEmailById($emailId);
 
-        $campaignType = null;
-
-        if ($campaignEmail) {
-            $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignEmail->campaignTypeId);
-        }
-
         $campaignEmail->dateSent = DateTimeHelper::currentUTCDateTime();
 
-        if (SproutEmail::$app->campaignEmails->saveCampaignEmail($campaignEmail, $campaignType)) {
+        if (SproutEmail::$app->campaignEmails->saveCampaignEmail($campaignEmail)) {
             $html = Craft::$app->getView()->renderTemplate('sprout-base-email/_modals/response', [
                 'success' => true,
                 'email' => $campaignEmail,

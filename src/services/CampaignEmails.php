@@ -25,16 +25,17 @@ class CampaignEmails extends Component
 
     /**
      * @param CampaignEmail $campaignEmail
-     * @param CampaignType  $campaignType
      *
      * @return CampaignEmail|bool
      * @throws \Exception
      * @throws \Throwable
      * @throws \yii\base\Exception
      */
-    public function saveCampaignEmail(CampaignEmail $campaignEmail, CampaignType $campaignType)
+    public function saveCampaignEmail(CampaignEmail $campaignEmail)
     {
         $campaignEmailRecord = new CampaignEmailRecord();
+
+        $campaignType = $campaignEmail->getCampaignType();
 
         if ($campaignEmail->id && !$campaignEmail->saveAsNew) {
             $campaignEmailRecord = CampaignEmailRecord::findOne($campaignEmail->id);
