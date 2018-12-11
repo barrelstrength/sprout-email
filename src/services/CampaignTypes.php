@@ -103,6 +103,9 @@ class CampaignTypes extends Component
         $campaignTypeRecord = $this->saveCampaignTypeInfo($campaignType, $campaignTypeRecord);
 
         if ($campaignTypeRecord->hasErrors()) {
+
+            $campaignType->setAttributes($campaignTypeRecord->getAttributes());
+
             if ($transaction) {
                 $transaction->rollBack();
             }

@@ -16,20 +16,20 @@ class CampaignTypeController extends Controller
 {
     /**
      * Renders a Campaign Type settings template
-     *
-     * @param                        $campaignTypeId
-     * @param CampaignType|null      $campaignType
+     * @param                   $campaignTypeId
+     * @param CampaignType|null $campaignType
      *
      * @return Response
+     * @throws \Exception
      */
     public function actionCampaignSettings($campaignTypeId, CampaignType $campaignType = null): Response
     {
-        if ($campaignTypeId) {
-            if (!$campaignType) {
-                $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignTypeId);
-            }
-        } else {
-            $campaignType = new CampaignType();
+        if ($campaignTypeId && $campaignType === null) {
+           $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignTypeId);
+
+           if ($campaignType->id == null) {
+               throw new \Exception("Invalid campaign type id");
+           }
         }
 
         $mailerOptions = [];
@@ -87,16 +87,16 @@ class CampaignTypeController extends Controller
         if ($session AND SproutEmail::$app->campaignTypes->saveCampaignType($campaignType)) {
             $session->setNotice(Craft::t('sprout-email', 'Campaign saved.'));
 
-            $_POST['redirect'] = str_replace('{id}', $campaignType->id, $_POST['redirect']);
+            //$_POST['redirect'] = str_replace('{id}', $campaignType->id, $_POST['redirect']);
 
-            $this->redirectToPostedUrl();
+           // $this->redirectToPostedUrl($campaignType);
         } else {
             $session->setError(Craft::t('sprout-email', 'Unable to save campaign.'));
-
-            Craft::$app->getUrlManager()->setRouteParams([
-                'campaignType' => $campaignType
-            ]);
         }
+        
+        Craft::$app->getUrlManager()->setRouteParams([
+            'campaignType' => $campaignType
+        ]);
     }
 
     /**
