@@ -72,6 +72,8 @@ class CampaignTypes extends Component
         $campaignTypeRecord = new CampaignTypeRecord();
         $oldCampaignType = null;
 
+        if (!$campaignType->validate()) return false;
+
         if (is_numeric($campaignType->id) && !$campaignType->saveAsNew) {
             $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);
 
@@ -180,8 +182,9 @@ class CampaignTypes extends Component
             $campaignTypeRecord->handle = $campaignType->handle.'-1';
         }
 
-        $campaignTypeRecord->validate();
-        $campaignType->addErrors($campaignTypeRecord->getErrors());
+        if (!$campaignTypeRecord->validate()) {
+            $campaignType->addErrors($campaignTypeRecord->getErrors());
+        }
 
         // Get the title back from model because record validate append it with 1
         if ($campaignType->saveAsNew) {

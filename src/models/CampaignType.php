@@ -12,6 +12,7 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
 use craft\records\FieldLayoutField;
 use craft\validators\UniqueValidator;
+use barrelstrength\sproutemail\records\CampaignType as CampaignTypeRecord;
 
 /**
  * Class CampaignTypeModel
@@ -103,7 +104,7 @@ class CampaignType extends Model
     {
         return [
             [['id'], 'number', 'integerOnly' => true],
-            [['name', 'handle'], UniqueValidator::class, 'targetClass' => __CLASS__],
+            [['name', 'handle'], UniqueValidator::class, 'targetClass' => CampaignTypeRecord::class],
             [['name', 'handle'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
         ];

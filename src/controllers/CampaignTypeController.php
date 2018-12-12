@@ -8,6 +8,7 @@ use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\SproutEmail;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use Craft;
 use yii\web\Response;
@@ -25,11 +26,16 @@ class CampaignTypeController extends Controller
     public function actionCampaignSettings($campaignTypeId, CampaignType $campaignType = null): Response
     {
         if ($campaignTypeId && $campaignType === null) {
-           $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignTypeId);
 
-           if ($campaignType->id == null) {
-               throw new \Exception("Invalid campaign type id");
-           }
+            if ($campaignTypeId == 'new') {
+                $campaignType = new CampaignType();
+            } else {
+                $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignTypeId);
+
+                if ($campaignType->id == null) {
+                    throw new \Exception("Invalid campaign type id");
+                }
+            }
         }
 
         $mailerOptions = [];
@@ -87,16 +93,17 @@ class CampaignTypeController extends Controller
         if ($session AND SproutEmail::$app->campaignTypes->saveCampaignType($campaignType)) {
             $session->setNotice(Craft::t('sprout-email', 'Campaign saved.'));
 
-            //$_POST['redirect'] = str_replace('{id}', $campaignType->id, $_POST['redirect']);
-
-           // $this->redirectToPostedUrl($campaignType);
+            $url = UrlHelper::cpUrl("sprout-email/settings/campaigntypes/edit/" . $campaignType->id);
+            return $this->redirect($url);
         } else {
             $session->setError(Craft::t('sprout-email', 'Unable to save campaign.'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'campaignType' => $campaignType
+            ]);
         }
-        
-        Craft::$app->getUrlManager()->setRouteParams([
-            'campaignType' => $campaignType
-        ]);
+
+        return null;
     }
 
     /**
