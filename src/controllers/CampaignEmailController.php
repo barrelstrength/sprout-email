@@ -127,7 +127,7 @@ class CampaignEmailController extends Controller
 
         $session = Craft::$app->getSession();
 
-        if ($session AND SproutEmail::$app->campaignEmails->saveCampaignEmail($campaignEmail, $this->campaignType)) {
+        if ($session AND SproutEmail::$app->campaignEmails->saveCampaignEmail($campaignEmail)) {
             $session->setNotice(Craft::t('sprout-email', 'Campaign Email saved.'));
         } else {
             $session->setError(Craft::t('sprout-email', 'Could not save Campaign Email.'));

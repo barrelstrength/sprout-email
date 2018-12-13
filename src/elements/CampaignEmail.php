@@ -639,4 +639,23 @@ class CampaignEmail extends EmailElement
     {
         return $this->getCampaignType()->emailTemplateId;
     }
+
+    public function defaultFromName()
+    {
+        $systemEmailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
+
+        return $systemEmailSettings->fromName;
+    }
+
+    public function defaultFromEmail()
+    {
+        $systemEmailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
+
+        return $systemEmailSettings->fromEmail;
+    }
+
+    public function defaultReplyToEmail()
+    {
+        return '';
+    }
 }
