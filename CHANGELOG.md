@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.1.0-beta.1 - IN PROGRESS
+
+> {tip} Sprout Email 4.1.0 adds the Campaign Email Element.
+
+### Added
+- Added Campaign Emails
+- Campaign Emails now support the Email Templates API
+
+### Updated
+- Updated EntriesSave Event to only trigger in live scenarios ([#76],[#79]) 
+- Save User Notification Event now can be triggered to the Admin group ([#80])
+
+[#76]: https://github.com/barrelstrength/craft-sprout-email/issues/76
+[#79]: https://github.com/barrelstrength/craft-sprout-email/issues/79
+[#80]: https://github.com/barrelstrength/craft-sprout-email/issues/80
+
 ## 4.0.0-beta.7 - 2018-11-13
 
 > {tip} Upgrade to enjoy the new Sent Email Element Type! Sent Emails keep a copy of each email sent through Craft, give you more insight when troubleshooting deliverability, and make it easy to follow up and resend any email previously sent.
