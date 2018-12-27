@@ -351,7 +351,7 @@ class CampaignEmailController extends Controller
 
         $campaignEmail->recipients = $recipients;
 
-        $recipientList = $mailer->getRecipientList();
+        $recipientList = $mailer->getRecipientList($campaignEmail);
 
         if ($recipientList->getInvalidRecipients()) {
             $invalidEmails = [];

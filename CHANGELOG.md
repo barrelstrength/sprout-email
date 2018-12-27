@@ -29,7 +29,7 @@
 - Renamed default Email Templates from _Basic Email => Basic Notification
 - Updates Notification Email layout and instructional text 
 - Updated Sprout Base requirement to v4.0.2
-	
+
 ### Fixed
 - Fixed issue where no line breaks were added to the default Notification Email template
 - Fixed error when all User Groups were selected for 'When a User is saved' event
@@ -47,7 +47,7 @@
 
 ### Changed
 - Updated Sprout Base requirement to v3.0.10
-	
+
 ### Fixed
 - Fixed various issues in Notification Email migrations from Craft 2 
 
@@ -59,7 +59,7 @@
 ### Changed
 - Updated Notifications to render object variables in Live Preview and via Share links ([#52])
 - Updated Sprout Base requirement to v3.0.8
-	
+
 ### Fixed
 - Fixed bug where Notification would send when status was disabled ([#54])
 - Fixed bug that could create missing `emailTemplateId` in migration from Craft 2 to Craft 3 ([#53])

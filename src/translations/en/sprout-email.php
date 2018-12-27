@@ -256,5 +256,37 @@ return [
     'Campaign Email Element not found with id {id}.' => 'Campaign Email Element not found with id {id}.',
     'No Campaign Email with id {id} was found.' => 'No Campaign Email with id {id} was found.',
     'Email Templates not found.' => 'Email Templates not found.',
-    'No Mailer found.' => 'No Mailer found.'
+    'No Mailer found.' => 'No Mailer found.',
+    'Class Bulletin Event does not match craft\\elements\\Entry class.' => 'Class Bulletin Event does not match craft\\elements\\Entry class.',
+    'Admin users will trigger the notification.' => 'Admin users will trigger the notification.',
+    'empty user group' => 'empty user group',
+    'The `EntriesSave` Notification Event does not match the craft\\elements\\Entry class.' => 'The `EntriesSave` Notification Event does not match the craft\\elements\\Entry class.',
+    'SMTP Secure Transport Type' => 'SMTP Secure Transport Type',
+    'Class Bulletin sendEmailNotificationToClassMailingList is not enabled.' => 'Class Bulletin sendEmailNotificationToClassMailingList is not enabled.',
+    'Class Newsletter ID does not match current Section ID.' => 'Class Newsletter ID does not match current Section ID.',
+    'Sending element is null.' => 'Sending element is null.',
+    'The `EntriesSave` Notification Event only triggers for enabled element.' => 'The `EntriesSave` Notification Event only triggers for enabled element.',
+    'Enable Notifications Notifications Notifications?' => 'Enable Notifications Notifications Notifications?',
+    'Protocol' => 'Protocol',
+    'Enable#}
+                {#Campaigns?' => 'Enable#}
+                {#Campaigns?',
+    'The `EntriesSave` Notification Event only triggers when an Entry is saved in a live scenario.' => 'The `EntriesSave` Notification Event only triggers when an Entry is saved in a live scenario.',
+    'Event sender object does not match craft\\elements\\Entry class.' => 'Event sender object does not match craft\\elements\\Entry class.',
+    'No User Group has been selected' => 'No User Group has been selected',
+    'Class Bulletin ID does not match current Section ID.' => 'Class Bulletin ID does not match current Section ID.',
+    'When a Class Newsletter entry is saved' => 'When a Class Newsletter entry is saved',
+    'When a Class Bulletin entry is saved' => 'When a Class Bulletin entry is saved',
+    'Enable#}
+                    {#Campaigns?' => 'Enable#}
+                    {#Campaigns?',
+    'Triggered when a Class Newsletter entry is saved.' => 'Triggered when a Class Newsletter entry is saved.',
+    'Class Newsletter sendEmailNotificationToClassMailingList is not enabled.' => 'Class Newsletter sendEmailNotificationToClassMailingList is not enabled.',
+    'Unknown error' => 'Unknown error',
+    'ElementEvent does not trigger ajax and console requests.' => 'ElementEvent does not trigger ajax and console requests.',
+    'Craft CMS Email' => 'Craft CMS Email',
+    'Trigger Admin Roles' => 'Trigger Admin Roles',
+    'Not admin role' => 'Not admin role',
+    'Triggered when a Class Bulletin entry is saved.' => 'Triggered when a Class Bulletin entry is saved.',
+    'Class Newsletter Event does not match craft\\elements\\Entry class.' => 'Class Newsletter Event does not match craft\\elements\\Entry class.'
 ];

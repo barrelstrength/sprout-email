@@ -14,7 +14,7 @@ class m181128_000000_add_list_settings_column extends Migration
      * @return bool
      * @throws \yii\base\NotSupportedException
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $notificationAddColumn = new baseMigration();
 
@@ -28,7 +28,7 @@ class m181128_000000_add_list_settings_column extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m181128_000000_add_list_settings_column cannot be reverted.\n";
         return false;

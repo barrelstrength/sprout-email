@@ -320,7 +320,7 @@ class CampaignEmail extends EmailElement
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function indexHtml(ElementQueryInterface $elementQuery, array $disabledElementIds = null, array $viewState, string $sourceKey = null, string $context = null, bool $includeContainer, bool $showCheckboxes): string
+    public static function indexHtml(ElementQueryInterface $elementQuery, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */ array $disabledElementIds = null, array $viewState, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */ string $sourceKey = null, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */ string $context = null, bool $includeContainer, bool $showCheckboxes): string
     {
         $html = parent::indexHtml($elementQuery, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer,
             $showCheckboxes);
@@ -642,19 +642,15 @@ class CampaignEmail extends EmailElement
 
     public function defaultFromName()
     {
-        $systemEmailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
-
-        return $systemEmailSettings->fromName;
+        return Craft::$app->getSystemSettings()->getEmailSettings()->fromName;
     }
 
     public function defaultFromEmail()
     {
-        $systemEmailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
-
-        return $systemEmailSettings->fromEmail;
+        return Craft::$app->getSystemSettings()->getEmailSettings()->fromEmail;
     }
 
-    public function defaultReplyToEmail()
+    public function defaultReplyToEmail(): string
     {
         return '';
     }

@@ -72,7 +72,9 @@ class CampaignTypes extends Component
         $campaignTypeRecord = new CampaignTypeRecord();
         $oldCampaignType = null;
 
-        if (!$campaignType->validate()) return false;
+        if (!$campaignType->validate()) {
+            return false;
+        }
 
         if (is_numeric($campaignType->id) && !$campaignType->saveAsNew) {
             $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);

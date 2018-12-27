@@ -11,12 +11,14 @@ use barrelstrength\sproutemail\SproutEmail;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use Craft;
+use yii\base\InvalidArgumentException;
 use yii\web\Response;
 
 class CampaignTypeController extends Controller
 {
     /**
      * Renders a Campaign Type settings template
+     *
      * @param                   $campaignTypeId
      * @param CampaignType|null $campaignType
      *
@@ -32,8 +34,8 @@ class CampaignTypeController extends Controller
             } else {
                 $campaignType = SproutEmail::$app->campaignTypes->getCampaignTypeById($campaignTypeId);
 
-                if ($campaignType->id == null) {
-                    throw new \Exception("Invalid campaign type id");
+                if ($campaignType->id === null) {
+                    throw new InvalidArgumentException('Invalid campaign type id');
                 }
             }
         }
@@ -72,7 +74,7 @@ class CampaignTypeController extends Controller
      * @throws \yii\db\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionSaveCampaignType()
+    public function actionSaveCampaignType(): Response
     {
         $this->requirePostRequest();
 
@@ -88,22 +90,21 @@ class CampaignTypeController extends Controller
 
         $campaignType->setFieldLayout($fieldLayout);
 
-        $session = Craft::$app->getSession();
-
-        if ($session AND SproutEmail::$app->campaignTypes->saveCampaignType($campaignType)) {
-            $session->setNotice(Craft::t('sprout-email', 'Campaign saved.'));
-
-            $url = UrlHelper::cpUrl("sprout-email/settings/campaigntypes/edit/" . $campaignType->id);
-            return $this->redirect($url);
-        } else {
-            $session->setError(Craft::t('sprout-email', 'Unable to save campaign.'));
+        if (!SproutEmail::$app->campaignTypes->saveCampaignType($campaignType)) {
+            Craft::$app->getSession()->setError(Craft::t('sprout-email', 'Unable to save campaign.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
                 'campaignType' => $campaignType
             ]);
+
+            $this->redirectToPostedUrl();
         }
 
-        return null;
+        Craft::$app->getSession()->setNotice(Craft::t('sprout-email', 'Campaign saved.'));
+
+        $url = UrlHelper::cpUrl('sprout-email/settings/campaigntypes/edit/'.$campaignType->id);
+
+        return $this->redirect($url);
     }
 
     /**
