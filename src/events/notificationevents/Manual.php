@@ -20,7 +20,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return null;
     }
@@ -28,7 +28,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return null;
     }
@@ -36,7 +36,7 @@ class Manual extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return null;
     }

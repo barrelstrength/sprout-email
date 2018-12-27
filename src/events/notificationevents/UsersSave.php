@@ -39,7 +39,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return User::class;
     }
@@ -47,7 +47,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return User::EVENT_AFTER_SAVE;
     }
@@ -55,7 +55,7 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return ModelEvent::class;
     }

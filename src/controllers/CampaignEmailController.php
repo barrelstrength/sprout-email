@@ -2,7 +2,8 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\base\NotificationEmailSenderInterface;
+use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
+use barrelstrength\sproutbase\app\email\base\Mailer;
 use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutemail\elements\CampaignEmail;
@@ -146,9 +147,9 @@ class CampaignEmailController extends Controller
      * Sends a Campaign Email
      *
      * @return Response
-     * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
+     * @throws \Twig_Error_Loader
      */
     public function actionSendCampaignEmail(): Response
     {
@@ -328,7 +329,6 @@ class CampaignEmailController extends Controller
      * @return \yii\web\Response
      * @throws Exception
      * @throws \Throwable
-     * @throws \Twig_Error_Loader
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSendTestCampaignEmail()
@@ -370,14 +370,11 @@ class CampaignEmailController extends Controller
         }
 
         try {
+            /** @var Mailer|CampaignEmailSenderInterface $mailer */
             $mailer = SproutBase::$app->mailers->getMailerByName(DefaultMailer::class);
             $campaignEmail->setIsTest(true);
-            /**
-             * @todo - sending CampaignEmail using sendNotificationEmail method.
-             *
-             * @var $mailer NotificationEmailSenderInterface
-             */
-            if (!$mailer->sendNotificationEmail($campaignEmail)) {
+
+            if (!$mailer->sendTestCampaignEmail($campaignEmail)) {
                 return $this->asJson(
                     ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
                         'email' => $campaignEmail,

@@ -11,6 +11,7 @@ use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
 use craft\base\Component;
 use craft\helpers\Json;
+use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
 use yii\base\Event;
 use Craft;
@@ -84,13 +85,14 @@ class SentEmails extends Component
 
         $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
 
-        // @todo - transport type is a string, how does this work?
+        /** @var BaseTransportAdapter $transportType */
         $transportType = new $emailSettings->transportType();
         $transportType->setAttributes($emailSettings->transportSettings);
         $infoTable->transportType = $transportType::displayName();
 
         // If SMTP
         if (get_class($transportType) === Smtp::class) {
+            /** @var Smtp $transportType */
             $infoTable->host = $transportType->host;
             $infoTable->port = $transportType->port;
             $infoTable->username = $transportType->username;

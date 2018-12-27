@@ -24,7 +24,7 @@ class EntriesDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return Entry::class;
     }
@@ -32,17 +32,9 @@ class EntriesDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return Entry::EVENT_AFTER_DELETE;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEventHandlerClassName()
-    {
-        return null;
     }
 
     /**

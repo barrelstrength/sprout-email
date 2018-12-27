@@ -23,7 +23,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return User::class;
     }
@@ -31,7 +31,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return User::EVENT_AFTER_DELETE;
     }
@@ -39,7 +39,7 @@ class UsersDelete extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return null;
     }

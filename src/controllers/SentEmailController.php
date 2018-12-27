@@ -28,7 +28,6 @@ class SentEmailController extends Controller
      * @return bool|\yii\web\Response
      * @throws Exception
      * @throws \Throwable
-     * @throws \Twig_Error_Loader
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionResendEmail()

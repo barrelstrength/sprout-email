@@ -30,7 +30,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName()
+    public function getEventClassName(): string
     {
         return Entry::class;
     }
@@ -38,7 +38,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return Entry::EVENT_AFTER_SAVE;
     }
@@ -46,7 +46,7 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName()
+    public function getEventHandlerClassName(): string
     {
         return ModelEvent::class;
     }
