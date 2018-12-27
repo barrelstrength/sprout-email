@@ -5,8 +5,8 @@ Flexible, integrated email marketing and notifications.
 ## Email Types
 
 - **Transactional** - Send Notification Emails to single users and lists. Trigger emails on custom events.
-- **Campaigns (coming soon)** - Build your emails in Craft and send them via your favorite Email Service Provider such as Campaign Monitor or MailChimp
-- **Sent Email (coming soon)** - Track and resend emails sent by Craft
+- **Campaigns** - Build your emails in Craft and send them via your favorite Email Service Provider such as Campaign Monitor or MailChimp
+- **Sent Email** - Track and resend emails sent by Craft
 
 ## Workflows & Customization 
 
