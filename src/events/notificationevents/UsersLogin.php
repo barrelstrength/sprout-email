@@ -24,7 +24,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName(): string
+    public function getEventClassName()
     {
         return User::class;
     }
@@ -32,7 +32,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName(): string
+    public function getEventName()
     {
         return User::EVENT_AFTER_LOGIN;
     }
@@ -40,7 +40,7 @@ class UsersLogin extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName(): string
+    public function getEventHandlerClassName()
     {
         return UserEvent::class;
     }

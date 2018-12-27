@@ -25,7 +25,7 @@ class UsersActivate extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventClassName(): string
+    public function getEventClassName()
     {
         return Users::class;
     }
@@ -33,7 +33,7 @@ class UsersActivate extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventName(): string
+    public function getEventName()
     {
         return Users::EVENT_AFTER_ACTIVATE_USER;
     }
@@ -41,7 +41,7 @@ class UsersActivate extends NotificationEvent
     /**
      * @inheritdoc
      */
-    public function getEventHandlerClassName(): string
+    public function getEventHandlerClassName()
     {
         return UserEvent::class;
     }
