@@ -7,6 +7,7 @@ use barrelstrength\sproutbase\app\email\base\NotificationEvent;
 use Craft;
 
 use craft\elements\Entry;
+use yii\base\Event;
 
 
 /**
@@ -35,6 +36,14 @@ class EntriesDelete extends NotificationEvent
     public function getEventName(): string
     {
         return Entry::EVENT_AFTER_DELETE;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEventHandlerClassName(): string
+    {
+        return Event::class;
     }
 
     /**
