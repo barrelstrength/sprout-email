@@ -109,6 +109,16 @@ class CopyPasteMailer extends Mailer implements CampaignEmailSenderInterface
         }
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @return mixed|null
+     */
+    public function sendTestCampaignEmail(CampaignEmail $campaignEmail)
+    {
+        return null;
+    }
+
     public function getSenderHtml(): string
     {
         return '';
