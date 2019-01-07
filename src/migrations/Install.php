@@ -19,49 +19,57 @@ class Install extends Migration
      */
     public function safeUp()
     {
-        $this->createTable($this->campaignEmailTable,
-            [
-                'id' => $this->primaryKey(),
-                'subjectLine' => $this->string()->notNull(),
-                'campaignTypeId' => $this->integer()->notNull(),
-                'recipients' => $this->text(),
-                'emailSettings' => $this->text(),
-                'defaultBody' => $this->text(),
-                'listSettings' => $this->text(),
-                'fromName' => $this->string(),
-                'fromEmail' => $this->string(),
-                'replyToEmail' => $this->string(),
-                'enableFileAttachments' => $this->boolean(),
-                'dateScheduled' => $this->dateTime(),
-                'dateSent' => $this->dateTime(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid()
-            ]
-        );
+        $isCampaignEmailTableExist = $this->getDb()->tableExists($this->campaignEmailTable);
 
-        $this->addForeignKey(null, $this->campaignEmailTable, ['id'], '{{%elements}}', ['id'], 'CASCADE', null);
+        if ($isCampaignEmailTableExist == false) {
+            $this->createTable($this->campaignEmailTable,
+                [
+                    'id' => $this->primaryKey(),
+                    'subjectLine' => $this->string()->notNull(),
+                    'campaignTypeId' => $this->integer()->notNull(),
+                    'recipients' => $this->text(),
+                    'emailSettings' => $this->text(),
+                    'defaultBody' => $this->text(),
+                    'listSettings' => $this->text(),
+                    'fromName' => $this->string(),
+                    'fromEmail' => $this->string(),
+                    'replyToEmail' => $this->string(),
+                    'enableFileAttachments' => $this->boolean(),
+                    'dateScheduled' => $this->dateTime(),
+                    'dateSent' => $this->dateTime(),
+                    'dateCreated' => $this->dateTime()->notNull(),
+                    'dateUpdated' => $this->dateTime()->notNull(),
+                    'uid' => $this->uid()
+                ]
+            );
 
-        $this->createTable($this->campaignTypeTable,
-            [
-                'id' => $this->primaryKey(),
-                'name' => $this->string()->notNull(),
-                'handle' => $this->string()->notNull(),
-                'type' => $this->string()->notNull(),
-                'mailer' => $this->string()->notNull(),
-                'emailTemplateId' => $this->string(),
-                'titleFormat' => $this->string(),
-                'urlFormat' => $this->string(),
-                'hasUrls' => $this->boolean(),
-                'hasAdvancedTitles' => $this->boolean(),
-                'template' => $this->string(),
-                'templateCopyPaste' => $this->string(),
-                'fieldLayoutId' => $this->integer(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid()
-            ]
-        );
+            $this->addForeignKey(null, $this->campaignEmailTable, ['id'], '{{%elements}}', ['id'], 'CASCADE', null);
+        }
+
+        $isCampaignTypeTableExist = $this->getDb()->tableExists($this->campaignTypeTable);
+
+        if ($isCampaignTypeTableExist == false) {
+            $this->createTable($this->campaignTypeTable,
+                [
+                    'id' => $this->primaryKey(),
+                    'name' => $this->string()->notNull(),
+                    'handle' => $this->string()->notNull(),
+                    'type' => $this->string()->notNull(),
+                    'mailer' => $this->string()->notNull(),
+                    'emailTemplateId' => $this->string(),
+                    'titleFormat' => $this->string(),
+                    'urlFormat' => $this->string(),
+                    'hasUrls' => $this->boolean(),
+                    'hasAdvancedTitles' => $this->boolean(),
+                    'template' => $this->string(),
+                    'templateCopyPaste' => $this->string(),
+                    'fieldLayoutId' => $this->integer(),
+                    'dateCreated' => $this->dateTime()->notNull(),
+                    'dateUpdated' => $this->dateTime()->notNull(),
+                    'uid' => $this->uid()
+                ]
+            );
+        }
 
         $sentTable = $this->getDb()->tableExists($this->sentEmailTable);
 
@@ -85,18 +93,21 @@ class Install extends Migration
             );
         }
 
-        $settings = new Settings();
-        $basic = new BasicTemplates();
+        if ($this->getDb()->columnExists('{{%plugins}}', 'settings')) {
+            $settings = new Settings();
+            $basic = new BasicTemplates();
 
-        $settings->emailTemplateId = get_class($basic);
+            $settings->emailTemplateId = get_class($basic);
 
-        $newSettings = json_encode($settings->getAttributes());
+            $newSettings = json_encode($settings->getAttributes());
 
-        $this->db->createCommand()->update('{{%plugins}}', [
-            'settings' => $newSettings
-        ], [
-            'handle' => strtolower('sprout-email')
-        ])->execute();
+            $this->db->createCommand()->update('{{%plugins}}', [
+                'settings' => $newSettings
+            ], [
+                'handle' => strtolower('sprout-email')
+            ])->execute();
+        }
+
 
         $this->runSproutBaseInstall();
     }
