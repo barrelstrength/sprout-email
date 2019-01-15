@@ -30,7 +30,7 @@ class m160804_000010_sproutEmail_addDisplayHideFeaturesSettings extends BaseMigr
 				->from('sproutemail_defaultmailer_recipientlists')
 				->queryAll();
 
-			if (count($lists))
+			if (is_array($lists) && count($lists))
 			{
 				$settings->enableRecipientLists = '1';
 			}

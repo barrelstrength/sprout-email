@@ -245,7 +245,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$words = explode('-', $text);
 		$start = array_shift($words);
 
-		if (count($words))
+		if (is_array($words) && count($words))
 		{
 			foreach ($words as $word)
 			{

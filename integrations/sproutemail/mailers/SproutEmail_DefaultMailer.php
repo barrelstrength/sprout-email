@@ -323,13 +323,13 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 		$options  = array();
 		$lists    = $this->getLists();
 
-		if (count($lists))
+		if (is_array($lists) && count($lists))
 		{
 			foreach ($lists as $list)
 			{
 				$listName = $list->name;
 
-				if (count($list->totalSubscribers))
+				if (is_array($list->totalSubscribers) && count($list->totalSubscribers))
 				{
 					$listName .= ' (' . $list->totalSubscribers . ')';
 				}
@@ -468,7 +468,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			$onTheFlyRecipients = explode(",", $onTheFlyRecipients);
 		}
 
-		if (count($onTheFlyRecipients))
+		if (is_array($onTheFlyRecipients) && count($onTheFlyRecipients))
 		{
 			foreach ($onTheFlyRecipients as $index => $recipient)
 			{

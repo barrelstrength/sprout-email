@@ -19,8 +19,9 @@ class m160303_000000_sproutEmail_updateNotificationOptionsFormat extends BaseMig
 					->where(array('in', 'eventId', array('entries-saveEntry', 'users-saveUser')))
 					->queryAll();
 
-				if ($count = count($notifications))
+				if (is_array($notifications) && count($notifications))
 				{
+                    $count = count($notifications);
 					SproutEmailPlugin::log('Notifications found: ' . $count, LogLevel::Info, true);
 
 					$newOptions = array();
