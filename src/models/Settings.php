@@ -93,13 +93,13 @@ class Settings extends Model
             'emailHeading' => [
                 'heading' => Craft::t('sprout-email', 'Email'),
             ],
-            'campaigntypes' => [
-                'label' => Craft::t('sprout-email', 'Campaigns'),
-                'url' => 'sprout-email/settings/campaigntypes',
-                'selected' => 'campaigntypes',
-                'template' => 'sprout-base-email/settings/campaigntypes',
-                'settingsForm' => false
-            ],
+//            'campaigntypes' => [
+//                'label' => Craft::t('sprout-email', 'Campaigns'),
+//                'url' => 'sprout-email/settings/campaigntypes',
+//                'selected' => 'campaigntypes',
+//                'template' => 'sprout-base-email/settings/campaigntypes',
+//                'settingsForm' => false
+//            ],
             'notifications' => [
                 'label' => Craft::t('sprout-email', 'Notifications'),
                 'url' => 'sprout-email/settings/notifications',
