@@ -16,6 +16,7 @@ class Install extends Migration
 
     /**
      * @return bool|void
+     * @throws \yii\base\NotSupportedException
      * @throws \yii\db\Exception
      */
     public function safeUp()
