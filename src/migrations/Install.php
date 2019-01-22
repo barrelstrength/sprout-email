@@ -20,9 +20,9 @@ class Install extends Migration
      */
     public function safeUp()
     {
-        $isCampaignEmailTableExist = $this->getDb()->tableExists($this->campaignEmailTable);
+        $campaignEmailTableExists = $this->getDb()->tableExists($this->campaignEmailTable);
 
-        if ($isCampaignEmailTableExist == false) {
+        if ($campaignEmailTableExists == false) {
             $this->createTable($this->campaignEmailTable,
                 [
                     'id' => $this->primaryKey(),
@@ -47,9 +47,9 @@ class Install extends Migration
             $this->addForeignKey(null, $this->campaignEmailTable, ['id'], '{{%elements}}', ['id'], 'CASCADE', null);
         }
 
-        $isCampaignTypeTableExist = $this->getDb()->tableExists($this->campaignTypeTable);
+        $campaignTypeTableExists = $this->getDb()->tableExists($this->campaignTypeTable);
 
-        if ($isCampaignTypeTableExist == false) {
+        if ($campaignTypeTableExists == false) {
             $this->createTable($this->campaignTypeTable,
                 [
                     'id' => $this->primaryKey(),
