@@ -1,20 +1,28 @@
 # Changelog
 
-## 4.1.0-beta.1 - IN PROGRESS
+## 4.0.0-beta.8 - 2019-01-23
 
-> {tip} Sprout Email 4.1.0 adds the Campaign Email Element.
+### Changed
+- Updated Mailer to support displayName, hasSender, and hasRecipients 
+- Refactored EmailElement and Mailer class
+- Updated template errors to be captured on Email Element model
+- Updated ListsTrait => RecipientsTrait and removed from EmailElement class
+- Improved logic in Install migration
 
-### Added
-- Added Campaign Emails
-- Campaign Emails now support the Email Templates API
-
-### Updated
-- Updated EntriesSave Event to only trigger in live scenarios ([#76],[#79]) 
-- Save User Notification Event now can be triggered to the Admin group ([#80])
+### Fixed
+- Updated EntriesSave Notification Event to only trigger in live scenarios [#76]
+- Updated EntriesSave Notification Event to only trigger enabled entries. [#79]
+- Fixed issue migration could fail in some scenarios due to duplicate pluginHandle column [#219-forms]
+- Fixed issue where getSegment was used in a console request [#207-forms]
+- Fixed Subject Line output in test modal
+- Fixed bug on notification email where the object asset field does not attach  to the email message
+- Fixed error when sending Notification Email using getAssetFilePath
+- Added migration to ensure Notification Email listSettings column exists
 
 [#76]: https://github.com/barrelstrength/craft-sprout-email/issues/76
 [#79]: https://github.com/barrelstrength/craft-sprout-email/issues/79
-[#80]: https://github.com/barrelstrength/craft-sprout-email/issues/80
+[#207-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/207
+[#219-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/219
 
 ## 4.0.0-beta.7 - 2018-11-13
 
