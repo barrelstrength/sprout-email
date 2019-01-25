@@ -230,7 +230,7 @@ class SentEmails extends Component
         // Remove deliveryStatus as we can determine it from the status in the future
         $infoTable = $infoTable->getAttributes();
         unset($infoTable['deliveryStatus']);
-        $sentEmail->info = json_encode($infoTable);
+        $sentEmail->info = Json::encode($infoTable);
 
         try {
             if (Craft::$app->getElements()->saveElement($sentEmail)) {
