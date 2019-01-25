@@ -6,7 +6,8 @@ use barrelstrength\sproutbase\app\email\emailtemplates\BasicTemplates;
 use barrelstrength\sproutemail\models\Settings;
 use craft\db\Migration;
 use barrelstrength\sproutbase\app\email\migrations\Install as SproutBaseNotificationInstall;
-use craft\helpers\Json;
+use Craft;
+use craft\services\Plugins;
 
 class Install extends Migration
 {
@@ -16,8 +17,10 @@ class Install extends Migration
 
     /**
      * @return bool|void
+     * @throws \yii\base\ErrorException
+     * @throws \yii\base\Exception
      * @throws \yii\base\NotSupportedException
-     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
      */
     public function safeUp()
     {
@@ -95,21 +98,14 @@ class Install extends Migration
             );
         }
 
-        if ($this->getDb()->columnExists('{{%plugins}}', 'settings')) {
-            $settings = new Settings();
-            $basic = new BasicTemplates();
+        $settings = new Settings();
+        $basic = new BasicTemplates();
 
-            $settings->emailTemplateId = get_class($basic);
+        $settings->emailTemplateId = get_class($basic);
 
-            $newSettings = json_encode($settings->getAttributes());
-
-            $this->db->createCommand()->update('{{%plugins}}', [
-                'settings' => $newSettings
-            ], [
-                'handle' => strtolower('sprout-email')
-            ])->execute();
-        }
-
+        $pluginHandle = 'sprout-email';
+        $projectConfig = Craft::$app->getProjectConfig();
+        $projectConfig->set(Plugins::CONFIG_PLUGINS_KEY . '.' . $pluginHandle . '.settings', $settings->toArray());
 
         $this->runSproutBaseInstall();
     }
