@@ -329,7 +329,7 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 			{
 				$listName = $list->name;
 
-				if (is_array($list->totalSubscribers) && count($list->totalSubscribers))
+				if (is_string($list->totalSubscribers))
 				{
 					$listName .= ' (' . $list->totalSubscribers . ')';
 				}

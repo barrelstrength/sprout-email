@@ -700,16 +700,23 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 			$templateErrors = sproutEmail()->getError();
 
-			if (!empty($templateErrors))
-			{
-				foreach ($templateErrors as $templateError)
-				{
-					$errors[] = Craft::t($templateError . ' <a href="{url}">Edit Settings</a>.',
-						array(
-							'url' => $notificationEditSettingsUrl
-						));
-				}
-			}
+			if (!empty($templateErrors)) {
+                if (is_array($templateErrors))
+                {
+                    foreach ($templateErrors as $templateError)
+                    {
+                        $errors[] = Craft::t($templateError . ' <a href="{url}">Edit Settings</a>.',
+                            array(
+                                'url' => $notificationEditSettingsUrl
+                            ));
+                    }
+                } else {
+                    $errors[] = Craft::t($templateErrors . ' <a href="{url}">Edit Settings</a>.',
+                        array(
+                            'url' => $notificationEditSettingsUrl
+                        ));
+                }
+            }
 		}
 		else
 		{
