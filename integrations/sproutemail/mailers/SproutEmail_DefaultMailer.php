@@ -142,7 +142,8 @@ class SproutEmail_DefaultMailer extends SproutEmailBaseMailer implements SproutE
 				}
 				else
 				{
-					return false;
+                    // Skip any emails that we have already processed
+                    continue;
 				}
 			}
 			catch (\Exception $e)
