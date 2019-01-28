@@ -24,7 +24,7 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 			->queryAll();
 
 		// If both true, then
-		if ($sproutLists && $sproutLists->isInstalled && count($recipientLists))
+		if ($sproutLists && $sproutLists->isInstalled && is_array($recipientLists) && count($recipientLists))
 		{
 			$count      = 0;
 			$listsByKey = array();
@@ -115,7 +115,7 @@ class m170418_000001_sproutEmail_migrateRecipientListsToSproutLists extends Base
 				$oldListIds = JsonHelper::decode($notificationEmail['listSettings']);
 				$newListIds = array();
 
-				if (isset($oldListIds['listIds']) and count($oldListIds['listIds']))
+				if (isset($oldListIds['listIds']) && is_array($oldListIds['listIds']) && count($oldListIds['listIds']))
 				{
 					foreach ($oldListIds['listIds'] as $oldListId)
 					{

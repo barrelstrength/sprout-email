@@ -132,7 +132,10 @@ class SproutEmail_EntriesSaveEntryEvent extends SproutEmailBaseEvent
 	{
 		$criteria = craft()->elements->getCriteria(ElementType::Entry);
 
-		if (isset($this->options['craft']['saveEntry']['sectionIds']) && count($this->options['craft']['saveEntry']['sectionIds']))
+		if (
+		    is_array($this->options['craft']['saveEntry']['sectionIds']) &&
+		    isset($this->options['craft']['saveEntry']['sectionIds']) &&
+            count($this->options['craft']['saveEntry']['sectionIds']))
 		{
 			$ids = $this->options['craft']['saveEntry']['sectionIds'];
 

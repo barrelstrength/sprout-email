@@ -89,7 +89,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 				}
 			}
 
-			if (count($this->availableEvents))
+			if (is_array($this->availableEvents) && count($this->availableEvents))
 			{
 				uasort($this->availableEvents, function ($a, $b)
 				{
@@ -276,7 +276,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 		$self   = $this;
 		$events = $this->getAvailableEvents();
 
-		if (count($events))
+		if (is_array($events) && count($events))
 		{
 			foreach ($events as $eventId => $listener)
 			{
@@ -442,7 +442,7 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 			{
 				$content = $element->getContent()->getAttributes();
 
-				if (count($content))
+				if (is_array($content) && count($content))
 				{
 					foreach ($content as $key => $value)
 					{
@@ -700,16 +700,23 @@ class SproutEmail_NotificationEmailsService extends BaseApplicationComponent
 
 			$templateErrors = sproutEmail()->getError();
 
-			if (!empty($templateErrors))
-			{
-				foreach ($templateErrors as $templateError)
-				{
-					$errors[] = Craft::t($templateError . ' <a href="{url}">Edit Settings</a>.',
-						array(
-							'url' => $notificationEditSettingsUrl
-						));
-				}
-			}
+			if (!empty($templateErrors)) {
+                if (is_array($templateErrors))
+                {
+                    foreach ($templateErrors as $templateError)
+                    {
+                        $errors[] = Craft::t($templateError . ' <a href="{url}">Edit Settings</a>.',
+                            array(
+                                'url' => $notificationEditSettingsUrl
+                            ));
+                    }
+                } else {
+                    $errors[] = Craft::t($templateErrors . ' <a href="{url}">Edit Settings</a>.',
+                        array(
+                            'url' => $notificationEditSettingsUrl
+                        ));
+                }
+            }
 		}
 		else
 		{

@@ -172,7 +172,7 @@ class SproutEmail_CommerceOnStatusChangeEvent extends SproutEmailBaseEvent
 
 			$orderHistories = craft()->commerce_orderHistories->getAllOrderHistoriesByOrderId($order->id);
 
-			if (count($orderHistories))
+			if (is_array($orderHistories) && count($orderHistories))
 			{
 				$values['orderHistory'] = end($orderHistories);
 			}

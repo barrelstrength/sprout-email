@@ -18,7 +18,7 @@ class m160304_000000_sproutEmail_updateUserEntryCheckboxOption extends BaseMigra
 					->from('sproutemail_campaigns_notifications')
 					->queryAll();
 
-				if ($count = count($notifications))
+				if (is_array($notifications) && count($notifications))
 				{
 					foreach ($notifications as $notification)
 					{

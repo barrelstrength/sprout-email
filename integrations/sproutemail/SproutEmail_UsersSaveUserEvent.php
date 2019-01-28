@@ -181,7 +181,7 @@ class SproutEmail_UsersSaveUserEvent extends SproutEmailBaseEvent
 
 		$options = array();
 
-		if (count($groups))
+		if (is_array($groups) && count($groups))
 		{
 			foreach ($groups as $key => $group)
 			{

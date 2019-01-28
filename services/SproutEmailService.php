@@ -207,7 +207,7 @@ class SproutEmailService extends BaseApplicationComponent
 			$message = print_r($message, true);
 		}
 
-		if (!empty($key))
+		if (is_array($this->error) && !empty($this->error[$key]))
 		{
 			$this->error[$key] = $message;
 		}
@@ -245,7 +245,7 @@ class SproutEmailService extends BaseApplicationComponent
 		$words = explode('-', $text);
 		$start = array_shift($words);
 
-		if (count($words))
+		if (is_array($words) && count($words))
 		{
 			foreach ($words as $word)
 			{
@@ -443,7 +443,8 @@ class SproutEmailService extends BaseApplicationComponent
 			return false;
 		}
 
-		return craft()->email->sendEmail($emailModel, $variables);
+         return craft()->email->sendEmail($emailModel, $variables);
+
 	}
 
 	/**

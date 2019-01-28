@@ -218,7 +218,7 @@ class SproutEmail_MailerService extends BaseApplicationComponent
 
 		$mailers = $this->getInstalledMailers();
 
-		if (count($mailers))
+		if (is_array($mailers) && count($mailers))
 		{
 			foreach ($mailers as $mailer)
 			{
