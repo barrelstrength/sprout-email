@@ -20,6 +20,12 @@ use craft\elements\User;
  */
 class UsersDelete extends NotificationEvent
 {
+    public $whenNew = false;
+
+    public $whenUpdated = false;
+
+    public $adminUsers = false;
+
     /**
      * @inheritdoc
      */
