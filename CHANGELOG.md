@@ -19,10 +19,10 @@
 - Improved logic in Install migration
 
 ### Fixed
-- Updated EntriesSave Notification Event to only trigger in live scenarios [#76]
-- Updated EntriesSave Notification Event to only trigger enabled entries. [#79]
-- Fixed issue migration could fail in some scenarios due to duplicate pluginHandle column [#219-forms]
-- Fixed issue where getSegment was used in a console request [#207-forms]
+- Updated EntriesSave Notification Event to only trigger in live scenarios ([#76])
+- Updated EntriesSave Notification Event to only trigger enabled entries. ([#79])
+- Fixed issue migration could fail in some scenarios due to duplicate pluginHandle column ([#219forms])
+- Fixed issue where getSegment was used in a console request ([#207forms])
 - Fixed Subject Line output in test modal
 - Fixed bug on notification email where the object asset field does not attach  to the email message
 - Fixed error when sending Notification Email using getAssetFilePath
@@ -30,8 +30,8 @@
 
 [#76]: https://github.com/barrelstrength/craft-sprout-email/issues/76
 [#79]: https://github.com/barrelstrength/craft-sprout-email/issues/79
-[#207-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/207
-[#219-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/219
+[#207forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/207
+[#219forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/219
 
 ## 4.0.0-beta.7 - 2018-11-13
 
