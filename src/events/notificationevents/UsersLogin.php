@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutemail\events\notificationevents;
 
-use barrelstrength\sproutbase\app\email\base\NotificationEvent;
+use barrelstrength\sproutbaseemail\base\NotificationEvent;
 use craft\events\UserEvent;
 use craft\records\User as UserRecord;
 use Craft;

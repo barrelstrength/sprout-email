@@ -2,12 +2,12 @@
 
 namespace barrelstrength\sproutemail\mailers;
 
-use barrelstrength\sproutbase\app\email\base\EmailElement;
-use barrelstrength\sproutbase\app\email\base\Mailer;
-use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
-use barrelstrength\sproutbase\app\email\web\assets\email\CopyPasteAsset;
+use barrelstrength\sproutbaseemail\base\EmailElement;
+use barrelstrength\sproutbaseemail\base\Mailer;
+use barrelstrength\sproutbaseemail\base\CampaignEmailSenderInterface;
+use barrelstrength\sproutbaseemail\web\assets\email\CopyPasteAsset;
 use barrelstrength\sproutemail\elements\CampaignEmail;
-use barrelstrength\sproutbase\app\email\models\ModalResponse;
+use barrelstrength\sproutbaseemail\models\ModalResponse;
 use Craft;
 
 /**

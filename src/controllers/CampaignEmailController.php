@@ -2,12 +2,12 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
-use barrelstrength\sproutbase\app\email\base\Mailer;
-use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
-use barrelstrength\sproutbase\SproutBase;
+use barrelstrength\sproutbaseemail\base\CampaignEmailSenderInterface;
+use barrelstrength\sproutbaseemail\base\Mailer;
+use barrelstrength\sproutbaseemail\mailers\DefaultMailer;
+use barrelstrength\sproutbaseemail\SproutBaseEmail;
 use barrelstrength\sproutemail\elements\CampaignEmail;
-use barrelstrength\sproutbase\app\email\models\ModalResponse;
+use barrelstrength\sproutbaseemail\models\ModalResponse;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\base\ElementInterface;
@@ -371,7 +371,7 @@ class CampaignEmailController extends Controller
 
         try {
             /** @var Mailer|CampaignEmailSenderInterface $mailer */
-            $mailer = SproutBase::$app->mailers->getMailerByName(DefaultMailer::class);
+            $mailer = SproutBaseEmail::$app->mailers->getMailerByName(DefaultMailer::class);
             $campaignEmail->setIsTest(true);
 
             if (!$mailer->sendTestCampaignEmail($campaignEmail)) {

@@ -11,9 +11,12 @@
 namespace barrelstrength\sproutemail;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
-use barrelstrength\sproutbase\app\email\events\RegisterMailersEvent;
-use barrelstrength\sproutbase\app\email\events\NotificationEmailEvent;
-use barrelstrength\sproutbase\app\email\services\NotificationEmailEvents;
+use barrelstrength\sproutbaseemail\events\RegisterMailersEvent;
+use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
+use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
+use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
+use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
+use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
@@ -22,7 +25,7 @@ use barrelstrength\sproutemail\events\notificationevents\UsersSave;
 use barrelstrength\sproutemail\mailers\CopyPasteMailer;
 use barrelstrength\sproutemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
-use barrelstrength\sproutbase\app\email\services\Mailers;
+use barrelstrength\sproutbaseemail\services\Mailers;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -87,6 +90,9 @@ class SproutEmail extends Plugin
         parent::init();
 
         SproutBaseHelper::registerModule();
+        SproutBaseEmailHelper::registerModule();
+        SproutBaseFieldsHelper::registerModule();
+        SproutBaseListsHelper::registerModule();
 
         $this->setComponents([
             'app' => App::class
@@ -187,7 +193,7 @@ class SproutEmail extends Plugin
 
             // Notifications
             'sprout-email/notifications/edit/<emailId:\d+|new>' =>
-                'sprout/notifications/edit-notification-email-template',
+                'sprout-base-email/notifications/edit-notification-email-template',
             'sprout-email/notifications' => [
                 'template' => 'sprout-base-email/notifications/index'
             ],
@@ -216,7 +222,7 @@ class SproutEmail extends Plugin
                 'sprout-email/campaign-type/campaign-settings',
 
             'sprout-email/settings/notifications/edit/<emailId:\d+|new>' =>
-                'sprout/notifications/edit-notification-email-settings-template',
+                'sprout-base-email/notifications/edit-notification-email-settings-template',
 
             'sprout-email/settings/<settingsSectionHandle:.*>' =>
                 'sprout/settings/edit-settings',

@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutemail\services;
 
-use barrelstrength\sproutbase\app\email\jobs\DeleteSentEmails;
+use barrelstrength\sproutbaseemail\jobs\DeleteSentEmails;
 use barrelstrength\sproutemail\models\Settings;
 use craft\base\Plugin;
 use craft\mail\Mailer as CraftMailer;

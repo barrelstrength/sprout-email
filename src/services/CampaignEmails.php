@@ -2,8 +2,8 @@
 
 namespace barrelstrength\sproutemail\services;
 
-use barrelstrength\sproutbase\app\email\base\CampaignEmailSenderInterface;
-use barrelstrength\sproutbase\app\email\base\Mailer;
+use barrelstrength\sproutbaseemail\base\CampaignEmailSenderInterface;
+use barrelstrength\sproutbaseemail\base\Mailer;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use craft\base\Component;

@@ -2,11 +2,11 @@
 
 namespace barrelstrength\sproutemail\elements;
 
-use barrelstrength\sproutbase\app\email\base\EmailElement;
-use barrelstrength\sproutbase\app\email\base\Mailer;
-use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
-use barrelstrength\sproutbase\SproutBase;
-use barrelstrength\sproutbase\app\email\web\assets\email\EmailAsset;
+use barrelstrength\sproutbaseemail\base\EmailElement;
+use barrelstrength\sproutbaseemail\base\Mailer;
+use barrelstrength\sproutbaseemail\mailers\DefaultMailer;
+use barrelstrength\sproutbaseemail\SproutBaseEmail;
+use barrelstrength\sproutbaseemail\web\assets\email\EmailAsset;
 use barrelstrength\sproutemail\elements\db\CampaignEmailQuery;
 use barrelstrength\sproutemail\records\CampaignEmail as CampaignEmailRecord;
 use barrelstrength\sproutemail\models\CampaignType;
@@ -25,7 +25,7 @@ use yii\base\Exception;
  *
  * @property \barrelstrength\sproutemail\models\CampaignType                                                             $campaignType
  * @property mixed                                                                                                       $emailTemplateId
- * @property \barrelstrength\sproutbase\app\email\mailers\DefaultMailer|\barrelstrength\sproutbase\app\email\base\Mailer $mailer
+ * @property \barrelstrength\sproutbaseemail\mailers\DefaultMailer|\barrelstrength\sproutbaseemail\base\Mailer $mailer
  */
 class CampaignEmail extends EmailElement
 {
@@ -327,7 +327,7 @@ class CampaignEmail extends EmailElement
 
         Craft::$app->getView()->registerAssetBundle(EmailAsset::class);
         Craft::$app->getView()->registerJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
-        SproutBase::$app->mailers->includeMailerModalResources();
+        SproutBaseEmail::$app->mailers->includeMailerModalResources();
 
         return $html;
     }

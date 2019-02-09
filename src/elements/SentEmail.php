@@ -2,8 +2,8 @@
 
 namespace barrelstrength\sproutemail\elements;
 
-use barrelstrength\sproutbase\SproutBase;
-use barrelstrength\sproutbase\app\email\web\assets\email\EmailAsset;
+use barrelstrength\sproutbaseemail\SproutBaseEmail;
+use barrelstrength\sproutbaseemail\web\assets\email\EmailAsset;
 use barrelstrength\sproutemail\elements\actions\DeleteEmail;
 use barrelstrength\sproutemail\elements\db\SentEmailQuery;
 
@@ -295,7 +295,7 @@ class SentEmail extends Element
 
         Craft::$app->getView()->registerJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
 
-        SproutBase::$app->mailers->includeMailerModalResources();
+        SproutBaseEmail::$app->mailers->includeMailerModalResources();
 
         return $html;
     }

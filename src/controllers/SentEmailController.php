@@ -2,12 +2,12 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\models\SimpleRecipient;
-use barrelstrength\sproutbase\app\email\models\SimpleRecipientList;
+use barrelstrength\sproutbaseemail\models\SimpleRecipient;
+use barrelstrength\sproutbaseemail\models\SimpleRecipientList;
 use barrelstrength\sproutemail\services\SentEmails;
 use craft\mail\Mailer;
 use craft\mail\Message;
-use barrelstrength\sproutbase\app\email\models\ModalResponse;
+use barrelstrength\sproutbaseemail\models\ModalResponse;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;

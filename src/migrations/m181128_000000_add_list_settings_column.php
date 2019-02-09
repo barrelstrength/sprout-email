@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutemail\migrations;
 
-use barrelstrength\sproutbase\app\email\migrations\m181128_000000_add_list_settings_column as baseMigration;
+use barrelstrength\sproutbaseemail\migrations\m181128_000000_add_list_settings_column as baseMigration;
 use craft\db\Migration;
 
 /**

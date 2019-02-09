@@ -2,9 +2,9 @@
 
 namespace barrelstrength\sproutemail\models;
 
-use barrelstrength\sproutbase\app\email\base\Mailer;
-use barrelstrength\sproutbase\app\email\base\SenderTrait;
-use barrelstrength\sproutbase\SproutBase;
+use barrelstrength\sproutbaseemail\base\Mailer;
+use barrelstrength\sproutbaseemail\base\SenderTrait;
+use barrelstrength\sproutbaseemail\SproutBaseEmail;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use craft\base\Field;
 use craft\base\Model;
@@ -183,6 +183,6 @@ class CampaignType extends Model
      */
     public function getMailer(): Mailer
     {
-        return SproutBase::$app->mailers->getMailerByName($this->mailer);
+        return SproutBaseEmail::$app->mailers->getMailerByName($this->mailer);
     }
 }

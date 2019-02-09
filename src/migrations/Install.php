@@ -2,10 +2,10 @@
 
 namespace barrelstrength\sproutemail\migrations;
 
-use barrelstrength\sproutbase\app\email\emailtemplates\BasicTemplates;
+use barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates;
 use barrelstrength\sproutemail\models\Settings;
 use craft\db\Migration;
-use barrelstrength\sproutbase\app\email\migrations\Install as SproutBaseNotificationInstall;
+use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseNotificationInstall;
 use Craft;
 use craft\services\Plugins;
 

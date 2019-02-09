@@ -2,9 +2,9 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
-use barrelstrength\sproutbase\app\email\base\Mailer;
-use barrelstrength\sproutbase\app\email\mailers\DefaultMailer;
-use barrelstrength\sproutbase\SproutBase;
+use barrelstrength\sproutbaseemail\base\Mailer;
+use barrelstrength\sproutbaseemail\mailers\DefaultMailer;
+use barrelstrength\sproutbaseemail\SproutBaseEmail;
 use barrelstrength\sproutemail\elements\CampaignEmail;
 use barrelstrength\sproutemail\models\CampaignType;
 use barrelstrength\sproutemail\SproutEmail;
@@ -42,7 +42,7 @@ class CampaignTypeController extends Controller
 
         $mailerOptions = [];
 
-        $mailers = SproutBase::$app->mailers->getMailers();
+        $mailers = SproutBaseEmail::$app->mailers->getMailers();
 
         if (!empty($mailers)) {
             foreach ($mailers as $key => $mailer) {
@@ -58,7 +58,7 @@ class CampaignTypeController extends Controller
         unset($mailerOptions[DefaultMailer::class]);
 
         // Load our template
-        return $this->renderTemplate('sprout-base-email/settings/campaigntypes/_edit', [
+        return $this->renderTemplate('sprout/settings/campaigntypes/_edit', [
             'mailers' => $mailerOptions,
             'campaignTypeId' => $campaignTypeId,
             'campaignType' => $campaignType
