@@ -362,7 +362,7 @@ class CampaignEmailController extends Controller
             return $this->asJson(
                 ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
                     'email' => $campaignEmail,
-                    'message' => Craft::t('sprout-base', 'Recipient email addresses do not validate: {invalidEmails}', [
+                    'message' => Craft::tt('sprout-email', 'Recipient email addresses do not validate: {invalidEmails}', [
                         'invalidEmails' => implode(', ', $invalidEmails)
                     ])
                 ])
@@ -378,7 +378,7 @@ class CampaignEmailController extends Controller
                 return $this->asJson(
                     ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
                         'email' => $campaignEmail,
-                        'message' => Craft::t('sprout-base', 'Unable to send Test Notification Email')
+                        'message' => Craft::tt('sprout-email', 'Unable to send Test Notification Email')
                     ])
                 );
             }
@@ -386,7 +386,7 @@ class CampaignEmailController extends Controller
             return $this->asJson(
                 ModalResponse::createModalResponse('sprout-base-email/_modals/response', [
                     'email' => $campaignEmail,
-                    'message' => Craft::t('sprout-base', 'Test Campaign Email sent.')
+                    'message' => Craft::tt('sprout-email', 'Test Campaign Email sent.')
                 ])
             );
         } catch (\Exception $e) {
