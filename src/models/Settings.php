@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutemail\models;
 
+use barrelstrength\sproutbase\base\SproutSettingsInterface;
 use Craft;
 use craft\base\Model;
 
@@ -9,7 +10,7 @@ use craft\base\Model;
  *
  * @property array $settingsNavItems
  */
-class Settings extends Model
+class Settings extends Model implements SproutSettingsInterface
 {
     /**
      * @var string
@@ -70,7 +71,7 @@ class Settings extends Model
     public $sentEmailsLimit;
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function getSettingsNavItems(): array
     {
