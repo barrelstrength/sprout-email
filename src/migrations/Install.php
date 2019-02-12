@@ -96,6 +96,9 @@ class Install extends Migration
                     'uid' => $this->uid()
                 ]
             );
+
+            $this->addForeignKey(null, $this->sentEmailTable,
+                ['id'], '{{%elements}}', ['id'], 'CASCADE', null);
         }
 
         $settings = new Settings();
