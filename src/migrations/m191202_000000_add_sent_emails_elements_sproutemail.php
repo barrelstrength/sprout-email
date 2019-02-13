@@ -6,7 +6,7 @@ use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\m191202_000004_add_sent_emails_elements;
 use Craft;
 
-class m191202_000000_sproutemail_add_sent_emails_elements extends Migration
+class m191202_000000_add_sent_emails_elements_sproutemail extends Migration
 {
     /**
      * @inheritdoc
@@ -27,7 +27,7 @@ class m191202_000000_sproutemail_add_sent_emails_elements extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m191202_000000_sproutemail_add_sent_emails_elements cannot be reverted.\n";
+        echo "m191202_000000_add_sent_emails_elements_sproutemail cannot be reverted.\n";
         return false;
     }
 }

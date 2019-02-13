@@ -5,7 +5,7 @@ namespace barrelstrength\sproutemail\migrations;
 use barrelstrength\sproutbaseemail\migrations\m191202_000004_update_element_types;
 use craft\db\Migration;
 
-class m191202_000001_sproutemail_update_element_types extends Migration
+class m191202_000001_update_element_types_sproutemail extends Migration
 {
     /**
      * @inheritdoc
@@ -26,7 +26,7 @@ class m191202_000001_sproutemail_update_element_types extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m191202_000001_sproutemail_update_element_types cannot be reverted.\n";
+        echo "m191202_000001_update_element_types_sproutemail cannot be reverted.\n";
         return false;
     }
 }
