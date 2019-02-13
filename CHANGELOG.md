@@ -1,5 +1,29 @@
 # Changelog
 
+## 4.0.0-beta.10 - 2019-02-13
+
+### Added
+- Added support for Live Preview in Craft 3.1
+- Added support for validating whether Notification Event variables exist a Notification Email's selected Email Templates ([#90])
+
+### Changed
+- Improved support for Notification Event validation and errors for recipients and other settings ([#90])
+- Improved translation support
+- Updated settings to implement SproutSettingsInterface
+- Updated barrelstrength/sprout-base requirement to v4.0.6
+- Added barrelstrength/sprout-base-email requirement v1.0.0
+- Added barrelstrength/sprout-base-fields requirement v1.0.0
+- Added barrelstrength/sprout-base-lists requirement v1.0.0
+
+### Fixed
+- Fixed undefined property error on User Delete Notification Event
+- Fixed validation error not displaying and throwing up error 
+- Fixed bug error validation on saving notification (sprout base)
+- Fixed bug send test throws error when notification recipients is blank ([#94])
+
+[#90]: https://github.com/barrelstrength/craft-sprout-email/issues/90
+[#94]: https://github.com/barrelstrength/craft-sprout-email/issues/94
+
 ## 4.0.0-beta.9 - 2019-01-25
 
 ### Added
