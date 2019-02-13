@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutemail\migrations;
 
-use barrelstrength\sproutbaseemail\migrations\m191202_000004_update_element_types;
+use barrelstrength\sproutbaseemail\migrations\m190212_000004_update_element_types;
 use craft\db\Migration;
 
 class m191202_000001_update_element_types_sproutemail extends Migration
@@ -12,7 +12,7 @@ class m191202_000001_update_element_types_sproutemail extends Migration
      */
     public function safeUp(): bool
     {
-        $migration = new m191202_000004_update_element_types();
+        $migration = new m190212_000004_update_element_types();
 
         ob_start();
         $migration->safeUp();
