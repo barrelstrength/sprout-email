@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutemail\services;
 
 use barrelstrength\sproutbaseemail\jobs\DeleteSentEmails;
+use barrelstrength\sproutbaseemail\jobs\DeleteSentEmailRecords;
 use barrelstrength\sproutemail\models\Settings;
 use craft\base\Plugin;
 use craft\mail\Mailer as CraftMailer;
@@ -275,6 +276,10 @@ class SentEmails extends Component
 
         // Call the Delete Sent Emails job
         Craft::$app->queue->push($sentEmailJob);
+
+        // Call the Delete Sent Emails job record if not found on elements
+        $sentEmailJobRecords = new DeleteSentEmailRecords();
+        Craft::$app->queue->push($sentEmailJobRecords);
 
         return true;
     }
