@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0-beta.11 - 2019-02-18
+
+### Changed
+- Updated barrelstrength/sprout-base-email requirement v1.0.1
+
+### Fixed
+- Fixed false positives that could occur with Notification Email validation ([#100])
+
+[#100]: https://github.com/barrelstrength/craft-sprout-email/issues/100
+
 ## 4.0.0-beta.10 - 2019-02-13
 
 ### Added
@@ -45,8 +55,8 @@
 ### Fixed
 - Updated EntriesSave Notification Event to only trigger in live scenarios ([#76])
 - Updated EntriesSave Notification Event to only trigger enabled entries. ([#79])
-- Fixed issue migration could fail in some scenarios due to duplicate pluginHandle column ([#219forms])
-- Fixed issue where getSegment was used in a console request ([#207forms])
+- Fixed issue migration could fail in some scenarios due to duplicate pluginHandle column ([#219][#219forms])
+- Fixed issue where getSegment was used in a console request ([#207][#207forms])
 - Fixed Subject Line output in test modal
 - Fixed bug on notification email where the object asset field does not attach  to the email message
 - Fixed error when sending Notification Email using getAssetFilePath
