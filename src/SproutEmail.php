@@ -11,7 +11,6 @@
 namespace barrelstrength\sproutemail;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
-use barrelstrength\sproutbaseemail\events\RegisterMailersEvent;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
 use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
@@ -22,10 +21,8 @@ use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
-use barrelstrength\sproutemail\mailers\CopyPasteMailer;
 use barrelstrength\sproutemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
-use barrelstrength\sproutbaseemail\services\Mailers;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -104,10 +101,6 @@ class SproutEmail extends Plugin
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             $event->rules = array_merge($event->rules, $this->getCpUrlRules());
-        });
-
-        Event::on(Mailers::class, Mailers::EVENT_REGISTER_MAILER_TYPES, function(RegisterMailersEvent $event) {
-            $event->mailers[] = new CopyPasteMailer();
         });
 
         Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, function(NotificationEmailEvent $event) {
