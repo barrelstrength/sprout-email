@@ -211,9 +211,6 @@ class SproutEmail extends Plugin
             ],
 
             // Settings
-            'sprout-email/settings/campaigntypes/edit/<campaignTypeId:\d+|new>' =>
-                'sprout-email/campaign-type/campaign-settings',
-
             'sprout-email/settings/notifications/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-settings-template',
 

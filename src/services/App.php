@@ -21,15 +21,6 @@ use craft\base\Component;
  */
 class App extends Component
 {
-    /**
-     * @var CampaignTypes
-     */
-    public $campaignTypes;
-
-    /**
-     * @var CampaignEmails
-     */
-    public $campaignEmails;
 
     /**
      * @var SentEmails
@@ -43,8 +34,6 @@ class App extends Component
 
     public function init()
     {
-        $this->campaignTypes = new CampaignTypes();
-        $this->campaignEmails = new CampaignEmails();
         $this->sentEmails = new SentEmails();
         $this->utilities = Utilities::Instance();
     }
