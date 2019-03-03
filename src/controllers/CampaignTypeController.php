@@ -97,7 +97,7 @@ class CampaignTypeController extends Controller
                 'campaignType' => $campaignType
             ]);
 
-            $this->redirectToPostedUrl();
+            return $this->redirectToPostedUrl();
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('sprout-email', 'Campaign saved.'));
