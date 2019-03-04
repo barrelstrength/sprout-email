@@ -27,6 +27,8 @@ use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
 use barrelstrength\sproutbase\SproutBaseHelper;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use yii\base\Event;
 use yii\mail\BaseMailer;
@@ -79,6 +81,20 @@ class SproutEmail extends Plugin
      */
     public $minVersionRequired = '3.0.6';
 
+    const EDITION_LITE = 'lite';
+    const EDITION_PRO = 'pro';
+
+    /**
+     * @inheritdoc
+     */
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            self::EDITION_PRO,
+        ];
+    }
+
     /**
      * @throws \yii\base\InvalidConfigException
      */
@@ -101,6 +117,10 @@ class SproutEmail extends Plugin
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             $event->rules = array_merge($event->rules, $this->getCpUrlRules());
+        });
+
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
+            $event->permissions['Sprout Email'] = $this->getUserPermissions();
         });
 
         Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, function(NotificationEmailEvent $event) {
@@ -222,6 +242,31 @@ class SproutEmail extends Plugin
 
             'sprout-email/settings' =>
                 'sprout/settings/edit-settings'
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserPermissions(): array
+    {
+        return [
+            'sproutEmail-viewSentEmail' => [
+                'label' => Craft::t('sprout-email', 'View Sent Email'),
+                'nested' => [
+                    'sproutEmail-resendEmails' => [
+                        'label' => Craft::t('sprout-email', 'Resend Sent Emails')
+                    ]
+                ]
+            ],
+            'sproutEmail-editNotifications' => [
+                'label' => Craft::t('sprout-email', 'Edit Notification Emails'),
+                'nested' => [
+                    'sproutEmail-editNotificationFieldLayouts' => [
+                        'label' => Craft::t('sprout-email', 'Edit Notification Email Field Layouts')
+                    ]
+                ]
+            ],
         ];
     }
 }
