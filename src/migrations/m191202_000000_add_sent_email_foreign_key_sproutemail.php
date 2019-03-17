@@ -4,7 +4,6 @@ namespace barrelstrength\sproutemail\migrations;
 
 use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\m190212_000004_add_sent_email_foreign_key;
-use Craft;
 
 class m191202_000000_add_sent_email_foreign_key_sproutemail extends Migration
 {

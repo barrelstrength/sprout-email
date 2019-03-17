@@ -11,6 +11,7 @@ use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
 use craft\base\Component;
 use craft\helpers\Json;
+use craft\helpers\App;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
 use yii\base\Event;
@@ -82,8 +83,7 @@ class SentEmails extends Component
             $infoTable->userAgent = Craft::$app->getRequest()->getUserAgent();
         }
 
-
-        $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
+        $emailSettings = App::mailSettings();
 
         /** @var BaseTransportAdapter $transportType */
         $transportType = new $emailSettings->transportType();

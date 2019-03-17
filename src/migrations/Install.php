@@ -44,7 +44,7 @@ class Install extends Migration
             );
 
             $this->addForeignKey(null, $this->sentEmailTable,
-                ['id'], '{{%elements}}', ['id'], 'CASCADE', null);
+                ['id'], '{{%elements}}', ['id'], 'CASCADE');
         }
 
         $settings = new Settings();

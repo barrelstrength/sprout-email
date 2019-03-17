@@ -294,5 +294,16 @@ return [
                     immediately and mark your email as sent.' => 'Clicking the button below will send your email
                     immediately and mark your email as sent.',
     'From Name' => 'From Name',
-    'Pending' => 'Pending'
+    'Pending' => 'Pending',
+    'Edit Notification Emails' => 'Edit Notification Emails',
+    'Import Bundles' => 'Import Bundles',
+    'Resend Sent Emails' => 'Resend Sent Emails',
+    'Generate Seed data' => 'Generate Seed data',
+    'View Sent Email' => 'View Sent Email',
+    'View Notifications' => 'View Notifications',
+    'Remove Seed data' => 'Remove Seed data',
+    'Edit Reports' => 'Edit Reports',
+    'Edit Subscribers' => 'Edit Subscribers',
+    'Edit Notification Email Field Layouts' => 'Edit Notification Email Field Layouts',
+    'Edit Lists' => 'Edit Lists'
 ];
