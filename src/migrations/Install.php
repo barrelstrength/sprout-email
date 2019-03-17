@@ -54,7 +54,7 @@ class Install extends Migration
 
         $pluginHandle = 'sprout-email';
         $projectConfig = Craft::$app->getProjectConfig();
-        $projectConfig->set(Plugins::CONFIG_PLUGINS_KEY . '.' . $pluginHandle . '.settings', $settings->toArray());
+        $projectConfig->set(Plugins::CONFIG_PLUGINS_KEY.'.'.$pluginHandle.'.settings', $settings->toArray());
 
         $this->runSproutBaseInstall();
     }

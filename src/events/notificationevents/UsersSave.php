@@ -238,7 +238,7 @@ class UsersSave extends NotificationEvent
             $errorMessage = Craft::t('sprout-email', 'No User Group has been selected');
         }
 
-        if (($this->isAdminUser() === null || $this->isAdminUser() === false)  && !$inGroup) {
+        if (($this->isAdminUser() === null || $this->isAdminUser() === false) && !$inGroup) {
             $this->addError('event', $errorMessage);
         }
     }
