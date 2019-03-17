@@ -379,7 +379,9 @@ class SentEmails extends Component
         return $emailModel;
     }
 
-
+    /**
+     * @return string
+     */
     private function getCraftVersion(): string
     {
         $version = Craft::$app->getVersion();

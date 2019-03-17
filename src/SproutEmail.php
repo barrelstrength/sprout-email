@@ -43,6 +43,7 @@ use yii\mail\MailEvent;
  *
  *
  * @property array $cpNavItem
+ * @property array $userPermissions
  * @property array $cpUrlRules
  */
 class SproutEmail extends Plugin
@@ -165,31 +166,33 @@ class SproutEmail extends Plugin
 
         $settings = $this->getSettings();
 
-//        if ($settings->enableCampaignEmails) {
+//        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableCampaignEmails) {
 //            $navigation['subnav']['campaigns'] = [
 //                'label' => Craft::t('sprout-email', 'Campaigns'),
 //                'url' => 'sprout-email/campaigns'
 //            ];
 //        }
 
-        if ($settings->enableNotificationEmails) {
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableNotificationEmails) {
             $navigation['subnav']['notifications'] = [
                 'label' => Craft::t('sprout-email', 'Notifications'),
                 'url' => 'sprout-email/notifications'
             ];
         }
 
-        if ($settings->enableSentEmails) {
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewSentEmail') && $settings->enableSentEmails) {
             $navigation['subnav']['sentemails'] = [
                 'label' => Craft::t('sprout-email', 'Sent Emails'),
                 'url' => 'sprout-email/sentemails'
             ];
         }
 
-        $navigation['subnav']['settings'] = [
-            'label' => Craft::t('sprout-email', 'Settings'),
-            'url' => 'sprout-email/settings/general'
-        ];
+        if (Craft::$app->getUser()->getIsAdmin()) {
+            $navigation['subnav']['settings'] = [
+                'label' => Craft::t('sprout-email', 'Settings'),
+                'url' => 'sprout-email/settings/general'
+            ];
+        }
 
         return array_merge($parent, $navigation);
     }
@@ -208,12 +211,12 @@ class SproutEmail extends Plugin
             'sprout-email/notifications/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-template',
             'sprout-email/notifications' => [
-                'template' => 'sprout-base-email/notifications/index'
+                'route' => 'sprout-base-email/notifications/index'
             ],
 
             // Campaigns
             'sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
-                'template' => 'sprout-base-email/_special/preview'
+                'route' => 'sprout-base-email/notifications/preview'
             ],
             'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
                 'sprout-email/campaign-email/edit-campaign-email',
@@ -256,14 +259,14 @@ class SproutEmail extends Plugin
                     ]
                 ]
             ],
-            'sproutEmail-editNotifications' => [
-                'label' => Craft::t('sprout-email', 'Edit Notification Emails'),
+            'sproutEmail-viewNotifications' => [
+                'label' => Craft::t('sprout-email', 'View Notifications'),
                 'nested' => [
-                    'sproutEmail-editNotificationFieldLayouts' => [
-                        'label' => Craft::t('sprout-email', 'Edit Notification Email Field Layouts')
+                    'sproutEmail-editNotifications' => [
+                        'label' => Craft::t('sprout-email', 'Edit Notification Emails')
                     ]
                 ]
-            ],
+            ]
         ];
     }
 }

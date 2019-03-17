@@ -163,9 +163,13 @@ class SentEmail extends Element
             'toEmail' => ['label' => Craft::t('sprout-email', 'Recipient')],
             'emailSubject' => ['label' => Craft::t('sprout-email', 'Subject')],
             'info' => ['label' => Craft::t('sprout-email', 'Details')],
-            'resend' => ['label' => Craft::t('sprout-email', 'Resend')],
-            'preview' => ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'],
         ];
+
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-resendEmails')) {
+            $attributes['resend'] = ['label' => Craft::t('sprout-email', 'Resend')];
+        }
+
+        $attributes['preview'] = ['label' => Craft::t('sprout-email', 'Preview'), 'icon' => 'view'];
 
         return $attributes;
     }
@@ -286,8 +290,12 @@ class SentEmail extends Element
      * @throws \yii\base\InvalidConfigException
      *
      */
-    public static function indexHtml(ElementQueryInterface $elementQuery, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */ array $disabledElementIds = null, array $viewState, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */ string $sourceKey = null, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */ string $context = null, bool $includeContainer, bool $showCheckboxes): string
-    {
+    public static function indexHtml(
+        ElementQueryInterface $elementQuery, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+        array $disabledElementIds = null, array $viewState, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+        string $sourceKey = null, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+        string $context = null, bool $includeContainer, bool $showCheckboxes
+    ): string {
         $html = parent::indexHtml($elementQuery, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer,
             $showCheckboxes);
 
