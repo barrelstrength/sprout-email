@@ -5,7 +5,7 @@ namespace barrelstrength\sproutemail\migrations;
 use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\m190220_000000_clean_up_sent_email_records as BaseMigration;
 
-class m190220_000000_clean_up_sent_email_records extends Migration
+class m190220_000000_clean_up_sent_email_records_sproutemail extends Migration
 {
     /**
      * @return bool
@@ -27,7 +27,7 @@ class m190220_000000_clean_up_sent_email_records extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m190220_000000_clean_up_sent_email_records cannot be reverted.\n";
+        echo "m190220_000000_clean_up_sent_email_records_sproutemail cannot be reverted.\n";
         return false;
     }
 }
