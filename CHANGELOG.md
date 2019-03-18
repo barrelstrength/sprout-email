@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0-beta.12 - 2019-03-18
+
+### Added
+- Added additional permissions support
+
+### Changed
+- Updated settings to require Admin permission to edit
+- Updated barrelstrength/sprout-base-email requirement v1.0.3
+- Updated barrelstrength/sprout-base requirement v4.0.7
+
 ## 4.0.0-beta.11 - 2019-02-18
 
 ### Changed

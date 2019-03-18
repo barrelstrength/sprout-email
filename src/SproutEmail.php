@@ -75,26 +75,12 @@ class SproutEmail extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '4.0.7';
+    public $schemaVersion = '4.0.8';
 
     /**
      * @var string
      */
     public $minVersionRequired = '3.0.6';
-
-    const EDITION_LITE = 'lite';
-    const EDITION_PRO = 'pro';
-
-    /**
-     * @inheritdoc
-     */
-    public static function editions(): array
-    {
-        return [
-            self::EDITION_LITE,
-            self::EDITION_PRO,
-        ];
-    }
 
     /**
      * @throws \yii\base\InvalidConfigException
