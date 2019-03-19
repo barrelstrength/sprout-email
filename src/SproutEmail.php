@@ -194,14 +194,14 @@ class SproutEmail extends Plugin
             ],
 
             // Notifications
-            'sprout-email/notifications/edit/<emailId:\d+|new>' =>
+            '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-template',
-            'sprout-email/notifications' => [
+            '<pluginHandle:sprout-email>/notifications' => [
                 'route' => 'sprout-base-email/notifications/index'
             ],
 
             // Campaigns
-            'sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
+            '<pluginHandle:sprout-email>/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
                 'route' => 'sprout-base-email/notifications/preview'
             ],
             'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
