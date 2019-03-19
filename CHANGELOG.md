@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0-beta.13 - 2019-03-19
+
+### Changed
+- Improved performance of several Element queries
+- Improved support for Email integrations
+- Updated barrelstrength/sprout-base-email requirement to v1.0.4
+
+### Fixed
+- Fixed bug where Settings model was not available for Email integrations
+
 ## 4.0.0-beta.12 - 2019-03-18
 
 ### Added
