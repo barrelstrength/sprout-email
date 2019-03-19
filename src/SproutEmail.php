@@ -21,7 +21,7 @@ use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
-use barrelstrength\sproutemail\models\Settings;
+use barrelstrength\sproutbaseemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
 use Craft;
 use craft\base\Plugin;
