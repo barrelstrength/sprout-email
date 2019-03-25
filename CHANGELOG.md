@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.0-beta.14 - 2019-03-22
+
+### Changed 
+- Updated barrelstrength/sprout-base-email requirement to v1.0.5
+- Updated barrelstrength/sprout-base requirement v4.0.8
+
+### Fixed
+- Fixed bug where Sprout Lists integration was not being recognized ([#106])
+
+[#106]: https://github.com/barrelstrength/craft-sprout-email/issues/106
+
 ## 4.0.0-beta.13 - 2019-03-19
 
 ### Changed
