@@ -211,6 +211,12 @@ class UsersSave extends NotificationEvent
 
         $inGroup = false;
 
+        // Trigger when check all is ticked and when a user is on a group
+        if ($this->userGroupIds === '*' &&
+            (is_array($currentUsersUserGroups) && count($currentUsersUserGroups))) {
+            return null;
+        }
+
         if ($this->userGroupIds != false) {
             if ($this->isValidUserGroupIds($currentUsersUserGroups)) {
 
@@ -270,8 +276,7 @@ class UsersSave extends NotificationEvent
 
     private function isValidUserGroupIds($currentUsersUserGroups): bool
     {
-        return $this->userGroupIds !== '*'
-            AND count($this->userGroupIds) > 0
+        return (is_array($this->userGroupIds) && count($this->userGroupIds) > 0)
             AND count($currentUsersUserGroups);
     }
 
