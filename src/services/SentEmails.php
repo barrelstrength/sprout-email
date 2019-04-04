@@ -71,6 +71,10 @@ class SentEmails extends Component
             $infoTable = $this->updateInfoTableWithCraftInfo($message, $infoTable);
         }
 
+        // Kill saving of info table on other sending modules
+        if ($infoTable === null) {
+            return null;
+        }
         // Sender Info
         $infoTable->senderName = $fromName;
         $infoTable->senderEmail = $fromEmail;
