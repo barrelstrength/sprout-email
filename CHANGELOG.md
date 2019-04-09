@@ -8,8 +8,12 @@
 
 ### Fixed
 - Fixed bug where Sprout Lists integration was not being recognized ([#106])
+- Fixed conflict between Sent Email logging and Contact Form plugin ([#107])
+- Fixed a bug where User Save did not trigger when Select All checkbox was selected ([#108])
 
 [#106]: https://github.com/barrelstrength/craft-sprout-email/issues/106
+[#107]: https://github.com/barrelstrength/craft-sprout-email/issues/107
+[#108]: https://github.com/barrelstrength/craft-sprout-email/issues/108
 
 ## 4.0.0-beta.13 - 2019-03-19
 
