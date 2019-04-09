@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.0-beta.15 - 2019-04-09
+
+### Updated
+- Updated barrelstrength/sprout-base-lists requirement v1.0.3
+ 
+### Fixed
+- Required Sprout Lists to be installed to use User Sync
+
 ## 4.0.0-beta.14 - 2019-03-22
 
 ### Changed 
