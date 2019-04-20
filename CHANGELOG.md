@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0-beta.15 - 2019-04-20
+## 4.0.0-beta.16 - 2019-04-20
 
 ### Changed 
 - Updated barrelstrength/sprout-base-email requirement to v1.0.6
