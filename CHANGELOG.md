@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.0-beta.15 - 2019-04-20
+
+### Changed 
+- Updated barrelstrength/sprout-base-email requirement to v1.0.6
+- Updated barrelstrength/sprout-base-fields requirement to v1.0.4
+- Updated barrelstrength/sprout-base requirement v5.0.0
+
+### Fixed
+- Improved Postgres support
+- Fixed javascript error on Internet Explorer
+
 ## 4.0.0-beta.14 - 2019-03-22
 
 ### Changed 
