@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-beta.17 - 2019-04-20
+
+### Changed 
+- Updated barrelstrength/sprout-base-lists requirement to v1.0.3
+
 ## 4.0.0-beta.16 - 2019-04-20
 
 ### Changed 
