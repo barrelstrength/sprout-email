@@ -19,6 +19,7 @@ use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
+use barrelstrength\sproutemail\events\notificationevents\UsersActivate;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
 use barrelstrength\sproutbaseemail\models\Settings;
@@ -115,6 +116,7 @@ class SproutEmail extends Plugin
             $event->events[] = EntriesDelete::class;
             $event->events[] = UsersSave::class;
             $event->events[] = UsersDelete::class;
+            $event->events[] = UsersActivate::class;
             $event->events[] = Manual::class;
         });
 
