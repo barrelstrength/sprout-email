@@ -211,18 +211,21 @@ class UsersSave extends NotificationEvent
 
         $inGroup = false;
 
-        // Trigger when check all is ticked and when a user is on a group
-        if ($this->userGroupIds === '*' &&
-            (is_array($currentUsersUserGroups) && count($currentUsersUserGroups))) {
+        // Trigger when check all is ticked
+        if ($this->userGroupIds === '*') {
+            return null;
+        }
+        // When saving a new user, we grab our groups from the post request
+        // because _processUserGroupsPermissions() runs after saveUser()
+        $newUserGroups = Craft::$app->request->getBodyParam('groups');
+
+        // Trigger when creating a user when all groups is selected
+        if ($this->userGroupIds === '*' && $event->isNew == true && is_array($newUserGroups)) {
             return null;
         }
 
         if ($this->userGroupIds != false) {
             if ($this->isValidUserGroupIds($currentUsersUserGroups)) {
-
-                // When saving a new user, we grab our groups from the post request
-                // because _processUserGroupsPermissions() runs after saveUser()
-                $newUserGroups = Craft::$app->request->getBodyParam('groups');
 
                 if (!is_array($newUserGroups)) {
                     $newUserGroups = ArrayHelper::toArray($newUserGroups);
@@ -277,7 +280,7 @@ class UsersSave extends NotificationEvent
     private function isValidUserGroupIds($currentUsersUserGroups): bool
     {
         return (is_array($this->userGroupIds) && count($this->userGroupIds) > 0)
-            AND count($currentUsersUserGroups);
+            AND is_array($currentUsersUserGroups);
     }
 
     /**

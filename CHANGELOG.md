@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.0 - 2019-05-29
+
+### Added
+- Added 'When a user is activated' Notification Event
+
+### Fixed
+- Fixed bug where 'When a user is saved' Notification Event does not trigger notification ([#113])
+- Fixed issue when switching notification Notification Event without settings ([#117])
+
+[#113]: https://github.com/barrelstrength/craft-sprout-email/issues/113
+[#117]: https://github.com/barrelstrength/craft-sprout-email/issues/117
+
 ## 4.0.0-beta.18 - 2019-04-20
 
 ### Changed 
