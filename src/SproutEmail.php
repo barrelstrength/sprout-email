@@ -83,6 +83,20 @@ class SproutEmail extends Plugin
      */
     public $minVersionRequired = '3.0.6';
 
+    const EDITION_LITE = 'lite';
+    const EDITION_PRO = 'pro';
+
+    /**
+     * @inheritdoc
+     */
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            self::EDITION_PRO,
+        ];
+    }
+
     /**
      * @throws \yii\base\InvalidConfigException
      */
@@ -110,7 +124,7 @@ class SproutEmail extends Plugin
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
             $event->permissions['Sprout Email'] = $this->getUserPermissions();
         });
-
+        
         Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, function(NotificationEmailEvent $event) {
             $event->events[] = EntriesSave::class;
             $event->events[] = EntriesDelete::class;
@@ -187,7 +201,7 @@ class SproutEmail extends Plugin
 
     private function getCpUrlRules(): array
     {
-        return [
+        $rules = [
             'sprout-email' => [
                 'template' => 'sprout-base-email/index'
             ],
@@ -195,26 +209,7 @@ class SproutEmail extends Plugin
                 'template' => 'sprout-base-email/index'
             ],
 
-            // Notifications
-            '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
-                'sprout-base-email/notifications/edit-notification-email-template',
-            '<pluginHandle:sprout-email>/notifications' => [
-                'route' => 'sprout-base-email/notifications/index'
-            ],
 
-            // Campaigns
-            '<pluginHandle:sprout-email>/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
-                'route' => 'sprout-base-email/notifications/preview'
-            ],
-            'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
-                'sprout-email/campaign-email/edit-campaign-email',
-
-            'sprout-email/campaigns/edit/<emailId:\d+>' =>
-                'sprout-email/campaign-email/edit-campaign-email',
-
-            'sprout-email/campaigns' => [
-                'template' => 'sprout-base-email/campaigns/index'
-            ],
 
             // Sent Emails
             'sprout-email/sentemails' => [
@@ -231,6 +226,50 @@ class SproutEmail extends Plugin
             'sprout-email/settings' =>
                 'sprout/settings/edit-settings'
         ];
+
+        if ($this->is(self::EDITION_PRO)){
+            $rules = array_merge($rules,[
+                // Notifications
+                '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
+                    'sprout-base-email/notifications/edit-notification-email-template',
+                '<pluginHandle:sprout-email>/notifications' => [
+                    'route' => 'sprout-base-email/notifications/index'
+                ],
+
+                // Campaigns
+                '<pluginHandle:sprout-email>/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
+                    'route' => 'sprout-base-email/notifications/preview'
+                ],
+                'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
+                    'sprout-email/campaign-email/edit-campaign-email',
+
+                'sprout-email/campaigns/edit/<emailId:\d+>' =>
+                    'sprout-email/campaign-email/edit-campaign-email',
+
+                'sprout-email/campaigns' => [
+                    'template' => 'sprout-base-email/campaigns/index'
+                ],
+            ]);
+        }else{
+            $rules = array_merge($rules, [
+                'sprout-email/notifications<siteHandle:.*>' => [
+                    'route' => 'sprout/settings/advertise',
+                    'params' => [
+                        'template' => 'sprout-email/advertise/notifications',
+                        'title' => 'Buy Sprout Email - Notifications'
+                    ]
+                ],
+                'sprout-email/campaigns<siteHandle:.*>' => [
+                    'route' => 'sprout/settings/advertise',
+                    'params' => [
+                        'template' => 'sprout-email/advertise/campaigns',
+                        'title' => 'Buy Sprout Email - Campaigns'
+                    ]
+                ]
+            ]);
+        }
+
+        return $rules;
     }
 
     /**

@@ -185,8 +185,14 @@ class SentEmailController extends Controller
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
 
+        $plugin = SproutEmail::getInstance();
+        $modalTemplate = 'sprout-base-email/_modals/sentemails/prepare-resend-email';
+        if ($plugin->is(SproutEmail::EDITION_LITE)){
+            $modalTemplate = 'sprout-email/advertise/modal-upgrade';
+        }
+
         $content = Craft::$app->getView()->renderTemplate(
-            'sprout-base-email/_modals/sentemails/prepare-resend-email', [
+            $modalTemplate, [
             'sentEmail' => $sentEmail
         ]);
 
