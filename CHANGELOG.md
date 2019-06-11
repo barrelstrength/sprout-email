@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.2 - 2019-06-11
+
+### Changed
+- Updated barrelstrength/sprout-base-email requirement to v1.1.0
+
+### Fixed
+- Fixed issue where some Notification Emails would not get triggered 
+
 ## 4.0.1 - 2019-06-10
 
 ### Added
@@ -9,7 +17,7 @@
 - Updated barrelstrength/sprout-base-email requirement to v1.0.9
 
 ### Fixed
-- Fixed bug where new Notifications could throw error if Notification Event was not set ([#283forms])
+- Fixed bug where new Notifications could throw error if Notification Event was not set ([#283][#283forms])
 
 [#283forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/283
 
