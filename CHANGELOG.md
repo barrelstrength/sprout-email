@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.0.1 - 2019-06-10
+
+### Added
+- Added Markdown support for Notification Email Default Body field
+
+### Changed
+- Updated barrelstrength/sprout-base-email requirement to v1.0.9
+
+### Fixed
+- Fixed bug where new Notifications could throw error if Notification Event was not set ([#283forms])
+
+[#283forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/283
+
 ## 4.0.0 - 2019-05-29
 
 ### Added
