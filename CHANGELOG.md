@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.3 - 2019-06-28
+
+### Changed
+- Updated barrelstrength/sprout-base-email requirement to v1.1.1
+
+## Fixed
+- Fixed bug when previewing a Notification Email ([#119])
+- Fixed bug where deleting notification redirected to incorrect URL ([#294][#294-sproutforms])
+
+[#119]: https://github.com/barrelstrength/craft-sprout-email/issues/119
+[#294-sproutforms]: https://github.com/barrelstrength/craft-sprout-forms/issues/294
+
 ## 4.0.2 - 2019-06-11
 
 ### Changed
