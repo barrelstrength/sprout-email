@@ -32,6 +32,7 @@ use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\mail\BaseMailer;
 use yii\mail\MailEvent;
 
@@ -41,7 +42,6 @@ use yii\mail\MailEvent;
  * @author    Barrelstrength
  * @package   SproutEmail
  * @since     3
- *
  *
  * @property array $cpNavItem
  * @property array $userPermissions
@@ -98,7 +98,7 @@ class SproutEmail extends Plugin
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function init()
     {
@@ -124,8 +124,8 @@ class SproutEmail extends Plugin
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
             $event->permissions['Sprout Email'] = $this->getUserPermissions();
         });
-        
-        Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, function(NotificationEmailEvent $event) {
+
+        Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, static function(NotificationEmailEvent $event) {
             $event->events[] = EntriesSave::class;
             $event->events[] = EntriesDelete::class;
             $event->events[] = UsersSave::class;
@@ -209,8 +209,6 @@ class SproutEmail extends Plugin
                 'template' => 'sprout-base-email/index'
             ],
 
-
-
             // Sent Emails
             'sprout-email/sentemails' => [
                 'template' => 'sprout-base-email/sentemails/index'
@@ -227,8 +225,8 @@ class SproutEmail extends Plugin
                 'sprout/settings/edit-settings'
         ];
 
-        if ($this->is(self::EDITION_PRO)){
-            $rules = array_merge($rules,[
+        if ($this->is(self::EDITION_PRO)) {
+            $rules = array_merge($rules, [
                 // Notifications
                 '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
                     'sprout-base-email/notifications/edit-notification-email-template',
@@ -250,7 +248,7 @@ class SproutEmail extends Plugin
                     'template' => 'sprout-base-email/campaigns/index'
                 ],
             ]);
-        }else{
+        } else {
             $rules = array_merge($rules, [
                 'sprout-email/notifications<siteHandle:.*>' => [
                     'route' => 'sprout/settings/advertise',
