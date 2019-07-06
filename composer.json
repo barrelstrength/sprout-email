@@ -29,6 +29,7 @@
         "barrelstrength/sprout-base": "^5.0.0",
         "barrelstrength/sprout-base-email": "^1.1.1",
         "barrelstrength/sprout-base-fields": "^1.0.4",
+        "barrelstrength/sprout-base-jobs": "^1.0.0",
         "barrelstrength/sprout-base-lists": "^1.0.4"
     },
     "autoload": {

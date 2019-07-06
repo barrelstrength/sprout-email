@@ -6,6 +6,7 @@ use barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates;
 use barrelstrength\sproutbaseemail\models\Settings;
 use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseNotificationInstall;
+use barrelstrength\sproutbasejobs\migrations\Install as SproutBaseJobsInstall;
 use Craft;
 use craft\services\Plugins;
 
@@ -57,6 +58,7 @@ class Install extends Migration
         $projectConfig->set(Plugins::CONFIG_PLUGINS_KEY.'.'.$pluginHandle.'.settings', $settings->toArray());
 
         $this->runSproutBaseInstall();
+        $this->runSproutJobsInstall();
     }
 
     public function safeDown()
@@ -67,6 +69,15 @@ class Install extends Migration
     protected function runSproutBaseInstall()
     {
         $migration = new SproutBaseNotificationInstall();
+
+        ob_start();
+        $migration->safeUp();
+        ob_end_clean();
+    }
+
+    protected function runSproutJobsInstall()
+    {
+        $migration = new SproutBaseJobsInstall();
 
         ob_start();
         $migration->safeUp();
