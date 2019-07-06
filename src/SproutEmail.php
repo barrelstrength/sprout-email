@@ -19,6 +19,7 @@ use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
+use barrelstrength\sproutemail\events\notificationevents\ScheduledEmailJobEvent;
 use barrelstrength\sproutemail\events\notificationevents\UsersActivate;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
@@ -114,10 +115,13 @@ class SproutEmail extends Plugin
         Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, function(NotificationEmailEvent $event) {
             $event->events[] = EntriesSave::class;
             $event->events[] = EntriesDelete::class;
+            $event->events[] = Manual::class;
             $event->events[] = UsersSave::class;
             $event->events[] = UsersDelete::class;
             $event->events[] = UsersActivate::class;
-            $event->events[] = Manual::class;
+
+            // Queueable Events
+            $event->events[] = ScheduledEmailJobEvent::class;
         });
 
         // Email Tracking
