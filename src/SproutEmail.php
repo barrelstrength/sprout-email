@@ -11,6 +11,7 @@
 namespace barrelstrength\sproutemail;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
+use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
 use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
@@ -29,6 +30,7 @@ use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\UrlHelper;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use yii\base\Event;
@@ -143,6 +145,18 @@ class SproutEmail extends Plugin
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getUpgradeUrl()
+    {
+        if (!SproutBase::$app->settings->isEdition('sprout-email', self::EDITION_PRO)) {
+            return UrlHelper::cpUrl('sprout-email/upgrade');
+        }
+
+        return null;
+    }
+
+    /**
      * @return Settings
      */
     protected function createSettingsModel(): Settings
@@ -168,14 +182,14 @@ class SproutEmail extends Plugin
 
         $settings = $this->getSettings();
 
-//        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableCampaignEmails) {
+//        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableCampaignEmails && $this->is(self::EDITION_PRO)) {
 //            $navigation['subnav']['campaigns'] = [
 //                'label' => Craft::t('sprout-email', 'Campaigns'),
 //                'url' => 'sprout-email/campaigns'
 //            ];
 //        }
 
-        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableNotificationEmails) {
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableNotificationEmails && $this->is(self::EDITION_PRO)) {
             $navigation['subnav']['notifications'] = [
                 'label' => Craft::t('sprout-email', 'Notifications'),
                 'url' => 'sprout-email/notifications'
@@ -211,18 +225,14 @@ class SproutEmail extends Plugin
 
             // Sent Emails
             'sprout-email/sentemails' => [
-                'template' => 'sprout-base-email/sentemails/index'
+                'route' => 'sprout-email/sent-email/index-template'
             ],
 
             // Settings
             'sprout-email/settings/notifications/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-settings-template',
 
-            'sprout-email/settings/<settingsSectionHandle:.*>' =>
-                'sprout/settings/edit-settings',
 
-            'sprout-email/settings' =>
-                'sprout/settings/edit-settings'
         ];
 
         if ($this->is(self::EDITION_PRO)) {
@@ -240,32 +250,25 @@ class SproutEmail extends Plugin
                 ],
                 'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
                     'sprout-email/campaign-email/edit-campaign-email',
-
                 'sprout-email/campaigns/edit/<emailId:\d+>' =>
                     'sprout-email/campaign-email/edit-campaign-email',
-
                 'sprout-email/campaigns' => [
                     'template' => 'sprout-base-email/campaigns/index'
                 ],
             ]);
-        } else {
-            $rules = array_merge($rules, [
-                'sprout-email/notifications<siteHandle:.*>' => [
-                    'route' => 'sprout/settings/advertise',
-                    'params' => [
-                        'template' => 'sprout-email/advertise/notifications',
-                        'title' => 'Buy Sprout Email - Notifications'
-                    ]
-                ],
-                'sprout-email/campaigns<siteHandle:.*>' => [
-                    'route' => 'sprout/settings/advertise',
-                    'params' => [
-                        'template' => 'sprout-email/advertise/campaigns',
-                        'title' => 'Buy Sprout Email - Campaigns'
-                    ]
-                ]
-            ]);
         }
+
+        // Make sure our general settings come last in the rules
+        $rules = array_merge($rules, [
+            // Settings
+            'sprout-email/<featurePage:upgrade|welcome>' => [
+                'template' => 'sprout-base-email/upgrade'
+            ],
+            '<pluginHandle:sprout-email>/settings/<settingsSectionHandle:.*>' =>
+                'sprout/settings/edit-settings',
+            'sprout-email/settings' =>
+                'sprout/settings/edit-settings'
+        ]);
 
         return $rules;
     }
@@ -293,5 +296,18 @@ class SproutEmail extends Plugin
                 ]
             ]
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterInstall()
+    {
+        // Redirect to welcome page
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
+
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('sprout-email/welcome'))->send();
     }
 }

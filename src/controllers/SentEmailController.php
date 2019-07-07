@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
+use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbaseemail\models\SimpleRecipient;
 use barrelstrength\sproutbaseemail\models\SimpleRecipientList;
 use barrelstrength\sproutemail\services\SentEmails;
@@ -12,23 +13,42 @@ use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;
 use Craft;
+use Throwable;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig_Error_Loader;
 use yii\base\Exception;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SentEmailController extends Controller
 {
     /**
+     * @return Response
+     */
+    public function actionIndexTemplate(): Response
+    {
+        $isPro = SproutBase::$app->settings->isEdition('sprout-email', SproutEmail::EDITION_PRO);
+
+        return $this->renderTemplate('sprout-base-email/sentemails/index', [
+            'isPro' => $isPro
+        ]);
+    }
+
+    /**
      * Re-sends a Sent Email
      *
+     * @return bool|Response
+     * @throws Exception
+     * @throws Throwable
+     * @throws BadRequestHttpException
      * @todo - update to use new EmailElement::getRecipients() syntax
      *
-     * @return bool|\yii\web\Response
-     * @throws Exception
-     * @throws \Throwable
-     * @throws \yii\web\BadRequestHttpException
      */
     public function actionResendEmail()
     {
@@ -36,9 +56,8 @@ class SentEmailController extends Controller
         $this->requirePermission('sproutEmail-resendEmails');
 
         $emailId = Craft::$app->request->getBodyParam('emailId');
-        /**
-         * @var $sentEmail SentEmail
-         */
+
+        /** @var $sentEmail SentEmail */
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
 
         $recipients = Craft::$app->getRequest()->getBodyParam('recipients');
@@ -173,9 +192,12 @@ class SentEmailController extends Controller
     /**
      * Returns info for the Sent Email Resend modal
      *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws ForbiddenHttpException
      */
     public function actionGetResendModal(): Response
     {
@@ -185,15 +207,11 @@ class SentEmailController extends Controller
         $emailId = Craft::$app->getRequest()->getBodyParam('emailId');
         $sentEmail = Craft::$app->elements->getElementById($emailId, SentEmail::class);
 
-        $plugin = SproutEmail::getInstance();
-        $modalTemplate = 'sprout-base-email/_modals/sentemails/prepare-resend-email';
-        if ($plugin->is(SproutEmail::EDITION_LITE)){
-            $modalTemplate = 'sprout-email/advertise/modal-upgrade';
-        }
+        $isPro = SproutBase::$app->settings->isEdition('sprout-email', SproutEmail::EDITION_PRO);
 
-        $content = Craft::$app->getView()->renderTemplate(
-            $modalTemplate, [
-            'sentEmail' => $sentEmail
+        $content = Craft::$app->getView()->renderTemplate('sprout-base-email/_modals/sentemails/prepare-resend-email', [
+            'sentEmail' => $sentEmail,
+            'isPro' => $isPro
         ]);
 
         $response = new ModalResponse();
@@ -206,9 +224,12 @@ class SentEmailController extends Controller
     /**
      * Get HTML for Info Table HUD
      *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function actionGetInfoHtml(): Response
     {
