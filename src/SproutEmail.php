@@ -203,11 +203,11 @@ class SproutEmail extends Plugin
                 'sprout-base-email/notifications/edit-notification-email-template',
             'sprout-email/notifications/settings/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-settings-template',
-
-            // Campaigns
-            'sprout-email/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
+            'sprout-email/notifications/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
                 'route' => 'sprout-base-email/notifications/preview'
             ],
+
+            // Campaigns
             'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
                 'sprout-email/campaign-email/edit-campaign-email',
 
