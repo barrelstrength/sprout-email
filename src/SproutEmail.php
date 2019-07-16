@@ -32,6 +32,7 @@ use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\mail\BaseMailer;
 use yii\mail\MailEvent;
 
@@ -54,7 +55,7 @@ class SproutEmail extends Plugin
     /**
      * Enable use of SproutEmail::$plugin-> in place of Craft::$app->
      *
-     * @var \barrelstrength\sproutemail\services\App
+     * @var App
      */
     public static $app;
 
@@ -76,7 +77,7 @@ class SproutEmail extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '4.0.9';
+    public $schemaVersion = '4.1.0';
 
     /**
      * @var string
@@ -84,7 +85,7 @@ class SproutEmail extends Plugin
     public $minVersionRequired = '3.0.6';
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function init()
     {
@@ -196,16 +197,17 @@ class SproutEmail extends Plugin
             ],
 
             // Notifications
-            '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
+            'sprout-email/notifications' =>
+                'sprout-base-email/notifications/notifications-index-template',
+            'sprout-email/notifications/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-template',
-            '<pluginHandle:sprout-email>/notifications' => [
-                'route' => 'sprout-base-email/notifications/index'
+            'sprout-email/notifications/settings/edit/<emailId:\d+|new>' =>
+                'sprout-base-email/notifications/edit-notification-email-settings-template',
+            'sprout-email/notifications/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
+                'route' => 'sprout-base-email/notifications/preview'
             ],
 
             // Campaigns
-            '<pluginHandle:sprout-email>/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
-                'route' => 'sprout-base-email/notifications/preview'
-            ],
             'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
                 'sprout-email/campaign-email/edit-campaign-email',
 
@@ -222,12 +224,8 @@ class SproutEmail extends Plugin
             ],
 
             // Settings
-            'sprout-email/settings/notifications/edit/<emailId:\d+|new>' =>
-                'sprout-base-email/notifications/edit-notification-email-settings-template',
-
             'sprout-email/settings/<settingsSectionHandle:.*>' =>
                 'sprout/settings/edit-settings',
-
             'sprout-email/settings' =>
                 'sprout/settings/edit-settings'
         ];
