@@ -93,7 +93,7 @@ class SentEmailController extends Controller
             $failedRecipients = [];
 
             if (empty($validRecipients)) {
-                throw new Exception(Craft::t('sprout-email', 'No valid recipients.'));
+                throw new Exception('No valid recipients.');
             }
 
             foreach ($validRecipients as $validRecipient) {
@@ -137,19 +137,15 @@ class SentEmailController extends Controller
             if (!empty($failedRecipients)) {
                 $failedRecipientsText = implode(', ', $failedRecipients);
 
-                $message = Craft::t('sprout-email', "Failed to resend emails: $failedRecipientsText");
-
-                throw new Exception($message);
+                throw new Exception('Failed to resend emails: '.$failedRecipientsText);
             }
 
             if (!empty($processedRecipients)) {
-                $message = 'Email sent successfully.';
-
                 $response = ModalResponse::createModalResponse(
                     'sprout-base-email/_modals/response',
                     [
                         'email' => $sentEmail,
-                        'message' => Craft::t('sprout-email', $message)
+                        'message' => Craft::t('sprout-email', 'Email sent successfully.')
                     ]
                 );
 
