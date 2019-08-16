@@ -1,7 +1,7 @@
 {
     "name": "barrelstrength/sprout-email",
     "description": "Flexible, integrated email marketing and notifications.",
-    "version": "4.0.4",
+    "version": "4.0.5",
     "type": "craft-plugin",
     "keywords": [
         "craft",
@@ -26,8 +26,8 @@
     },
     "require": {
         "craftcms/cms": "^3.1.0",
-        "barrelstrength/sprout-base": "^5.0.0",
-        "barrelstrength/sprout-base-email": "^1.1.2",
+        "barrelstrength/sprout-base": "^5.0.7",
+        "barrelstrength/sprout-base-email": "^1.1.5",
         "barrelstrength/sprout-base-fields": "^1.0.4",
         "barrelstrength/sprout-base-lists": "^1.0.4"
     },
