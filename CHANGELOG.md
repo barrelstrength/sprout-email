@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.5 - 2019-08-16
+
+### Changed
+- Updated barrelstrength/sprout-base requirement v5.0.7
+- Updated barrelstrength/sprout-base-email requirement v1.1.5
+
+### Fixed
+- Fixed issue when running migrations via console command ([#321][#321sproutforms])
+
+[#321sproutforms]: https://github.com/barrelstrength/craft-sprout-forms/issues/321
+
 ## 4.0.4 - 2019-07-16
 
 ### Added
