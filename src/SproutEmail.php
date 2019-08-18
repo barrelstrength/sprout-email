@@ -253,38 +253,39 @@ class SproutEmail extends Plugin
                 'sprout-base-lists/lists/list-edit-template',
 
             // Segments
-            'sprout-email/segments/<dataSourceId:\d+>/new' => [
+            '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>/new' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
                     'viewContext' => 'segments',
                 ]
             ],
-            'sprout-email/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
+            '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
                     'viewContext' => 'segments',
                 ]
             ],
-            'sprout-email/segments/view/<reportId:\d+>' => [
+            '<pluginHandle:sprout-email>/segments/view/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/results-index-template',
                 'params' => [
                     'viewContext' => 'segments',
                 ]
             ],
-            'sprout-email/segments/<dataSourceId:\d+>' => [
+            '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
                     'viewContext' => 'segments',
                     'hideSidebar' => true
                 ]
             ],
-            'sprout-email/segments' => [
+            '<pluginHandle:sprout-email>/segments' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
                     'viewContext' => 'segments',
                     'hideSidebar' => true
                 ]
             ],
+
 
             // Sent Emails
             'sprout-email/sentemails' => [
