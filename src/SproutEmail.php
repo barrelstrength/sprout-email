@@ -180,7 +180,7 @@ class SproutEmail extends Plugin
         ];
 
         $navigation['subnav']['segments'] = [
-            'label' => Craft::t('sprout-email', 'Segments'),
+            'label' => Craft::t('sprout-email', 'Mailing Lists'),
             'url' => 'sprout-email/segments'
         ];
 
@@ -256,32 +256,32 @@ class SproutEmail extends Plugin
             '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>/new' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
-                    'viewContext' => 'segments',
+                    'viewContext' => 'mailingList',
                 ]
             ],
             '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
-                    'viewContext' => 'segments',
+                    'viewContext' => 'mailingList',
                 ]
             ],
             '<pluginHandle:sprout-email>/segments/view/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/results-index-template',
                 'params' => [
-                    'viewContext' => 'segments',
+                    'viewContext' => 'mailingList',
                 ]
             ],
             '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
-                    'viewContext' => 'segments',
+                    'viewContext' => 'mailingList',
                     'hideSidebar' => true
                 ]
             ],
             '<pluginHandle:sprout-email>/segments' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
-                    'viewContext' => 'segments',
+                    'viewContext' => 'mailingList',
                     'hideSidebar' => true
                 ]
             ],
