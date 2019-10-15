@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutemail\services;
 
-use barrelstrength\sproutbaseemail\jobs\DeleteSentEmails;
+use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbaseemail\models\Settings;
 use craft\base\Plugin;
 use craft\mail\Mailer as CraftMailer;
@@ -273,12 +273,16 @@ class SentEmails extends Component
             return false;
         }
 
-        $sentEmailJob = new DeleteSentEmails();
-        $sentEmailJob->limit = $sentEmailsLimit;
-        $sentEmailJob->siteId = Craft::$app->getSites()->getCurrentSite()->id;
+        $ids = SentEmail::find()
+            ->limit(null)
+            ->offset($sentEmailsLimit)
+            ->orderBy(['sproutemail_sentemail.dateCreated' => SORT_DESC])
+            ->anyStatus()
+            ->siteId(Craft::$app->getSites()->getCurrentSite()->id)
+            ->ids();
 
         // Call the Delete Sent Emails job
-        Craft::$app->queue->push($sentEmailJob);
+        SproutBase::$app->utilities->purgeElements(SentEmail::class, $ids);
 
         return true;
     }
