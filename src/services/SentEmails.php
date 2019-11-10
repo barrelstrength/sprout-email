@@ -2,9 +2,12 @@
 
 namespace barrelstrength\sproutemail\services;
 
+use barrelstrength\sproutbase\jobs\PurgeElements;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbaseemail\models\Settings;
+use barrelstrength\sproutemail\SproutEmail;
 use craft\base\Plugin;
+use craft\errors\SiteNotFoundException;
 use craft\mail\Mailer as CraftMailer;
 use craft\mail\Message;
 use barrelstrength\sproutemail\elements\SentEmail;
@@ -14,6 +17,8 @@ use craft\helpers\Json;
 use craft\helpers\App;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
+use Exception;
+use Throwable;
 use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
@@ -40,7 +45,7 @@ class SentEmails extends Component
     /**
      * @param MailEvent $event
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function logSentEmail(MailEvent $event)
     {
@@ -119,7 +124,7 @@ class SentEmails extends Component
     /**
      * @param Event $event
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function logSentEmailCampaign(Event $event)
     {
@@ -158,7 +163,7 @@ class SentEmails extends Component
      * @param SentEmailInfoTable $infoTable
      *
      * @return SentEmail|bool
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function saveSentEmail(Message $message, SentEmailInfoTable $infoTable)
     {
@@ -240,7 +245,7 @@ class SentEmails extends Component
             if (Craft::$app->getElements()->saveElement($sentEmail)) {
                 return $sentEmail;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Craft::error($e->getMessage(), 'sprout-email');
         }
 
@@ -248,21 +253,26 @@ class SentEmails extends Component
     }
 
     /**
+     * @param bool $force
+     *
      * @return bool
-     * @throws \craft\errors\SiteNotFoundException
+     * @throws SiteNotFoundException
      */
-    public function cleanUpSentEmails(): bool
+    public function cleanUpSentEmails($force = false): bool
     {
+        /** @var SproutEmail $plugin */
         $plugin = Craft::$app->getPlugins()->getPlugin('sprout-email');
 
-        if (!$plugin) {
+        /** @var Settings $settings */
+        $settings = $plugin->getSettings();
+        $probability = (int)$settings->cleanupProbability;
+
+        // See Craft Garbage collection treatment of probability
+        // https://docs.craftcms.com/v3/gc.html
+        /** @noinspection RandomApiMigrationInspection */
+        if (!$force && mt_rand(0, 1000000) >= $probability) {
             return false;
         }
-
-        /**
-         * @var $settings Settings
-         */
-        $settings = $plugin->getSettings();
 
         // Default to 5000 if no integer is found in settings
         $sentEmailsLimit = is_int((int)$settings->sentEmailsLimit)
