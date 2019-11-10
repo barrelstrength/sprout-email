@@ -281,8 +281,11 @@ class SentEmails extends Component
             ->siteId(Craft::$app->getSites()->getCurrentSite()->id)
             ->ids();
 
-        // Call the Delete Sent Emails job
-        SproutBase::$app->utilities->purgeElements(SentEmail::class, $ids);
+        $purgeElements = new PurgeElements();
+        $purgeElements->elementType = SentEmail::class;
+        $purgeElements->idsToDelete = $ids;
+
+        SproutBase::$app->utilities->purgeElements($purgeElements);
 
         return true;
     }
