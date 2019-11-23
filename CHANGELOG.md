@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.6 - 2019-11-19
+
+### Added
+- Added `Cleanup Probability` setting to control the frequency Sent Email cleanup tasks are triggered
+
+### Changed
+- Removed Subject Line from Basic Email Templates body ([#124])
+- Updated barrelstrength/sprout-base requirement v5.0.8
+- Updated barrelstrength/sprout-base-email requirement v1.1.6
+  
+### Removed
+- Removed `DeleteSentEmails` job in favor of `PurgeElements` job 
+
+[#124]: https://github.com/barrelstrength/craft-sprout-email/issues/124
+
 ## 4.0.5 - 2019-08-16
 
 ### Changed
