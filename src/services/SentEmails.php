@@ -228,6 +228,14 @@ class SentEmails extends Component
                     $sentEmail->body = $child->getBody();
                 }
             }
+        }else{
+            // Get body from message
+            $body = $message->getSwiftMessage()->getBody();
+
+            if ($body) {
+                $sentEmail->htmlBody = $body;
+                $sentEmail->body = $body;
+            }
         }
 
         $deliveryStatuses = $infoTable->getDeliveryStatuses();
