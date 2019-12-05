@@ -26,10 +26,12 @@ use barrelstrength\sproutbaseemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
 use Craft;
 use craft\base\Plugin;
+use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
+use craft\web\twig\variables\Cp;
 use craft\web\UrlManager;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -127,6 +129,14 @@ class SproutEmail extends Plugin
                 SproutEmail::$app->sentEmails->logSentEmail($event);
             }
         });
+
+        Event::on(Cp::class, Cp::EVENT_REGISTER_CP_NAV_ITEMS, static function(RegisterCpNavItemsEvent $event) {
+//            \Craft::dd($event->navItems);
+
+            // Check if Sprout Email has "Sprout Lists" enabled in settings.
+            // And that Sprout Lists is NOT installed on its own.
+            // If so, add Sprout Lists to the nav with Subscribers and Lists.
+        });
     }
 
     /**
@@ -169,27 +179,17 @@ class SproutEmail extends Plugin
             ];
         }
 
-        $navigation['subnav']['subscribers'] = [
-            'label' => Craft::t('sprout-email', 'Subscribers'),
-            'url' => 'sprout-email/subscribers'
-        ];
-
-        $navigation['subnav']['lists'] = [
-            'label' => Craft::t('sprout-email', 'Lists'),
-            'url' => 'sprout-email/lists'
-        ];
-
-        $navigation['subnav']['segments'] = [
-            'label' => Craft::t('sprout-email', 'Mailing Lists'),
-            'url' => 'sprout-email/segments'
-        ];
-
         if (Craft::$app->getUser()->checkPermission('sproutEmail-viewSentEmail') && $settings->enableSentEmails) {
             $navigation['subnav']['sentemails'] = [
                 'label' => Craft::t('sprout-email', 'Sent Emails'),
                 'url' => 'sprout-email/sentemails'
             ];
         }
+
+        $navigation['subnav']['reports'] = [
+            'label' => Craft::t('sprout-email', 'Reports & Lists'),
+            'url' => 'sprout-email/reports'
+        ];
 
         if (Craft::$app->getUser()->getIsAdmin()) {
             $navigation['subnav']['settings'] = [
@@ -233,56 +233,37 @@ class SproutEmail extends Plugin
                 'template' => 'sprout-base-email/campaigns/index'
             ],
 
-            // Subscribers
-            'sprout-email/subscribers/new' =>
-                'sprout-base-lists/subscribers/edit-subscriber-template',
-            'sprout-email/subscribers/edit/<id:\d+>' =>
-                'sprout-base-lists/subscribers/edit-subscriber-template',
-            'sprout-email/subscribers/<listHandle:.*>' => [
-                'template' => 'sprout-base-lists/subscribers'
-            ],
-            'sprout-email/subscribers' =>
-                'sprout-base-lists/subscribers/subscribers-index-template',
-
-            // Lists
-            'sprout-email/lists' =>
-                'sprout-base-lists/lists/lists-index-template',
-            'sprout-email/lists/new' =>
-                'sprout-base-lists/lists/list-edit-template',
-            'sprout-email/lists/edit/<listId:\d+>' =>
-                'sprout-base-lists/lists/list-edit-template',
-
             // Segments
-            '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>/new' => [
+            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/new' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                ]
+//                'params' => [
+//                    'viewContext' => 'mailingList',
+//                ]
             ],
-            '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
+            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                ]
+//                'params' => [
+//                    'viewContext' => 'mailingList',
+//                ]
             ],
-            '<pluginHandle:sprout-email>/segments/view/<reportId:\d+>' => [
+            '<pluginHandle:sprout-email>/reports/view/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/results-index-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                ]
+//                'params' => [
+//                    'viewContext' => 'mailingList',
+//                ]
             ],
-            '<pluginHandle:sprout-email>/segments/<dataSourceId:\d+>' => [
+            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
-                    'viewContext' => 'mailingList',
-                    'hideSidebar' => true
+                    'viewContext' => 'sprout-email',
+//                    'hideSidebar' => true
                 ]
             ],
-            '<pluginHandle:sprout-email>/segments' => [
+            '<pluginHandle:sprout-email>/reports' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
-                    'viewContext' => 'mailingList',
-                    'hideSidebar' => true
+                    'viewContext' => 'sprout-email',
+//                    'hideSidebar' => true
                 ]
             ],
 
