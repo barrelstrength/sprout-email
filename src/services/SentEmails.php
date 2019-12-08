@@ -19,6 +19,8 @@ use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
 use Exception;
 use Throwable;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 use yii\base\Event;
 use Craft;
 use yii\mail\MailEvent;
@@ -45,6 +47,7 @@ class SentEmails extends Component
     /**
      * @param MailEvent $event
      *
+     * @return null
      * @throws Throwable
      */
     public function logSentEmail(MailEvent $event)
@@ -119,6 +122,8 @@ class SentEmails extends Component
         }
 
         $this->saveSentEmail($message, $infoTable);
+
+        return true;
     }
 
     /**
@@ -383,6 +388,8 @@ class SentEmails extends Component
      * @param $variables
      *
      * @return mixed
+     * @throws LoaderError
+     * @throws SyntaxError
      */
     protected function renderEmailContentLikeCraft($emailModel, $variables)
     {

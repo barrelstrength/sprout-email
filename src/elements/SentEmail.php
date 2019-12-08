@@ -14,7 +14,9 @@ use barrelstrength\sproutemail\records\SentEmail as SentEmailRecord;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use DateTime;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * Class SentEmail
@@ -85,7 +87,7 @@ class SentEmail extends Element
     public $status;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     public $dateSent;
 
@@ -287,7 +289,7 @@ class SentEmail extends Element
      * @param bool                  $showCheckboxes
      *
      * @return string
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      *
      */
     public static function indexHtml(

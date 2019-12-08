@@ -4,21 +4,25 @@ namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\elements\Entry;
 use Craft;
 use craft\events\ElementEvent;
 use craft\events\ModelEvent;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  *
- * @property string                                                        $eventHandlerClassName
- * @property array                                                         $allSections
- * @property \craft\elements\Entry|null|array|\craft\base\ElementInterface $mockEventObject
- * @property null                                                          $eventObject
- * @property string                                                        $name
- * @property mixed                                                         $eventName
- * @property string                                                        $description
- * @property string                                                        $eventClassName
+ * @property string                            $eventHandlerClassName
+ * @property array                             $allSections
+ * @property Entry|null|array|ElementInterface $mockEventObject
+ * @property null                              $eventObject
+ * @property string                            $name
+ * @property mixed                             $eventName
+ * @property string                            $description
+ * @property string                            $eventClassName
  */
 class EntriesSave extends NotificationEvent
 {
@@ -70,8 +74,12 @@ class EntriesSave extends NotificationEvent
     /**
      * @inheritdoc
      *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @param array $settings
+     *
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function getSettingsHtml($settings = []): string
     {
@@ -92,7 +100,7 @@ class EntriesSave extends NotificationEvent
     }
 
     /**
-     * @return array|\craft\base\ElementInterface|Entry|null
+     * @return array|ElementInterface|Entry|null
      */
     public function getMockEventObject()
     {

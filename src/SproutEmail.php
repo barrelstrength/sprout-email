@@ -114,7 +114,7 @@ class SproutEmail extends Plugin
             $event->permissions['Sprout Email'] = $this->getUserPermissions();
         });
 
-        Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, function(NotificationEmailEvent $event) {
+        Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, static function(NotificationEmailEvent $event) {
             $event->events[] = EntriesSave::class;
             $event->events[] = EntriesDelete::class;
             $event->events[] = UsersSave::class;

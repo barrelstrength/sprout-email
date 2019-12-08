@@ -8,6 +8,10 @@ use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseNotificationInstall;
 use Craft;
 use craft\services\Plugins;
+use yii\base\ErrorException;
+use yii\base\Exception;
+use yii\base\NotSupportedException;
+use yii\web\ServerErrorHttpException;
 
 class Install extends Migration
 {
@@ -15,10 +19,10 @@ class Install extends Migration
 
     /**
      * @return bool|void
-     * @throws \yii\base\ErrorException
-     * @throws \yii\base\Exception
-     * @throws \yii\base\NotSupportedException
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ErrorException
+     * @throws Exception
+     * @throws NotSupportedException
+     * @throws ServerErrorHttpException
      */
     public function safeUp()
     {

@@ -12,10 +12,16 @@ use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;
 use Craft;
+use Throwable;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use yii\base\Exception;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SentEmailController extends Controller
@@ -23,12 +29,12 @@ class SentEmailController extends Controller
     /**
      * Re-sends a Sent Email
      *
+     * @return bool|Response
+     * @throws Exception
+     * @throws Throwable
+     * @throws BadRequestHttpException
      * @todo - update to use new EmailElement::getRecipients() syntax
      *
-     * @return bool|\yii\web\Response
-     * @throws Exception
-     * @throws \Throwable
-     * @throws \yii\web\BadRequestHttpException
      */
     public function actionResendEmail()
     {
@@ -169,9 +175,12 @@ class SentEmailController extends Controller
     /**
      * Returns info for the Sent Email Resend modal
      *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionGetResendModal(): Response
     {
@@ -196,9 +205,12 @@ class SentEmailController extends Controller
     /**
      * Get HTML for Info Table HUD
      *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionGetInfoHtml(): Response
     {

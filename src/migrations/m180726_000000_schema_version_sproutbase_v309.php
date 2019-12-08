@@ -11,6 +11,7 @@ use barrelstrength\sproutbaseemail\migrations\m180501_000002_rename_notification
 use barrelstrength\sproutbaseemail\migrations\m180515_000003_update_notification_eventId_types;
 use barrelstrength\sproutbaseemail\migrations\m181026_000000_update_notification_data;
 use craft\db\Migration;
+use yii\base\NotSupportedException;
 
 /**
  * m180726_000000_schema_version_v302 migration.
@@ -19,7 +20,7 @@ class m180726_000000_schema_version_sproutbase_v309 extends Migration
 {
     /**
      * @return bool
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     public function safeUp(): bool
     {

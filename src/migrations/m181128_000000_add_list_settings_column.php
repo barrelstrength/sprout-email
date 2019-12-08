@@ -4,6 +4,7 @@ namespace barrelstrength\sproutemail\migrations;
 
 use barrelstrength\sproutbaseemail\migrations\m181128_000000_add_list_settings_column as baseMigration;
 use craft\db\Migration;
+use yii\base\NotSupportedException;
 
 /**
  * m181128_000000_add_list_settings_column migration.
@@ -12,7 +13,7 @@ class m181128_000000_add_list_settings_column extends Migration
 {
     /**
      * @return bool
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     public function safeUp(): bool
     {

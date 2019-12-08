@@ -10,6 +10,10 @@ use craft\elements\User;
 use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
 use craft\events\ElementEvent;
+use Exception;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  *
@@ -79,8 +83,12 @@ class UsersSave extends NotificationEvent
     /**
      * @inheritdoc
      *
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @param array $settings
+     *
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function getSettingsHtml($settings = []): string
     {
@@ -292,7 +300,7 @@ class UsersSave extends NotificationEvent
     {
         try {
             $groups = Craft::$app->userGroups->getAllGroups();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $groups = [];
         }
 
