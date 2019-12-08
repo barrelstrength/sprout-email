@@ -187,7 +187,7 @@ class SproutEmail extends Plugin
         }
 
         $navigation['subnav']['reports'] = [
-            'label' => Craft::t('sprout-email', 'Reports & Lists'),
+            'label' => Craft::t('sprout-email', 'Reports'),
             'url' => 'sprout-email/reports'
         ];
 
