@@ -15,7 +15,6 @@ use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
 use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
 use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
-use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
@@ -96,7 +95,6 @@ class SproutEmail extends Plugin
         SproutBaseHelper::registerModule();
         SproutBaseEmailHelper::registerModule();
         SproutBaseFieldsHelper::registerModule();
-        SproutBaseListsHelper::registerModule();
 
         $this->setComponents([
             'app' => App::class
