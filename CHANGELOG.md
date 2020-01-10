@@ -1,5 +1,24 @@
 # Changelog
 
+## UNRELEASED
+
+{note}: This update migrates recipient emails in some conditions from the cc and bcc fields to the standard recipients field. Please review your recipients after updating and ensure they are working as expected.
+
+### Added
+- Added Mailing List Reports integration
+- Replaced Sprout Lists integration with Sprout Reports Mailing List integration
+- Added Mailing List selector modal forms.elementSelectField
+- Added `barrelstrength\sproutbaseemail\mailers\DefaultMailer::hasLists()`
+- Added `barrelstrength\sproutbaseemail\elements\NotificationEmail::$sendMethod`
+- Added `barrelstrength\sproutbaseemail\models\SimpleRecipients::setCustomFields()` DOCUMENT? I believe this adds support for more personalization like using a person's name in an email.
+
+### Changed
+- Updated `barrelstrength\sproutbaseemail\base\RecipientTrait::hasLists()` default to `false`
+
+### Removed
+- Removed `barrelstrength\sproutbaseemail\base\EmailElement::$singleEmail`
+- Removed `barrelstrength/sprout-base-lists` requirement (use Mailing List Reports)
+
 ## 4.0.6 - 2019-11-19
 
 ### Added
@@ -83,12 +102,12 @@
 ## 4.0.0-beta.18 - 2019-04-20
 
 ### Changed 
-- Updated barrelstrength/sprout-base-lists requirement to v1.0.4
+- Updated barrelstrength/sprout-lists requirement to v1.0.4
 
 ## 4.0.0-beta.17 - 2019-04-20
 
 ### Changed 
-- Updated barrelstrength/sprout-base-lists requirement to v1.0.3
+- Updated barrelstrength/sprout-lists requirement to v1.0.3
 
 ## 4.0.0-beta.16 - 2019-04-20
 
@@ -104,7 +123,7 @@
 ## 4.0.0-beta.15 - 2019-04-09
 
 ### Updated
-- Updated barrelstrength/sprout-base-lists requirement v1.0.3
+- Updated barrelstrength/sprout-lists requirement v1.0.3
  
 ### Fixed
 - Required Sprout Lists to be installed to use User Sync
@@ -167,7 +186,7 @@
 - Updated barrelstrength/sprout-base requirement to v4.0.6
 - Added barrelstrength/sprout-base-email requirement v1.0.0
 - Added barrelstrength/sprout-base-fields requirement v1.0.0
-- Added barrelstrength/sprout-base-lists requirement v1.0.0
+- Added barrelstrength/sprout-lists requirement v1.0.0
 
 ### Fixed
 - Fixed undefined property error on User Delete Notification Event
