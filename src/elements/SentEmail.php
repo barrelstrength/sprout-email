@@ -107,7 +107,15 @@ class SentEmail extends Element
      */
     public static function displayName(): string
     {
-        return Craft::t('sprout-email', 'Campaign Email');
+        return Craft::t('sprout-email', 'Sent Email');
+    }
+
+    /**
+     * @return string
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('sprout-email', 'Sent Emails');
     }
 
     /**
