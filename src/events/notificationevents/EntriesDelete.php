@@ -82,9 +82,9 @@ class EntriesDelete extends NotificationEvent
         return $criteria->one();
     }
 
-    public function rules(): array
+    public function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
 
         $rules[] = [['event'], 'validateEvent'];
 
