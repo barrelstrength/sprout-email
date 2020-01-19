@@ -120,22 +120,23 @@ class EntriesSave extends NotificationEvent
         return $criteria->one();
     }
 
-    public function rules(): array
+    /**
+     * @return array
+     */
+    public function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
 
         $rules[] = [
             'whenNew', 'required', 'when' => function() {
                 return $this->whenUpdated == false;
             }
         ];
-
         $rules[] = [
             'whenUpdated', 'required', 'when' => function() {
                 return $this->whenNew == false;
             }
         ];
-
         $rules[] = [['whenNew', 'whenUpdated'], 'validateWhenTriggers'];
         $rules[] = [['event'], 'validateEvent'];
         $rules[] = ['sectionIds', 'default', 'value' => false];
