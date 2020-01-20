@@ -206,11 +206,12 @@ class SentEmailController extends Controller
      * Get HTML for Info Table HUD
      *
      * @return Response
+     * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws ForbiddenHttpException
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
      */
     public function actionGetInfoHtml(): Response
     {
@@ -219,9 +220,7 @@ class SentEmailController extends Controller
 
         $sentEmailId = Craft::$app->getRequest()->getBodyParam('emailId');
 
-        /**
-         * @var $sentEmail SentEmail
-         */
+        /** @var $sentEmail SentEmail */
         $sentEmail = Craft::$app->elements->getElementById($sentEmailId, SentEmail::class);
 
         $content = Craft::$app->getView()->renderTemplate(
