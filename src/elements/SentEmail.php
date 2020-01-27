@@ -311,7 +311,7 @@ class SentEmail extends Element
 
         Craft::$app->getView()->registerAssetBundle(EmailAsset::class);
 
-        Craft::$app->getView()->registerJs('var sproutModalInstance = new SproutModal(); sproutModalInstance.init();');
+        Craft::$app->getView()->registerJs('new SproutModal();');
 
         SproutBaseEmail::$app->mailers->includeMailerModalResources();
 
