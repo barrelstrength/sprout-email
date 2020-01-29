@@ -3,17 +3,16 @@
 namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
-
-
 use Craft;
 use craft\elements\User;
+use craft\events\ElementEvent;
 use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
-use craft\events\ElementEvent;
 use Exception;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+
 
 /**
  *
@@ -258,6 +257,33 @@ class UsersSave extends NotificationEvent
         }
     }
 
+    /**
+     * Returns an array of groups suitable for use in checkbox field
+     *
+     * @return array
+     */
+    public function getAllGroups(): array
+    {
+        try {
+            $groups = Craft::$app->userGroups->getAllGroups();
+        } catch (Exception $e) {
+            $groups = [];
+        }
+
+        $options = [];
+
+        if (count($groups)) {
+            foreach ($groups as $key => $group) {
+                $options[] = [
+                    'label' => $group->name,
+                    'value' => $group->id
+                ];
+            }
+        }
+
+        return $options;
+    }
+
     private function isAdminUser()
     {
         /**
@@ -287,32 +313,5 @@ class UsersSave extends NotificationEvent
     {
         return (is_array($this->userGroupIds) && count($this->userGroupIds) > 0)
             AND is_array($currentUsersUserGroups);
-    }
-
-    /**
-     * Returns an array of groups suitable for use in checkbox field
-     *
-     * @return array
-     */
-    public function getAllGroups(): array
-    {
-        try {
-            $groups = Craft::$app->userGroups->getAllGroups();
-        } catch (Exception $e) {
-            $groups = [];
-        }
-
-        $options = [];
-
-        if (count($groups)) {
-            foreach ($groups as $key => $group) {
-                $options[] = [
-                    'label' => $group->name,
-                    'value' => $group->id
-                ];
-            }
-        }
-
-        return $options;
     }
 }

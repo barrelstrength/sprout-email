@@ -12,24 +12,23 @@ namespace barrelstrength\sproutemail;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBase;
+use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
+use barrelstrength\sproutbaseemail\models\Settings;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
 use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
 use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
-use barrelstrength\sproutbasereports\SproutBaseReports;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
 use barrelstrength\sproutemail\events\notificationevents\UsersActivate;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
-use barrelstrength\sproutbaseemail\models\Settings;
 use barrelstrength\sproutemail\services\App;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterUrlRulesEvent;
-use barrelstrength\sproutbase\SproutBaseHelper;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\Cp;
@@ -140,14 +139,6 @@ class SproutEmail extends Plugin
     }
 
     /**
-     * @return Settings
-     */
-    protected function createSettingsModel(): Settings
-    {
-        return new Settings();
-    }
-
-    /**
      * @return array
      */
     public function getCpNavItem(): array
@@ -190,7 +181,7 @@ class SproutEmail extends Plugin
         $reportsNavLabel = Craft::t('sprout-email', 'Reports');
 
         if ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab) {
-            SproutBase::$app->utilities->addSubNavIcon('sprout-email',$reportsNavLabel);
+            SproutBase::$app->utilities->addSubNavIcon('sprout-email', $reportsNavLabel);
         }
 
         if (Craft::$app->getUser()->checkPermission('sproutEmail-viewReports')) {
@@ -210,6 +201,49 @@ class SproutEmail extends Plugin
         }
 
         return array_merge($parent, $navigation);
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserPermissions(): array
+    {
+        return [
+            'sproutEmail-viewSentEmail' => [
+                'label' => Craft::t('sprout-email', 'View Sent Email'),
+                'nested' => [
+                    'sproutEmail-resendEmails' => [
+                        'label' => Craft::t('sprout-email', 'Resend Sent Emails')
+                    ]
+                ]
+            ],
+            'sproutEmail-viewNotifications' => [
+                'label' => Craft::t('sprout-email', 'View Notifications'),
+                'nested' => [
+                    'sproutEmail-editNotifications' => [
+                        'label' => Craft::t('sprout-email', 'Edit Notification Emails')
+                    ]
+                ]
+            ],
+
+            // Reports
+            'sproutEmail-viewReports' => [
+                'label' => Craft::t('sprout-email', 'View Reports'),
+                'nested' => [
+                    'sproutEmail-editReports' => [
+                        'label' => Craft::t('sprout-email', 'Edit Reports')
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return Settings
+     */
+    protected function createSettingsModel(): Settings
+    {
+        return new Settings();
     }
 
     private function getCpUrlRules(): array
@@ -289,41 +323,6 @@ class SproutEmail extends Plugin
                 'sprout/settings/edit-settings',
             'sprout-email/settings' =>
                 'sprout/settings/edit-settings'
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getUserPermissions(): array
-    {
-        return [
-            'sproutEmail-viewSentEmail' => [
-                'label' => Craft::t('sprout-email', 'View Sent Email'),
-                'nested' => [
-                    'sproutEmail-resendEmails' => [
-                        'label' => Craft::t('sprout-email', 'Resend Sent Emails')
-                    ]
-                ]
-            ],
-            'sproutEmail-viewNotifications' => [
-                'label' => Craft::t('sprout-email', 'View Notifications'),
-                'nested' => [
-                    'sproutEmail-editNotifications' => [
-                        'label' => Craft::t('sprout-email', 'Edit Notification Emails')
-                    ]
-                ]
-            ],
-
-            // Reports
-            'sproutEmail-viewReports' => [
-                'label' => Craft::t('sprout-email', 'View Reports'),
-                'nested' => [
-                    'sproutEmail-editReports' => [
-                        'label' => Craft::t('sprout-email', 'Edit Reports')
-                    ]
-                ]
-            ]
         ];
     }
 }

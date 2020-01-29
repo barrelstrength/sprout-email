@@ -5,16 +5,17 @@ namespace barrelstrength\sproutemail\services;
 use barrelstrength\sproutbase\jobs\PurgeElements;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbaseemail\models\Settings;
-use barrelstrength\sproutemail\SproutEmail;
-use craft\base\Plugin;
-use craft\errors\SiteNotFoundException;
-use craft\mail\Mailer as CraftMailer;
-use craft\mail\Message;
 use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
+use barrelstrength\sproutemail\SproutEmail;
+use Craft;
 use craft\base\Component;
-use craft\helpers\Json;
+use craft\base\Plugin;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\App;
+use craft\helpers\Json;
+use craft\mail\Mailer as CraftMailer;
+use craft\mail\Message;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Smtp;
 use Exception;
@@ -22,7 +23,6 @@ use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use yii\base\Event;
-use Craft;
 use yii\mail\MailEvent;
 
 /**
@@ -233,7 +233,7 @@ class SentEmails extends Component
                     $sentEmail->body = $child->getBody();
                 }
             }
-        }else{
+        } else {
             // Get body from message
             $body = $message->getSwiftMessage()->getBody();
 

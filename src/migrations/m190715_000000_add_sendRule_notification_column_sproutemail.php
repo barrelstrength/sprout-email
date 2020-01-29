@@ -2,9 +2,9 @@
 
 namespace barrelstrength\sproutemail\migrations;
 
+use barrelstrength\sproutbaseemail\migrations\m190715_000000_add_sendRule_notification_column;
 use craft\db\Migration;
 use yii\base\NotSupportedException;
-use barrelstrength\sproutbaseemail\migrations\m190715_000000_add_sendRule_notification_column;
 
 /**
  * m190715_000000_add_sendRule_notification_column_sproutemail migration.
@@ -33,6 +33,7 @@ class m190715_000000_add_sendRule_notification_column_sproutemail extends Migrat
     public function safeDown(): bool
     {
         echo "m190715_000000_add_sendRule_notification_column_sproutemail cannot be reverted.\n";
+
         return false;
     }
 }

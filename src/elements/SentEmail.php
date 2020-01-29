@@ -6,11 +6,10 @@ use barrelstrength\sproutbaseemail\SproutBaseEmail;
 use barrelstrength\sproutbaseemail\web\assets\email\EmailAsset;
 use barrelstrength\sproutemail\elements\actions\DeleteEmail;
 use barrelstrength\sproutemail\elements\db\SentEmailQuery;
-
 use barrelstrength\sproutemail\models\SentEmailInfoTable;
+use barrelstrength\sproutemail\records\SentEmail as SentEmailRecord;
 use Craft;
 use craft\base\Element;
-use barrelstrength\sproutemail\records\SentEmail as SentEmailRecord;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
@@ -51,6 +50,7 @@ class SentEmail extends Element
     public $enableFileAttachments;
 
     // Sender Info
+
     /**
      * @var string
      */
@@ -97,14 +97,6 @@ class SentEmail extends Element
     protected $fields;
 
     /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getLocaleNiceDateTime();
-    }
-
-    /**
      * @inheritdoc
      */
     public static function displayName(): string
@@ -121,11 +113,42 @@ class SentEmail extends Element
     }
 
     /**
-     * @inheritdoc
+     * @return ElementQueryInterface
      */
-    public function getIsEditable(): bool
+    public static function find(): ElementQueryInterface
     {
-        return true;
+        return new SentEmailQuery(static::class);
+    }
+
+    /**
+     * @param ElementQueryInterface $elementQuery
+     * @param array|null            $disabledElementIds
+     * @param array                 $viewState
+     * @param string|null           $sourceKey
+     * @param string|null           $context
+     * @param bool                  $includeContainer
+     * @param bool                  $showCheckboxes
+     *
+     * @return string
+     * @throws InvalidConfigException
+     *
+     */
+    public static function indexHtml(
+        ElementQueryInterface $elementQuery, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+        array $disabledElementIds = null, array $viewState, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+        string $sourceKey = null, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
+        string $context = null, bool $includeContainer, bool $showCheckboxes
+    ): string {
+        $html = parent::indexHtml($elementQuery, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer,
+            $showCheckboxes);
+
+        Craft::$app->getView()->registerAssetBundle(EmailAsset::class);
+
+        Craft::$app->getView()->registerJs('new SproutModal();');
+
+        SproutBaseEmail::$app->mailers->includeMailerModalResources();
+
+        return $html;
     }
 
     /**
@@ -185,11 +208,31 @@ class SentEmail extends Element
     }
 
     /**
-     * @return ElementQueryInterface
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    protected static function defineActions(string $source = null): array
     {
-        return new SentEmailQuery(static::class);
+        $actions = [];
+
+        $actions[] = DeleteEmail::class;
+
+        return $actions;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getLocaleNiceDateTime();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIsEditable(): bool
+    {
+        return true;
     }
 
     /**
@@ -285,49 +328,6 @@ class SentEmail extends Element
         Craft::$app->getElements()->updateElementSlugAndUri($this);
 
         parent::afterSave($isNew);
-    }
-
-    /**
-     * @param ElementQueryInterface $elementQuery
-     * @param array|null            $disabledElementIds
-     * @param array                 $viewState
-     * @param string|null           $sourceKey
-     * @param string|null           $context
-     * @param bool                  $includeContainer
-     * @param bool                  $showCheckboxes
-     *
-     * @return string
-     * @throws InvalidConfigException
-     *
-     */
-    public static function indexHtml(
-        ElementQueryInterface $elementQuery, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
-        array $disabledElementIds = null, array $viewState, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
-        string $sourceKey = null, /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
-        string $context = null, bool $includeContainer, bool $showCheckboxes
-    ): string {
-        $html = parent::indexHtml($elementQuery, $disabledElementIds, $viewState, $sourceKey, $context, $includeContainer,
-            $showCheckboxes);
-
-        Craft::$app->getView()->registerAssetBundle(EmailAsset::class);
-
-        Craft::$app->getView()->registerJs('new SproutModal();');
-
-        SproutBaseEmail::$app->mailers->includeMailerModalResources();
-
-        return $html;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected static function defineActions(string $source = null): array
-    {
-        $actions = [];
-
-        $actions[] = DeleteEmail::class;
-
-        return $actions;
     }
 
     /**

@@ -3,10 +3,10 @@
 namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
+use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\elements\Entry;
-use Craft;
 use craft\events\ElementEvent;
 use craft\events\ModelEvent;
 use Twig\Error\LoaderError;
@@ -27,8 +27,11 @@ use Twig\Error\SyntaxError;
 class EntriesSave extends NotificationEvent
 {
     public $whenNew = false;
+
     public $whenUpdated = false;
+
     public $sectionIds;
+
     public $availableSections;
 
     /**

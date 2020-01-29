@@ -27,6 +27,7 @@ class m191202_000001_update_element_types_sproutemail extends Migration
     public function safeDown(): bool
     {
         echo "m191202_000001_update_element_types_sproutemail cannot be reverted.\n";
+
         return false;
     }
 }

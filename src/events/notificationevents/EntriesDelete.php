@@ -3,9 +3,7 @@
 namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
-
 use Craft;
-
 use craft\elements\Entry;
 use yii\base\Event;
 

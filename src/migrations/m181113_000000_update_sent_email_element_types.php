@@ -37,6 +37,7 @@ class m181113_000000_update_sent_email_element_types extends Migration
     public function safeDown(): bool
     {
         echo "m181113_000000_update_sent_email_element_types cannot be reverted.\n";
+
         return false;
     }
 }

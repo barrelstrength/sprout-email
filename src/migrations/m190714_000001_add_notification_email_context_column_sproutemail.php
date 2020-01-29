@@ -33,6 +33,7 @@ class m190714_000001_add_notification_email_context_column_sproutemail extends M
     public function safeDown(): bool
     {
         echo "m190714_000001_add_notification_email_context_column_sproutemail cannot be reverted.\n";
+
         return false;
     }
 }

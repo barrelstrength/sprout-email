@@ -3,9 +3,9 @@
 namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
+use Craft;
 use craft\events\UserEvent;
 use craft\records\User as UserRecord;
-use Craft;
 use yii\web\User;
 
 

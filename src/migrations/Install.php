@@ -3,10 +3,10 @@
 namespace barrelstrength\sproutemail\migrations;
 
 use barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates;
-use barrelstrength\sproutbaseemail\models\Settings;
-use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseNotificationInstall;
+use barrelstrength\sproutbaseemail\models\Settings;
 use Craft;
+use craft\db\Migration;
 use craft\services\Plugins;
 use yii\base\ErrorException;
 use yii\base\Exception;

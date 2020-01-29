@@ -2,24 +2,24 @@
 
 namespace barrelstrength\sproutemail\controllers;
 
+use barrelstrength\sproutbaseemail\models\ModalResponse;
 use barrelstrength\sproutbaseemail\models\SimpleRecipient;
 use barrelstrength\sproutbaseemail\models\SimpleRecipientList;
+use barrelstrength\sproutemail\elements\SentEmail;
 use barrelstrength\sproutemail\services\SentEmails;
+use barrelstrength\sproutemail\SproutEmail;
+use Craft;
 use craft\mail\Mailer;
 use craft\mail\Message;
-use barrelstrength\sproutbaseemail\models\ModalResponse;
-use barrelstrength\sproutemail\elements\SentEmail;
-use barrelstrength\sproutemail\SproutEmail;
 use craft\web\Controller;
-use Craft;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use yii\base\Exception;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
-use Egulias\EmailValidator\Validation\RFCValidation;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;

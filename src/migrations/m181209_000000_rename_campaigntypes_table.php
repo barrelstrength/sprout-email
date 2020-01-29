@@ -32,6 +32,7 @@ class m181209_000000_rename_campaigntypes_table extends Migration
     public function safeDown(): bool
     {
         echo "m181209_000000_rename_campaigntypes_table cannot be reverted.\n";
+
         return false;
     }
 }

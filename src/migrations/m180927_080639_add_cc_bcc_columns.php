@@ -32,6 +32,7 @@ class m180927_080639_add_cc_bcc_columns extends Migration
     public function safeDown(): bool
     {
         echo "m180927_080639_add_cc_bcc_columns cannot be reverted.\n";
+
         return false;
     }
 }

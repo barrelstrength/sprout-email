@@ -3,7 +3,6 @@
 namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
-
 use Craft;
 use craft\elements\User;
 

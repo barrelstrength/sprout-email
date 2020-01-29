@@ -2,8 +2,8 @@
 
 namespace barrelstrength\sproutemail\migrations;
 
-use craft\db\Migration;
 use barrelstrength\sproutbaseemail\migrations\m190220_000000_clean_up_sent_email_records as BaseMigration;
+use craft\db\Migration;
 use yii\db\Exception;
 
 class m190220_000000_clean_up_sent_email_records_sproutemail extends Migration
@@ -29,6 +29,7 @@ class m190220_000000_clean_up_sent_email_records_sproutemail extends Migration
     public function safeDown(): bool
     {
         echo "m190220_000000_clean_up_sent_email_records_sproutemail cannot be reverted.\n";
+
         return false;
     }
 }
