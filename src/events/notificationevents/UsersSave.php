@@ -93,6 +93,7 @@ class UsersSave extends NotificationEvent
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws \yii\base\Exception
      */
     public function getSettingsHtml($settings = []): string
     {

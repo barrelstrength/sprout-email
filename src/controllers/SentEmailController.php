@@ -186,6 +186,7 @@ class SentEmailController extends Controller
      * @throws SyntaxError
      * @throws BadRequestHttpException
      * @throws ForbiddenHttpException
+     * @throws \yii\base\Exception
      */
     public function actionGetResendModal(): Response
     {
