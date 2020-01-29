@@ -11,10 +11,12 @@
 namespace barrelstrength\sproutemail;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
+use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
 use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
 use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
+use barrelstrength\sproutbasereports\SproutBaseReports;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
@@ -184,10 +186,21 @@ class SproutEmail extends Plugin
             ];
         }
 
-        $navigation['subnav']['reports'] = [
-            'label' => Craft::t('sprout-email', 'Reports'),
-            'url' => 'sprout-email/reports'
-        ];
+        $sproutReportsIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-reports');
+        $reportsNavLabel = Craft::t('sprout-email', 'Reports');
+
+        if ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab) {
+            SproutBase::$app->utilities->addSubNavIcon('sprout-email',$reportsNavLabel);
+        }
+
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewReports')) {
+            if (!$sproutReportsIsEnabled || ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab)) {
+                $navigation['subnav']['reports'] = [
+                    'label' => $reportsNavLabel,
+                    'url' => $sproutReportsIsEnabled ? 'sprout-reports/reports' : 'sprout-email/reports'
+                ];
+            }
+        }
 
         if (Craft::$app->getUser()->getIsAdmin()) {
             $navigation['subnav']['settings'] = [
@@ -298,6 +311,16 @@ class SproutEmail extends Plugin
                 'nested' => [
                     'sproutEmail-editNotifications' => [
                         'label' => Craft::t('sprout-email', 'Edit Notification Emails')
+                    ]
+                ]
+            ],
+
+            // Reports
+            'sproutEmail-viewReports' => [
+                'label' => Craft::t('sprout-email', 'View Reports'),
+                'nested' => [
+                    'sproutEmail-editReports' => [
+                        'label' => Craft::t('sprout-email', 'Edit Reports')
                     ]
                 ]
             ]
