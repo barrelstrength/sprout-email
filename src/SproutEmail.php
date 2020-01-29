@@ -1,11 +1,8 @@
 <?php
 /**
- * Sprout Email plugin for Craft CMS 3.x
- *
- * Flexible, integrated email marketing and notifications.
- *
- * @link      https://barrelstrengthdesign.com
- * @copyright Copyright (c) 2017 Barrelstrength
+ * @link https://sprout.barrelstrengthdesign.com
+ * @copyright Copyright (c) Barrel Strength Design LLC
+ * @license https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutemail;
