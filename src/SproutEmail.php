@@ -174,21 +174,21 @@ class SproutEmail extends Plugin
             ];
         }
 
-        $sproutReportsIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-reports');
-        $reportsNavLabel = Craft::t('sprout-email', 'Reports');
-
-        if ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab) {
-            SproutBase::$app->utilities->addSubNavIcon('sprout-email', $reportsNavLabel);
-        }
-
-        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewReports')) {
-            if (!$sproutReportsIsEnabled || ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab)) {
-                $navigation['subnav']['reports'] = [
-                    'label' => $reportsNavLabel,
-                    'url' => $sproutReportsIsEnabled ? 'sprout-reports/reports' : 'sprout-email/reports'
-                ];
-            }
-        }
+//        $sproutReportsIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-reports');
+//        $reportsNavLabel = Craft::t('sprout-email', 'Reports');
+//
+//        if ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab) {
+//            SproutBase::$app->utilities->addSubNavIcon('sprout-email', $reportsNavLabel);
+//        }
+//
+//        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewReports')) {
+//            if (!$sproutReportsIsEnabled || ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab)) {
+//                $navigation['subnav']['reports'] = [
+//                    'label' => $reportsNavLabel,
+//                    'url' => $sproutReportsIsEnabled ? 'sprout-reports/reports' : 'sprout-email/reports'
+//                ];
+//            }
+//        }
 
         if (Craft::$app->getUser()->getIsAdmin()) {
             $navigation['subnav']['settings'] = [
@@ -224,14 +224,14 @@ class SproutEmail extends Plugin
             ],
 
             // Reports
-            'sproutEmail-viewReports' => [
-                'label' => Craft::t('sprout-email', 'View Reports'),
-                'nested' => [
-                    'sproutEmail-editReports' => [
-                        'label' => Craft::t('sprout-email', 'Edit Reports')
-                    ]
-                ]
-            ]
+//            'sproutEmail-viewReports' => [
+//                'label' => Craft::t('sprout-email', 'View Reports'),
+//                'nested' => [
+//                    'sproutEmail-editReports' => [
+//                        'label' => Craft::t('sprout-email', 'Edit Reports')
+//                    ]
+//                ]
+//            ]
         ];
     }
 
@@ -275,40 +275,39 @@ class SproutEmail extends Plugin
                 'template' => 'sprout-base-email/campaigns/index'
             ],
 
-            // Segments
-            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/new' => [
-                'route' => 'sprout-base-reports/reports/edit-report-template',
+            // Reports
+//            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/new' => [
+//                'route' => 'sprout-base-reports/reports/edit-report-template',
 //                'params' => [
-//                    'viewContext' => 'mailingList',
+//                    'viewContext' => 'sprout-email',
 //                ]
-            ],
-            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
-                'route' => 'sprout-base-reports/reports/edit-report-template',
+//            ],
+//            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
+//                'route' => 'sprout-base-reports/reports/edit-report-template',
 //                'params' => [
-//                    'viewContext' => 'mailingList',
+//                    'viewContext' => 'sprout-email',
 //                ]
-            ],
-            '<pluginHandle:sprout-email>/reports/view/<reportId:\d+>' => [
-                'route' => 'sprout-base-reports/reports/results-index-template',
+//            ],
+//            '<pluginHandle:sprout-email>/reports/view/<reportId:\d+>' => [
+//                'route' => 'sprout-base-reports/reports/results-index-template',
 //                'params' => [
-//                    'viewContext' => 'mailingList',
+//                    'viewContext' => 'sprout-email',
 //                ]
-            ],
-            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>' => [
-                'route' => 'sprout-base-reports/reports/reports-index-template',
-                'params' => [
-                    'viewContext' => 'sprout-email',
+//            ],
+//            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>' => [
+//                'route' => 'sprout-base-reports/reports/reports-index-template',
+//                'params' => [
+//                    'viewContext' => 'sprout-email',
 //                    'hideSidebar' => true
-                ]
-            ],
-            '<pluginHandle:sprout-email>/reports' => [
-                'route' => 'sprout-base-reports/reports/reports-index-template',
-                'params' => [
-                    'viewContext' => 'sprout-email',
+//                ]
+//            ],
+//            '<pluginHandle:sprout-email>/reports' => [
+//                'route' => 'sprout-base-reports/reports/reports-index-template',
+//                'params' => [
+//                    'viewContext' => 'sprout-email',
 //                    'hideSidebar' => true
-                ]
-            ],
-
+//                ]
+//            ],
 
             // Sent Emails
             'sprout-email/sentemails' => [
