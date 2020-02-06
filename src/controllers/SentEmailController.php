@@ -165,13 +165,10 @@ class SentEmailController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            $response = ModalResponse::createErrorModalResponse(
-                'sprout-base-email/_modals/response',
-                [
-                    'email' => $sentEmail,
-                    'message' => Craft::t('sprout-email', $e->getMessage()),
-                ]
-            );
+            $response = ModalResponse::createErrorModalResponse('sprout-base-email/_modals/response', [
+                'email' => $sentEmail,
+                'message' => Craft::t('sprout-email', $e->getMessage()),
+            ]);
 
             return $this->asJson($response);
         }
