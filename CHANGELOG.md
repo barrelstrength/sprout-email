@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.2 - 2020-02-06
+
+### Changed
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.1
+
+### Fixed
+- Fixed bug where viewContext may not be defined correctly when loading Mailing Lists modal
+
 ## 4.1.1 - 2020-02-05
 
 {note}: This update migrates recipient emails in some conditions from the cc and bcc fields to the standard recipients field. Please review your recipients after updating and ensure they are working as expected.
