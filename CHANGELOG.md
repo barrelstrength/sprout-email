@@ -1,19 +1,19 @@
 # Changelog
 
-## UNRELEASED
+## 4.1.1 - 2020-02-05
 
 {note}: This update migrates recipient emails in some conditions from the cc and bcc fields to the standard recipients field. Please review your recipients after updating and ensure they are working as expected.
 
 ### Added
-- Added Mailing List Reports integration
-- Replaced Sprout Lists integration with Sprout Reports Mailing List integration
-- Added Mailing List selector modal forms.elementSelectField
+- Added Mailing List Reports integration and Lists relations setting
 - Added `barrelstrength\sproutbaseemail\mailers\DefaultMailer::hasLists()`
 - Added `barrelstrength\sproutbaseemail\elements\NotificationEmail::$sendMethod`
-- Added `barrelstrength\sproutbaseemail\models\SimpleRecipients::setCustomFields()` DOCUMENT? I believe this adds support for more personalization like using a person's name in an email.
 
 ### Changed
 - Updated `barrelstrength\sproutbaseemail\base\RecipientTrait::hasLists()` default to `false`
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.0
+- Updated `barrelstrength/sprout-base-fields` requirement to v1.3.0
+- Updated `barrelstrength/sprout-base` requirement to v5.1.0
 
 ### Removed
 - Removed `barrelstrength\sproutbaseemail\base\EmailElement::$singleEmail`
