@@ -1,7 +1,7 @@
 {
     "name": "barrelstrength/sprout-email",
     "description": "Flexible, integrated email marketing and notifications.",
-    "version": "4.0.6",
+    "version": "4.0.7",
     "type": "craft-plugin",
     "keywords": [
         "craft",

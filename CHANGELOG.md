@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.7 - 2020-02-11
+
+### Fixed
+- Fixed issue where previewing Commerce emails resulted in blank screen ([#126])
+
+[#126]: https://github.com/barrelstrength/craft-sprout-email/issues/126
+
 ## 4.0.6 - 2019-11-19
 
 ### Added
