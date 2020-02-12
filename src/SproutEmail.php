@@ -125,14 +125,6 @@ class SproutEmail extends Plugin
                 SproutEmail::$app->sentEmails->logSentEmail($event);
             }
         });
-
-        Event::on(Cp::class, Cp::EVENT_REGISTER_CP_NAV_ITEMS, static function(RegisterCpNavItemsEvent $event) {
-//            \Craft::dd($event->navItems);
-
-            // Check if Sprout Email has "Sprout Lists" enabled in settings.
-            // And that Sprout Lists is NOT installed on its own.
-            // If so, add Sprout Lists to the nav with Subscribers and Lists.
-        });
     }
 
     /**
