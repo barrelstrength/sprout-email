@@ -164,7 +164,8 @@ class SentEmail extends Element
         $sources = [
             [
                 'key' => '*',
-                'label' => Craft::t('sprout-email', 'All Sent Emails')
+                'label' => Craft::t('sprout-email', 'All Sent Emails'),
+                'defaultSort' => ['dateCreated', 'desc']
             ]
         ];
 
