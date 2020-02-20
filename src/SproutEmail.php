@@ -76,7 +76,7 @@ class SproutEmail extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '4.1.1';
+    public $schemaVersion = '4.1.4';
 
     /**
      * @var string
@@ -139,7 +139,16 @@ class SproutEmail extends Plugin
             $parent['label'] = $this->getSettings()->pluginNameOverride;
         }
 
+        /** @var SproutEmail $plugin */
+        $plugin = Craft::$app->plugins->getPlugin('sprout-email');
+        /** @var Settings $settings */
+        $settings = $plugin->getSettings();
+
         $parent['url'] = 'sprout-email';
+
+        if (!$settings->enableNotificationEmails && $settings->enableSentEmails) {
+            $parent['url'] = 'sprout-email/sentemails';
+        }
 
         $navigation = [];
 

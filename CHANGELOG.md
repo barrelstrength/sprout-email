@@ -1,5 +1,30 @@
 # Changelog
 
+## 4.1.4 - 2020-02-20
+	
+### Changed
+- Updated Notification Email logic to only define CC and BCC when sending a Single Email
+- Updated default sorting on Sent Email index page to descending ([#127])
+- Updated organization of Enable Notifications and Enable Sent Email tracking settings 
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.3
+- Updated `barrelstrength/sprout-base-fields` requirement to v1.3.2
+- Updated `barrelstrength/sprout-base` requirement to v5.1.2
+
+### Fixed
+- Fixed display bug with select dropdown field in edit page sidebars ([#139])
+- Fixed bug in session logic when defining `viewContext` setting ([#142], [#425][#425-sprout-forms], [#428][#428-sprout-forms])
+- Fixed bug where user could be directed to a tab without proper permissions in the sidebar ([#120])
+- Fixed bug where Mailing Lists settings may not display on Notification Email Edit page
+- Fixed bug where CC and BCC fields displayed alongside Email List settings even though they don't apply ([#427][#427-sprout-forms])
+
+[#120]: https://github.com/barrelstrength/craft-sprout-email/issues/120
+[#127]: https://github.com/barrelstrength/craft-sprout-email/issues/127
+[#139]: https://github.com/barrelstrength/craft-sprout-email/issues/139
+[#142]: https://github.com/barrelstrength/craft-sprout-email/issues/142
+[#425-sprout-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/425
+[#427-sprout-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/427
+[#428-sprout-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/428
+
 ## 4.1.3 - 2020-02-12
 
 ### Changed
