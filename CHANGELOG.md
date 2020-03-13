@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.1.5 - 2020-03-14
+
+### Changed
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.3
+
+### Fixed
+- Notification Events are no longer initialized on install and migration requests ([#143])
+- Notification Events are no longer initialized on console requests
+
+[#143]: https://github.com/barrelstrength/craft-sprout-email/issues/143
+
 ## 4.1.4 - 2020-02-20
 	
 ### Changed
