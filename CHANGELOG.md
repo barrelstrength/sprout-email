@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.1.6 - 2020-03-19
+
+### Changed
+- Added `barrelstrength/sprout-base-reports` requirement
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.4
+
+### Fixed
+- Fixed Notification Email settings in some Notification Email migration scenarios ([#121], [#125])
+- Fixed `barrelstrength\sproutbasereports\base\DataSource` not found ([#144])
+
+[#121]: https://github.com/barrelstrength/craft-sprout-email/issues/121
+[#125]: https://github.com/barrelstrength/craft-sprout-email/issues/125
+[#144]: https://github.com/barrelstrength/craft-sprout-email/issues/144
+
 ## 4.1.5 - 2020-03-14
 
 ### Changed
