@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.2.0 - 2020-04-09
+
+### Added
+- Added `barrelstrength\sproutbaseemail\base\EmailTemplates::getTemplateRoot()`
+
+### Changed
+- Updated Email Template rendering to treat Email Template folder as a subfolder of the template folder to allow more flexible use of extending other templates ([#111][#111-sprout-email], [#122][#122-sprout-email])
+- Updated `barrelstrength\sproutbaseemail\base\EmailTemplates::getPath()` to define path within target template folder
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.7
+
+[#111-sprout-email]: https://github.com/barrelstrength/craft-sprout-email/issues/111
+[#122-sprout-email]: https://github.com/barrelstrength/craft-sprout-email/issues/122
+	
 ## 4.1.6 - 2020-03-19
 
 ### Changed
