@@ -2,6 +2,8 @@
 
 ## 4.2.0 - 2020-04-09
 
+> {warning} Custom Email Templates Integrations will need to be updated to better support extending Twig layouts within the templates folder. See the [upgrade notes](https://sprout.barrelstrengthdesign.com/docs/email/installing-and-updating-craft-3.html#upgrading-to-email-v4-2-0).
+
 ### Added
 - Added `barrelstrength\sproutbaseemail\base\EmailTemplates::getTemplateRoot()`
 
