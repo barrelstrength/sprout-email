@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.2.0.1 - 2020-04-09
+
+### Added
+- Added `barrelstrength\sproutbaseemail\base\EmailTemplates::getTemplateMode()`
+
+### Changed
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.7
+
+### Fixed
+- Fixed issue where Email Templates may render in the incorrect Template Mode in some scenarios
+
 ## 4.2.0 - 2020-04-09
 
 > {warning} Custom Email Templates Integrations will need to be updated to better support extending Twig layouts within the templates folder. See the [upgrade notes](https://sprout.barrelstrengthdesign.com/docs/email/installing-and-updating-craft-3.html#upgrading-to-email-v4-2-0).
