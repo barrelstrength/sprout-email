@@ -7,7 +7,6 @@
 
 namespace barrelstrength\sproutemail;
 
-use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
@@ -36,20 +35,12 @@ use yii\mail\BaseMailer;
 use yii\mail\MailEvent;
 
 /**
- * Class SproutEmail
- *
- * @author    Barrelstrength
- * @package   SproutEmail
- * @since     3
- *
- *
  * @property array $cpNavItem
  * @property array $userPermissions
  * @property array $cpUrlRules
  */
 class SproutEmail extends Plugin
 {
-    use BaseSproutTrait;
 
     /**
      * Enable use of SproutEmail::$plugin-> in place of Craft::$app->
@@ -58,10 +49,6 @@ class SproutEmail extends Plugin
      */
     public static $app;
 
-    /**
-     * @var string
-     */
-    public static $pluginHandle = 'sprout-email';
 
     /**
      * @var bool
