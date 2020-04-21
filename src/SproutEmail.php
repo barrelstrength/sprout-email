@@ -105,13 +105,6 @@ class SproutEmail extends Plugin
             $event->events[] = UsersActivate::class;
             $event->events[] = Manual::class;
         });
-
-        // Email Tracking
-        Event::on(BaseMailer::class, BaseMailer::EVENT_AFTER_SEND, function(MailEvent $event) {
-            if ($this->getSettings()->enableSentEmails) {
-                SproutEmail::$app->sentEmails->logSentEmail($event);
-            }
-        });
     }
 
     /**
@@ -121,62 +114,46 @@ class SproutEmail extends Plugin
     {
         $parent = parent::getCpNavItem();
 
-        // Allow user to override plugin name in sidebar
-        if ($this->getSettings()->pluginNameOverride) {
-            $parent['label'] = $this->getSettings()->pluginNameOverride;
-        }
 
-        /** @var SproutEmail $plugin */
-        $plugin = Craft::$app->plugins->getPlugin('sprout-email');
-        /** @var Settings $settings */
-        $settings = $plugin->getSettings();
+        $sproutSentEmailIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-sent-email');
+
+        $sproutEmailSettings = $this->getSettings();
+        $sentEmailSettings = SproutBaseSentEmail::$app->settings->getSentEmailSettings();
+
+        // Allow user to override plugin name in sidebar
+        if ($sproutEmailSettings->pluginNameOverride) {
+            $parent['label'] = $sproutEmailSettings->pluginNameOverride;
+        }
 
         $parent['url'] = 'sprout-email';
 
-        if (!$settings->enableNotificationEmails && $settings->enableSentEmails) {
+        $navigation = [];
+
+        $sentEmailNavLabel = Craft::t('sprout-email', 'Sent Email');
+
+        if ($sproutSentEmailIsEnabled && $sentEmailSettings->enableSentEmails) {
+            SproutBase::$app->utilities->addSubNavIcon('sprout-email', $sentEmailNavLabel);
+        }
+
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewSentEmail')) {
+            if (!$sproutSentEmailIsEnabled || ($sproutSentEmailIsEnabled && $sentEmailSettings->enableSentEmails)) {
+        $navigation['subnav']['sent-email'] = [
+                    'label' => $sentEmailNavLabel,
+                    'url' => $sproutSentEmailIsEnabled ? 'sprout-sent-email/sent-email' : 'sprout-email/sent-email',
+                ];
+            }
+        }
+
+        if (!$sproutEmailSettings->enableNotificationEmails && $sentEmailSettings->enableSentEmails) {
             $parent['url'] = 'sprout-email/sentemails';
         }
 
-        $navigation = [];
-
-        $settings = $this->getSettings();
-
-//        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableCampaignEmails) {
-//            $navigation['subnav']['campaigns'] = [
-//                'label' => Craft::t('sprout-email', 'Campaigns'),
-//                'url' => 'sprout-email/campaigns'
-//            ];
-//        }
-
-        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $settings->enableNotificationEmails) {
+        if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $sproutEmailSettings->enableNotificationEmails) {
             $navigation['subnav']['notifications'] = [
                 'label' => Craft::t('sprout-email', 'Notifications'),
                 'url' => 'sprout-email/notifications'
             ];
         }
-
-        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewSentEmail') && $settings->enableSentEmails) {
-            $navigation['subnav']['sentemails'] = [
-                'label' => Craft::t('sprout-email', 'Sent Emails'),
-                'url' => 'sprout-email/sentemails'
-            ];
-        }
-
-//        $sproutReportsIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-reports');
-//        $reportsNavLabel = Craft::t('sprout-email', 'Reports');
-//
-//        if ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab) {
-//            SproutBase::$app->utilities->addSubNavIcon('sprout-email', $reportsNavLabel);
-//        }
-//
-//        if (Craft::$app->getUser()->checkPermission('sproutEmail-viewReports')) {
-//            if (!$sproutReportsIsEnabled || ($sproutReportsIsEnabled && $this->getSettings()->showReportsTab)) {
-//                $navigation['subnav']['reports'] = [
-//                    'label' => $reportsNavLabel,
-//                    'url' => $sproutReportsIsEnabled ? 'sprout-reports/reports' : 'sprout-email/reports'
-//                ];
-//            }
-//        }
 
         if (Craft::$app->getUser()->getIsAdmin()) {
             $navigation['subnav']['settings'] = [
@@ -224,11 +201,11 @@ class SproutEmail extends Plugin
     }
 
     /**
-     * @return Settings
+     * @return SproutBaseEmailSettings
      */
-    protected function createSettingsModel(): Settings
+    protected function createSettingsModel(): SproutBaseEmailSettings
     {
-        return new Settings();
+        return new SproutBaseEmailSettings();
     }
 
     private function getCpUrlRules(): array
@@ -263,46 +240,18 @@ class SproutEmail extends Plugin
                 'template' => 'sprout-base-email/campaigns/index'
             ],
 
-            // Reports
-//            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/new' => [
-//                'route' => 'sprout-base-reports/reports/edit-report-template',
-//                'params' => [
-//                    'viewContext' => 'sprout-email',
-//                ]
-//            ],
-//            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
-//                'route' => 'sprout-base-reports/reports/edit-report-template',
-//                'params' => [
-//                    'viewContext' => 'sprout-email',
-//                ]
-//            ],
-//            '<pluginHandle:sprout-email>/reports/view/<reportId:\d+>' => [
-//                'route' => 'sprout-base-reports/reports/results-index-template',
-//                'params' => [
-//                    'viewContext' => 'sprout-email',
-//                ]
-//            ],
-//            '<pluginHandle:sprout-email>/reports/<dataSourceId:\d+>' => [
-//                'route' => 'sprout-base-reports/reports/reports-index-template',
-//                'params' => [
-//                    'viewContext' => 'sprout-email',
-//                    'hideSidebar' => true
-//                ]
-//            ],
-//            '<pluginHandle:sprout-email>/reports' => [
-//                'route' => 'sprout-base-reports/reports/reports-index-template',
-//                'params' => [
-//                    'viewContext' => 'sprout-email',
-//                    'hideSidebar' => true
-//                ]
-//            ],
-
             // Sent Emails
-            'sprout-email/sentemails' => [
-                'template' => 'sprout-base-email/sentemails/index'
+            'sprout-email/sent-email' => [
+                'template' => 'sprout-base-sent-email/sent-email/index'
             ],
 
             // Settings
+            'sprout-email/settings/sent-email' => [
+                'route' => 'sprout/settings/edit-settings',
+                'params' => [
+                    'sproutBaseSettingsType' => SentEmailSettingsModel::class
+                ]
+            ],
             'sprout-email/settings/<settingsSectionHandle:.*>' =>
                 'sprout/settings/edit-settings',
             'sprout-email/settings' =>
