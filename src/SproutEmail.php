@@ -1,12 +1,14 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutemail;
 
+use barrelstrength\sproutbase\base\SproutDependencyInterface;
+use barrelstrength\sproutbase\base\SproutDependencyTrait;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
@@ -37,10 +39,12 @@ use yii\mail\MailEvent;
 /**
  * @property array $cpNavItem
  * @property array $userPermissions
+ * @property array $sproutDependencies
  * @property array $cpUrlRules
  */
-class SproutEmail extends Plugin
+class SproutEmail extends Plugin implements SproutDependencyInterface
 {
+    use SproutDependencyTrait;
 
     /**
      * Enable use of SproutEmail::$plugin-> in place of Craft::$app->
@@ -197,6 +201,17 @@ class SproutEmail extends Plugin
 //                    ]
 //                ]
 //            ]
+    /**
+     * @return array
+     */
+    public function getSproutDependencies(): array
+    {
+        return [
+            SproutDependencyInterface::SPROUT_BASE,
+            SproutDependencyInterface::SPROUT_BASE_EMAIL,
+            SproutDependencyInterface::SPROUT_BASE_FIELDS,
+            SproutDependencyInterface::SPROUT_BASE_REPORTS,
+            SproutDependencyInterface::SPROUT_BASE_SENT_EMAIL
         ];
     }
 
