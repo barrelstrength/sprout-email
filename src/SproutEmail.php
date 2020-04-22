@@ -223,6 +223,16 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
         return new SproutBaseEmailSettings();
     }
 
+    protected function afterInstall()
+    {
+        // Redirect to welcome page
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
+
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('sprout-email/welcome'))->send();
+    }
+
     private function getCpUrlRules(): array
     {
         return [
