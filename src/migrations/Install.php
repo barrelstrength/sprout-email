@@ -1,84 +1,87 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutemail\migrations;
 
+use barrelstrength\sproutbase\base\SproutDependencyInterface;
+use barrelstrength\sproutbase\migrations\Install as SproutBaseInstall;
 use barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates;
-use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseNotificationInstall;
+use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseEmailInstall;
+use barrelstrength\sproutbasesentemail\migrations\Install as SproutBaseSentEmailInstall;
 use barrelstrength\sproutbaseemail\models\Settings;
+use barrelstrength\sproutbasefields\migrations\Install as SproutBaseFieldsInstall;
+use barrelstrength\sproutemail\SproutEmail;
 use Craft;
 use craft\db\Migration;
 use craft\services\Plugins;
-use yii\base\ErrorException;
-use yii\base\Exception;
-use yii\base\NotSupportedException;
-use yii\web\ServerErrorHttpException;
+use Throwable;
 
 class Install extends Migration
 {
-    private $sentEmailTable = '{{%sproutemail_sentemail}}';
-
     /**
      * @return bool|void
-     * @throws ErrorException
-     * @throws Exception
-     * @throws NotSupportedException
-     * @throws ServerErrorHttpException
      */
     public function safeUp()
     {
-        $sentTable = $this->getDb()->tableExists($this->sentEmailTable);
-
-        if ($sentTable == false) {
-            $this->createTable($this->sentEmailTable,
-                [
-                    'id' => $this->primaryKey(),
-                    'title' => $this->string(),
-                    'emailSubject' => $this->string(),
-                    'fromEmail' => $this->string(),
-                    'fromName' => $this->string(),
-                    'toEmail' => $this->string(),
-                    'body' => $this->text(),
-                    'htmlBody' => $this->text(),
-                    'info' => $this->text(),
-                    'status' => $this->string(),
-                    'dateCreated' => $this->dateTime(),
-                    'dateUpdated' => $this->dateTime(),
-                    'uid' => $this->uid()
-                ]
-            );
-
-            $this->addForeignKey(null, $this->sentEmailTable,
-                ['id'], '{{%elements}}', ['id'], 'CASCADE');
-        }
-
-        $settings = new Settings();
-        $basic = new BasicTemplates();
-
-        $settings->emailTemplateId = get_class($basic);
-
-        $pluginHandle = 'sprout-email';
-        $projectConfig = Craft::$app->getProjectConfig();
-        $projectConfig->set(Plugins::CONFIG_PLUGINS_KEY.'.'.$pluginHandle.'.settings', $settings->toArray());
-
-        $this->runSproutBaseInstall();
-    }
-
-    public function safeDown()
-    {
-
-    }
-
-    protected function runSproutBaseInstall()
-    {
-        $migration = new SproutBaseNotificationInstall();
-
+        $migration = new SproutBaseEmailInstall();
         ob_start();
         $migration->safeUp();
         ob_end_clean();
+
+        $migration = new SproutBaseSentEmailInstall();
+        ob_start();
+        $migration->safeUp();
+        ob_end_clean();
+    }
+
+    /**
+     * @return bool|void
+     * @throws Throwable
+     */
+    public function safeDown()
+    {
+        /** @var SproutEmail $plugin */
+        $plugin = SproutEmail::getInstance();
+
+        $sproutBaseEmailInUse = $plugin->dependencyInUse(SproutDependencyInterface::SPROUT_BASE_EMAIL);
+        $sproutBaseFieldsInUse = $plugin->dependencyInUse(SproutDependencyInterface::SPROUT_BASE_FIELDS);
+        $sproutBaseSentEmailInUse = $plugin->dependencyInUse(SproutDependencyInterface::SPROUT_BASE_SENT_EMAIL);
+        $sproutBaseInUse = $plugin->dependencyInUse(SproutDependencyInterface::SPROUT_BASE);
+
+        if (!$sproutBaseEmailInUse) {
+            $migration = new SproutBaseEmailInstall();
+
+            ob_start();
+            $migration->safeDown();
+            ob_end_clean();
+        }
+
+        if (!$sproutBaseFieldsInUse) {
+            $migration = new SproutBaseFieldsInstall();
+
+            ob_start();
+            $migration->safeDown();
+            ob_end_clean();
+        }
+
+        if (!$sproutBaseSentEmailInUse) {
+            $migration = new SproutBaseSentEmailInstall();
+
+            ob_start();
+            $migration->safeDown();
+            ob_end_clean();
+        }
+
+        if (!$sproutBaseInUse) {
+            $migration = new SproutBaseInstall();
+
+            ob_start();
+            $migration->safeDown();
+            ob_end_clean();
+        }
     }
 }
