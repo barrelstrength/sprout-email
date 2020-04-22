@@ -12,29 +12,25 @@ use barrelstrength\sproutbase\base\SproutDependencyTrait;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
-use barrelstrength\sproutbaseemail\models\Settings;
+use barrelstrength\sproutbasesentemail\models\Settings as SentEmailSettingsModel;
+use barrelstrength\sproutbasesentemail\SproutBaseSentEmail;
+use barrelstrength\sproutbasesentemail\SproutBaseSentEmailHelper;
+use barrelstrength\sproutbaseemail\models\Settings as SproutBaseEmailSettings;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
-use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
-use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
 use barrelstrength\sproutemail\events\notificationevents\UsersActivate;
 use barrelstrength\sproutemail\events\notificationevents\UsersDelete;
 use barrelstrength\sproutemail\events\notificationevents\UsersSave;
-use barrelstrength\sproutemail\services\App;
 use Craft;
 use craft\base\Plugin;
-use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\UrlHelper;
 use craft\services\UserPermissions;
-use craft\web\twig\variables\Cp;
 use craft\web\UrlManager;
 use yii\base\Event;
-use yii\base\InvalidConfigException;
-use yii\mail\BaseMailer;
-use yii\mail\MailEvent;
 
 /**
  * @property array $cpNavItem
@@ -45,13 +41,6 @@ use yii\mail\MailEvent;
 class SproutEmail extends Plugin implements SproutDependencyInterface
 {
     use SproutDependencyTrait;
-
-    /**
-     * Enable use of SproutEmail::$plugin-> in place of Craft::$app->
-     *
-     * @var App
-     */
-    public static $app;
 
     const EDITION_LITE = 'lite';
     const EDITION_PRO = 'pro';
@@ -128,7 +117,6 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
     {
         $parent = parent::getCpNavItem();
 
-
         $sproutSentEmailIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-sent-email');
 
         $sproutEmailSettings = $this->getSettings();
@@ -200,17 +188,10 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
                         'label' => Craft::t('sprout-email', 'Edit Notification Emails')
                     ]
                 ]
-            ],
+            ]
+        ];
+    }
 
-            // Reports
-//            'sproutEmail-viewReports' => [
-//                'label' => Craft::t('sprout-email', 'View Reports'),
-//                'nested' => [
-//                    'sproutEmail-editReports' => [
-//                        'label' => Craft::t('sprout-email', 'Edit Reports')
-//                    ]
-//                ]
-//            ]
     /**
      * @return array
      */
@@ -220,8 +201,10 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
             SproutDependencyInterface::SPROUT_BASE,
             SproutDependencyInterface::SPROUT_BASE_EMAIL,
             SproutDependencyInterface::SPROUT_BASE_FIELDS,
-            SproutDependencyInterface::SPROUT_BASE_REPORTS,
-            SproutDependencyInterface::SPROUT_BASE_SENT_EMAIL
+            SproutDependencyInterface::SPROUT_BASE_SENT_EMAIL,
+
+            // Has dependency but relies on Sprout Reports Pro to install reports tables
+            SproutDependencyInterface::SPROUT_BASE_REPORTS
         ];
     }
 
