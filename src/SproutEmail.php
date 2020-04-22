@@ -246,38 +246,40 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
     private function getCpUrlRules(): array
     {
         return [
-            'sprout-email' => [
+            '<pluginHandle:sprout-email>' => [
                 'template' => 'sprout-base-email/index'
             ],
-            'sprout-email/index' => [
+            '<pluginHandle:sprout-email>/index' => [
                 'template' => 'sprout-base-email/index'
             ],
 
             // Notifications
-            'sprout-email/notifications' =>
+            '<pluginHandle:sprout-email>/notifications' =>
                 'sprout-base-email/notifications/notifications-index-template',
-            'sprout-email/notifications/edit/<emailId:\d+|new>' =>
+            '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-template',
-            'sprout-email/notifications/settings/edit/<emailId:\d+|new>' =>
+            '<pluginHandle:sprout-email>/notifications/settings/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-settings-template',
-            'sprout-email/notifications/preview/<emailType:campaign|notification|sent>/<emailId:\d+>' => [
-                'route' => 'sprout-base-email/notifications/preview'
+
+            // Preview
+            '<pluginHandle:sprout-email>/sent-email/preview/<emailId:\d+>' => [
+                'route' => 'sprout-base-sent-email/sent-email/preview'
             ],
 
             // Campaigns
-            'sprout-email/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
+            '<pluginHandle:sprout-email>/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
                 'sprout-email/campaign-email/edit-campaign-email',
 
-            'sprout-email/campaigns/edit/<emailId:\d+>' =>
+            '<pluginHandle:sprout-email>/campaigns/edit/<emailId:\d+>' =>
                 'sprout-email/campaign-email/edit-campaign-email',
 
-            'sprout-email/campaigns' => [
+            '<pluginHandle:sprout-email>/campaigns' => [
                 'template' => 'sprout-base-email/campaigns/index'
             ],
 
             // Sent Emails
-            'sprout-email/sent-email' => [
-                'template' => 'sprout-base-sent-email/sent-email/index'
+            '<pluginHandle:sprout-email>/sent-email' => [
+                'route' => 'sprout-base-sent-email/sent-email/sent-email-index-template'
             ],
 
             // Settings
