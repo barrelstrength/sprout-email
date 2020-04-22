@@ -53,6 +53,8 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
      */
     public static $app;
 
+    const EDITION_LITE = 'lite';
+    const EDITION_PRO = 'pro';
 
     /**
      * @var bool
@@ -75,8 +77,16 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
     public $minVersionRequired = '3.0.6';
 
     /**
-     * @throws InvalidConfigException
+     * @inheritdoc
      */
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            self::EDITION_PRO,
+        ];
+    }
+
     public function init()
     {
         parent::init();
