@@ -12,11 +12,14 @@ use barrelstrength\sproutbase\base\SproutDependencyTrait;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
+use barrelstrength\sproutbaseemail\models\Settings as SproutBaseEmailSettings;
+use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
+use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
+use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
+use barrelstrength\sproutbasereports\SproutBaseReportsHelper;
 use barrelstrength\sproutbasesentemail\models\Settings as SentEmailSettingsModel;
 use barrelstrength\sproutbasesentemail\SproutBaseSentEmail;
 use barrelstrength\sproutbasesentemail\SproutBaseSentEmailHelper;
-use barrelstrength\sproutbaseemail\models\Settings as SproutBaseEmailSettings;
-use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
 use barrelstrength\sproutemail\events\notificationevents\EntriesDelete;
 use barrelstrength\sproutemail\events\notificationevents\EntriesSave;
 use barrelstrength\sproutemail\events\notificationevents\Manual;
@@ -83,12 +86,8 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
         SproutBaseHelper::registerModule();
         SproutBaseEmailHelper::registerModule();
         SproutBaseFieldsHelper::registerModule();
-
-        $this->setComponents([
-            'app' => App::class
-        ]);
-
-        self::$app = $this->get('app');
+        SproutBaseSentEmailHelper::registerModule();
+        SproutBaseReportsHelper::registerModule();
 
         Craft::setAlias('@sproutemail', $this->getBasePath());
 
