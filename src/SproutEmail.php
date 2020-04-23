@@ -139,7 +139,7 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
 
         if (Craft::$app->getUser()->checkPermission('sproutEmail-viewSentEmail')) {
             if (!$sproutSentEmailIsEnabled || ($sproutSentEmailIsEnabled && $sentEmailSettings->enableSentEmails)) {
-        $navigation['subnav']['sent-email'] = [
+                $navigation['subnav']['sent-email'] = [
                     'label' => $sentEmailNavLabel,
                     'url' => $sproutSentEmailIsEnabled ? 'sprout-sent-email/sent-email' : 'sprout-email/sent-email',
                 ];

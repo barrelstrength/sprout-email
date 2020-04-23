@@ -1,15 +1,22 @@
-<?php /** @noinspection ClassConstantCanBeUsedInspection */
+<?php
 
 namespace barrelstrength\sproutemail\migrations;
 
-use barrelstrength\sproutbaseemail\migrations\m200219_000000_clean_up_cc_bcc_emailList_fields;
 use barrelstrength\sproutbaseemail\migrations\m200420_000000_migrate_shared_sent_email_settings;
 use craft\db\Migration;
+use yii\base\ErrorException;
+use yii\base\Exception;
+use yii\base\NotSupportedException;
+use yii\web\ServerErrorHttpException;
 
 class m200420_000000_migrate_shared_sent_email_settings_sproutemail extends Migration
 {
     /**
-     * @inheritdoc
+     * @return bool
+     * @throws ErrorException
+     * @throws Exception
+     * @throws NotSupportedException
+     * @throws ServerErrorHttpException
      */
     public function safeUp(): bool
     {

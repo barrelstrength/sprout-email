@@ -1,8 +1,7 @@
-<?php /** @noinspection ClassConstantCanBeUsedInspection */
+<?php
 
 namespace barrelstrength\sproutemail\migrations;
 
-use barrelstrength\sproutbaseemail\migrations\m200219_000000_clean_up_cc_bcc_emailList_fields;
 use barrelstrength\sproutbasesentemail\migrations\m200411_000000_update_sent_email_element_type_class;
 use craft\db\Migration;
 

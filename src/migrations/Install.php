@@ -9,15 +9,11 @@ namespace barrelstrength\sproutemail\migrations;
 
 use barrelstrength\sproutbase\base\SproutDependencyInterface;
 use barrelstrength\sproutbase\migrations\Install as SproutBaseInstall;
-use barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates;
 use barrelstrength\sproutbaseemail\migrations\Install as SproutBaseEmailInstall;
-use barrelstrength\sproutbasesentemail\migrations\Install as SproutBaseSentEmailInstall;
-use barrelstrength\sproutbaseemail\models\Settings;
 use barrelstrength\sproutbasefields\migrations\Install as SproutBaseFieldsInstall;
+use barrelstrength\sproutbasesentemail\migrations\Install as SproutBaseSentEmailInstall;
 use barrelstrength\sproutemail\SproutEmail;
-use Craft;
 use craft\db\Migration;
-use craft\services\Plugins;
 use Throwable;
 
 class Install extends Migration

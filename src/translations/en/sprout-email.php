@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 return [
@@ -143,7 +143,35 @@ return [
     'Resend Sent Emails' => 'Resend Sent Emails',
     'View Sent Email' => 'View Sent Email',
     'View Notifications' => 'View Notifications',
-    'Reports' => 'Reports',
-    'View Reports' => 'View Reports',
-    'Edit Reports' => 'Edit Reports'
+    'Failed to resend emails: $failedRecipientsText' => 'Failed to resend emails: $failedRecipientsText',
+    'Get Started' => 'Get Started',
+    'Let me send that again.' => 'Let me send that again.',
+    'Email makes it personal.' => 'Email makes it personal.',
+    'Upgrade Now' => 'Upgrade Now',
+    'Sprout Sent Email takes a snapshot of all emails sent from your website. Sent email tracking enables you to review what that was sent, confirm sent statuses, and resend email to your users.' => 'Sprout Sent Email takes a snapshot of all emails sent from your website. Sent email tracking enables you to review what that was sent, confirm sent statuses, and resend email to your users.',
+    'Welcome to Sprout Email' => 'Welcome to Sprout Email',
+    'Integrations' => 'Integrations',
+    'Intimate, personal communication.' => 'Intimate, personal communication.',
+    'dateCreated' => 'dateCreated',
+    'Read the Docs' => 'Read the Docs',
+    'Sprout Sent Email [pro] takes a snapshot of all emails sent from your website. Sent email tracking enables you to review what that was sent, confirm sent statuses, and resend email to your users.' => 'Sprout Sent Email [pro] takes a snapshot of all emails sent from your website. Sent email tracking enables you to review what that was sent, confirm sent statuses, and resend email to your users.',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop about new content on your site, changes to your content, a publish workflow, or when forms are submitted (Sprout Forms) or purchases are made (Craft Commerce).' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop about new content on your site, changes to your content, a publish workflow, or when forms are submitted (Sprout Forms) or purchases are made (Craft Commerce).',
+    'Upgrade to PRO' => 'Upgrade to PRO',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, users take action, forms are submitted, or purchases are made.' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, users take action, forms are submitted, or purchases are made.',
+    'Sprout Email enables integrated email marketing, targeted transactional email, tracking and re-sending Sent Emails, and flexible subscriber and list management..' => 'Sprout Email enables integrated email marketing, targeted transactional email, tracking and re-sending Sent Emails, and flexible subscriber and list management..',
+    'It\'s personal' => 'It\'s personal',
+    'Sprout Email for Craft CMS' => 'Sprout Email for Craft CMS',
+    'Intimate, personal communications.' => 'Intimate, personal communications.',
+    'No valid recipients.' => 'No valid recipients.',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or purchases are made.' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or purchases are made.',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such as updating their profile or making a purchases.' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such as updating their profile or making a purchases.',
+    'Make it personal.' => 'Make it personal.',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such activating an account or making a purchases.' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such activating an account or making a purchases.',
+    'Mailing Lists' => 'Mailing Lists',
+    'Learn More' => 'Learn More',
+    'Date Sen' => 'Date Sen',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop about new content changes, when forms are submitted, or purchases are made.' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop about new content changes, when forms are submitted, or purchases are made.',
+    'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, when forms are submitted, or purchases are made.' => 'Send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, when forms are submitted, or purchases are made.',
+    'Email makes it personal' => 'Email makes it personal',
+    'Upgrade to Sprout Email [pro] to send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such activating an account or making a purchases.' => 'Upgrade to Sprout Email [pro] to send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such activating an account or making a purchases.'
 ];
