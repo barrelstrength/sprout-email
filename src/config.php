@@ -15,19 +15,23 @@
  */
 
 return [
-    '*' => [
-        // The name to display in the control panel in place of the plugin name
-        'pluginNameOverride' => 'Sprout Email',
+    // The name to display in the control panel in place of the plugin name
+    'pluginNameOverride' => 'Sprout Email',
 
-        // Enable Notification Emails for sending and management within the Control Panel
-        'enableNotificationEmails' => true,
+    // Enable Notification Emails for sending and management within the
+    // Control Panel
+    'enableNotificationEmails' => true,
 
-        // The templates that will be used to display your Notification Emails
-        // Email Template Class: barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates
-        // Custom Templates Folder: _emails/notification
-        'emailTemplateId' => 'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates',
+    // The templates that will be used to display your Notification Emails
+    //
+    // Email Template Class:
+    // barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates
+    //
+    // Custom Templates Folder:
+    // _emails/notification
+    'emailTemplateId' => 'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates',
 
-        // Allow admins to (optionally) choose custom Email Templates for each email created
-        'enablePerEmailEmailTemplateIdOverride' => false
-    ]
+    // Allow admins to (optionally) choose custom Email Templates for each
+    // email created
+    'enablePerEmailEmailTemplateIdOverride' => false
 ];
