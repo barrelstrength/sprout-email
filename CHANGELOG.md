@@ -1,12 +1,44 @@
 # Changelog
 
+## 4.3.0 - UNRELEASED
+
+> {tip} - Sprout Email now supports editions LITE and PRO. Existing license holders will be updated to a PRO license and continue to have access to all existing features.
+
+### Added
+- Added LITE and PRO Editions
+- Added uninstall migration
+- Added example config file `src/config.php`
+- Added `barrelstrength\sproutbase\base\SproutDependencyTrait`
+- Added `barrelstrength\sproutbase\base\SproutDependencyInterface`
+- Added `barrelstrength\sproutbase\records\Settings`
+- Added `barrelstrength\sproutbase\migrations\Install::safeDown()`
+- Added support for config overrides in base settings models
+
+### Changed
+- Moved Sent Email logic and templates to `barrelstrength/sprout-base-sent-email` module
+- Moved Notification Email settings to `sprout_settings` table
+- Updated `barrelstrength/sprout-base` requirement to v5.2.0
+- Updated `barrelstrength/sprout-base-email` requirement to v1.3.0
+- Updated `barrelstrength/sprout-base-fields` requirement to v1.4.0
+- Updated `barrelstrength/sprout-base-reports` requirement to v1.5.0
+- Updated `barrelstrength/sprout-base-sent-email` requirement to v1.0.0
+
+### Fixed
+- Fixed bug where disabling Notifications tab did not disable Notification Events
+- Fixed path in `barrelstrength\sproutbaseemail\emailtemplates\CustomTemplates::getTemplateRoot()`
+- Fixed translation categories in various templates
+
+### Removed
+- Removed `barrelstrength\sproutbase\services\Settings::getPluginSettings()`
+- Removed `barrelstrength\sproutbase\base\BaseSproutTrait`
+
 ## 4.2.0.1 - 2020-04-09
 
 ### Added
 - Added `barrelstrength\sproutbaseemail\base\EmailTemplates::getTemplateMode()`
 
 ### Changed
-- Updated `barrelstrength/sprout-base-email` requirement to v1.2.7
+- Updated `barrelstrength/sprout-base-email` requirement to v1.2.8
 
 ### Fixed
 - Fixed issue where Email Templates may render in the incorrect Template Mode in some scenarios
@@ -25,7 +57,7 @@
 
 [#111-sprout-email]: https://github.com/barrelstrength/craft-sprout-email/issues/111
 [#122-sprout-email]: https://github.com/barrelstrength/craft-sprout-email/issues/122
-	
+
 ## 4.1.6 - 2020-03-19
 
 ### Changed
@@ -52,7 +84,7 @@
 [#143]: https://github.com/barrelstrength/craft-sprout-email/issues/143
 
 ## 4.1.4 - 2020-02-20
-	
+
 ### Changed
 - Updated Notification Email logic to only define CC and BCC when sending a Single Email
 - Updated default sorting on Sent Email index page to descending ([#127])
@@ -122,7 +154,7 @@
 - Removed Subject Line from Basic Email Templates body ([#124])
 - Updated barrelstrength/sprout-base requirement v5.0.8
 - Updated barrelstrength/sprout-base-email requirement v1.1.6
-  
+
 ### Removed
 - Removed `DeleteSentEmails` job in favor of `PurgeElements` job 
 
@@ -218,7 +250,7 @@
 
 ### Updated
 - Updated barrelstrength/sprout-lists requirement v1.0.3
- 
+
 ### Fixed
 - Required Sprout Lists to be installed to use User Sync
 
