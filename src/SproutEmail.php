@@ -236,39 +236,38 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
             ],
 
             // Notifications
-            '<pluginHandle:sprout-email>/notifications' =>
+            '<pluginHandle:sprout-email>/<pluginSection:notifications>' =>
                 'sprout-base-email/notifications/notifications-index-template',
-            '<pluginHandle:sprout-email>/notifications/edit/<emailId:\d+|new>' =>
+            '<pluginHandle:sprout-email>/<pluginSection:notifications>/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-template',
-            '<pluginHandle:sprout-email>/notifications/settings/edit/<emailId:\d+|new>' =>
+            '<pluginHandle:sprout-email>/<pluginSection:notifications>/settings/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-settings-template',
 
             // Preview
-            '<pluginHandle:sprout-email>/sent-email/preview/<emailId:\d+>' => [
+            '<pluginHandle:sprout-email>/<pluginSection:sent-email>/preview/<emailId:\d+>' => [
                 'route' => 'sprout-base-sent-email/sent-email/preview'
             ],
 
-            // Campaigns
-            '<pluginHandle:sprout-email>/campaigns/<campaignTypeId:\d+>/<emailId:new>' =>
-                'sprout-email/campaign-email/edit-campaign-email',
-
-            '<pluginHandle:sprout-email>/campaigns/edit/<emailId:\d+>' =>
-                'sprout-email/campaign-email/edit-campaign-email',
-
-            '<pluginHandle:sprout-email>/campaigns' => [
-                'template' => 'sprout-base-email/campaigns/index'
+            // Sent Emails
+            '<pluginHandle:sprout-email>/<pluginSection:sent-email>' => [
+                'route' => 'sprout-base-sent-email/sent-email/sent-email-index-template'
             ],
 
-            // Sent Emails
-            '<pluginHandle:sprout-email>/sent-email' => [
-                'route' => 'sprout-base-sent-email/sent-email/sent-email-index-template'
+            // Campaigns
+            '<pluginHandle:sprout-email>/<pluginSection:campaigns>/<campaignTypeId:\d+>/<emailId:new>' =>
+                'sprout-email/campaign-email/edit-campaign-email',
+            '<pluginHandle:sprout-email>/<pluginSection:campaigns>/edit/<emailId:\d+>' =>
+                'sprout-email/campaign-email/edit-campaign-email',
+            '<pluginHandle:sprout-email>/<pluginSection:campaigns>' => [
+                'template' => 'sprout-base-email/campaigns/index'
             ],
 
             // Settings
             'sprout-email/settings/sent-email' => [
                 'route' => 'sprout/settings/edit-settings',
                 'params' => [
-                    'sproutBaseSettingsType' => SentEmailSettingsModel::class
+                    'sproutBaseSettingsType' => SentEmailSettingsModel::class,
+                    'configFilename' => 'sprout-sent-email'
                 ]
             ],
             'sprout-email/settings/<settingsSectionHandle:.*>' =>
