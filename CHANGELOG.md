@@ -25,12 +25,15 @@
 
 ### Fixed
 - Fixed bug where disabling Notifications tab did not disable Notification Events
+- Fixed bug where Email Column report setting could not be set properly ([#145])
 - Fixed path in `barrelstrength\sproutbaseemail\emailtemplates\CustomTemplates::getTemplateRoot()`
 - Fixed translation categories in various templates
 
 ### Removed
 - Removed `barrelstrength\sproutbase\services\Settings::getPluginSettings()`
 - Removed `barrelstrength\sproutbase\base\BaseSproutTrait`
+
+[#145]: https://github.com/barrelstrength/craft-sprout-email/issues/145
 
 ## 4.2.0.1 - 2020-04-09
 
