@@ -228,20 +228,19 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
     private function getCpUrlRules(): array
     {
         return [
-            '<pluginHandle:sprout-email>' => [
-                'template' => 'sprout-base-email/index'
-            ],
-            '<pluginHandle:sprout-email>/index' => [
-                'template' => 'sprout-base-email/index'
-            ],
-
             // Notifications
-            '<pluginHandle:sprout-email>/<pluginSection:notifications>' =>
-                'sprout-base-email/notifications/notifications-index-template',
             '<pluginHandle:sprout-email>/<pluginSection:notifications>/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-template',
             '<pluginHandle:sprout-email>/<pluginSection:notifications>/settings/edit/<emailId:\d+|new>' =>
                 'sprout-base-email/notifications/edit-notification-email-settings-template',
+            '<pluginHandle:sprout-email>/<pluginSection:notifications>' =>
+                'sprout-base-email/notifications/notifications-index-template',
+            '<pluginHandle:sprout-email>' => [
+                'route' => 'sprout-base-email/notifications/notifications-index-template',
+                'params' => [
+                    'pluginSection' => 'notifications'
+                ]
+            ],
 
             // Preview
             '<pluginHandle:sprout-email>/<pluginSection:sent-email>/preview/<emailId:\d+>' => [
