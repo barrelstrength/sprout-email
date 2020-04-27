@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.3.0 - UNRELEASED
+## 4.3.0 - 2020-04-27
 
 > {tip} - Sprout Email now supports editions LITE and PRO. Existing license holders will be updated to a PRO license and continue to have access to all existing features.
 
