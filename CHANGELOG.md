@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.4.0 - 2020-04-28
+
+### Changed
+- Updated `barrelstrength/sprout-base` requirement v6.0.0
+
+### Fixed
+- Fixed migration issue when multiple Sprout plugins are installed
+
 ## 4.3.0 - 2020-04-27
 
 > {tip} - Sprout Email now supports editions LITE and PRO. Existing license holders will be updated to a PRO license and continue to have access to all existing features.
