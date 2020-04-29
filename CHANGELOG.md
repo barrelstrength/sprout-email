@@ -7,6 +7,9 @@
 
 ### Fixed
 - Fixed migration issue when multiple Sprout plugins are installed
+- Fixed Default Email Templates assignment ([#153])
+
+[#153]: https://github.com/barrelstrength/craft-sprout-email/issues/153
 
 ## 4.3.0 - 2020-04-27
 
