@@ -243,6 +243,9 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
             ],
 
             // Preview
+            '<pluginHandle:sprout-email>/<pluginSection:notifications>/preview/<emailId:\d+>' => [
+                'route' => 'sprout-base-email/notifications/preview'
+            ],
             '<pluginHandle:sprout-email>/<pluginSection:sent-email>/preview/<emailId:\d+>' => [
                 'route' => 'sprout-base-sent-email/sent-email/preview'
             ],
