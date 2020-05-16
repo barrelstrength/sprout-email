@@ -272,10 +272,20 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
                     'configFilename' => 'sprout-sent-email'
                 ]
             ],
-            'sprout-email/settings/<settingsSectionHandle:.*>' =>
-                'sprout/settings/edit-settings',
-            'sprout-email/settings' =>
-                'sprout/settings/edit-settings'
+            'sprout-email/settings/<settingsSectionHandle:.*>' => [
+                'route' => 'sprout/settings/edit-settings',
+                'params' => [
+                    'sproutBaseSettingsType' => SproutBaseEmailSettings::class,
+                    'configFilename' => 'sprout-email'
+                ]
+            ],
+            'sprout-email/settings' => [
+                'route' => 'sprout/settings/edit-settings',
+                'params' => [
+                    'sproutBaseSettingsType' => SproutBaseEmailSettings::class,
+                    'configFilename' => 'sprout-email'
+                ]
+            ]
         ];
     }
 }
