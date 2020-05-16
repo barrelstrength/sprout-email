@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.4.2 - 2020-05-16
+
+### Changed
+- Updated email capture to check Swift message body before message children ([#126])
+- Updated `barrelstrength/sprout-base-email` requirement to v1.3.5
+- Updated `barrelstrength/sprout-base-reports` requirement to v1.5.2
+- Updated `barrelstrength/sprout-base-sent-email` requirement to v1.1.1
+
+### Fixed
+- Fixed bug when previewing Notification Email ([#155])
+- Fixed bug where Email Template settings were not saving correctly ([#156], [#158])
+- Fixed various bugs in plugin settings migration and save behavior ([#159])
+
+[#126]: https://github.com/barrelstrength/craft-sprout-email/issues/126
+[#155]: https://github.com/barrelstrength/craft-sprout-email/issues/155
+[#156]: https://github.com/barrelstrength/craft-sprout-email/issues/156
+[#158]: https://github.com/barrelstrength/craft-sprout-email/issues/158
+[#159]: https://github.com/barrelstrength/craft-sprout-email/issues/159
+
 ## 4.4.1 - 2020-05-15
 
 ### Changed
