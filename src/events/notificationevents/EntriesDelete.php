@@ -9,7 +9,9 @@ namespace barrelstrength\sproutemail\events\notificationevents;
 
 use barrelstrength\sproutbaseemail\base\NotificationEvent;
 use Craft;
+use craft\base\Element;
 use craft\elements\Entry;
+use craft\helpers\ElementHelper;
 use yii\base\Event;
 
 
@@ -102,8 +104,15 @@ class EntriesDelete extends NotificationEvent
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
 
-        if (get_class($event->sender) !== Entry::class) {
+        /** @var Element $element */
+        $element = $event->sender;
+
+        if (get_class($element) !== Entry::class) {
             $this->addError('event', Craft::t('sprout-email', 'Event Element does not match craft\elements\Entry class.'));
+        }
+
+        if (ElementHelper::isDraftOrRevision($element)) {
+            $this->addError('event', Craft::t('sprout-email', 'Event Element is a draft or revision.'));
         }
     }
 }
