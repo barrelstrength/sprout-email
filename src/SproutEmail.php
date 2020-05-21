@@ -61,7 +61,7 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
     /**
      * @var string
      */
-    public $schemaVersion = '4.3.0';
+    public $schemaVersion = '4.4.4';
 
     /**
      * @var string

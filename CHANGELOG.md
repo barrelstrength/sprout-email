@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.4.4 - 2020-05-21
+
+### Changed
+- Improved error handling when sending test emails
+- Updated `sproutemail_sentemails.htmlBody` column type to MEDIUMTEXT ([#161])
+- Updated `barrelstrength/sprout-base-sent-email` requirement v1.1.2
+
+### Fixed
+- Fixed bug where 'When an Entry is deleted' Event would also trigger when Drafts were deleted ([#149])
+- Fixed bug processing Test recipients to ensure only Test Recipients receive Test Emails
+- Fixed bug where valid Test email addresses could be marked invalid ([#162])
+- Fixed syntax error when assigning errors during Test email workflow
+- Fixed bug where `defaultBody` field could be processed even if it was null
+
+[#149]: https://github.com/barrelstrength/craft-sprout-email/issues/149
+[#161]: https://github.com/barrelstrength/craft-sprout-email/issues/161
+[#162]: https://github.com/barrelstrength/craft-sprout-email/issues/162
+
 ## 4.4.3 - 2020-05-18
 
 ### Changed
