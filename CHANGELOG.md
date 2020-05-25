@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.4.5 - 2020-05-24
+
+### Added
+- Added Enabled/Disabled status filters to Notification Email Element Index
+- Add Notification Email SetStatus Element Action
+
+### Changed
+- Updated `barrelstrength/sprout-base-email` requirement to v1.3.8
+
+### Fixed
+- Fixed default return type for `barrelstrength/sproutbaseemail/base/NotificationEvent:getDescription()` 
+- Fixed Notification Email Element Index CP Edit URL after modal close behavior  ([#163])
+
+[#163]: https://github.com/barrelstrength/craft-sprout-email/issues/163
+
 ## 4.4.4 - 2020-05-21
 
 ### Changed
