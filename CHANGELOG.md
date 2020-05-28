@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.4.6 - 2020-05-28
+
+### Fixed
+- Fixed Sent Email navigation bug ([#165])
+
+[#165]: https://github.com/barrelstrength/craft-sprout-email/issues/165
+
 ## 4.4.5 - 2020-05-24
 
 ### Added
