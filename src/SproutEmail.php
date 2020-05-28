@@ -146,7 +146,7 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
         }
 
         if (!$sproutEmailSettings->enableNotificationEmails && $sentEmailSettings->enableSentEmails) {
-            $parent['url'] = 'sprout-email/sentemails';
+            $parent['url'] = 'sprout-email/sent-email';
         }
 
         if (Craft::$app->getUser()->checkPermission('sproutEmail-editNotifications') && $sproutEmailSettings->enableNotificationEmails) {
