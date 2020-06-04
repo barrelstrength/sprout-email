@@ -25,11 +25,11 @@ return [
     // The templates that will be used to display your Notification Emails
     //
     // Email Template Class:
-    // barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates
+    // barrelstrength\sproutbase\app\email\emailtemplates\BasicTemplates
     //
     // Custom Templates Folder:
     // _emails/notification
-    'emailTemplateId' => 'barrelstrength\sproutbaseemail\emailtemplates\BasicTemplates',
+    'emailTemplateId' => 'barrelstrength\sproutbase\app\email\emailtemplates\BasicTemplates',
 
     // Allow admins to (optionally) choose custom Email Templates for each
     // email created
