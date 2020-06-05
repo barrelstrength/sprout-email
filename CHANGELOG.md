@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.4.7 - 2020-06-05
+
+### Fixed
+- Fixed Plugin Name Override setting ([#166])
+
+[#166]: https://github.com/barrelstrength/craft-sprout-email/issues/166
+
 ## 4.4.6 - 2020-05-28
 
 ### Fixed
