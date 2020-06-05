@@ -14,6 +14,7 @@ use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaseemail\events\NotificationEmailEvent;
 use barrelstrength\sproutbaseemail\models\Settings as SproutBaseEmailSettings;
 use barrelstrength\sproutbaseemail\services\NotificationEmailEvents;
+use barrelstrength\sproutbaseemail\SproutBaseEmail;
 use barrelstrength\sproutbaseemail\SproutBaseEmailHelper;
 use barrelstrength\sproutbasefields\SproutBaseFieldsHelper;
 use barrelstrength\sproutbasereports\SproutBaseReportsHelper;
@@ -118,7 +119,7 @@ class SproutEmail extends Plugin implements SproutDependencyInterface
 
         $sproutSentEmailIsEnabled = Craft::$app->getPlugins()->isPluginEnabled('sprout-sent-email');
 
-        $sproutEmailSettings = $this->getSettings();
+        $sproutEmailSettings = SproutBaseEmail::$app->settings->getEmailSettings();
         $sentEmailSettings = SproutBaseSentEmail::$app->settings->getSentEmailSettings();
 
         // Allow user to override plugin name in sidebar
