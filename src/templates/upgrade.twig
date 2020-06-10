@@ -1,5 +1,5 @@
 {% extends "sprout-base/_layouts/base-landing" %}
-{% import 'sprout-base/_includes/sproutcp' as sprout %}
+{% import "sprout-base/_includes/sproutcp" as sproutCp %}
 
 {% set title = "Upgrade to Sprout Email Pro"|t('sprout-sent-email') %}
 {% set bodyClass = 'sprout-landing-page' %}
@@ -12,7 +12,7 @@
 
         {{ parent() }}
 
-        {{ sprout.featureHeader({
+        {{ sproutCp.featureHeader({
             heading: "Intimate, personal communication."|t('sprout-email'),
             message: "Upgrade to Sprout Email [pro] to send personalized notification emails to your users when events are triggered in Craft. Stay in the loop when content changes, forms are submitted, or users take action such activating an account or making a purchases."|t('sprout-email'),
             primaryButtonText: "Upgrade Now"|t('sprout-email'),
@@ -21,7 +21,7 @@
             secondaryButtonLink: "https://sprout.barrelstrengthdesign.com/docs/email"
         }) }}
 
-        {{ sprout.featureImage({
+        {{ sproutCp.featureImage({
             imageUrl: assetUrl ~ '/images/sprout-email-feature.png',
             altText: 'Sprout Email for Craft CMS'|t('sprout-email')
         }) }}

@@ -15,20 +15,19 @@ use barrelstrength\sproutbase\app\email\events\notificationevents\UsersActivate;
 use barrelstrength\sproutbase\app\email\events\notificationevents\UsersDelete;
 use barrelstrength\sproutbase\app\email\events\notificationevents\UsersSave;
 use barrelstrength\sproutbase\app\email\services\NotificationEmailEvents;
-use barrelstrength\sproutbase\config\base\SproutCentralInterface;
+use barrelstrength\sproutbase\config\base\SproutBasePlugin;
 use barrelstrength\sproutbase\config\configs\CampaignsConfig;
 use barrelstrength\sproutbase\config\configs\EmailConfig;
 use barrelstrength\sproutbase\config\configs\FieldsConfig;
-use barrelstrength\sproutbase\config\configs\GeneralConfig;
+use barrelstrength\sproutbase\config\configs\ControlPanelConfig;
 use barrelstrength\sproutbase\config\configs\ReportsConfig;
 use barrelstrength\sproutbase\config\configs\SentEmailConfig;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use Craft;
-use craft\base\Plugin;
 use craft\helpers\UrlHelper;
 use yii\base\Event;
 
-class SproutEmail extends Plugin implements SproutCentralInterface
+class SproutEmail extends SproutBasePlugin
 {
     const EDITION_LITE = 'lite';
     const EDITION_PRO = 'pro';
@@ -41,7 +40,7 @@ class SproutEmail extends Plugin implements SproutCentralInterface
     /**
      * @var string
      */
-    public $minVersionRequired = '3.0.6';
+    public $minVersionRequired = '4.4.7';
 
     /**
      * @inheritdoc
@@ -57,7 +56,7 @@ class SproutEmail extends Plugin implements SproutCentralInterface
     public static function getSproutConfigs(): array
     {
         return [
-            GeneralConfig::class,
+            ControlPanelConfig::class,
             CampaignsConfig::class,
             EmailConfig::class,
             FieldsConfig::class,
