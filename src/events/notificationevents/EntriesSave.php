@@ -14,6 +14,7 @@ use craft\base\ElementInterface;
 use craft\elements\Entry;
 use craft\events\ElementEvent;
 use craft\events\ModelEvent;
+use craft\helpers\ElementHelper;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -157,12 +158,18 @@ class EntriesSave extends NotificationEvent
 
     public function validateWhenTriggers()
     {
-        /**
-         * @var ElementEvent $event
-         */
+        /** @var ElementEvent $event */
         $event = $this->event ?? null;
 
-        $isNewEntry = $event->isNew ?? false;
+        /** @var ElementInterface $entry */
+        $entry = $event->sender;
+
+        if (ElementHelper::isDraftOrRevision($entry)) {
+            $this->addError('event', Craft::t('sprout-email', 'The `When an Entry is saved Event` Notification Event does not trigger for drafts or revisions.'));
+        }
+
+        $newEntryScenario = $entry->getScenario() === Element::SCENARIO_ESSENTIALS;
+        $isNewEntry = $event->isNew && $newEntryScenario ?? false;
 
         $matchesWhenNew = $this->whenNew && $isNewEntry ?? false;
         $matchesWhenUpdated = $this->whenUpdated && !$isNewEntry ?? false;
@@ -186,6 +193,15 @@ class EntriesSave extends NotificationEvent
     {
         $event = $this->event ?? null;
 
+        /** @var ElementInterface $entry */
+        $entry = $event->sender;
+
+        $newEntryScenario = $entry->getScenario() === Element::SCENARIO_ESSENTIALS;
+        $isNewEntry = $event->isNew && $newEntryScenario ?? false;
+
+        $matchesWhenNew = $this->whenNew && $isNewEntry ?? false;
+        $matchesWhenUpdated = $this->whenUpdated && !$isNewEntry ?? false;
+
         if (!$event) {
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
         }
@@ -193,8 +209,14 @@ class EntriesSave extends NotificationEvent
         // Only trigger this event when an Entry is Live.
         // When an Entry Type is updated, SCENARIO_ESSENTIALS
         // When status is disabled, SCENARIO_DEFAULT
-        if ($event->sender->getScenario() !== Element::SCENARIO_LIVE) {
-            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers when an Entry is saved in a live scenario.'));
+
+        // Check
+        if ($matchesWhenNew && $event->sender->getScenario() !== Element::SCENARIO_ESSENTIALS) {
+            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers for new entries when an Entry is saved in the "essentials" scenario.'));
+        }
+
+        if ($matchesWhenUpdated && $event->sender->getScenario() !== Element::SCENARIO_LIVE) {
+            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers for an updated entry when an Entry is saved in a "live" scenario.'));
         }
 
         if ($event->sender->getStatus() !== Entry::STATUS_LIVE) {
