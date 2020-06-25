@@ -17,7 +17,8 @@ use barrelstrength\sproutbase\app\email\events\notificationevents\UsersSave;
 use barrelstrength\sproutbase\app\email\services\NotificationEmailEvents;
 use barrelstrength\sproutbase\config\base\SproutBasePlugin;
 use barrelstrength\sproutbase\config\configs\CampaignsConfig;
-use barrelstrength\sproutbase\config\configs\EmailConfig;
+use barrelstrength\sproutbase\config\configs\EmailPreviewConfig;
+use barrelstrength\sproutbase\config\configs\NotificationsConfig;
 use barrelstrength\sproutbase\config\configs\FieldsConfig;
 use barrelstrength\sproutbase\config\configs\ControlPanelConfig;
 use barrelstrength\sproutbase\config\configs\ReportsConfig;
@@ -42,9 +43,6 @@ class SproutEmail extends SproutBasePlugin
      */
     public $minVersionRequired = '4.4.7';
 
-    /**
-     * @inheritdoc
-     */
     public static function editions(): array
     {
         return [
@@ -56,9 +54,9 @@ class SproutEmail extends SproutBasePlugin
     public static function getSproutConfigs(): array
     {
         return [
-            ControlPanelConfig::class,
             CampaignsConfig::class,
-            EmailConfig::class,
+            NotificationsConfig::class,
+            EmailPreviewConfig::class,
             FieldsConfig::class,
             SentEmailConfig::class,
             ReportsConfig::class
@@ -71,10 +69,7 @@ class SproutEmail extends SproutBasePlugin
 
         SproutBaseHelper::registerModule();
 
-        Craft::setAlias('@sproutemail', $this->getBasePath());
-
         Event::on(NotificationEmailEvents::class, NotificationEmailEvents::EVENT_REGISTER_EMAIL_EVENT_TYPES, static function(NotificationEmailEvent $event) {
-            $event->events[] = EntriesSave::class;
             $event->events[] = EntriesDelete::class;
             $event->events[] = UsersSave::class;
             $event->events[] = UsersDelete::class;
@@ -85,11 +80,12 @@ class SproutEmail extends SproutBasePlugin
 
     protected function afterInstall()
     {
-        // Redirect to welcome page
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             return;
         }
 
-        Craft::$app->controller->redirect(UrlHelper::cpUrl('sprout-email/welcome'))->send();
+        // Redirect to welcome page
+        $url = UrlHelper::cpUrl('sprout/welcome/email');
+        Craft::$app->controller->redirect($url)->send();
     }
 }
