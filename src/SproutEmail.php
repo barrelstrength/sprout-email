@@ -56,8 +56,6 @@ class SproutEmail extends SproutBasePlugin
         return [
             CampaignsConfig::class,
             NotificationsConfig::class,
-            EmailPreviewConfig::class,
-            FieldsConfig::class,
             SentEmailConfig::class,
             ReportsConfig::class
         ];
