@@ -1,5 +1,28 @@
 # Changelog
 
+## 5.0.0 - UNRELEASED
+
+> {warning} See upgrade notes for breaking changes, etc.
+
+## Added
+- Added support for using service layer in templates via `sprout.app`
+
+### Changed
+- Updated codebase to be managed in `barrelstrength/sprout-base`
+- Updated plugin translation category from `sprout-email` => `sprout`
+- Updated Project Config settings from `sprout-email` => `sprout`
+- Updated plugin to use `sprout` migration track
+- Updated plugin settings to be managed via Craft settings area
+- Updated undocumented template variables to use service layer directly 
+- Updated `craftcms/cms` requirement v3.5.0
+- Updated `barrelstrength/sprout-base` requirement v7.0.0
+
+### Removed
+- Removed `barrelstrength/sprout-base-email` dependency
+- Removed `barrelstrength/sprout-base-fields` dependency
+- Removed `barrelstrength/sprout-base-reports` dependency
+- Removed `barrelstrength/sprout-base-sent-email` dependency
+
 ## 4.4.6 - 2020-05-28
 
 ### Fixed
