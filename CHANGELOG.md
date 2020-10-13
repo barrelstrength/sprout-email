@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.4.8 - 2020-10-13
+
+### Changed
+- Updated `craftcms/cms` requirement v3.5.0
+- Updated `barrelstrength/sprout-base` requirement v6.0.2
+
+### Fixed
+- Fixed bug when loading settings page introduced in Craft 3.5
+
 ## 4.4.7 - 2020-06-05
 
 ### Fixed
