@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.4.9 - 2021-02-11
+
+### Changed
+- Updated `barrelstrength/sprout-base-email` requirement to v1.3.9
+- Updated `barrelstrength/sprout-base-sent-email` requirement to v1.1.4
+
+### Fixed
+- Fixed migration bug where Notification Email enabled setting could be set to false ([#545][#545-sprout-forms])
+- Fixed Composer 2 compatibility issue
+
+[#545-sprout-forms]: https://github.com/barrelstrength/craft-sprout-forms/issues/545
+
 ## 4.4.8 - 2020-10-13
 
 ### Changed
