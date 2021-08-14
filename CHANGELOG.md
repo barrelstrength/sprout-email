@@ -2,6 +2,9 @@
 
 ## 4.4.10 - 2021-10-14
 
+### Updated
+- Updated `craftcms/cms` requirement v3.7.5
+
 ### Fixed
 - Improved save entry event logic ([#164])
 
