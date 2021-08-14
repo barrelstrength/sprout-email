@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.4.10 - 2021-10-14
+
+### Fixed
+- Improved save entry event logic ([#164])
+
+[#164]: https://github.com/barrelstrength/craft-sprout-email/issues/164
+
 ## 4.4.9 - 2021-02-11
 
 ### Changed
