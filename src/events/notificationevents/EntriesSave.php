@@ -158,72 +158,47 @@ class EntriesSave extends NotificationEvent
 
     public function validateWhenTriggers()
     {
-        /**
-         * @var ElementEvent $event
-         */
+        /** @var ElementEvent $event */
         $event = $this->event ?? null;
 
         /** @var ElementInterface $entry */
         $entry = $event->sender;
 
-        if (ElementHelper::isDraftOrRevision($entry)) {
-            $this->addError('event', Craft::t('sprout-email', 'The `When an Entry is saved Event` Notification Event does not trigger for drafts or revisions.'));
+        if (!$this->isNewLiveEntry($entry) && !$this->isUpdatedLiveEntry($entry)) {
+            $this->addError('event', Craft::t('sprout-email', 'The `When an Entry is saved Event` Notification Event does not match a new or updated live entry.'));
         }
 
-        $newEntryScenario = $entry->getScenario() === Element::SCENARIO_ESSENTIALS;
-        $isNewEntry = $event->isNew && $newEntryScenario ?? false;
-
-        $matchesWhenNew = $this->whenNew && $isNewEntry ?? false;
-        $matchesWhenUpdated = $this->whenUpdated && !$isNewEntry ?? false;
+        $matchesWhenNew = $this->whenNew && $this->isNewLiveEntry($entry) ?? false;
+        $matchesWhenUpdated = $this->whenUpdated && $this->isUpdatedLiveEntry($entry) ?? false;
 
         if (!$matchesWhenNew && !$matchesWhenUpdated) {
             $this->addError('event', Craft::t('sprout-email', 'When an Entry is saved Event does not match any scenarios.'));
         }
 
         // Make sure new entries are new.
-        if (($this->whenNew && !$isNewEntry) && !$this->whenUpdated) {
+        if (($this->whenNew && !$this->isNewLiveEntry($entry)) && !$this->whenUpdated) {
             $this->addError('event', Craft::t('sprout-email', '"When an entry is created" is selected but the entry is being updated.'));
         }
 
         // Make sure updated entries are not new
-        if (($this->whenUpdated && $isNewEntry) && !$this->whenNew) {
+        if (($this->whenUpdated && !$this->isUpdatedLiveEntry($entry)) && !$this->whenNew) {
             $this->addError('event', Craft::t('sprout-email', '"When an entry is updated" is selected but the entry is new.'));
         }
     }
 
     public function validateEvent()
     {
-        /**
-         * @var ElementEvent $event
-         */
+        /** @var ElementEvent $event */
         $event = $this->event ?? null;
 
         /** @var ElementInterface $entry */
         $entry = $event->sender;
 
-        $newEntryScenario = $entry->getScenario() === Element::SCENARIO_ESSENTIALS;
-        $isNewEntry = $event->isNew && $newEntryScenario ?? false;
-
-        $matchesWhenNew = $this->whenNew && $isNewEntry ?? false;
-        $matchesWhenUpdated = $this->whenUpdated && !$isNewEntry ?? false;
+        $matchesWhenNew = $this->whenNew && $this->isNewLiveEntry($entry) ?? false;
+        $matchesWhenUpdated = $this->whenUpdated && $this->isUpdatedLiveEntry($entry) ?? false;
 
         if (!$event) {
             $this->addError('event', Craft::t('sprout-email', 'ElementEvent does not exist.'));
-        }
-
-        // Only trigger this event when an Entry is Live.
-        // When an Entry Type is updated, SCENARIO_ESSENTIALS
-        // When status is disabled, SCENARIO_DEFAULT
-        if ($matchesWhenNew && $event->sender->getScenario() !== Element::SCENARIO_ESSENTIALS) {
-            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers for new entries when an Entry is saved in the "essentials" scenario.'));
-        }
-
-        if ($matchesWhenUpdated && $event->sender->getScenario() !== Element::SCENARIO_LIVE) {
-            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers for an updated entry when an Entry is saved in a "live" scenario.'));
-        }
-
-        if ($event->sender->getStatus() !== Entry::STATUS_LIVE) {
-            $this->addError('event', Craft::t('sprout-email', 'The `EntriesSave` Notification Event only triggers for enabled element.'));
         }
 
         if (get_class($event->sender) !== Entry::class) {
@@ -252,6 +227,31 @@ class EntriesSave extends NotificationEvent
         if (is_array($this->sectionIds) AND !in_array($elementId, $this->sectionIds, false)) {
             $this->addError('event', Craft::t('sprout-email', 'Saved Entry Element does not match any selected Sections.'));
         }
+    }
+
+    // Does not match the scenario where a new entry is disabled
+    // or where a new entry has a future publish date.
+    protected function isNewLiveEntry($element): bool
+    {
+        return
+            $element->firstSave &&
+            $element->getIsCanonical() &&
+            $element->getStatus() === Entry::STATUS_LIVE &&
+            !ElementHelper::isDraftOrRevision($element) &&
+            !$element->resaving &&
+            !$element->propagating;
+    }
+
+    // Matches the scenario where a new, disabled entry gets updated to enabled
+    protected function isUpdatedLiveEntry($element): bool
+    {
+        return
+            !$element->firstSave &&
+            $element->getIsCanonical() &&
+            $element->getStatus() === Entry::STATUS_LIVE &&
+            !ElementHelper::isDraftOrRevision($element) &&
+            !$element->resaving &&
+            !$element->propagating;
     }
 
     /**
