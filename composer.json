@@ -1,47 +1,22 @@
 {
-    "name": "barrelstrength/sprout-email",
-    "description": "Flexible, integrated email marketing and notifications.",
-    "version": "4.4.10",
-    "type": "craft-plugin",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "email",
-        "sprout email"
-    ],
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "Barrel Strength",
-            "homepage": "https://www.barrelstrengthdesign.com/"
-        }
-    ],
-    "support": {
-        "email": "sprout@barrelstrengthdesign.com",
-        "issues": "https://github.com/barrelstrength/sprout-email/issues?state=open",
-        "source": "https://github.com/barrelstrength/sprout-email",
-        "docs": "https://sprout.barrelstrengthdesign.com/docs/email",
-        "rss": "https://github.com/barrelstrength/sprout-email/commits/v2.atom"
-    },
-    "require": {
-        "craftcms/cms": "^3.7.5",
-        "barrelstrength/sprout-base": "^6.0.2",
-        "barrelstrength/sprout-base-email": "^1.3.9",
-        "barrelstrength/sprout-base-fields": "^1.4.0",
-        "barrelstrength/sprout-base-reports": "^1.5.2",
-        "barrelstrength/sprout-base-sent-email": "^1.1.4"
-    },
-    "autoload": {
-        "psr-4": {
-          "barrelstrength\\sproutemail\\": "src/"
-        }
-    },
-    "extra": {
-        "name": "Sprout Email",
-        "handle": "sprout-email",
-        "developer": "Barrel Strength",
-        "documentationUrl": "https://sprout.barrelstrengthdesign.com/docs/email",
-        "class": "barrelstrength\\sproutemail\\SproutEmail"
-    }
+	"name": "barrelstrength/sprout-email",
+	"type": "craft-plugin",
+	"version": "0.0.1",
+	"require": {
+		"barrelstrength/sprout": "^0"
+	},
+	"autoload": {
+		"psr-4": {
+			"BarrelStrength\\SproutEmail\\": "src/"
+		}
+	},
+	"extra": {
+		"name": "Sprout Email",
+		"handle": "sprout-email",
+		"developer": "Barrel Strength Design",
+		"developerUrl": "https://barrelstrengthdesign.com",
+		"developerEmail": "support@barrelstrengthdesign.com",
+		"documentationUrl": "https://barrelstrengthdesign.com",
+		"class": "BarrelStrength\\SproutEmail\\SproutEmail"
+	}
 }

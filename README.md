@@ -1,6 +1,6 @@
 # Sprout Email
 
-Flexible, integrated email marketing and notifications.
+Sprout Email adds a centralized way to manage event-based, transactional email in Craft.
 
 - [Documentation](https://sprout.barrelstrengthdesign.com/docs/email/)
 - [Craft Plugin Store](https://plugins.craftcms.com/sprout-email)
