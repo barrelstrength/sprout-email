@@ -21,8 +21,7 @@ use yii\base\InvalidConfigException;
 
 class SproutEmail extends Plugin implements SproutPluginMigrationInterface
 {
-    // @todo - requires min version of Sprout Email - 4.4.9
-//    public string $minVersionRequired = '4.4.9';
+    public string $minVersionRequired = '4.4.9';
 
     public string $schemaVersion = '4.4.4.1';
 
