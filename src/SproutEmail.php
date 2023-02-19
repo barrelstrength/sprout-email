@@ -13,21 +13,16 @@ use BarrelStrength\Sprout\transactional\TransactionalModule;
 use Craft;
 use craft\base\Plugin;
 use craft\db\MigrationManager;
-use craft\errors\MigrationException;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\UrlHelper;
 use yii\base\Event;
-use yii\base\InvalidConfigException;
 
 class SproutEmail extends Plugin implements SproutPluginMigrationInterface
 {
-    public string $minVersionRequired = '4.4.9';
+    public string $minVersionRequired = '4.4.10';
 
-    public string $schemaVersion = '4.4.4.1';
+    public string $schemaVersion = '4.44.444';
 
-    /**
-     * @inheritDoc
-     */
     public static function editions(): array
     {
         return [
@@ -45,9 +40,6 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
         ];
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function getMigrator(): MigrationManager
     {
         return SproutPluginMigrator::make($this);
@@ -60,7 +52,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
         Event::on(
             Modules::class,
             Modules::EVENT_REGISTER_SPROUT_AVAILABLE_MODULES,
-            function(RegisterComponentTypesEvent $event) {
+            static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalModule::class;
             }
         );
@@ -71,6 +63,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
 
     protected function instantiateSproutModules(): void
     {
+        SentEmailModule::isEnabled() && SentEmailModule::getInstance();
         TransactionalModule::isEnabled() && TransactionalModule::getInstance();
     }
 
@@ -81,9 +74,6 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
         }
     }
 
-    /**
-     * @throws MigrationException
-     */
     protected function afterInstall(): void
     {
         MigrationHelper::runMigrations($this);
@@ -97,10 +87,6 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
         Craft::$app->getResponse()->redirect($url)->send();
     }
 
-    /**
-     * @throws MigrationException
-     * @throws InvalidConfigException
-     */
     protected function beforeUninstall(): void
     {
         MigrationHelper::runUninstallMigrations($this);
