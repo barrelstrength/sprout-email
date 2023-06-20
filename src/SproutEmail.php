@@ -54,6 +54,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
             Modules::EVENT_REGISTER_SPROUT_AVAILABLE_MODULES,
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalModule::class;
+                $event->types[] = SentEmailModule::class;
             }
         );
 
@@ -83,7 +84,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
         }
 
         // Redirect to welcome page
-        $url = UrlHelper::cpUrl('sprout/welcome/email');
+        $url = UrlHelper::cpUrl('sprout/welcome/transactional-email');
         Craft::$app->getResponse()->redirect($url)->send();
     }
 
