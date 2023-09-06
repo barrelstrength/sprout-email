@@ -9,7 +9,7 @@
 - See Transactional Module [release notes][#410transactional]
 - See Sent Email Module [release notes][#410sentemail]
 
-[#410mailer]: https://github.com/barrelstrength/sprout/blob/v4.1.0/CHANGELOG/CHANGELOG-MAILER.md
-[#410transactional]: https://github.com/barrelstrength/sprout/blob/v4.1.0/CHANGELOG/CHANGELOG-TRANSACTIONAL.md
-[#410sentemail]: https://github.com/barrelstrength/sprout/blob/v4.1.0/CHANGELOG/CHANGELOG-SENT-EMAIL.md
+[#410mailer]: https://github.com/barrelstrength/sprout/blob/4.1.0/CHANGELOG/CHANGELOG-MAILER.md
+[#410transactional]: https://github.com/barrelstrength/sprout/blob/4.1.0/CHANGELOG/CHANGELOG-TRANSACTIONAL.md
+[#410sentemail]: https://github.com/barrelstrength/sprout/blob/4.1.0/CHANGELOG/CHANGELOG-SENT-EMAIL.md
 
