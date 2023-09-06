@@ -51,7 +51,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
 
         Event::on(
             Modules::class,
-            Modules::EVENT_REGISTER_SPROUT_AVAILABLE_MODULES,
+            Modules::INTERNAL_SPROUT_EVENT_REGISTER_AVAILABLE_MODULES,
             static function(RegisterComponentTypesEvent $event) {
                 $event->types[] = TransactionalModule::class;
                 $event->types[] = SentEmailModule::class;
@@ -71,6 +71,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
     protected function grantModuleEditions(): void
     {
         if ($this->edition === Edition::PRO) {
+            SentEmailModule::isEnabled() && SentEmailModule::getInstance()->grantEdition(Edition::PRO);
             TransactionalModule::isEnabled() && TransactionalModule::getInstance()->grantEdition(Edition::PRO);
         }
     }
