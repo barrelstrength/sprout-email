@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.44.444-beta.4 - 2023-11-27
+
+- Requires `barrelstrength/sprout:4.1.6`
+- See Mailer Module [release notes][#416mailer]
+- See Sent Email Module [release notes][#416sentemail]
+- See Sprout Framework Module [release notes][#416core]
+
+[#416mailer]: https://github.com/barrelstrength/craft-sprout/blob/4.1.6/CHANGELOG/CHANGELOG-MAILER.md
+[#416sentemail]: https://github.com/barrelstrength/craft-sprout/blob/4.1.6/CHANGELOG/CHANGELOG-SENT-EMAIL.md
+[#416core]: https://github.com/barrelstrength/craft-sprout/blob/4.1.6/CHANGELOG/CHANGELOG-CORE.md
+
 ## 4.44.444-beta.3 - 2023-11-05
 
 - Requires `barrelstrength/sprout:4.1.5`
