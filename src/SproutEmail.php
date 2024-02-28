@@ -21,7 +21,7 @@ class SproutEmail extends Plugin implements SproutPluginMigrationInterface
 {
     public string $minVersionRequired = '4.4.10';
 
-    public string $schemaVersion = '4.44.445';
+    public string $schemaVersion = '4.44.446';
 
     public static function editions(): array
     {

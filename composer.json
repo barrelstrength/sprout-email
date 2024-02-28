@@ -1,10 +1,10 @@
 {
     "name": "barrelstrength/sprout-email",
     "type": "craft-plugin",
-    "version": "4.44.444-beta.4",
+    "version": "4.44.444-beta.5",
     "license": "proprietary",
     "require": {
-        "barrelstrength/sprout": "^4.1.6",
+        "barrelstrength/sprout": "^4.1.7",
         "craftcms/cms": "^4.3.0"
     },
     "autoload": {
