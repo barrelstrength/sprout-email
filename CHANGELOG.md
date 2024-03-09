@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.44.444-beta.6 - 2024-03-09
+
+- Requires `barrelstrength/sprout:4.1.8`
+- See Transactional Module [release notes][#418transactional]
+- See Mailer Module [release notes][#418mailer]
+- See Sprout Framework Module [release notes][#418core]
+
+[#418transactional]: https://github.com/barrelstrength/craft-sprout/blob/4.1.8/CHANGELOG/CHANGELOG-TRANSACTIONAL.md
+[#418mailer]: https://github.com/barrelstrength/craft-sprout/blob/4.1.8/CHANGELOG/CHANGELOG-MAILER.md
+[#418core]: https://github.com/barrelstrength/craft-sprout/blob/4.1.8/CHANGELOG/CHANGELOG-CORE.md
+
 ## 4.44.444-beta.5 - 2024-02-27
 
 - Requires `barrelstrength/sprout:4.1.7`
