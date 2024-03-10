@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.44.444-beta.7 - 2024-03-10
+
+- Requires `barrelstrength/sprout:4.1.9`
+- See Sprout Framework Module [release notes][#419core]
+[#419core]: https://github.com/barrelstrength/craft-sprout/blob/4.1.9/CHANGELOG/CHANGELOG-CORE.md
+
 ## 4.44.444-beta.6 - 2024-03-09
 
 - Requires `barrelstrength/sprout:4.1.8`
