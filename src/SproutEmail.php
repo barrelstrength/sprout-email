@@ -19,9 +19,9 @@ use yii\base\Event;
 
 class SproutEmail extends Plugin implements SproutPluginMigrationInterface
 {
-    public string $minVersionRequired = '4.4.10';
+    public string $minVersionRequired = '4.45.0';
 
-    public string $schemaVersion = '4.44.446';
+    public string $schemaVersion = '5.0.0';
 
     public static function editions(): array
     {
